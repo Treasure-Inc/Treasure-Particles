@@ -1,0 +1,5 @@
+name: CElytra
+author: ItsZypec
+main: net.cladium.core.CladiumPlugin
+version: 1.0.0
+api-version: 1.13

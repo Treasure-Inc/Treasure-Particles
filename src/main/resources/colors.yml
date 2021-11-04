@@ -1,0 +1,5 @@
+colors:
+  redtoblue:
+    values: ["#FC5C7D", "#6A82FB"]
+    size: 10
+    speed: 0.1
