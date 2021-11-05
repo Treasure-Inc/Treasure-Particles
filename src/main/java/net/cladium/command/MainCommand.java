@@ -6,6 +6,7 @@ import net.cladium.core.CladiumPlugin;
 import net.cladium.effect.Effect;
 import net.cladium.gui.EffectsGUI;
 import net.cladium.util.locale.Messages;
+import org.bukkit.SoundCategory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

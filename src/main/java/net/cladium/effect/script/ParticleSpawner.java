@@ -18,17 +18,19 @@ public class ParticleSpawner extends Script {
     private String x, y, z, from;
     private ColorData colorData;
     int amount;
-    float speed, multiplier;
+    float speed, multiplier = 1;
+    double offsetX, offsetY, offsetZ;
     boolean direction;
 
     @Override
     public void tick(Player player, EffectData data) {
         Location origin = null;
         double x = 0, y = 0, z = 0;
+        multiplier = multiplier == 0 ? 1 : multiplier;
         if (from.equalsIgnoreCase("head"))
-            origin = player.getEyeLocation();
+            origin = player.getEyeLocation().add(player.getLocation().getDirection().multiply(multiplier));
         else if (from.equalsIgnoreCase("feet"))
-            origin = player.getLocation();
+            origin = player.getLocation().add(player.getLocation().getDirection().multiply(multiplier));
 
         if (origin == null) return;
 
@@ -72,6 +74,7 @@ public class ParticleSpawner extends Script {
             builder.setColor(colorData.next());
         }
         builder.setLocation(direction ? origin : origin.add(x, y, z));
+        builder.setOffset(new Vector(offsetX, offsetY, offsetZ));
         builder.setAmount(amount);
         if (speed != -5)
             builder.setSpeed(speed);

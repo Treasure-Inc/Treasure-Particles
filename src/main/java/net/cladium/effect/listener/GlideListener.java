@@ -20,5 +20,6 @@ public class GlideListener implements Listener {
             data = CladiumPlugin.getInstance().getPlayerManager().getPlayerData(player);
         }
         data.setEnabled(event.isGliding());
+        data.setStartedGliding(event.isGliding() ? System.currentTimeMillis() : -1);
     }
 }

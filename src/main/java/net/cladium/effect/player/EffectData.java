@@ -27,6 +27,10 @@ public class EffectData {
     @Getter
     private final List<Script> lines, postLines;
 
+    @Getter
+    @Setter
+    private long startedGliding;
+
     public EffectData() {
         this.variables = new HashSet<>();
         this.lines = new ArrayList<>();

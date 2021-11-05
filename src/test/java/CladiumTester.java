@@ -12,12 +12,10 @@ import java.util.regex.Pattern;
 public class CladiumTester {
 
     @Test
-    public void testMath() {
-        for (int i = 0; i < 28; i++) {
-            if (i % 7 == 0)
-                System.out.println("-------------------------------------");
-            System.out.println("[" + i + "] Result: " + ((i % 7) + 1) + ", Slot: " + (i / 7 + 1) + ", Where: " + ((i / 7 + 1) * 9 + (i % 7) + 1));
-        }
+    public void testSubstring() {
+        String s = "variable i=0 ~20";
+        System.out.println(s.lastIndexOf("~"));
+        System.out.println(s.substring(0, s.lastIndexOf("~")));
     }
 
     @Test

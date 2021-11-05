@@ -7,6 +7,10 @@ import net.cladium.effect.player.EffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,6 +27,29 @@ public class PlayerManager {
     public void initializePlayer(Player player) {
         EffectData data = new EffectData();
         playersData.put(player.getUniqueId(), data);
+
+        String effectName = null;
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            Connection connection = CladiumPlugin.getInstance().getDatabase().getConnection();
+            ps = connection.prepareStatement("SELECT data FROM data WHERE uuid=?");
+            ps.setString(1, player.getUniqueId().toString());
+            rs = ps.executeQuery();
+            if (rs.next())
+                effectName = rs.getString("data");
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            CladiumPlugin.getInstance().getDatabase().close(ps, rs);
+        }
+
+        if (effectName == null) return;
+        Effect effect = CladiumPlugin.getInstance().getEffectManager().get(effectName);
+        if (effect != null)
+            data.setCurrentEffect(player, effect);
     }
 
     public EffectData getPlayerData(Player player) {
@@ -34,6 +61,11 @@ public class PlayerManager {
     }
 
     public void remove(Player player) {
+        EffectData data = getPlayerData(player);
+        if (data.getCurrentEffect() != null)
+            CladiumPlugin.getInstance().getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), data.getCurrentEffect().getKey());
+        else
+            CladiumPlugin.getInstance().getDatabase().update("DELETE FROM data WHERE uuid=?", player.getUniqueId().toString());
         playersData.remove(player.getUniqueId());
     }
 
