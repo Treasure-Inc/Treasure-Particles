@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.cladium</groupId>
-    <artifactId>CElytra</artifactId>
+    <artifactId>TreasureElytra</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
@@ -15,7 +15,7 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>CElytra</finalName>
+        <finalName>TreasureElytra</finalName>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <resources>
             <resource>
@@ -49,11 +49,11 @@
                     <relocations>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>net.cladium.acf</shadedPattern>
+                            <shadedPattern>net.treasure.acf</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>net.cladium.locales</shadedPattern>
+                            <shadedPattern>net.treasure.locales</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -64,7 +64,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>C:\Users\itszy\Desktop\FFA\plugins\CElytra.jar</outputFile>
+                            <outputFile>C:\Users\itszy\Desktop\FFA\plugins\TrElytra.jar</outputFile>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
@@ -102,20 +102,26 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>xyz.xenondevs</groupId>
             <artifactId>particle</artifactId>
-            <version>1.6.4</version>
+            <version>1.6.6</version>
         </dependency>
 
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.8.1</version>
+            <version>4.9.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.0.0</version>
         </dependency>
 
         <dependency>
@@ -127,7 +133,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.4.2</version>
+            <version>5.8.1</version>
         </dependency>
     </dependencies>
 </project>

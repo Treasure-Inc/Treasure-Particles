@@ -2,7 +2,7 @@ prefix: "&x&3&9&3&a&3&9&l(&a&l!&x&3&9&3&a&3&9&l) &r"
 effect-no-permission: "§cBu efekti kullanabilme yetkin yok!"
 effect-selected: "&bEfekt seçildi: %s"
 effect-unknown: "&cBu isimde bir efekt bulunamadı: %s"
-reloading: "§eCElytra yenileniyor..."
+reloading: "§eTrElytra yenileniyor..."
 reloaded: "§aBaşarıyla yenilendi!"
 # GUI Messages
 gui-title: "§b§lEfektler"

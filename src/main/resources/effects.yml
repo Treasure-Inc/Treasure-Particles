@@ -1,0 +1,115 @@
+effects:
+  circle:
+    displayName: "Rengarenk Daire"
+    armorColor: "rainbow"
+    permission: "cue.circle"
+    variables: [ 'r','i','x','y' ]
+    onTick:
+      interval: 1
+      times: 32
+      do:
+        - variable r=2*{PI}*{i}/32
+        - variable x=cos({r})
+        - variable y=sin({r})
+        - particle [effect=redstone,direction=true,x={x},y={y},amount=10,from=head*-1.25,colorScheme={name=rainbow;speed=1;revertWhenDone=false}]
+        - variable i+=1
+      doPost:
+        - variable i=0 ~2
+  circleline:
+    displayName: "Rengarenk Çizgi"
+    onTick:
+      interval: 1
+      times: 8
+      do:
+        - particle [effect=redstone,amount=10,from=head,colorScheme={name=rainbow;speed=1;revertWhenDone=false}]
+  line:
+    displayName: "Üçlü Çizgi"
+    armorColor: "redtoblue"
+    variables: [ 'r', 'x1', 'y1', 'z1', 'y2' ]
+    onTick:
+      interval: 1
+      do:
+        - variable r+={PI}/60
+        - variable x1=cos({r})
+        - variable y1=sin({r})
+        - variable z1=sin({r})
+        - variable y2={y1}*2
+        - particle [effect=redstone,y={y2},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+        - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+        - particle [effect=redstone,x=-{x1},y={y1},z=-{z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+  parkour:
+    displayName: "Parkur!"
+    variables: [ 'r', 'i', 'x', 'z' ]
+    onTick:
+      interval: 60
+      times: 48
+      do:
+        - variable r={i}*{PI}/24
+        - variable x=cos({r})
+        - variable z=sin({r})
+        - particle [effect=end_rod,direction=true,x={x},y={z},amount=1,from=head*15]
+        - variable i+=1
+      doPost:
+        - variable i=0 ~2
+        - sound [name=entity.arrow.hit_player,clientSide=true,volume=0.1,pitch=1]
+  planor:
+    displayName: "Planör"
+    armorColor: "rainbow"
+    variables: ['step','x','z','angle','i','xAng','zAng']
+    onTick:
+      interval: 1
+      times: 3
+      do:
+        - variable x=cos({step} + ({PI} * 2 * ({i} / 3)))
+        - variable z=sin({step} + ({PI} * 2 * ({i} / 3)))
+        - variable angle=atan({z},{x})
+        - variable xAng=cos({angle})
+        - variable zAng=sin({angle})
+        - particle [effect=totem,amount=0,offset={x={xAng};y=0;z={zAng}},speed=0.375,from=feet]
+        - variable i+=1
+      doPost:
+        - variable step=({step} + {PI} / 20) % 40
+        - variable i=0
+  orbit:
+    displayName: "Yörünge"
+    armorColor: "redtoblue"
+    variables: ['i','x','z','step']
+    onTick:
+      interval: 1
+      times: 3
+      do:
+        - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
+        - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
+        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+        - variable i+=1
+      doPost:
+        - variable step=({step} + 1) % 120
+        - variable i=0
+  spiral:
+    displayName: "Rengarenk Spiral"
+    armorColor: "rainbow"
+    variables: ['x','z','step']
+    onTick:
+      interval: 1
+      do:
+        - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+        - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=rainbow;revertWhenDone=true;speed=1}]
+      doPost:
+        - variable step=({step} + 1) % 120
+  beam:
+    displayName: "Işın"
+    armorColor: "#ffd86b"
+    variables: ['slice','angle','x','z','i']
+    onTick:
+      interval: 1
+      times: 16
+      do:
+        - variable angle= {slice} * {i}
+        - variable x=cos({angle})
+        - variable z=sin({angle})
+        - particle [effect=electric_spark,x={x},y={z},direction=true,from=feet,amount=0]
+        - variable i+=1
+      doPost:
+        - variable i=0
+        - variable slice=0.4
