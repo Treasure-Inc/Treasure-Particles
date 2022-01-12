@@ -6,6 +6,7 @@ public class MathUtil {
     private static final double radFull, radToIndex;
     private static final double degFull, degToIndex;
     private static final double[] sin, cos;
+    public static double PI = 3.14;
 
     static {
         SIN_BITS = 12;
@@ -44,25 +45,22 @@ public class MathUtil {
             int pos = -1, ch;
             double save = Double.MIN_VALUE;
 
-            void nextChar(String by) {
+            void nextChar() {
                 ch = (++pos < str.length()) ? str.charAt(pos) : -1;
-//                System.out.println("> next char (" + by + "," + pos + ")");
             }
 
             boolean eat(int charToEat) {
-                while (ch == ' ') nextChar("eat empty");
+                while (ch == ' ') nextChar();
                 if (ch == charToEat) {
-                    nextChar("eat");
+                    nextChar();
                     return true;
                 }
                 return false;
             }
 
             double parse() {
-//                System.out.println("started parsing (" + str.length() + ")");
-                nextChar("start");
+                nextChar();
                 double x = parseExpression();
-//                System.out.println("parse: " + x);
                 if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char) ch);
                 return x;
             }
@@ -76,16 +74,12 @@ public class MathUtil {
             double parseExpression() {
                 double x = parseTerm();
                 for (; ; ) {
-                    if (eat('+')) {
-//                        System.out.println("parsing expression (+)");
+                    if (eat('+'))
                         x += parseTerm(); // addition
-                    } else if (eat('-')) {
-//                        System.out.println("parsing expression (-)");
+                    else if (eat('-'))
                         x -= parseTerm(); // subtraction
-                    } else {
-//                        System.out.println("parsing expression (" + x + ")");
+                    else
                         return x;
-                    }
                 }
             }
 
@@ -94,49 +88,36 @@ public class MathUtil {
                 for (; ; ) {
                     if (eat(',')) {
                         save = x;
-//                        System.out.println("parsing term (save=" + save + ")");
                         x = parseFactor();
-                    } else if (eat('*')) {
-//                        System.out.println("parsing term (*)");
+                    } else if (eat('*'))
                         x *= parseFactor(); // multiplication
-                    } else if (eat('/')) {
-//                        System.out.println("parsing term (/)");
+                    else if (eat('/'))
                         x /= parseFactor(); // division
-                    } else if (eat('%')) {
-//                        System.out.println("parsing term (%)");
+                    else if (eat('%'))
                         x %= parseFactor();
-                    } else {
-//                        System.out.println("parsing term (" + x + ")");
+                    else
                         return x;
-                    }
                 }
             }
 
             double parseFactor() {
-                if (eat('+')) {
-//                    System.out.println("unary plus");
+                if (eat('+'))
                     return parseFactor(); // unary plus
-                }
-                if (eat('-')) {
-//                    System.out.println("unary minus");
+                if (eat('-'))
                     return -parseFactor(); // unary minus
-                }
-//                System.out.println("char: " + Character.getName(ch));
 
                 double x;
                 int startPos = this.pos;
                 if (ch == ',') {
                     x = 0;
-//                    System.out.println("yes");
                 } else if (eat('(')) { // parentheses
                     x = parseExpression();
                     eat(')');
                 } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
-                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar("factor number");
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
                     x = Double.parseDouble(str.substring(startPos, this.pos));
-//                    System.out.println("found number: " + x);
                 } else if (ch >= 'a' && ch <= 'z') { // functions
-                    while (ch >= 'a' && ch <= 'z') nextChar("factor functions");
+                    while (ch >= 'a' && ch <= 'z') nextChar();
                     String func = str.substring(startPos, this.pos);
                     x = parseFactor();
                     x = switch (func) {
@@ -145,14 +126,11 @@ public class MathUtil {
                         case "cos" -> MathUtil.cos(x);
                         case "tan" -> Math.tan(x);
                         case "cot" -> 1 / Math.tan(x);
-                        case "atan" -> {
-//                            System.out.println("atan (" + x + "," + save + ")");
-                            yield Math.atan2(save, x);
-                        }
+                        case "atan" -> Math.atan2(save, x);
                         default -> throw new RuntimeException("Unknown function: " + func);
                     };
                 } else {
-                    throw new RuntimeException("Unexpected buro: " + (char) ch);
+                    throw new RuntimeException("Unexpected: " + (char) ch);
                 }
 
                 if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation

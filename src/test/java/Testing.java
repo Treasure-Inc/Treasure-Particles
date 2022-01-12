@@ -1,9 +1,13 @@
 import net.treasure.common.Patterns;
 import net.treasure.util.MathUtil;
+import net.treasure.util.Pair;
+import net.treasure.util.TimeKeeper;
 import net.treasure.util.color.Rainbow;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +25,25 @@ public class Testing {
 //        System.out.println("MathUtil.cos: " + MathUtil.eval("cos(" + Math.toRadians(90) + "+" + Math.toRadians(45) + " / 1 * 3)"));
 //        System.out.println("MathUtil.eval: " + MathUtil.eval("(0 + " + Math.PI + " / 20 ) % 40"));
 //        System.out.println("Normal: " + ((0 + Math.PI * 2 / 40) % 40));
+    }
+
+    @Test
+    public void testEval() {
+        final Set<Pair<String, Double>> variables = new HashSet<>();
+        variables.add(new Pair<>("x", 3.78786));
+        String eval = "{PI} * 2 + {x} / 5";
+        String _eval = eval
+                .replaceAll("\\{TICK}", String.valueOf(TimeKeeper.getTimeElapsed()))
+                .replaceAll("\\{PI}", String.valueOf(MathUtil.PI));
+        if (_eval.contains("{")) {
+            for (Pair<String, Double> p : variables) {
+                if (_eval.contains("{" + p.getKey() + "}")) {
+                    _eval = _eval.replaceAll("\\{" + p.getKey() + "}", String.format("%.2f", p.getValue()));
+                }
+            }
+        }
+        System.out.println("Eval: " + _eval);
+        System.out.println("Result: " + MathUtil.eval(_eval));
     }
 
     @Test
@@ -82,24 +105,4 @@ public class Testing {
             System.out.println("____");
         }
     }
-
-//    @Test
-//    @SneakyThrows
-//    public void testEffect() {
-//        TestEffect effect = new TestEffect("osuruk", Arrays.asList(
-//                "variable r+={PI}/60",
-//                "variable x=cos({r})",
-//                "variable z=sin({r})",
-//                "particle{REDSTONE} [x=-{x},z={z},from=head,colorScheme={name=redtogreen2-revertWhenDone=true-speed=1.75}]",
-//                "particle{REDSTONE} [x=-{x},z={z},from=head,colorScheme={name=redtogreen-revertWhenDone=true-speed=1.75}]"
-//        ));
-//        effect.getVariables().add(new Pair<>("x", 0D));
-//        effect.getVariables().add(new Pair<>("z", 0D));
-//        effect.getVariables().add(new Pair<>("r", 0D));
-//        for (int i = 0; i < 40; i++) {
-//            effect.tick();
-//            TimeKeeper.increaseTime();
-//            Thread.sleep(50);
-//        }
-//    }
 }

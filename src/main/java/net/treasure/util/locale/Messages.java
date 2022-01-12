@@ -10,7 +10,7 @@ import java.util.logging.Level;
 
 public class Messages {
 
-    public static String PREFIX = "§e§l[?] §r",
+    public static String PREFIX,
             EFFECT_SELECTED,
             EFFECT_NO_PERMISSION,
             EFFECT_UNKNOWN,
@@ -34,6 +34,8 @@ public class Messages {
     public void load() {
         try {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(TreasurePlugin.getInstance().getDataFolder(), "messages.yml"));
+
+            PREFIX = ChatColor.translateAlternateColorCodes('&', config.getString("prefix", "§e§l[?] §r"));
 
             RELOADED = Messages.PREFIX + ChatColor.translateAlternateColorCodes('&', config.getString("reloaded", "§aReloaded!"));
             EFFECT_SELECTED = Messages.PREFIX + ChatColor.translateAlternateColorCodes('&', config.getString("effect-selected", "§bSelected: %s"));

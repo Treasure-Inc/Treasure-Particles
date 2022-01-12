@@ -37,7 +37,7 @@ public class ColorManager {
             if (!exists)
                 TreasurePlugin.getInstance().saveResource("colors.yml", false);
             config = YamlConfiguration.loadConfiguration(file);
-            return exists;
+            return true;
         } catch (Exception e) {
             TreasurePlugin.getInstance().getLogger().log(Level.WARNING, "Couldn't load/create colors.yml", e);
             return false;

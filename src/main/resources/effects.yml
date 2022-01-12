@@ -17,11 +17,24 @@ effects:
         - variable i=0 ~2
   circleline:
     displayName: "Rengarenk Çizgi"
+    armorColor: "rainbow"
     onTick:
       interval: 1
       times: 8
       do:
         - particle [effect=redstone,amount=10,from=head,colorScheme={name=rainbow;speed=1;revertWhenDone=false}]
+  spiral:
+    displayName: "Rengarenk Spiral"
+    armorColor: "rainbow"
+    variables: ['x','z','step']
+    onTick:
+      interval: 1
+      do:
+        - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+        - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=rainbow;revertWhenDone=true;speed=1}]
+      doPost:
+        - variable step=({step} + 1) % 120
   line:
     displayName: "Üçlü Çizgi"
     armorColor: "redtoblue"
@@ -54,7 +67,7 @@ effects:
         - sound [name=entity.arrow.hit_player,clientSide=true,volume=0.1,pitch=1]
   planor:
     displayName: "Planör"
-    armorColor: "rainbow"
+    armorColor: "#32a852"
     variables: ['step','x','z','angle','i','xAng','zAng']
     onTick:
       interval: 1
@@ -85,18 +98,6 @@ effects:
       doPost:
         - variable step=({step} + 1) % 120
         - variable i=0
-  spiral:
-    displayName: "Rengarenk Spiral"
-    armorColor: "rainbow"
-    variables: ['x','z','step']
-    onTick:
-      interval: 1
-      do:
-        - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-        - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=rainbow;revertWhenDone=true;speed=1}]
-      doPost:
-        - variable step=({step} + 1) % 120
   beam:
     displayName: "Işın"
     armorColor: "#ffd86b"
