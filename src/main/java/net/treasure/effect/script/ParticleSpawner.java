@@ -1,5 +1,6 @@
 package net.treasure.effect.script;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import net.treasure.color.player.ColorData;
 import net.treasure.effect.player.EffectData;
@@ -12,6 +13,7 @@ import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.PropertyType;
 
 @Builder
+@AllArgsConstructor
 public class ParticleSpawner extends Script {
 
     private ParticleEffect effect;
@@ -26,7 +28,7 @@ public class ParticleSpawner extends Script {
     boolean direction = false;
 
     @Override
-    public void tick(Player player, EffectData data) {
+    public void tick(Player player, EffectData data, int times) {
         Location origin;
         double x = 0, y = 0, z = 0;
         double offsetX = 0, offsetY = 0, offsetZ = 0;
@@ -114,5 +116,10 @@ public class ParticleSpawner extends Script {
         if (speed != Float.MIN_VALUE)
             builder.setSpeed(speed);
         builder.display();
+    }
+
+    @Override
+    public ParticleSpawner clone() {
+        return new ParticleSpawner(effect, x, y, z, from, offsetX, offsetY, offsetZ, colorData, amount, multiplier, speed, direction);
     }
 }

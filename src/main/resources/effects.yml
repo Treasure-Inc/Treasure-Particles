@@ -3,7 +3,8 @@ effects:
     displayName: "Rengarenk Daire"
     armorColor: "rainbow"
     permission: "cue.circle"
-    variables: [ 'r','i','x','y' ]
+    variables: [ 'r', 'x','y' ]
+    enableCaching: true
     onTick:
       interval: 1
       times: 32
@@ -11,10 +12,7 @@ effects:
         - variable r=2*{PI}*{i}/32
         - variable x=cos({r})
         - variable y=sin({r})
-        - particle [effect=redstone,direction=true,x={x},y={y},amount=10,from=head*-1.25,colorScheme={name=rainbow;speed=1;revertWhenDone=false}]
-        - variable i+=1
-      doPost:
-        - variable i=0 ~2
+        - particle [effect=redstone,direction=true,x={x},y={y},amount=10,from=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
   circleline:
     displayName: "Rengarenk Çizgi"
     armorColor: "rainbow"
@@ -26,7 +24,7 @@ effects:
   spiral:
     displayName: "Rengarenk Spiral"
     armorColor: "rainbow"
-    variables: ['x','z','step']
+    variables: [ 'x','z','step' ]
     onTick:
       interval: 1
       do:
@@ -50,9 +48,24 @@ effects:
         - particle [effect=redstone,y={y2},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
         - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
         - particle [effect=redstone,x=-{x1},y={y1},z=-{z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+  orbit:
+    displayName: "Yörünge"
+    armorColor: "redtoblue"
+    variables: [ 'x','z','step' ]
+    onTick:
+      interval: 1
+      times: 3
+      do:
+        - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
+        - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
+        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=redtoblue;revertWhenDone=true;speed=0.75}]
+      doPost:
+        - variable step=({step} + 1) % 120
   parkour:
     displayName: "Parkur!"
-    variables: [ 'r', 'i', 'x', 'z' ]
+    variables: [ 'r', 'x', 'z' ]
+    armorColor: "#FFFFFF"
+    enableCaching: true
     onTick:
       interval: 60
       times: 48
@@ -60,15 +73,13 @@ effects:
         - variable r={i}*{PI}/24
         - variable x=cos({r})
         - variable z=sin({r})
-        - particle [effect=end_rod,direction=true,x={x},y={z},amount=1,from=head*15]
-        - variable i+=1
+        - particle [effect=end_rod,direction=true,x={x},y={z},amount=0,from=head*15]
       doPost:
-        - variable i=0 ~2
         - sound [name=entity.arrow.hit_player,clientSide=true,volume=0.1,pitch=1]
   planor:
     displayName: "Planör"
     armorColor: "#32a852"
-    variables: ['step','x','z','angle','i','xAng','zAng']
+    variables: [ 'step','x','z','angle','xAng','zAng' ]
     onTick:
       interval: 1
       times: 3
@@ -79,38 +90,18 @@ effects:
         - variable xAng=cos({angle})
         - variable zAng=sin({angle})
         - particle [effect=totem,amount=0,offset={x={xAng};y=0;z={zAng}},speed=0.375,from=feet]
-        - variable i+=1
       doPost:
         - variable step=({step} + {PI} / 20) % 40
-        - variable i=0
-  orbit:
-    displayName: "Yörünge"
-    armorColor: "redtoblue"
-    variables: ['i','x','z','step']
-    onTick:
-      interval: 1
-      times: 3
-      do:
-        - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-        - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
-        - variable i+=1
-      doPost:
-        - variable step=({step} + 1) % 120
-        - variable i=0
   beam:
     displayName: "Işın"
     armorColor: "#ffd86b"
-    variables: ['slice','angle','x','z','i']
+    variables: [ 'angle','x','z' ]
+    enableCaching: true
     onTick:
       interval: 1
       times: 16
       do:
-        - variable angle= {slice} * {i}
+        - variable angle=0.4*{i}
         - variable x=cos({angle})
         - variable z=sin({angle})
         - particle [effect=electric_spark,x={x},y={z},direction=true,from=feet,amount=0]
-        - variable i+=1
-      doPost:
-        - variable i=0
-        - variable slice=0.4

@@ -4,7 +4,6 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.contexts.ContextResolver;
 import lombok.Getter;
-import lombok.Setter;
 import net.treasure.color.player.ColorData;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
@@ -19,10 +18,7 @@ import net.treasure.util.locale.Messages;
 import org.bukkit.entity.Player;
 import xyz.xenondevs.particle.ParticleEffect;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 
 public class Effect {
@@ -31,44 +27,117 @@ public class Effect {
     private final String key, displayName, armorColor, permission;
 
     @Getter
-    @Setter
-    private int interval = 1, times = 1, postTimes = 1;
+    private final int interval, times, postTimes;
 
-
-    @Getter
-    private final List<String> _lines, _postLines;
+    private final List<Script> lines;
+    private final List<Script> postLines;
 
     @Getter
     private final Set<Pair<String, Double>> variables;
 
-    public Effect(String key, String displayName, String armorColor, String permission, List<String> lines, List<String> postLines) {
+    @Getter
+    private final boolean enableCaching;
+    @Getter
+    private double[][] cache, cachePost;
+
+    public Effect(String key, String displayName, String armorColor, String permission, List<String> lines, List<String> postLines, List<String> variables, int interval, int times, int postTimes, boolean enableCaching) {
         this.key = key;
         this.displayName = displayName;
         this.armorColor = armorColor;
         this.permission = permission;
-        this._lines = lines;
-        this._postLines = postLines;
+        this.interval = interval;
+        this.times = times;
+        this.postTimes = postTimes;
+        this.enableCaching = enableCaching;
+
         this.variables = new HashSet<>();
+        this.lines = new ArrayList<>();
+        this.postLines = new ArrayList<>();
+
+        for (String var : variables)
+            if (checkVariable(var))
+                addVariable(var);
+
+        readFromFile(lines, this.lines);
+        readFromFile(postLines, this.postLines);
+
+        if (times > 1 || postTimes > 1)
+            addVariable("i");
+
+        if (enableCaching) {
+            if (!lines.isEmpty())
+                cache = new double[times][variables.size()];
+            if (!postLines.isEmpty())
+                cachePost = new double[postTimes][variables.size()];
+            preTick();
+        }
     }
 
     public void initialize(Player player, EffectData data) {
-        for (var pair : getVariables())
+        for (var pair : variables)
             data.getVariables().add(new Pair<>(pair.getKey(), pair.getValue()));
-        readFromFile(player, data, _lines, data.getLines());
-        readFromFile(player, data, _postLines, data.getPostLines());
+        data.setLines(new ArrayList<>());
+        for (Script script : lines)
+            data.getLines().add(script.clone());
+        data.setPostLines(new ArrayList<>());
+        for (Script script : postLines)
+            data.getPostLines().add(script.clone());
+    }
+
+    public void preTick() {
+        Set<Pair<String, Double>> variables = new HashSet<>(this.variables);
+        var timesPairOptional = variables.stream().filter(pair -> pair.getKey().equalsIgnoreCase("i")).findFirst();
+        Pair<String, Double> timesPair = null;
+        if (timesPairOptional.isPresent())
+            timesPair = timesPairOptional.get();
+        try {
+            if (!lines.isEmpty()) {
+                for (int i = 0; i < times; i++) {
+                    if (timesPair != null)
+                        timesPair.setValue((double) i);
+                    for (Script script : lines) {
+                        if (script instanceof Variable) {
+                            Variable variable = (Variable) script;
+                            cache[i][variable.getIndex()] = variable.preTick(variables);
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (!postLines.isEmpty()) {
+                for (int i = 0; i < postTimes; i++) {
+                    if (timesPair != null)
+                        timesPair.setValue((double) i);
+                    for (Script script : postLines) {
+                        if (script instanceof Variable) {
+                            Variable variable = (Variable) script;
+                            variable.preTick(variables);
+                            cachePost[i][variable.getIndex()] = variable.preTick(variables);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void doTick(Player player, EffectData data) {
         if (!TimeKeeper.isElapsed(interval))
             return;
+        var timesPair = data.getVariable("i");
         try {
-            for (int i = 0; i < times; i++)
+            for (int i = 0; i < times; i++) {
+                if (timesPair != null)
+                    timesPair.setValue((double) i);
                 for (Script script : data.getLines())
-                    script.doTick(player, data);
+                    script.doTick(player, data, i);
+            }
         } finally {
-            for (int i = 0; i < postTimes; i++)
+            for (int i = 0; i < postTimes; i++) {
+                if (timesPair != null)
+                    timesPair.setValue((double) i);
                 for (Script script : data.getPostLines())
-                    script.doTick(player, data);
+                    script.doTick(player, data, i);
+            }
         }
     }
 
@@ -86,7 +155,22 @@ public class Effect {
             this.getVariables().add(new Pair<>(var, 0d));
     }
 
-    public void readFromFile(Player player, EffectData data, List<String> _lines, List<Script> lines) {
+    public boolean hasVariable(String var) {
+        for (var pair : variables)
+            if (pair.getKey().equals(var))
+                return true;
+        return false;
+    }
+
+    public boolean checkVariable(String var) {
+        return switch (var) {
+            case "i", "PI", "TICK" -> false;
+            default -> true;
+        };
+    }
+
+    public void readFromFile(List<String> _lines, List<Script> lines) {
+        int varIndex = 0;
         for (String _line : _lines) {
             String line = _line;
             int interval = 1;
@@ -107,13 +191,13 @@ public class Effect {
 
                 if (evalMatcher.matches()) {
                     String variable = evalMatcher.group(1);
-                    Pair<String, Double> pair = data.getVariable(variable);
-                    if (pair != null) {
+                    if (hasVariable(variable)) {
                         String operator = evalMatcher.group(2);
                         String s = evalMatcher.group(3);
 
                         Variable.VariableBuilder builder = Variable.builder();
                         builder.variable(variable);
+                        builder.index(varIndex);
                         builder.eval(s);
                         if (operator.isEmpty()) {
                             builder.operator(Variable.Operator.EQUAL);
@@ -129,6 +213,7 @@ public class Effect {
                         Variable v = builder.build();
                         v.setInterval(interval);
                         lines.add(v);
+                        varIndex++;
                     }
                 }
 

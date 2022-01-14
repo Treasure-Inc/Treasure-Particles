@@ -15,10 +15,15 @@ public class PlaySound extends Script {
     float volume, pitch;
 
     @Override
-    public void tick(Player player, EffectData data) {
+    public void tick(Player player, EffectData data, int times) {
         if (clientSide)
             player.playSound(player.getLocation(), sound, SoundCategory.MASTER, volume, pitch);
         else
             player.getWorld().playSound(player.getLocation(), sound, SoundCategory.MASTER, volume, pitch);
+    }
+
+    @Override
+    public Script clone() {
+        return new PlaySound(sound, clientSide, volume, pitch);
     }
 }

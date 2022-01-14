@@ -25,7 +25,8 @@ public class EffectData {
     private final Set<Pair<String, Double>> variables;
 
     @Getter
-    private final List<Script> lines, postLines;
+    @Setter
+    private List<Script> lines, postLines;
 
     @Getter
     @Setter

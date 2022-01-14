@@ -71,17 +71,12 @@ public class EffectManager {
                     section.getString(path + "armorColor"),
                     section.getString(path + "permission"),
                     section.getStringList(path + "onTick.do"),
-                    section.getStringList(path + "onTick.doPost"));
-
-            if (section.contains(path + "variables")) {
-                for (String var : section.getStringList(path + "variables"))
-                    effect.addVariable(var);
-            }
-
-            effect.setInterval(section.getInt(path + "onTick.interval", 1));
-            effect.setTimes(section.getInt(path + "onTick.times", 1));
-            effect.setPostTimes(section.getInt(path + "onTick.postTimes", 1));
-
+                    section.getStringList(path + "onTick.doPost"),
+                    section.getStringList(path + "variables"),
+                    section.getInt(path + "onTick.interval", 1),
+                    section.getInt(path + "onTick.times", 1),
+                    section.getInt(path + "onTick.postTimes", 1),
+                    section.getBoolean(path + "enableCaching", false));
             effects.add(effect);
         }
     }

@@ -73,11 +73,11 @@ public class TreasurePlugin extends JavaPlugin {
 
         playerManager = new PlayerManager();
 
-        effectManager.loadEffects();
-
         colorManager = new ColorManager();
         if (colorManager.load())
             colorManager.loadColors();
+
+        effectManager.loadEffects();
 
         commandManager = new BukkitCommandManager(this);
         commandManager.getCommandContexts().registerContext(
