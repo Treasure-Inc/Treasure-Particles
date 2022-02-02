@@ -113,8 +113,8 @@ public class MathUtil {
                 } else if (eat('(')) { // parentheses
                     x = parseExpression();
                     eat(')');
-                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
-                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                } else if ((ch >= '0' && ch <= '9') || ch == '.' || ch == 'E') { // numbers
+                    while ((ch >= '0' && ch <= '9') || ch == '.' || ch == 'E') nextChar();
                     x = Double.parseDouble(str.substring(startPos, this.pos));
                 } else if (ch >= 'a' && ch <= 'z') { // functions
                     while (ch >= 'a' && ch <= 'z') nextChar();
