@@ -55,6 +55,14 @@
                             <pattern>co.aikar.locales</pattern>
                             <shadedPattern>net.treasure.locales</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>net.kyori.adventure</pattern>
+                            <shadedPattern>net.treasure.adventure</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.kyori.examination</pattern>
+                            <shadedPattern>net.treasure.examination</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>

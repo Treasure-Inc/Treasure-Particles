@@ -6,12 +6,19 @@ import net.treasure.util.color.Rainbow;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Testing {
+public class TestFeatures {
+
+    @Test
+    public void testParse() {
+        BigDecimal val = new BigDecimal("1.224646799147353");
+        System.out.println(val.doubleValue());
+    }
 
     @Test
     public void testMath() {

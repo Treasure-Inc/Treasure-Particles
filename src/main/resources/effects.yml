@@ -2,8 +2,8 @@ effects:
   circle:
     displayName: "Rengarenk Daire"
     armorColor: "rainbow"
-    permission: "cue.circle"
-    variables: [ 'r', 'x','y' ]
+    permission: "tre.circle"
+    variables: [ 'r', 'x', 'y' ]
     enableCaching: true
     onTick:
       interval: 1

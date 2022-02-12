@@ -11,8 +11,10 @@ public class PlaySound extends Script {
 
     @NotNull
     private String sound;
-    private boolean clientSide;
-    float volume, pitch;
+    @Builder.Default
+    private boolean clientSide = true;
+    @Builder.Default
+    float volume = 1, pitch = 1;
 
     @Override
     public void tick(Player player, EffectData data, int times) {
