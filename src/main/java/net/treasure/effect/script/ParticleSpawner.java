@@ -107,7 +107,6 @@ public class ParticleSpawner extends Script {
 
         ParticleBuilder builder = new ParticleBuilder(effect);
         if (effect.hasProperty(PropertyType.COLORABLE) && colorData != null) {
-            // TODO renklerle ilgili bir problem var kesinlikle (? hala var mı ? bu ne)
             builder.setColor(colorData.next());
         }
         builder.setLocation(origin);

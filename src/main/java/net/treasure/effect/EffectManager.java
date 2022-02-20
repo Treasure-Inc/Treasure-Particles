@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.listener.GlideListener;
 import net.treasure.effect.task.ParticleTask;
+import net.treasure.util.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -65,9 +66,12 @@ public class EffectManager {
             String path = key + ".";
             if (!section.contains(path + "onTick"))
                 continue;
+            String displayName = section.getString(path + "displayName", key);
+            if (displayName.startsWith("%"))
+                displayName = Messages.get().getString("effects." + displayName.substring(1), displayName);
             Effect effect = new Effect(
                     key,
-                    ChatColor.translateAlternateColorCodes('&', section.getString(path + "displayName", key)),
+                    ChatColor.translateAlternateColorCodes('&', displayName),
                     section.getString(path + "armorColor"),
                     section.getString(path + "permission"),
                     section.getStringList(path + "onTick.do"),

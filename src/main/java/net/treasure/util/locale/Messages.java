@@ -10,6 +10,9 @@ import java.util.logging.Level;
 
 public class Messages {
 
+    public static String LOCALE;
+    private static YamlConfiguration config;
+
     public static String PREFIX,
             EFFECT_SELECTED,
             EFFECT_NO_PERMISSION,
@@ -24,16 +27,23 @@ public class Messages {
             RELOADING,
             RELOADED;
 
-    public Messages() {
-        File file = new File(TreasurePlugin.getInstance().getDataFolder(), "messages.yml");
-        if (!file.exists()) {
-            TreasurePlugin.getInstance().saveResource("messages.yml", false);
-        }
+    public static YamlConfiguration get() {
+        return config;
     }
 
     public void load() {
+        for (Locale locale : Locale.values())
+            TreasurePlugin.getInstance().saveResource("messages_" + locale.getKey() + ".yml", false);
         try {
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(TreasurePlugin.getInstance().getDataFolder(), "messages.yml"));
+            LOCALE = TreasurePlugin.getInstance().getConfig().getString("locale", "en");
+
+            File file = new File(TreasurePlugin.getInstance().getDataFolder(), "messages_" + LOCALE + ".yml");
+            if (!file.exists()) {
+                LOCALE = "en";
+                file = new File(TreasurePlugin.getInstance().getDataFolder(), "messages_en.yml");
+            }
+
+            config = YamlConfiguration.loadConfiguration(file);
 
             PREFIX = ChatColor.translateAlternateColorCodes('&', config.getString("prefix", "§e§l[?] §r"));
 
@@ -54,7 +64,7 @@ public class Messages {
             RELOADED = Messages.PREFIX + ChatColor.translateAlternateColorCodes('&', config.getString("reloaded", "§aReloaded!"));
         } catch (Exception exception) {
             exception.printStackTrace();
-            Bukkit.getLogger().log(Level.WARNING, "Couldn't load messages from messages.yml");
+            Bukkit.getLogger().log(Level.WARNING, "Couldn't load messages from messages_" + LOCALE + ".yml");
         }
     }
 }

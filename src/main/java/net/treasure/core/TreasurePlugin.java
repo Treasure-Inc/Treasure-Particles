@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MessageType;
 import lombok.Getter;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.treasure.color.ColorManager;
 import net.treasure.command.MainCommand;
 import net.treasure.core.database.Database;
@@ -14,7 +15,6 @@ import net.treasure.effect.EffectManager;
 import net.treasure.gui.GUIListener;
 import net.treasure.gui.task.GUIUpdater;
 import net.treasure.util.locale.Messages;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,6 +56,7 @@ public class TreasurePlugin extends JavaPlugin {
         instance = this;
         random = new Random();
 
+        saveDefaultConfig();
         messages = new Messages();
         messages.load();
 

@@ -1,6 +1,6 @@
 effects:
   circle:
-    displayName: "Rengarenk Daire"
+    displayName: "%rainbow-circle"
     armorColor: "rainbow"
     permission: "tre.circle"
     variables: [ 'r', 'x', 'y' ]
@@ -14,7 +14,7 @@ effects:
         - variable y=sin({r})
         - particle [effect=redstone,direction=true,x={x},y={y},amount=10,from=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
   circleline:
-    displayName: "Rengarenk Çizgi"
+    displayName: "%rainbow-line"
     armorColor: "rainbow"
     onTick:
       interval: 1
@@ -22,7 +22,7 @@ effects:
       do:
         - particle [effect=redstone,amount=10,from=head,colorScheme={name=rainbow;speed=1;revertWhenDone=false}]
   spiral:
-    displayName: "Rengarenk Spiral"
+    displayName: "%rainbow-spiral"
     armorColor: "rainbow"
     variables: [ 'x','z','step' ]
     onTick:
@@ -34,7 +34,7 @@ effects:
       doPost:
         - variable step=({step} + 1) % 120
   line:
-    displayName: "Üçlü Çizgi"
+    displayName: "%line"
     armorColor: "redtoblue"
     variables: [ 'r', 'x1', 'y1', 'z1', 'y2' ]
     onTick:
@@ -49,7 +49,7 @@ effects:
         - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
         - particle [effect=redstone,x=-{x1},y={y1},z=-{z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
   orbit:
-    displayName: "Yörünge"
+    displayName: "%orbit"
     armorColor: "redtoblue"
     variables: [ 'x','z','step' ]
     onTick:
@@ -62,7 +62,7 @@ effects:
       doPost:
         - variable step=({step} + 1) % 120
   parkour:
-    displayName: "Parkur!"
+    displayName: "%parkour"
     variables: [ 'r', 'x', 'z' ]
     armorColor: "#FFFFFF"
     enableCaching: true
@@ -77,7 +77,7 @@ effects:
       doPost:
         - sound [name=entity.arrow.hit_player,clientSide=true,volume=0.1,pitch=1]
   planor:
-    displayName: "Planör"
+    displayName: "%planor"
     armorColor: "#32a852"
     variables: [ 'step','x','z','angle','xAng','zAng' ]
     onTick:
@@ -93,7 +93,7 @@ effects:
       doPost:
         - variable step=({step} + {PI} / 20) % 40
   beam:
-    displayName: "Işın"
+    displayName: "%beam"
     armorColor: "#ffd86b"
     variables: [ 'angle','x','z' ]
     enableCaching: true
