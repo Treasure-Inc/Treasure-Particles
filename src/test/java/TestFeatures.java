@@ -6,8 +6,11 @@ import net.treasure.util.color.Rainbow;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,9 +18,10 @@ import java.util.regex.Pattern;
 public class TestFeatures {
 
     @Test
-    public void testParse() {
-        BigDecimal val = new BigDecimal("1.224646799147353");
-        System.out.println(val.doubleValue());
+    public void testParse() throws ParseException {
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340);
+        System.out.println(df.parse("1.8369701987210297E").doubleValue());
     }
 
     @Test

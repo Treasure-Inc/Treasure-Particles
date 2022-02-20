@@ -1,5 +1,12 @@
 package net.treasure.util;
 
+import lombok.SneakyThrows;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
+import java.util.Locale;
+
 public class MathUtil {
 
     private static final int SIN_BITS, SIN_MASK, SIN_COUNT;
@@ -41,6 +48,9 @@ public class MathUtil {
     }
 
     public static double eval(final String str) {
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340);
+
         return new Object() {
             int pos = -1, ch;
             double save = Double.MIN_VALUE;
@@ -100,6 +110,7 @@ public class MathUtil {
                 }
             }
 
+            @SneakyThrows
             double parseFactor() {
                 if (eat('+'))
                     return parseFactor(); // unary plus
@@ -115,7 +126,7 @@ public class MathUtil {
                     eat(')');
                 } else if ((ch >= '0' && ch <= '9') || ch == '.' || ch == 'E') { // numbers
                     while ((ch >= '0' && ch <= '9') || ch == '.' || ch == 'E') nextChar();
-                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                    x = df.parse(str.substring(startPos, this.pos)).doubleValue();
                 } else if (ch >= 'a' && ch <= 'z') { // functions
                     while (ch >= 'a' && ch <= 'z') nextChar();
                     String func = str.substring(startPos, this.pos);
