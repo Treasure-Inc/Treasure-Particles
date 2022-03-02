@@ -32,8 +32,11 @@ public class Messages {
     }
 
     public void load() {
-        for (Locale locale : Locale.values())
-            TreasurePlugin.getInstance().saveResource("messages_" + locale.getKey() + ".yml", false);
+        for (Locale locale : Locale.values()) {
+            File file = new File(TreasurePlugin.getInstance().getDataFolder(), "messages_" + locale.getKey() + ".yml");
+            if (!file.exists())
+                TreasurePlugin.getInstance().saveResource("messages_" + locale.getKey() + ".yml", false);
+        }
         try {
             LOCALE = TreasurePlugin.getInstance().getConfig().getString("locale", "en");
 

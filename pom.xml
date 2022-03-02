@@ -63,6 +63,10 @@
                             <pattern>net.kyori.examination</pattern>
                             <shadedPattern>net.treasure.examination</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>net.treasure.bstats</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -96,8 +100,8 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <artifactId>spigot</artifactId>
+            <version>1.18.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -143,6 +147,13 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.8.2</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

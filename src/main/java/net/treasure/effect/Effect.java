@@ -18,7 +18,11 @@ import net.treasure.util.locale.Messages;
 import org.bukkit.entity.Player;
 import xyz.xenondevs.particle.ParticleEffect;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 public class Effect {
@@ -234,7 +238,7 @@ public class Effect {
                         try {
                             particle = ParticleEffect.valueOf(_value.toUpperCase(Locale.ROOT));
                             builder.effect(particle);
-                        } catch (Exception ignored) {
+                        } catch (Exception | ExceptionInInitializerError | NoClassDefFoundError ignored) {
                         }
                     } else if (key.equalsIgnoreCase("from")) {
                         if (_value.startsWith("head")) {

@@ -15,6 +15,7 @@ import net.treasure.effect.EffectManager;
 import net.treasure.gui.GUIListener;
 import net.treasure.gui.task.GUIUpdater;
 import net.treasure.util.locale.Messages;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -98,11 +99,13 @@ public class TreasurePlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new JoinQuitListener(), this);
         Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
         Bukkit.getScheduler().runTaskTimerAsynchronously(TreasurePlugin.getInstance(), new GUIUpdater(), 0, 2);
+
+        new Metrics(this, 14508);
     }
 
     @Override
     public void onDisable() {
-        if(this.adventure != null) {
+        if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
         }
@@ -113,7 +116,7 @@ public class TreasurePlugin extends JavaPlugin {
     }
 
     public void disable() {
-        getLogger().log(Level.WARNING, "Couldn't initialize CElytra!");
+        getLogger().log(Level.WARNING, "Couldn't initialize TreasureElytra!");
         getPluginLoader().disablePlugin(this);
     }
 }

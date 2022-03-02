@@ -21,7 +21,7 @@ public class TestFeatures {
     public void testParse() throws ParseException {
         DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         df.setMaximumFractionDigits(340);
-        System.out.println(df.parse("1.8369701987210297E").doubleValue());
+        System.out.println(df.parse("6.123233995736766E").doubleValue());
     }
 
     @Test

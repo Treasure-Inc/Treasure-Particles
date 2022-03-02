@@ -63,25 +63,28 @@ public class EffectManager {
             return;
 
         for (String key : section.getKeys(false)) {
-            String path = key + ".";
-            if (!section.contains(path + "onTick"))
-                continue;
-            String displayName = section.getString(path + "displayName", key);
-            if (displayName.startsWith("%"))
-                displayName = Messages.get().getString("effects." + displayName.substring(1), displayName);
-            Effect effect = new Effect(
-                    key,
-                    ChatColor.translateAlternateColorCodes('&', displayName),
-                    section.getString(path + "armorColor"),
-                    section.getString(path + "permission"),
-                    section.getStringList(path + "onTick.do"),
-                    section.getStringList(path + "onTick.doPost"),
-                    section.getStringList(path + "variables"),
-                    section.getInt(path + "onTick.interval", 1),
-                    section.getInt(path + "onTick.times", 1),
-                    section.getInt(path + "onTick.postTimes", 1),
-                    section.getBoolean(path + "enableCaching", false));
-            effects.add(effect);
+            try {
+                String path = key + ".";
+                if (!section.contains(path + "onTick"))
+                    continue;
+                String displayName = section.getString(path + "displayName", key);
+                if (displayName.startsWith("%"))
+                    displayName = Messages.get().getString("effects." + displayName.substring(1), displayName);
+                Effect effect = new Effect(
+                        key,
+                        ChatColor.translateAlternateColorCodes('&', displayName),
+                        section.getString(path + "armorColor"),
+                        section.getString(path + "permission"),
+                        section.getStringList(path + "onTick.do"),
+                        section.getStringList(path + "onTick.doPost"),
+                        section.getStringList(path + "variables"),
+                        section.getInt(path + "onTick.interval", 1),
+                        section.getInt(path + "onTick.times", 1),
+                        section.getInt(path + "onTick.postTimes", 1),
+                        section.getBoolean(path + "enableCaching", false));
+                effects.add(effect);
+            } catch (Exception ignored) {
+            }
         }
     }
 }
