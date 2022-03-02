@@ -6,7 +6,7 @@
 
     <groupId>net.cladium</groupId>
     <artifactId>TreasureElytra</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
