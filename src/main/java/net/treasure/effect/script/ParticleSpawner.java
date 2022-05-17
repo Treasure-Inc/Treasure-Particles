@@ -3,6 +3,7 @@ package net.treasure.effect.script;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import net.treasure.color.player.ColorData;
+import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.player.EffectData;
 import net.treasure.util.Vectors;
 import org.bukkit.Location;
@@ -114,7 +115,9 @@ public class ParticleSpawner extends Script {
         builder.setAmount(amount);
         if (speed != Float.MIN_VALUE)
             builder.setSpeed(speed);
-        builder.display();
+
+        var playerManager = TreasurePlugin.getInstance().getPlayerManager();
+        builder.display(viewer -> playerManager.getPlayerData(viewer).isEffectsEnabled());
     }
 
     @Override

@@ -1,57 +1,47 @@
 package net.treasure.color;
 
 import lombok.Getter;
-import net.treasure.core.TreasurePlugin;
+import net.treasure.core.configuration.ConfigurationGenerator;
+import net.treasure.core.configuration.DataHolder;
 import net.treasure.util.color.Gradient;
 import net.treasure.util.color.Rainbow;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
-public class ColorManager {
+public class ColorManager implements DataHolder {
 
-    @Getter
-    private FileConfiguration config;
+    final ConfigurationGenerator generator;
 
     @Getter
-    private final List<Color> colors;
+    final List<Color> colors;
 
     public ColorManager() {
         this.colors = new ArrayList<>();
+        this.generator = new ConfigurationGenerator("colors.yml");
+    }
+
+    @Override
+    public boolean initialize() {
+        return generator.generate() != null;
+    }
+
+    @Override
+    public void reload() {
+        if (initialize()) {
+            colors.clear();
+            loadColors();
+        }
     }
 
     public Color get(String key) {
         return colors.stream().filter(color -> color.getKey().equalsIgnoreCase(key)).findFirst().orElse(null);
     }
 
-    public boolean load() {
-        try {
-            File file = new File(TreasurePlugin.getInstance().getDataFolder(), "colors.yml");
-            boolean exists = file.exists();
-            if (!exists)
-                TreasurePlugin.getInstance().saveResource("colors.yml", false);
-            config = YamlConfiguration.loadConfiguration(file);
-            return true;
-        } catch (Exception e) {
-            TreasurePlugin.getInstance().getLogger().log(Level.WARNING, "Couldn't load/create colors.yml", e);
-            return false;
-        }
-    }
-
-    public void reload() {
-        if (load()) {
-            colors.clear();
-            loadColors();
-        }
-    }
-
     public void loadColors() {
+        var config = generator.getConfiguration();
         if (config == null)
             return;
 

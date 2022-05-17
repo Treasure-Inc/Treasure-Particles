@@ -1,8 +1,8 @@
-package net.treasure.gui.task;
+package net.treasure.core.command.gui.task;
 
 import lombok.Getter;
 import net.treasure.color.player.ColorData;
-import net.treasure.gui.GUIHolder;
+import net.treasure.core.command.gui.GUIHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

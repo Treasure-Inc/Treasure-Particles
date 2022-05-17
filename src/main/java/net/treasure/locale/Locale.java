@@ -1,4 +1,4 @@
-package net.treasure.util.locale;
+package net.treasure.locale;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

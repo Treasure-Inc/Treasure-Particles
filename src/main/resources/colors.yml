@@ -1,5 +1,10 @@
 colors:
   redtoblue:
-    values: ["#FC5C7D", "#6A82FB"]
+    values: [ "#FC5C7D", "#6A82FB" ]
     size: 50
-    speed: 0.25
+  gradient1:
+    values: [ "#6699CC", "#FFF275", "#FF8C42", "#FF3C38", "#A23E48" ]
+    size: 100
+  gradient2:
+    values: [ "#FFFFFF", "#89918b" ]
+    size: 20

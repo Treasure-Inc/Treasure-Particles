@@ -1,4 +1,8 @@
+import com.google.gson.GsonBuilder;
 import net.treasure.common.Patterns;
+import net.treasure.effect.script.conditional.Condition;
+import net.treasure.effect.script.conditional.ConditionGroup;
+import net.treasure.effect.script.conditional.reader.ConditionReader;
 import net.treasure.util.MathUtil;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
@@ -10,12 +14,66 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestFeatures {
+
+    private boolean validate(Matcher matcher, String group) {
+        try {
+            return matcher.start(group) != -1;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Test
+    public void testReader() {
+        var reader = new ConditionReader(null);
+//        var groups = reader.read("((p==1) && (((a>1 && a!=3) && (a==4 || q>=99)) && (c>1 || d<2)))");
+        var groups = reader.read("((p==1 && q==1) || (r==0 && s==0))");
+        System.out.println("Size: " + groups.size());
+        System.out.println("-----RESULTS");
+        var gson = new GsonBuilder().setPrettyPrinting().create();
+        System.out.println(gson.toJson(groups));
+    }
+
+    @Test
+    public void testReaderResult() {
+        ConditionGroup parent = new ConditionGroup();
+        parent.multiGroup = true;
+        parent.operators.add(ConditionGroup.Operator.AND);
+        parent.conditions.add(new Condition(true));
+        parent.conditions.add(new Condition(false));
+        parent.operators.add(ConditionGroup.Operator.AND);
+        System.out.println("Result: " + parent.test(null));
+    }
+
+    @Test
+    public void testConditionGroups() {
+        ConditionGroup parent = new ConditionGroup();
+        parent.multiGroup = true;
+        parent.operators.add(ConditionGroup.Operator.OR);
+
+        ConditionGroup g1 = new ConditionGroup();
+        g1.multiGroup = true;
+        g1.parent = parent;
+        g1.conditions = List.of(new Condition(true), new Condition(true));
+        g1.operators.add(ConditionGroup.Operator.AND);
+        parent.inner.add(g1);
+
+        ConditionGroup g2 = new ConditionGroup();
+        g2.multiGroup = true;
+        g2.parent = parent;
+        g2.conditions = List.of(new Condition(false), new Condition(false));
+        g2.operators.add(ConditionGroup.Operator.OR);
+        parent.inner.add(g2);
+
+        System.out.println("-----Result: " + parent.test(null));
+    }
 
     @Test
     public void testParse() throws ParseException {

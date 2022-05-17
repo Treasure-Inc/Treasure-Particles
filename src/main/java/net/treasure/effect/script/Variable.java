@@ -3,6 +3,7 @@ package net.treasure.effect.script;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.player.EffectData;
 import net.treasure.util.MathUtil;
@@ -28,22 +29,13 @@ public class Variable extends Script {
         if (pair == null) return;
         Effect effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
-            pair.setValue(effect.getCache()[times][index]);
+            var array = isPostLine() ? effect.getCachePost() : effect.getCache();
+            pair.setValue(array[times][index]);
             return;
         }
         double val;
         try {
-            String _eval = eval
-                    .replaceAll("\\{TICK}", String.valueOf(TimeKeeper.getTimeElapsed()))
-                    .replaceAll("\\{PI}", String.valueOf(Math.PI));
-            if (_eval.contains("{")) {
-                for (Pair<String, Double> p : data.getVariables()) {
-                    if (_eval.contains("{" + p.getKey() + "}")) {
-                        _eval = _eval.replaceAll("\\{" + p.getKey() + "}", String.valueOf(p.getValue()));
-                    }
-                }
-            }
-            val = MathUtil.eval(_eval);
+            val = MathUtil.eval(replaceVariables(data));
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -67,19 +59,9 @@ public class Variable extends Script {
         if (pair == null) return 0;
         double val;
         try {
-            String _eval = eval
-                    .replaceAll("\\{TICK}", String.valueOf(TimeKeeper.getTimeElapsed()))
-                    .replaceAll("\\{PI}", String.valueOf(Math.PI));
-            if (_eval.contains("{")) {
-                for (Pair<String, Double> p : variables) {
-                    if (_eval.contains("{" + p.getKey() + "}")) {
-                        _eval = _eval.replaceAll("\\{" + p.getKey() + "}", String.valueOf(p.getValue()));
-                    }
-                }
-            }
-            val = MathUtil.eval(_eval);
+            val = MathUtil.eval(replaceVariables(new EffectData(variables)));
         } catch (Exception e) {
-            e.printStackTrace();
+            TreasurePlugin.logger().warning("Invalid evaluation: " + eval);
             return 0;
         }
         switch (operator) {
@@ -92,6 +74,51 @@ public class Variable extends Script {
         return pair.getValue();
     }
 
+    private String replaceVariables(EffectData data) {
+        StringBuilder builder = new StringBuilder();
+
+        var array = eval.toCharArray();
+        int startPos = -1;
+        StringBuilder variable = new StringBuilder();
+        for (int pos = 0; pos < array.length; pos++) {
+            var c = array[pos];
+            switch (c) {
+                case '{' -> {
+                    if (startPos != -1) {
+                        return null;
+                    }
+                    startPos = pos;
+                }
+                case '}' -> {
+                    if (startPos == -1) {
+                        return null;
+                    }
+                    var result = variable.toString();
+                    var p = data.getVariable(result);
+                    if (p == null) {
+                        String preset = switch (result) {
+                            case "TICK" -> String.valueOf(TimeKeeper.getTimeElapsed());
+                            case "PI" -> String.valueOf(Math.PI);
+                            case "RANDOM" -> String.valueOf(Math.random());
+                            default -> "";
+                        };
+                        builder.append(preset);
+                    } else
+                        builder.append(p.getValue());
+                    startPos = -1;
+                    variable = new StringBuilder();
+                }
+                default -> {
+                    if (startPos != -1)
+                        variable.append(c);
+                    else
+                        builder.append(c);
+                }
+            }
+        }
+        return builder.toString();
+    }
+
     @Override
     public Variable clone() {
         return new Variable(index, variable, operator, eval);
@@ -102,17 +129,6 @@ public class Variable extends Script {
         PLUS,
         MINUS,
         MULTIPLY,
-        DIVISION;
-
-        public static Operator toOperator(String s) {
-            return switch (s) {
-                case "+" -> EQUAL;
-                case "+=" -> PLUS;
-                case "-=" -> MINUS;
-                case "*=" -> MULTIPLY;
-                case "/=" -> DIVISION;
-                default -> null;
-            };
-        }
+        DIVISION
     }
 }

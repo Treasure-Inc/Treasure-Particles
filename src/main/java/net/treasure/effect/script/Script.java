@@ -6,11 +6,12 @@ import net.treasure.effect.player.EffectData;
 import net.treasure.util.TimeKeeper;
 import org.bukkit.entity.Player;
 
+@Getter
+@Setter
 public abstract class Script implements Cloneable {
 
-    @Getter
-    @Setter
     private int interval = -1;
+    private boolean postLine = false;
 
     public abstract void tick(Player player, EffectData data, int times);
 

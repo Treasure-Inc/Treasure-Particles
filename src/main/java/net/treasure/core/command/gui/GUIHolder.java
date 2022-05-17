@@ -1,4 +1,4 @@
-package net.treasure.gui;
+package net.treasure.core.command.gui;
 
 import lombok.Getter;
 import lombok.Setter;

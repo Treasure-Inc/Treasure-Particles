@@ -4,17 +4,23 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.contexts.ContextResolver;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.treasure.color.player.ColorData;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.player.EffectData;
+import net.treasure.effect.script.EmptyScript;
 import net.treasure.effect.script.ParticleSpawner;
 import net.treasure.effect.script.PlaySound;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.Variable;
+import net.treasure.effect.script.conditional.ConditionalScript;
+import net.treasure.effect.script.conditional.reader.ConditionReader;
+import net.treasure.effect.script.preset.Preset;
+import net.treasure.locale.Messages;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
-import net.treasure.util.locale.Messages;
+import net.treasure.util.message.MessageUtils;
 import org.bukkit.entity.Player;
 import xyz.xenondevs.particle.ParticleEffect;
 
@@ -23,7 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class Effect {
 
@@ -62,8 +70,8 @@ public class Effect {
             if (checkVariable(var))
                 addVariable(var);
 
-        readFromFile(lines, this.lines);
-        readFromFile(postLines, this.postLines);
+        readFromFile(lines, this.lines, false);
+        readFromFile(postLines, this.postLines, true);
 
         if (times > 1 || postTimes > 1)
             addVariable("i");
@@ -100,8 +108,7 @@ public class Effect {
                     if (timesPair != null)
                         timesPair.setValue((double) i);
                     for (Script script : lines) {
-                        if (script instanceof Variable) {
-                            Variable variable = (Variable) script;
+                        if (script instanceof Variable variable) {
                             cache[i][variable.getIndex()] = variable.preTick(variables);
                         }
                     }
@@ -113,8 +120,7 @@ public class Effect {
                     if (timesPair != null)
                         timesPair.setValue((double) i);
                     for (Script script : postLines) {
-                        if (script instanceof Variable) {
-                            Variable variable = (Variable) script;
+                        if (script instanceof Variable variable) {
                             variable.preTick(variables);
                             cachePost[i][variable.getIndex()] = variable.preTick(variables);
                         }
@@ -143,6 +149,8 @@ public class Effect {
                     script.doTick(player, data, i);
             }
         }
+        if (data.isDebugModeEnabled())
+            MessageUtils.sendActionBar(player, Component.text(data.getVariables().stream().map(pair -> "[" + pair.getKey() + ": " + String.format("%,.2f", pair.getValue()) + "]").collect(Collectors.joining(", "))));
     }
 
     public void addVariable(String var) {
@@ -173,23 +181,71 @@ public class Effect {
         };
     }
 
-    public void readFromFile(List<String> _lines, List<Script> lines) {
+    public void readFromFile(List<String> _lines, List<Script> lines, boolean post) {
         int varIndex = 0;
-        for (String _line : _lines) {
-            String line = _line;
-            int interval = 1;
-            int intervalIndex = line.lastIndexOf("~");
-            if (intervalIndex != -1) {
-                String _value = line.substring(intervalIndex + 1);
-                try {
-                    interval = Integer.parseInt(_value);
-                } catch (Exception ignored) {
-                }
-                line = line.substring(0, intervalIndex);
+        for (String line : _lines) {
+            var pair = readLine(line, varIndex, false);
+            var script = pair.getKey();
+            varIndex = pair.getValue();
+            if (script != null) {
+                script.setPostLine(post);
+                lines.add(script);
+            } else
+                TreasurePlugin.logger().log(Level.WARNING, "Couldn't read line: " + line);
+        }
+    }
+
+    public Pair<Script, Integer> readLine(String line, int varIndex, boolean inLine) {
+        if (line.equalsIgnoreCase("none"))
+            return new Pair<>(new EmptyScript(), varIndex);
+
+        int interval = 1;
+        int intervalIndex = line.lastIndexOf("~");
+        if (intervalIndex != -1) {
+            String _value = line.substring(intervalIndex + 1);
+            try {
+                interval = Integer.parseInt(_value);
+            } catch (Exception ignored) {
             }
+            line = line.substring(0, intervalIndex);
+        }
 
-            if (line.startsWith("variable ")) {
+        Script script = null;
 
+        var args = Patterns.SPACE.split(line, 2);
+        String type;
+        try {
+            type = args[0];
+        } catch (Exception e) {
+            return new Pair<>(null, varIndex);
+        }
+
+        var inst = TreasurePlugin.getInstance();
+
+        switch (type) {
+            case "conditional" -> {
+                Matcher matcher = Patterns.CONDITIONAL.matcher(line);
+                if (matcher.matches()) {
+                    try {
+                        var condition = matcher.group("condition");
+                        var conditionGroups = new ConditionReader(inst).read(condition);
+                        if (conditionGroups == null)
+                            return new Pair<>(null, varIndex);
+
+                        var firstExpr = matcher.group("first");
+                        var secondExpr = matcher.group("second");
+
+                        script = new ConditionalScript(
+                                conditionGroups,
+                                readLine(firstExpr, varIndex, true).getKey(),
+                                readLine(secondExpr, varIndex, true).getKey()
+                        );
+                    } catch (Exception e) {
+                        return new Pair<>(null, varIndex);
+                    }
+                }
+            }
+            case "variable" -> {
                 String eval = line.substring("variable ".length());
                 Matcher evalMatcher = Patterns.EVAL.matcher(eval);
 
@@ -216,12 +272,13 @@ public class Effect {
                         }
                         Variable v = builder.build();
                         v.setInterval(interval);
-                        lines.add(v);
-                        varIndex++;
+                        script = v;
+                        if (!inLine)
+                            varIndex++;
                     }
                 }
-
-            } else if (line.startsWith("particle ")) {
+            }
+            case "particle" -> {
 
                 ParticleEffect particle = null;
                 String origin = null;
@@ -310,10 +367,10 @@ public class Effect {
                 if (particle != null && origin != null) {
                     ParticleSpawner spawner = builder.build();
                     spawner.setInterval(interval);
-                    lines.add(spawner);
+                    script = spawner;
                 }
-
-            } else if (line.startsWith("sound ")) {
+            }
+            case "sound" -> {
 
                 String sound = null;
                 PlaySound.PlaySoundBuilder builder = PlaySound.builder();
@@ -344,11 +401,27 @@ public class Effect {
                 if (sound != null) {
                     PlaySound playSound = builder.build();
                     playSound.setInterval(interval);
-                    lines.add(playSound);
+                    script = playSound;
                 }
+            }
+            case "preset" -> {
+                var lines = inst.getEffectManager().getPresets().get(args[1]);
+                if (lines == null || lines.isEmpty())
+                    return new Pair<>(null, varIndex);
+                Script preset;
+                if (lines.size() == 1)
+                    preset = readLine(lines.get(0), varIndex, true).getKey();
+                else {
+                    List<Script> scripts = new ArrayList<>();
+                    int finalVarIndex = varIndex;
+                    lines.forEach(s -> scripts.add(readLine(s, finalVarIndex, true).getKey()));
+                    preset = new Preset(scripts);
+                }
+                return new Pair<>(preset, varIndex);
             }
         }
 
+        return new Pair<>(script, varIndex);
     }
 
     public static ContextResolver<Effect, BukkitCommandExecutionContext> getContextResolver() {

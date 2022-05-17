@@ -9,20 +9,14 @@ import net.treasure.core.TreasurePlugin;
 import java.util.List;
 import java.util.regex.Matcher;
 
+@Getter
 public class ColorData {
 
-    @Getter
     private final List<java.awt.Color> colors;
-
-    @Getter
     private float currentIndex = -1;
-
-    @Getter
     private final float speed;
-
-    @Getter
-    @Setter
-    private boolean revertWhenDone, forward = true;
+    private final boolean revertWhenDone;
+    private boolean forward = true;
 
     public ColorData(Color color, float speed, boolean revertWhenDone) {
         this.colors = color.getColors();
@@ -40,7 +34,7 @@ public class ColorData {
     }
 
     public org.bukkit.Color nextBukkit() {
-        java.awt.Color color = next();
+        var color = next();
         return org.bukkit.Color.fromRGB(color.getRed(), color.getGreen(), color.getBlue());
     }
 

@@ -1,1 +1,4 @@
 locale: EN
+permissions:
+  menu: "trelytra.menu"
+  admin: "trelytra.admin"

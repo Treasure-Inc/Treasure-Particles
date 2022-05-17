@@ -11,9 +11,8 @@ public class GlideListener implements Listener {
 
     @EventHandler
     public void on(EntityToggleGlideEvent event) {
-        if (!(event.getEntity() instanceof Player))
+        if (!(event.getEntity() instanceof Player player))
             return;
-        Player player = (Player) event.getEntity();
         EffectData data = TreasurePlugin.getInstance().getPlayerManager().getPlayerData(player);
         if (data == null) {
             TreasurePlugin.getInstance().getPlayerManager().initializePlayer(player);

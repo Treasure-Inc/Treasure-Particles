@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
 import java.util.Locale;
 
 public class MathUtil {
@@ -14,6 +13,7 @@ public class MathUtil {
     private static final double degFull, degToIndex;
     private static final double[] sin, cos;
     public static double PI = 3.14;
+    private static final DecimalFormat DF = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     static {
         SIN_BITS = 12;
@@ -48,8 +48,7 @@ public class MathUtil {
     }
 
     public static double eval(final String str) {
-        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(340);
+        DF.setMaximumFractionDigits(340);
 
         return new Object() {
             int pos = -1, ch;
@@ -126,7 +125,7 @@ public class MathUtil {
                     eat(')');
                 } else if ((ch >= '0' && ch <= '9') || ch == '.' || ch == 'E') { // numbers
                     while ((ch >= '0' && ch <= '9') || ch == '.' || ch == 'E') nextChar();
-                    x = df.parse(str.substring(startPos, this.pos)).doubleValue();
+                    x = DF.parse(str.substring(startPos, this.pos)).doubleValue();
                 } else if (ch >= 'a' && ch <= 'z') { // functions
                     while (ch >= 'a' && ch <= 'z') nextChar();
                     String func = str.substring(startPos, this.pos);
@@ -137,6 +136,7 @@ public class MathUtil {
                         case "cos" -> MathUtil.cos(x);
                         case "tan" -> Math.tan(x);
                         case "cot" -> 1 / Math.tan(x);
+                        case "abs" -> Math.abs(x);
                         case "atan" -> Math.atan2(save, x);
                         default -> throw new RuntimeException("Unknown function: " + func);
                     };

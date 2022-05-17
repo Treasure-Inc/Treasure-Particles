@@ -1,10 +1,11 @@
-package net.treasure.gui;
+package net.treasure.core.command.gui;
 
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.player.EffectData;
-import net.treasure.gui.task.GUIUpdater;
-import net.treasure.util.locale.Messages;
+import net.treasure.core.command.gui.task.GUIUpdater;
+import net.treasure.locale.Messages;
+import net.treasure.util.message.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -19,16 +20,14 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void on(InventoryClickEvent event) {
-        if (event.getView().getTopInventory().getHolder() instanceof GUIHolder)
+        if (event.getView().getTopInventory().getHolder() instanceof GUIHolder holder)
             event.setCancelled(true);
         else return;
 
         ItemStack item = event.getCurrentItem();
         if (item == null || !item.hasItemMeta()) return;
-        if (!(event.getWhoClicked() instanceof Player)) return;
+        if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        GUIHolder holder = (GUIHolder) event.getView().getTopInventory().getHolder();
-        Player player = (Player) event.getWhoClicked();
         EffectData data = TreasurePlugin.getInstance().getPlayerManager().getPlayerData(player);
 
         if (event.getSlot() == 46 && item.getType().equals(Material.ENDER_EYE)) {
@@ -57,7 +56,7 @@ public class GUIListener implements Listener {
             String effectKey = item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
             Effect effect = TreasurePlugin.getInstance().getEffectManager().get(effectKey);
             data.setCurrentEffect(player, effect);
-            player.sendMessage(String.format(Messages.EFFECT_SELECTED, effect.getDisplayName()));
+            MessageUtils.sendParsed(player, String.format(Messages.EFFECT_SELECTED, effect.getDisplayName()));
             player.closeInventory();
         }
     }

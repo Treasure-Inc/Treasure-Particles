@@ -28,7 +28,7 @@ public class Database {
                 exists = dataFolder.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                TreasurePlugin.getInstance().getLogger().log(Level.SEVERE, "File write error: database.db");
+                TreasurePlugin.logger().log(Level.SEVERE, "File write error: database.db");
                 return null;
             }
         }
@@ -43,7 +43,7 @@ public class Database {
             return connection;
         } catch (Exception ex) {
             ex.printStackTrace();
-            TreasurePlugin.getInstance().getLogger().log(Level.SEVERE, "SQLite exception on initialize", ex);
+            TreasurePlugin.logger().log(Level.SEVERE, "SQLite exception on initialize", ex);
         }
         return null;
     }
@@ -81,7 +81,7 @@ public class Database {
             if (rs != null)
                 rs.close();
         } catch (SQLException ex) {
-            TreasurePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to close MySQL connection: ", ex);
+            TreasurePlugin.logger().log(Level.SEVERE, "Failed to close MySQL connection: ", ex);
         }
     }
 }

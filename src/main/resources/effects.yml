@@ -50,7 +50,7 @@ effects:
         - particle [effect=redstone,x=-{x1},y={y1},z=-{z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
   orbit:
     displayName: "%orbit"
-    armorColor: "redtoblue"
+    armorColor: "gradient1"
     variables: [ 'x','z','step' ]
     onTick:
       interval: 1
@@ -58,7 +58,7 @@ effects:
       do:
         - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
         - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=redtoblue;revertWhenDone=true;speed=0.75}]
+        - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=gradient1;revertWhenDone=true;speed=0.75}]
       doPost:
         - variable step=({step} + 1) % 120
   parkour:
@@ -105,3 +105,43 @@ effects:
         - variable x=cos({angle})
         - variable z=sin({angle})
         - particle [effect=electric_spark,x={x},y={z},direction=true,from=feet,amount=0]
+  helix:
+    displayName: "%helix"
+    armorColor: "gradient2"
+    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'x', 'y', 'z', 'reverse=0' ]
+    onTick:
+      interval: 1
+      times: 8
+      do:
+        - variable x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})
+        - variable y=({stepY} / {maxStepY}) * 1.5
+        - variable z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})
+        - particle [effect=end_rod,directional=true,x={y},y={x},z={z},amount=0,from=head]
+      doPost:
+        - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
+        - "conditional (reverse==1) ? preset quadhelix-reverse : none"
+        - "conditional (reverse==0) ? preset quadhelix-normal : none"
+  rain:
+    displayName: "%rain"
+    variables: [ 'r', 'x', 'z' ]
+    armorColor: "#345eeb"
+    onTick:
+      interval: 3
+      times: 24
+      do:
+        - variable r={i}*{PI}/24
+        - variable x=cos({r})*{RANDOM}*2.5
+        - variable z=sin({r})*{RANDOM}*2.5
+        - particle [effect=drip_water,direction=true,x={x},y={z},amount=0,from=head*2]
+  rocket:
+    displayName: "%rocket"
+    variables: [ 'r', 'x', 'z' ]
+    armorColor: "#FFFFFF"
+    onTick:
+      interval: 2
+      times: 24
+      do:
+        - variable r={i}*{PI}/24
+        - variable x=cos({r})*{RANDOM}
+        - variable z=sin({r})*{RANDOM}
+        - particle [effect=end_rod,direction=true,x={x},y={z},amount=0,from=head*-2.5]

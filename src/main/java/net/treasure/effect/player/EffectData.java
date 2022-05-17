@@ -2,6 +2,7 @@ package net.treasure.effect.player;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.script.Script;
 import net.treasure.util.Pair;
@@ -12,25 +13,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Getter
 public class EffectData {
 
-    @Getter
     private Effect currentEffect;
 
-    @Getter
     @Setter
-    private boolean enabled = false;
+    private boolean enabled = false, effectsEnabled = true, debugModeEnabled;
 
-    @Getter
     private final Set<Pair<String, Double>> variables;
 
-    @Getter
     @Setter
     private List<Script> lines, postLines;
 
-    @Getter
     @Setter
     private long startedGliding;
+
+    public EffectData(Set<Pair<String, Double>> variables) {
+        this.variables = variables;
+    }
 
     public EffectData() {
         this.variables = new HashSet<>();
@@ -43,6 +44,7 @@ public class EffectData {
         this.variables.clear();
         this.lines.clear();
         this.postLines.clear();
+        this.debugModeEnabled = player.isOp() && TreasurePlugin.getInstance().isDebugModeEnabled();
         if (this.currentEffect != null)
             this.currentEffect.initialize(player, this);
     }
@@ -50,11 +52,9 @@ public class EffectData {
     public Pair<String, Double> getVariable(String variable) {
         if (variable == null)
             return null;
-        for (var pair : variables) {
+        for (var pair : variables)
             if (pair.getKey().equals(variable))
                 return pair;
-        }
         return null;
-//        return variables.stream().filter(pair -> pair.getKey().equals(variable)).findFirst().orElse(null);
     }
 }

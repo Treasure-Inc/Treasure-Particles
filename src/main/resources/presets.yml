@@ -1,0 +1,6 @@
+quadhelix-reverse:
+  - "variable stepY+=1"
+  - "conditional (stepY>60) ? variable reverse=0 : none"
+quadhelix-normal:
+  - "variable stepY-=1"
+  - "conditional (stepY<-60) ? variable reverse=1 : none"
