@@ -5,10 +5,11 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.contexts.ContextResolver;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.treasure.color.player.ColorData;
+import net.treasure.color.data.ColorData;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
+import net.treasure.effect.script.ActionBar;
 import net.treasure.effect.script.EmptyScript;
 import net.treasure.effect.script.ParticleSpawner;
 import net.treasure.effect.script.PlaySound;
@@ -85,15 +86,19 @@ public class Effect {
         }
     }
 
+    public boolean canUse(Player player) {
+        return permission == null || player.hasPermission(permission);
+    }
+
     public void initialize(Player player, EffectData data) {
         for (var pair : variables)
             data.getVariables().add(new Pair<>(pair.getKey(), pair.getValue()));
         data.setLines(new ArrayList<>());
         for (Script script : lines)
-            data.getLines().add(script.clone());
+            data.getLines().add(script.cloneScript());
         data.setPostLines(new ArrayList<>());
         for (Script script : postLines)
-            data.getPostLines().add(script.clone());
+            data.getPostLines().add(script.cloneScript());
     }
 
     public void preTick() {
@@ -133,24 +138,30 @@ public class Effect {
     public void doTick(Player player, EffectData data) {
         if (!TimeKeeper.isElapsed(interval))
             return;
-        var timesPair = data.getVariable("i");
+        var timings = TreasurePlugin.timing("Effect: " + key + ", Player: " + player.getName());
         try {
-            for (int i = 0; i < times; i++) {
-                if (timesPair != null)
-                    timesPair.setValue((double) i);
-                for (Script script : data.getLines())
-                    script.doTick(player, data, i);
+            timings.startTiming();
+            var timesPair = data.getVariable(player, "i");
+            try {
+                for (int i = 0; i < times; i++) {
+                    if (timesPair != null)
+                        timesPair.setValue((double) i);
+                    for (Script script : data.getLines())
+                        script.doTick(player, data, i);
+                }
+            } finally {
+                for (int i = 0; i < postTimes; i++) {
+                    if (timesPair != null)
+                        timesPair.setValue((double) i);
+                    for (Script script : data.getPostLines())
+                        script.doTick(player, data, i);
+                }
             }
+            if (data.isDebugModeEnabled())
+                MessageUtils.sendActionBar(player, Component.text(data.getVariables().stream().map(pair -> "[" + pair.getKey() + ": " + String.format("%,.2f", pair.getValue()) + "]").collect(Collectors.joining(", "))));
         } finally {
-            for (int i = 0; i < postTimes; i++) {
-                if (timesPair != null)
-                    timesPair.setValue((double) i);
-                for (Script script : data.getPostLines())
-                    script.doTick(player, data, i);
-            }
+            timings.stopTiming();
         }
-        if (data.isDebugModeEnabled())
-            MessageUtils.sendActionBar(player, Component.text(data.getVariables().stream().map(pair -> "[" + pair.getKey() + ": " + String.format("%,.2f", pair.getValue()) + "]").collect(Collectors.joining(", "))));
     }
 
     public void addVariable(String var) {
@@ -176,7 +187,7 @@ public class Effect {
 
     public boolean checkVariable(String var) {
         return switch (var) {
-            case "i", "PI", "TICK" -> false;
+            case "i", "PI", "TICK", "RANDOM", "playerYaw", "playerPitch", "playerX", "playerY", "playerZ" -> false;
             default -> true;
         };
     }
@@ -199,13 +210,16 @@ public class Effect {
         if (line.equalsIgnoreCase("none"))
             return new Pair<>(new EmptyScript(), varIndex);
 
-        int interval = 1;
+        var inst = TreasurePlugin.getInstance();
+
+        int interval = -1;
         int intervalIndex = line.lastIndexOf("~");
         if (intervalIndex != -1) {
             String _value = line.substring(intervalIndex + 1);
             try {
                 interval = Integer.parseInt(_value);
             } catch (Exception ignored) {
+                inst.getLogger().warning("Invalid interval syntax: " + line);
             }
             line = line.substring(0, intervalIndex);
         }
@@ -220,23 +234,21 @@ public class Effect {
             return new Pair<>(null, varIndex);
         }
 
-        var inst = TreasurePlugin.getInstance();
-
         switch (type) {
             case "conditional" -> {
                 Matcher matcher = Patterns.CONDITIONAL.matcher(line);
                 if (matcher.matches()) {
                     try {
                         var condition = matcher.group("condition");
-                        var conditionGroups = new ConditionReader(inst).read(condition);
-                        if (conditionGroups == null)
+                        var parent = new ConditionReader(inst).read(condition);
+                        if (parent == null)
                             return new Pair<>(null, varIndex);
 
                         var firstExpr = matcher.group("first");
                         var secondExpr = matcher.group("second");
 
                         script = new ConditionalScript(
-                                conditionGroups,
+                                parent,
                                 readLine(firstExpr, varIndex, true).getKey(),
                                 readLine(secondExpr, varIndex, true).getKey()
                         );
@@ -270,9 +282,7 @@ public class Effect {
                         } else if (operator.equalsIgnoreCase("/")) {
                             builder.operator(Variable.Operator.DIVISION);
                         }
-                        Variable v = builder.build();
-                        v.setInterval(interval);
-                        script = v;
+                        script = builder.build();
                         if (!inLine)
                             varIndex++;
                     }
@@ -364,11 +374,8 @@ public class Effect {
                             builder.z(substring);
                     }
                 }
-                if (particle != null && origin != null) {
-                    ParticleSpawner spawner = builder.build();
-                    spawner.setInterval(interval);
-                    script = spawner;
-                }
+                if (particle != null && origin != null)
+                    script = builder.build();
             }
             case "sound" -> {
 
@@ -398,29 +405,30 @@ public class Effect {
                         }
                     }
                 }
-                if (sound != null) {
-                    PlaySound playSound = builder.build();
-                    playSound.setInterval(interval);
-                    script = playSound;
-                }
+                if (sound != null)
+                    script = builder.build();
             }
             case "preset" -> {
                 var lines = inst.getEffectManager().getPresets().get(args[1]);
                 if (lines == null || lines.isEmpty())
                     return new Pair<>(null, varIndex);
-                Script preset;
                 if (lines.size() == 1)
-                    preset = readLine(lines.get(0), varIndex, true).getKey();
+                    script = readLine(lines.get(0), varIndex, true).getKey();
                 else {
                     List<Script> scripts = new ArrayList<>();
                     int finalVarIndex = varIndex;
                     lines.forEach(s -> scripts.add(readLine(s, finalVarIndex, true).getKey()));
-                    preset = new Preset(scripts);
+                    script = new Preset(scripts);
                 }
-                return new Pair<>(preset, varIndex);
+            }
+            case "actionbar" -> {
+                String message = line.substring(10);
+                script = new ActionBar(message);
             }
         }
 
+        if (script != null && interval > 0)
+            script.setInterval(interval);
         return new Pair<>(script, varIndex);
     }
 

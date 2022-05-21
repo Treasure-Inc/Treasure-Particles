@@ -2,7 +2,7 @@ effects:
   circle:
     displayName: "%rainbow-circle"
     armorColor: "rainbow"
-    permission: "tre.circle"
+    permission: "%rainbow"
     variables: [ 'r', 'x', 'y' ]
     enableCaching: true
     onTick:
@@ -16,6 +16,7 @@ effects:
   circleline:
     displayName: "%rainbow-line"
     armorColor: "rainbow"
+    permission: "%rainbow"
     onTick:
       interval: 1
       times: 8
@@ -24,6 +25,7 @@ effects:
   spiral:
     displayName: "%rainbow-spiral"
     armorColor: "rainbow"
+    permission: "%rainbow"
     variables: [ 'x','z','step' ]
     onTick:
       interval: 1
@@ -108,7 +110,7 @@ effects:
   helix:
     displayName: "%helix"
     armorColor: "gradient2"
-    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'x', 'y', 'z', 'reverse=0' ]
+    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
     onTick:
       interval: 1
       times: 8
@@ -116,7 +118,10 @@ effects:
         - variable x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})
         - variable y=({stepY} / {maxStepY}) * 1.5
         - variable z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})
-        - particle [effect=end_rod,directional=true,x={y},y={x},z={z},amount=0,from=head]
+        - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
+        - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
+        - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
+        - particle [effect=end_rod,x={y},y={x},z={z},amount=0,from=head]
       doPost:
         - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
         - "conditional (reverse==1) ? preset quadhelix-reverse : none"

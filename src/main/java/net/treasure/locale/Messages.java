@@ -33,6 +33,11 @@ public class Messages implements DataHolder {
             DISABLED;
 
     @Override
+    public boolean checkVersion() {
+        return VERSION.equals(generator.getConfiguration().getString("version"));
+    }
+
+    @Override
     public boolean initialize() {
         for (var locale : Locale.values())
             new ConfigurationGenerator("messages_" + locale.getKey() + ".yml", "messages").generate();
@@ -50,7 +55,7 @@ public class Messages implements DataHolder {
                 this.generator = new ConfigurationGenerator("messages_" + LOCALE + ".yml", "messages");
                 config = generator.generate();
                 notify = "unknown locale";
-            } else if (!VERSION.equals(config.getString("version"))) {
+            } else if (!checkVersion()) {
                 generator.reset();
                 config = generator.getConfiguration();
                 notify = "version change";

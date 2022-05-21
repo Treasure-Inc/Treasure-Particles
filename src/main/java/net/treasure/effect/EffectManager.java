@@ -13,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 @Getter
 
 public class EffectManager implements DataHolder {
@@ -49,6 +50,11 @@ public class EffectManager implements DataHolder {
         }
     }
 
+    @Override
+    public boolean checkVersion() {
+        return false;
+    }
+
     public Effect get(String key) {
         return effects.stream().filter(color -> color.getKey().equalsIgnoreCase(key)).findFirst().orElse(null);
     }
@@ -62,22 +68,30 @@ public class EffectManager implements DataHolder {
         if (section == null)
             return;
 
-        var messages = TreasurePlugin.getInstance().getMessages();
+        var inst = TreasurePlugin.getInstance();
+        var messages = inst.getMessages();
+        var mainConfig = inst.getConfig();
         for (String key : section.getKeys(false)) {
             try {
                 String path = key + ".";
                 if (!section.contains(path + "onTick")) {
-
+                    inst.getLogger().warning("Effect must have onTick section: " + key);
                     continue;
                 }
+
                 String displayName = section.getString(path + "displayName", key);
                 if (displayName.startsWith("%"))
                     displayName = messages.get("effects." + displayName.substring(1), displayName);
+
+                String permission = section.getString(path + "permission");
+                if (permission != null && permission.startsWith("%"))
+                    permission = mainConfig.getString("permissions." + permission.substring(1), permission);
+
                 Effect effect = new Effect(
                         key,
                         displayName,
                         section.getString(path + "armorColor"),
-                        section.getString(path + "permission"),
+                        permission,
                         section.getStringList(path + "onTick.do"),
                         section.getStringList(path + "onTick.doPost"),
                         section.getStringList(path + "variables"),
@@ -88,7 +102,7 @@ public class EffectManager implements DataHolder {
                 );
                 effects.add(effect);
             } catch (Exception e) {
-                TreasurePlugin.logger().log(Level.WARNING, "Couldn't load effect: " + key);
+                inst.getLogger().warning("Couldn't load effect: " + key);
             }
         }
     }

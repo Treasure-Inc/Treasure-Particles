@@ -2,7 +2,7 @@ package net.treasure.core.command.gui;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.treasure.color.player.ColorData;
+import net.treasure.color.data.ColorData;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 

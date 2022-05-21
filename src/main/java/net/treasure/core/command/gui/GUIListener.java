@@ -2,7 +2,7 @@ package net.treasure.core.command.gui;
 
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.locale.Messages;
 import net.treasure.util.message.MessageUtils;
@@ -55,6 +55,10 @@ public class GUIListener implements Listener {
         if (item.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.STRING)) {
             String effectKey = item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
             Effect effect = TreasurePlugin.getInstance().getEffectManager().get(effectKey);
+            if (!effect.canUse(player)) {
+                player.closeInventory();
+                return;
+            }
             data.setCurrentEffect(player, effect);
             MessageUtils.sendParsed(player, String.format(Messages.EFFECT_SELECTED, effect.getDisplayName()));
             player.closeInventory();

@@ -4,5 +4,5 @@ public interface DataHolder {
 
     boolean initialize();
     void reload();
-
+    boolean checkVersion();
 }

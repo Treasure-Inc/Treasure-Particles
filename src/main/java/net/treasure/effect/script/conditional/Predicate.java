@@ -1,7 +1,8 @@
 package net.treasure.effect.script.conditional;
 
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
+import org.bukkit.entity.Player;
 
 public interface Predicate {
-    boolean test(EffectData data);
+    boolean test(Player player, EffectData data);
 }

@@ -23,20 +23,20 @@ public class MessageUtils {
         serializer = BukkitComponentSerializer.legacy();
     }
 
-    public static void send(CommandSender player, Component message) {
-        adventure.sender(player).sendMessage(message);
+    public static void send(CommandSender sender, Component message) {
+        adventure.sender(sender).sendMessage(message);
     }
 
-    public static void sendParsed(CommandSender player, String message) {
-        adventure.sender(player).sendMessage(miniMessage.deserialize(message));
+    public static void sendParsed(CommandSender sender, String message) {
+        adventure.sender(sender).sendMessage(miniMessage.deserialize(message));
     }
 
-    public static void sendActionBar(CommandSender player, Component message) {
-        adventure.sender(player).sendActionBar(message);
+    public static void sendActionBar(CommandSender sender, Component message) {
+        adventure.sender(sender).sendActionBar(message);
     }
 
-    public static void sendActionBarParsed(CommandSender player, String message) {
-        adventure.sender(player).sendActionBar(miniMessage.deserialize(message));
+    public static void sendActionBarParsed(CommandSender sender, String message) {
+        adventure.sender(sender).sendActionBar(miniMessage.deserialize(message));
     }
 
     public static Component parse(String message) {

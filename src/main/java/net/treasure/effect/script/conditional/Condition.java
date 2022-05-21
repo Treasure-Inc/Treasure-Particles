@@ -2,7 +2,8 @@ package net.treasure.effect.script.conditional;
 
 import lombok.Getter;
 import lombok.ToString;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
+import org.bukkit.entity.Player;
 
 @Getter
 @ToString
@@ -24,10 +25,10 @@ public class Condition implements Predicate {
     }
 
     @Override
-    public boolean test(EffectData data) {
+    public boolean test(Player player, EffectData data) {
         if (data == null)
             return defaultValue;
-        var current = data.getVariable(variable).getValue();
+        var current = data.getVariable(player, variable).getValue();
         return switch (operator) {
             case EQUAL -> current == value;
             case NOT_EQUAL -> current != value;

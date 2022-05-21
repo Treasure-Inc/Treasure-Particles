@@ -5,23 +5,19 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @AllArgsConstructor
 public class ConditionReader {
 
     TreasurePlugin plugin;
 
-    public List<ConditionGroup> read(String line) {
-        List<ConditionGroup> groups = new ArrayList<>();
+    public ConditionGroup read(String line) {
+        ConditionGroup parent = null;
 
         ConditionGroup current = null, last = null;
         char lastChar = ' ';
 
         // Condition Group Stuffs
         ConditionGroup.Operator operator = null; // AND, OR
-        boolean foundOperator = false; // For single groups
 
         // Condition Stuffs
         Condition.Operator variableOperator = null;
@@ -71,19 +67,31 @@ public class ConditionReader {
             } else // others
                 switch (c) {
                     case '(' -> {
+                        if (parent == null) {
+                            parent = new ConditionGroup();
+                            parent.multiGroup = true;
+                            last = parent;
+                            //System.out.println("Parent ID: " + parent.uuid);
+                            break;
+                        }
                         if (current != null) {
                             if (last != null) {
                                 current = new ConditionGroup();
+                                //System.out.println("-------------------------");
+                                //System.out.println("Added " + current.uuid + " to inner " + pos);
                                 current.multiGroup = true;
                                 current.parent = last;
-                                current.hasParent = true;
+                                //current.parentId = last.uuid;
+                                //System.out.println("Set current parent to " + current.parentId);
                                 last.inner.add(current);
-                                if (array[pos + 1] == '(')
+                                if (array[pos + 1] == '(') {
                                     last = current;
+                                    //System.out.println("Set last to " + last.uuid);
+                                }
                                 break;
                             } else {
                                 if (!current.conditions.isEmpty() && !current.operators.isEmpty()) { // Single condition group
-                                    groups.add(current);
+                                    parent.inner.add(current);
                                 } else {
                                     plugin.getLogger().warning("Unexpected situation, please report this to ");
                                 }
@@ -94,9 +102,16 @@ public class ConditionReader {
                         if (last == null)
                             last = current;
                         else {
+                            //System.out.println("-------------------------");
+                            //System.out.println("Added " + current.uuid + " to inner " + pos);
                             current.parent = last;
-                            current.hasParent = true;
+                            //current.parentId = last.uuid;
+                            //System.out.println("Set current's parent to " + current.parentId);
                             last.inner.add(current);
+                            if (array[pos + 1] == '(') {
+                                last = current;
+                                //System.out.println("Set last to " + last.uuid);
+                            }
                         }
                     }
                     case ')' -> {
@@ -105,19 +120,22 @@ public class ConditionReader {
                                 plugin.getLogger().warning("End bracket but current is null pos=" + pos);
                                 return null;
                             }
-                            foundOperator = true;
-                            break;
-                        }
-                        if (last != null && !last.inner.isEmpty()) {
-                            last = current.parent;
-                            current = null;
-                            if (!groups.contains(last)) {
-                                groups.add(last);
+                            if (last.parent != null) {
+                                last = last.parent;
+                                //System.out.println("Changed last to " + last.uuid);
                             }
                             break;
                         }
+                        if (last != null && !last.inner.isEmpty()) {
+                            //System.out.println("End " + current.uuid + " " + pos);
+                            last = current.parent;
+                            //System.out.println("Set last to " + last.uuid);
+                            current = null;
+                            //System.out.println("-------------------------");
+                            break;
+                        }
 
-                        groups.add(current);
+                        parent.inner.add(current);
                         last = current;
                         current = null;
                     }
@@ -128,14 +146,6 @@ public class ConditionReader {
                                 return null;
                             }
 
-                            if (current == null && foundOperator) {
-                                foundOperator = false;
-                                last.operators.add(operator);
-                                last = null;
-                                operator = null;
-                                break;
-                            }
-
                             if (current == null) {
                                 if (last == null) {
                                     plugin.getLogger().warning("Current is null (AND)");
@@ -143,6 +153,7 @@ public class ConditionReader {
                                 }
 
                                 last.operators.add(ConditionGroup.Operator.AND);
+                                //System.out.println("Add AND operator to " + last.uuid);
                                 operator = null;
                                 break;
                             }
@@ -159,14 +170,6 @@ public class ConditionReader {
                                 return null;
                             }
 
-                            if (current == null && foundOperator) {
-                                foundOperator = false;
-                                last.operators.add(operator);
-                                last = null;
-                                operator = null;
-                                break;
-                            }
-
                             if (current == null) {
                                 if (last == null) {
                                     plugin.getLogger().warning("Current is null (OR)");
@@ -174,6 +177,7 @@ public class ConditionReader {
                                 }
 
                                 last.operators.add(ConditionGroup.Operator.OR);
+                                //System.out.println("Add OR operator to " + last.uuid);
                                 operator = null;
                                 break;
                             }
@@ -199,6 +203,6 @@ public class ConditionReader {
                 }
             lastChar = c;
         }
-        return groups;
+        return parent;
     }
 }

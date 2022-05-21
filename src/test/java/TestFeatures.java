@@ -1,5 +1,6 @@
 import com.google.gson.GsonBuilder;
 import net.treasure.common.Patterns;
+import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
 import net.treasure.effect.script.conditional.reader.ConditionReader;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TestFeatures {
 
@@ -33,12 +33,12 @@ public class TestFeatures {
     @Test
     public void testReader() {
         var reader = new ConditionReader(null);
-//        var groups = reader.read("((p==1) && (((a>1 && a!=3) && (a==4 || q>=99)) && (c>1 || d<2)))");
-        var groups = reader.read("((p==1 && q==1) || (r==0 && s==0))");
-        System.out.println("Size: " + groups.size());
-        System.out.println("-----RESULTS");
+        var parent = reader.read("((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
+//        var parent = reader.read("((p==1 && q==1) || (r==0 && s==0))");
+//        var parent = reader.read("(p==1 && q==1 && r==1)");
+        System.out.println("-----RESULTS " + parent.inner.size());
         var gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(groups));
+        System.out.println(gson.toJson(parent));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TestFeatures {
         parent.conditions.add(new Condition(true));
         parent.conditions.add(new Condition(false));
         parent.operators.add(ConditionGroup.Operator.AND);
-        System.out.println("Result: " + parent.test(null));
+        System.out.println("Result: " + parent.test(null, null));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class TestFeatures {
         g2.operators.add(ConditionGroup.Operator.OR);
         parent.inner.add(g2);
 
-        System.out.println("-----Result: " + parent.test(null));
+        System.out.println("-----Result: " + parent.test(null, null));
     }
 
     @Test
@@ -89,30 +89,79 @@ public class TestFeatures {
         System.out.println("MathUtil.eval: " + MathUtil.eval("atan(3,4)"));
         System.out.println("Math.cos: " + MathUtil.cos(0 + (Math.PI * 2 * ((double) 1 / 3))));
         System.out.println("MathUtil.eval: " + MathUtil.eval("cos(0 + (" + Math.PI + " * 2 * (1 / 3)))"));
-
-//        System.out.println("Math.cos: " + MathUtil.cos(Math.toRadians(90) + Math.toRadians(45)));
-//        System.out.println("MathUtil.cos: " + MathUtil.eval("cos(" + Math.toRadians(90) + "+" + Math.toRadians(45) + " / 1 * 3)"));
-//        System.out.println("MathUtil.eval: " + MathUtil.eval("(0 + " + Math.PI + " / 20 ) % 40"));
-//        System.out.println("Normal: " + ((0 + Math.PI * 2 / 40) % 40));
     }
 
     @Test
-    public void testEval() {
+    public void testReplace() {
         final Set<Pair<String, Double>> variables = new HashSet<>();
-        variables.add(new Pair<>("x", 3.78786));
-        String eval = "{PI} * 2 + {x} / 5";
-        String _eval = eval
-                .replaceAll("\\{TICK}", String.valueOf(TimeKeeper.getTimeElapsed()))
-                .replaceAll("\\{PI}", String.valueOf(MathUtil.PI));
-        if (_eval.contains("{")) {
-            for (Pair<String, Double> p : variables) {
-                if (_eval.contains("{" + p.getKey() + "}")) {
-                    _eval = _eval.replaceAll("\\{" + p.getKey() + "}", String.format("%.2f", p.getValue()));
+        variables.add(new Pair<>("phase", 0.0));
+        EffectData data = new EffectData(variables);
+        String eval = replaceVariables(data, "actionbar {i:phase}");
+        System.out.println("Result: " + eval);
+    }
+
+    public String replaceVariables(EffectData data, String line) {
+        StringBuilder builder = new StringBuilder();
+
+        var array = line.toCharArray();
+        int startPos = -1;
+        StringBuilder variable = new StringBuilder();
+        char cast = ' ';
+        char last = ' ';
+        for (int pos = 0; pos < array.length; pos++) {
+            var c = array[pos];
+            switch (c) {
+                case '{' -> {
+                    if (startPos != -1) {
+                        return null;
+                    }
+                    startPos = pos;
+                }
+                case '}' -> {
+                    if (startPos == -1) {
+                        return null;
+                    }
+                    var result = variable.toString();
+                    var p = data.getVariable(null, result);
+                    double value;
+                    if (p == null) {
+                        Double preset = switch (result) {
+                            case "TICK" -> (double) TimeKeeper.getTimeElapsed();
+                            case "PI" -> Math.PI;
+                            case "RANDOM" -> Math.random();
+                            default -> null;
+                        };
+                        if (preset == null) break;
+                        value = preset;
+                    } else
+                        value = p.getValue();
+                    switch (cast) {
+                        case ' ', 'd' -> builder.append(value);
+                        case 'i' -> builder.append((int) value);
+                    }
+                    cast = ' ';
+
+                    startPos = -1;
+                    variable = new StringBuilder();
+                }
+                case ':' -> {
+                    if (startPos != -1)
+                        cast = last;
+                    else
+                        builder.append(c);
+                }
+                default -> {
+                    if (startPos != -1) {
+                        if (pos + 1 < array.length && array[pos + 1] == ':')
+                            break;
+                        variable.append(c);
+                    } else
+                        builder.append(c);
                 }
             }
+            last = c;
         }
-        System.out.println("Eval: " + _eval);
-        System.out.println("Result: " + MathUtil.eval(_eval));
+        return builder.toString();
     }
 
     @Test
@@ -146,32 +195,6 @@ public class TestFeatures {
         Color[] colors = rainbow.colors(15);
         for (Color color : colors) {
             System.out.println(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
-        }
-        /*
-        ColorData data = new ColorData(new GradientColor(
-                "redtogreen",
-                10,
-                Color.BLUE, Color.RED
-        ), 1, true);
-        for (int i = 0; i <= 10; i++) {
-            Color color = data.next();
-            System.out.println(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
-        }
-         */
-    }
-
-    @Test
-    public void testGroup() {
-        Pattern PARTICLE = Pattern.compile("(?:particle\\{(?<particle>.+)\\} \\[|(?<=\\,))(?<type>\\w+)(?:=)(?<value>[a-zA-Z0-9{}:-]+)(?:(?=\\,)|\\])");
-        Matcher evalMatcher = PARTICLE.matcher("particle{DUST} [x={x},y={y},z={z},from=feet] ~3");
-        int counter = 1;
-        while (evalMatcher.find()) {
-            System.out.println(counter++);
-            System.out.println(evalMatcher.group("particle"));
-            System.out.println("1: " + evalMatcher.group(1));
-            System.out.println("2: " + evalMatcher.group(2));
-            System.out.println("3: " + evalMatcher.group(3));
-            System.out.println("____");
         }
     }
 }

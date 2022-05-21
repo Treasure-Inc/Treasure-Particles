@@ -12,8 +12,11 @@ public class MathUtil {
     private static final double radFull, radToIndex;
     private static final double degFull, degToIndex;
     private static final double[] sin, cos;
-    public static double PI = 3.14;
-    private static final DecimalFormat DF = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+    private static final DecimalFormat DF;
+    static {
+        DF = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        DF.setMaximumFractionDigits(340);
+    }
 
     static {
         SIN_BITS = 12;
@@ -48,8 +51,6 @@ public class MathUtil {
     }
 
     public static double eval(final String str) {
-        DF.setMaximumFractionDigits(340);
-
         return new Object() {
             int pos = -1, ch;
             double save = Double.MIN_VALUE;

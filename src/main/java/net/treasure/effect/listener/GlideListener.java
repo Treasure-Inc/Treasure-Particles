@@ -1,7 +1,7 @@
 package net.treasure.effect.listener;
 
 import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

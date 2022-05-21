@@ -1,7 +1,6 @@
-package net.treasure.color.player;
+package net.treasure.color.data;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.treasure.color.Color;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;

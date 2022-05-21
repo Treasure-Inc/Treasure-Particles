@@ -26,6 +26,11 @@ public class Presets implements DataHolder {
         initialize();
     }
 
+    @Override
+    public boolean checkVersion() {
+        return true;
+    }
+
     public List<String> get(String key) {
         if (configuration.isList(key))
             return configuration.getStringList(key);

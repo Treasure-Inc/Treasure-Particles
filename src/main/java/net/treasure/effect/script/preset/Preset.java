@@ -1,7 +1,7 @@
 package net.treasure.effect.script.preset;
 
 import lombok.AllArgsConstructor;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import org.bukkit.entity.Player;
 

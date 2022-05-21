@@ -2,9 +2,9 @@ package net.treasure.effect.script;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import net.treasure.color.player.ColorData;
+import net.treasure.color.data.ColorData;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import net.treasure.util.Vectors;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class ParticleSpawner extends Script {
                 x = Double.parseDouble(this.x);
             } catch (Exception e) {
                 boolean negative = this.x.startsWith("-");
-                x = data.getVariable(this.x.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                x = data.getVariable(player, this.x.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
             }
         }
 
@@ -56,7 +56,7 @@ public class ParticleSpawner extends Script {
                 y = Double.parseDouble(this.y);
             } catch (Exception e) {
                 boolean negative = this.y.startsWith("-");
-                y = data.getVariable(this.y.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                y = data.getVariable(player, this.y.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
             }
         }
 
@@ -65,7 +65,7 @@ public class ParticleSpawner extends Script {
                 z = Double.parseDouble(this.z);
             } catch (Exception e) {
                 boolean negative = this.z.startsWith("-");
-                z = data.getVariable(this.z.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                z = data.getVariable(player, this.z.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
             }
         }
 
@@ -74,7 +74,7 @@ public class ParticleSpawner extends Script {
                 offsetX = Double.parseDouble(this.offsetX);
             } catch (Exception e) {
                 boolean negative = this.offsetX.startsWith("-");
-                offsetX = data.getVariable(this.offsetX.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                offsetX = data.getVariable(player, this.offsetX.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
             }
         }
 
@@ -83,7 +83,7 @@ public class ParticleSpawner extends Script {
                 offsetY = Double.parseDouble(this.offsetY);
             } catch (Exception e) {
                 boolean negative = this.offsetY.startsWith("-");
-                offsetY = data.getVariable(this.offsetY.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                offsetY = data.getVariable(player, this.offsetY.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
             }
         }
 
@@ -92,7 +92,7 @@ public class ParticleSpawner extends Script {
                 offsetZ = Double.parseDouble(this.offsetZ);
             } catch (Exception e) {
                 boolean negative = this.offsetZ.startsWith("-");
-                offsetZ = data.getVariable(this.offsetZ.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                offsetZ = data.getVariable(player, this.offsetZ.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
             }
         }
 

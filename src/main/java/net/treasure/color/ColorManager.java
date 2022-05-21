@@ -36,6 +36,11 @@ public class ColorManager implements DataHolder {
         }
     }
 
+    @Override
+    public boolean checkVersion() {
+        return false;
+    }
+
     public Color get(String key) {
         return colors.stream().filter(color -> color.getKey().equalsIgnoreCase(key)).findFirst().orElse(null);
     }

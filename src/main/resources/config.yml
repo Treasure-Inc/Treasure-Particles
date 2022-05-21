@@ -1,4 +1,6 @@
 locale: EN
+notifications: true
 permissions:
   menu: "trelytra.menu"
   admin: "trelytra.admin"
+  rainbow: "trelytra.rainbow"

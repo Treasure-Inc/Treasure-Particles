@@ -1,7 +1,7 @@
 package net.treasure.effect.task;
 
 import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import net.treasure.util.TimeKeeper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

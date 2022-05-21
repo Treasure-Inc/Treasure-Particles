@@ -1,11 +1,11 @@
 package net.treasure.core.command.gui;
 
-import net.treasure.color.player.ColorData;
+import net.treasure.color.data.ColorData;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import net.treasure.util.CustomItem;
 import net.treasure.locale.Messages;
 import net.treasure.util.message.MessageUtils;

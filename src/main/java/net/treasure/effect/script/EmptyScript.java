@@ -1,6 +1,6 @@
 package net.treasure.effect.script;
 
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import org.bukkit.entity.Player;
 
 public class EmptyScript extends Script {

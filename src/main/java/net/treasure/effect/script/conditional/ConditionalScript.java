@@ -1,21 +1,19 @@
 package net.treasure.effect.script.conditional;
 
 import lombok.AllArgsConstructor;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 @AllArgsConstructor
 public class ConditionalScript extends Script {
 
-    List<ConditionGroup> conditionGroups;
+    ConditionGroup parent;
     Script firstExpression, secondExpression;
 
     @Override
     public void tick(Player player, EffectData data, int times) {
-        boolean success = conditionGroups.get(0).test(data);
+        boolean success = parent.test(player, data);
         if (success)
             firstExpression.tick(player, data, times);
         else
@@ -24,6 +22,6 @@ public class ConditionalScript extends Script {
 
     @Override
     public ConditionalScript clone() {
-        return new ConditionalScript(conditionGroups, firstExpression, secondExpression);
+        return new ConditionalScript(parent, firstExpression, secondExpression);
     }
 }

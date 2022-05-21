@@ -1,7 +1,7 @@
 package net.treasure.effect.script;
 
 import lombok.Builder;
-import net.treasure.effect.player.EffectData;
+import net.treasure.effect.data.EffectData;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

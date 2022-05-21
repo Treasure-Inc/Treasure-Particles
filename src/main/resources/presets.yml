@@ -4,3 +4,11 @@ quadhelix-reverse:
 quadhelix-normal:
   - "variable stepY-=1"
   - "conditional (stepY<-60) ? variable reverse=1 : none"
+swap-y-z:
+  - "variable temp={y}"
+  - "variable y={z}"
+  - "variable z={temp}"
+swap-x-y:
+  - "variable temp={x}"
+  - "variable x={y}"
+  - "variable y={temp}"

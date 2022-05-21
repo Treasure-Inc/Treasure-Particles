@@ -1,6 +1,8 @@
 package net.treasure.core;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.lib.timings.MCTiming;
+import co.aikar.commands.lib.timings.TimingManager;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -11,6 +13,7 @@ import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.database.Database;
 import net.treasure.core.listener.JoinQuitListener;
+import net.treasure.core.notification.NotificationManager;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
@@ -35,6 +38,8 @@ public class TreasurePlugin extends JavaPlugin {
     @Getter
     private static TreasurePlugin instance;
 
+    private static TimingManager timingManager;
+
     // Data Holders
     private Messages messages;
     private EffectManager effectManager;
@@ -43,6 +48,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     private Database database;
     private PlayerManager playerManager;
+    private NotificationManager notificationManager;
 
     // ACF
     private BukkitCommandManager commandManager;
@@ -56,10 +62,20 @@ public class TreasurePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        timingManager = TimingManager.of(this);
+
         random = new Random();
         dataHolders = new ArrayList<>();
         debugModeEnabled = new File(getDataFolder(), "dev").exists();
 
+        // Database
+        database = new Database();
+        if (!database.connect()) {
+            disable();
+            return;
+        }
+
+        // Main Config
         saveDefaultConfig();
         configure();
 
@@ -75,18 +91,18 @@ public class TreasurePlugin extends JavaPlugin {
         }
         dataHolders.add(effectManager);
 
-        database = new Database();
-        if (!database.connect()) {
-            disable();
-            return;
-        }
-
         colorManager = new ColorManager();
         if (!colorManager.initialize()) {
             disable();
             return;
         }
         dataHolders.add(colorManager);
+
+        var config = getConfig();
+
+        // Notification Manager
+        notificationManager = new NotificationManager();
+        notificationManager.setEnabled(config.getBoolean("notifications", true));
 
         // Load colors & effects
         colorManager.loadColors();
@@ -100,10 +116,12 @@ public class TreasurePlugin extends JavaPlugin {
                 Effect.class,
                 Effect.getContextResolver());
         commandManager.registerCommand(new MainCommand());
-        commandManager.getCommandCompletions().registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).collect(Collectors.toList()));
-        commandManager.getCommandReplacements().addReplacement("basecmd", getConfig().getString("permissions.menu", "trelytra.menu"));
-        commandManager.getCommandReplacements().addReplacement("admincmd", getConfig().getString("permissions.admin", "trelytra.admin"));
-        commandManager.enableUnstableAPI("brigadier");
+        var completions = commandManager.getCommandCompletions();
+        completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).collect(Collectors.toList()));
+        completions.registerStaticCompletion("versions", notificationManager.getVersions());
+        var replacements = commandManager.getCommandReplacements();
+        replacements.addReplacement("basecmd", config.getString("permissions.menu", "trelytra.menu"));
+        replacements.addReplacement("admincmd", config.getString("permissions.admin", "trelytra.admin"));
 
         // Adventure
         this.adventure = BukkitAudiences.create(this);
@@ -115,7 +133,7 @@ public class TreasurePlugin extends JavaPlugin {
         var pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new JoinQuitListener(this), this);
         pluginManager.registerEvents(new GUIListener(), this);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(TreasurePlugin.getInstance(), new GUIUpdater(), 0, 2);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2);
 
         var metrics = new Metrics(this, 14508);
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
@@ -173,5 +191,9 @@ public class TreasurePlugin extends JavaPlugin {
 
     public static Logger logger() {
         return instance.getLogger();
+    }
+
+    public static MCTiming timing(String name) {
+        return timingManager.of(name);
     }
 }
