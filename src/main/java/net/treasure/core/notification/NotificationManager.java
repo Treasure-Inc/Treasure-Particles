@@ -102,10 +102,12 @@ public class NotificationManager {
                     "<br><br><br><br><br><br><gold><b>[!] Changes",
                     "<gold>[1]</gold> Removed debug screen (debug mode is still available but has no feature)<br>" +
                             "<gold>[2]</gold> Added permission for debug mode (<gold>trelytra.debug</gold>)<br>" +
-                            "<gold>[3]</gold> Added new script type <gold>\"actionbar <message>\"",
+                            "<gold>[3]</gold> Added new script types <gold>\"actionbar,chat,title\"",
                     "<gold>[4]</gold> Added notification system<br>" +
                             "<gold>  •</gold> You will get notification message every time you join the server, and this can be disabled in <gold>config.yml</gold><br><br>" +
-                            "<gold>[5]</gold> Optimized login listener"
+                            "<gold>[5]</gold> Optimized login listener",
+                    "<gold>[6]</gold> Added disable option for GUI animations to <gold>config.yml</gold><br>" +
+                            "<gold>[7]</gold> Added tab completion for \"<gold>/trelytra select</gold>\" command"
             );
             default -> List.of("<red>WHAT?");
         });
