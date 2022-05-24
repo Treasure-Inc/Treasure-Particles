@@ -23,7 +23,7 @@ public class JoinQuitListener implements Listener {
         var player = event.getPlayer();
         plugin.getPlayerManager().initializePlayer(player);
         if (player.hasPermission("trelytra.notifications") && plugin.getNotificationManager().isEnabled()) {
-            MessageUtils.sendParsed(player, Messages.PREFIX + " <aqua><b><click:suggest_command:'/trelytra changelog'><hover:show_text:'<aqua>Click!'>Changelog</click></b> <dark_gray>|</dark_gray> " +
+            MessageUtils.sendParsed(player, Messages.PREFIX + "<aqua><b><click:suggest_command:'/trelytra changelog'><hover:show_text:'<aqua>Click!'>Changelog</click></b> <dark_gray>|</dark_gray> " +
                     "<b><click:open_url:'https://www.spigotmc.org/resources/trelytra-let-your-elytra-create-wonderful-particles.99860/'><hover:show_text:'<aqua>Click'>Spigot Page</b> <dark_gray>|</dark_gray> " +
                     "<b><click:open_url:'https://github.com/ItsZypec/Treasure-Elytra/wiki/'><hover:show_text:'<aqua>Click!'>Wiki Page");
         }

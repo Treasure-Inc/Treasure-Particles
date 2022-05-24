@@ -25,11 +25,10 @@ public class GUIUpdater implements Runnable {
                 iterator.remove();
                 continue;
             }
-            if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof GUIHolder)) {
+            if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof GUIHolder holder)) {
                 iterator.remove();
                 continue;
             }
-            GUIHolder holder = (GUIHolder) player.getOpenInventory().getTopInventory().getHolder();
             for (Map.Entry<Integer, ColorData> set : holder.getUpdateSlots().entrySet()) {
                 int slot = set.getKey();
                 ColorData data = set.getValue();

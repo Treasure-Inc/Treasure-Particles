@@ -23,21 +23,21 @@ public class Variable extends Script {
     private String eval;
 
     @Override
-    public void tick(Player player, EffectData data, int times) {
+    public boolean tick(Player player, EffectData data, int times) {
         Pair<String, Double> pair = data.getVariable(player, variable);
-        if (pair == null) return;
+        if (pair == null) return true;
         Effect effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
             var array = isPostLine() ? effect.getCachePost() : effect.getCache();
             pair.setValue(array[times][index]);
-            return;
+            return true;
         }
         double val;
         try {
             val = MathUtil.eval(data.replaceVariables(player, eval));
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+            return true;
         }
         switch (operator) {
             case EQUAL -> pair.setValue(val);
@@ -46,6 +46,7 @@ public class Variable extends Script {
             case MULTIPLY -> pair.setValue(pair.getValue() * val);
             case DIVISION -> pair.setValue(pair.getValue() / val);
         }
+        return true;
     }
 
     public double preTick(Set<Pair<String, Double>> variables) {

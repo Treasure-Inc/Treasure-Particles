@@ -58,6 +58,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     private boolean debugModeEnabled;
     private Random random;
+    private int taskId = -5;
 
     @Override
     public void onEnable() {
@@ -115,13 +116,15 @@ public class TreasurePlugin extends JavaPlugin {
         commandManager.getCommandContexts().registerContext(
                 Effect.class,
                 Effect.getContextResolver());
-        commandManager.registerCommand(new MainCommand());
+        commandManager.registerCommand(new MainCommand(this));
         var completions = commandManager.getCommandCompletions();
         completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).collect(Collectors.toList()));
         completions.registerStaticCompletion("versions", notificationManager.getVersions());
         var replacements = commandManager.getCommandReplacements();
+
         replacements.addReplacement("basecmd", config.getString("permissions.menu", "trelytra.menu"));
         replacements.addReplacement("admincmd", config.getString("permissions.admin", "trelytra.admin"));
+        replacements.addReplacement("changelog", "trelytra.notifications");
 
         // Adventure
         this.adventure = BukkitAudiences.create(this);
@@ -133,7 +136,8 @@ public class TreasurePlugin extends JavaPlugin {
         var pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new JoinQuitListener(this), this);
         pluginManager.registerEvents(new GUIListener(), this);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2);
+        if (config.getBoolean("gui.animation", true))
+            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
 
         var metrics = new Metrics(this, 14508);
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
@@ -168,11 +172,27 @@ public class TreasurePlugin extends JavaPlugin {
         final var tempDebugMode = this.debugModeEnabled;
         debugModeEnabled = new File(getDataFolder(), "dev").exists();
         if (tempDebugMode != debugModeEnabled)
-            getLogger().info("Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
+            getLogger().info("> Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
+
+        // Config Stuffs
+        var config = getConfig();
+
+        // Notification Manager
+        notificationManager.setEnabled(config.getBoolean("notifications", true));
+
+        // GUI Animations
+        if (taskId != -5 && !config.getBoolean("gui.animation", true)) {
+            Bukkit.getScheduler().cancelTask(taskId);
+            taskId = -5;
+            getLogger().info("> Disabled gui animations");
+        } else if (taskId == -5 && config.getBoolean("gui.animation", true)) {
+            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
+            getLogger().info("> Enabled gui animations");
+        }
 
         // Command Permissions
-        commandManager.getCommandReplacements().addReplacement("basecmd", getConfig().getString("permissions.menu", "trelytra.menu"));
-        commandManager.getCommandReplacements().addReplacement("admincmd", getConfig().getString("permissions.admin", "trelytra.admin"));
+        commandManager.getCommandReplacements().addReplacement("basecmd", config.getString("permissions.menu", "trelytra.menu"));
+        commandManager.getCommandReplacements().addReplacement("admincmd", config.getString("permissions.admin", "trelytra.admin"));
         getLogger().info("Reloaded permissions!");
 
         getLogger().info("Reloaded TreasureElytra!");

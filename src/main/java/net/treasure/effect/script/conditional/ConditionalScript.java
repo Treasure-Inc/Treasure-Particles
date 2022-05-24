@@ -12,12 +12,12 @@ public class ConditionalScript extends Script {
     Script firstExpression, secondExpression;
 
     @Override
-    public void tick(Player player, EffectData data, int times) {
+    public boolean tick(Player player, EffectData data, int times) {
         boolean success = parent.test(player, data);
         if (success)
-            firstExpression.tick(player, data, times);
+            return firstExpression.tick(player, data, times);
         else
-            secondExpression.tick(player, data, times);
+            return secondExpression.tick(player, data, times);
     }
 
     @Override

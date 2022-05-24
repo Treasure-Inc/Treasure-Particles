@@ -1,5 +1,7 @@
 locale: EN
 notifications: true
+gui:
+  animation: true
 permissions:
   menu: "trelytra.menu"
   admin: "trelytra.admin"

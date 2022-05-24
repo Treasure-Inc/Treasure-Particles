@@ -13,10 +13,11 @@ public class Preset extends Script {
     List<Script> scripts;
 
     @Override
-    public void tick(Player player, EffectData data, int times) {
-        for (Script script : scripts) {
-            script.tick(player, data, times);
-        }
+    public boolean tick(Player player, EffectData data, int times) {
+        for (Script script : scripts)
+            if (!script.tick(player, data, times))
+                return false;
+        return true;
     }
 
     @Override

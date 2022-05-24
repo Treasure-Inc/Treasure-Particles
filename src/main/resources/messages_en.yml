@@ -26,5 +26,6 @@ effects:
   planor: "<gradient:green:dark_green>Planor"
   beam: "<gray>Beam"
   helix: "Helix"
+  helix-rainbow: "<rainbow>Rainbow Helix"
   rain: "<blue>Rain"
   rocket: "<gray>Rocket"

@@ -4,6 +4,8 @@ import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
 import net.treasure.effect.script.conditional.reader.ConditionReader;
+import net.treasure.effect.script.message.Title;
+import net.treasure.effect.script.message.reader.TitleReader;
 import net.treasure.util.MathUtil;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
@@ -22,12 +24,15 @@ import java.util.regex.Matcher;
 
 public class TestFeatures {
 
-    private boolean validate(Matcher matcher, String group) {
-        try {
-            return matcher.start(group) != -1;
-        } catch (Exception e) {
-            return false;
-        }
+    @Test
+    public void testSplit() {
+        String line = "title=asdasdasd &asd asd &a; asdas das dqweq= &&& subtitle=qweqdasdadafsa&f asd&&fasdf a&sdfasdf 454787 &&& fadeIn=40 &&& fadeOut=30 &&& stay=100";
+        var title = new TitleReader().read(line);
+        System.out.println(title.getTitle());
+        System.out.println(title.getSubtitle());
+        System.out.println(title.getFadeIn());
+        System.out.println(title.getStay());
+        System.out.println(title.getFadeOut());
     }
 
     @Test

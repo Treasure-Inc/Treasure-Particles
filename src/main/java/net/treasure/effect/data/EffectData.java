@@ -45,7 +45,7 @@ public class EffectData {
         this.variables.clear();
         this.lines.clear();
         this.postLines.clear();
-        this.debugModeEnabled = player.isOp() && TreasurePlugin.getInstance().isDebugModeEnabled();
+        this.debugModeEnabled = player.hasPermission("trelytra.debug") && TreasurePlugin.getInstance().isDebugModeEnabled();
         if (this.currentEffect != null)
             this.currentEffect.initialize(player, this);
     }

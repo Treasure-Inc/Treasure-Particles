@@ -29,7 +29,7 @@ public class ParticleSpawner extends Script {
     boolean direction = false;
 
     @Override
-    public void tick(Player player, EffectData data, int times) {
+    public boolean tick(Player player, EffectData data, int times) {
         Location origin;
         double x = 0, y = 0, z = 0;
         double offsetX = 0, offsetY = 0, offsetZ = 0;
@@ -38,7 +38,7 @@ public class ParticleSpawner extends Script {
         else if (from.equalsIgnoreCase("feet"))
             origin = player.getLocation();
         else
-            return;
+            return true;
         if (multiplier != Float.MIN_VALUE)
             origin = origin.add(player.getLocation().getDirection().multiply(multiplier));
 
@@ -118,6 +118,7 @@ public class ParticleSpawner extends Script {
 
         var playerManager = TreasurePlugin.getInstance().getPlayerManager();
         builder.display(viewer -> playerManager.getPlayerData(viewer).isEffectsEnabled());
+        return true;
     }
 
     @Override

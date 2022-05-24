@@ -26,5 +26,6 @@ effects:
   planor: "<gradient:green:dark_green>Planör"
   beam: "<gray>Işın"
   helix: "Sarmal"
+  helix-rainbow: "<rainbow>Rengarenk Sarmal"
   rain: "<blue>Yağmur"
   rocket: "<gray>Roket"

@@ -126,6 +126,25 @@ effects:
         - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
         - "conditional (reverse==1) ? preset quadhelix-reverse : none"
         - "conditional (reverse==0) ? preset quadhelix-normal : none"
+  helix-rainbow:
+    displayName: "%helix-rainbow"
+    armorColor: "rainbow"
+    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
+    onTick:
+      interval: 1
+      times: 8
+      do:
+        - variable x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})
+        - variable y=({stepY} / {maxStepY}) * 1.5
+        - variable z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})
+        - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
+        - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
+        - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
+        - particle [effect=redstone,x={y},y={x},z={z},amount=10,from=head,colorScheme={name=rainbow;speed=0.025;revertWhenDone=true}]
+      doPost:
+        - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
+        - "conditional (reverse==1) ? preset quadhelix-reverse : none"
+        - "conditional (reverse==0) ? preset quadhelix-normal : none"
   rain:
     displayName: "%rain"
     variables: [ 'r', 'x', 'z' ]

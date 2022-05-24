@@ -17,11 +17,12 @@ public class PlaySound extends Script {
     float volume = 1, pitch = 1;
 
     @Override
-    public void tick(Player player, EffectData data, int times) {
+    public boolean tick(Player player, EffectData data, int times) {
         if (clientSide)
             player.playSound(player.getLocation(), sound, SoundCategory.MASTER, volume, pitch);
         else
             player.getWorld().playSound(player.getLocation(), sound, SoundCategory.MASTER, volume, pitch);
+        return true;
     }
 
     @Override

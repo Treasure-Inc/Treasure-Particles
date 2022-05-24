@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
+import net.treasure.effect.script.reader.ScriptReader;
 
 @AllArgsConstructor
-public class ConditionReader {
+public class ConditionReader implements ScriptReader<ConditionGroup> {
 
     TreasurePlugin plugin;
 
+    @Override
     public ConditionGroup read(String line) {
         ConditionGroup parent = null;
 

@@ -4,24 +4,25 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.contexts.ContextResolver;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import net.treasure.color.data.ColorData;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
-import net.treasure.effect.script.ActionBar;
-import net.treasure.effect.script.EmptyScript;
 import net.treasure.effect.script.ParticleSpawner;
 import net.treasure.effect.script.PlaySound;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.Variable;
+import net.treasure.effect.script.basic.EmptyScript;
+import net.treasure.effect.script.basic.ReturnScript;
 import net.treasure.effect.script.conditional.ConditionalScript;
 import net.treasure.effect.script.conditional.reader.ConditionReader;
+import net.treasure.effect.script.message.ActionBar;
+import net.treasure.effect.script.message.ChatMessage;
+import net.treasure.effect.script.message.reader.TitleReader;
 import net.treasure.effect.script.preset.Preset;
 import net.treasure.locale.Messages;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
-import net.treasure.util.message.MessageUtils;
 import org.bukkit.entity.Player;
 import xyz.xenondevs.particle.ParticleEffect;
 
@@ -32,7 +33,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 public class Effect {
 
@@ -147,18 +147,18 @@ public class Effect {
                     if (timesPair != null)
                         timesPair.setValue((double) i);
                     for (Script script : data.getLines())
-                        script.doTick(player, data, i);
+                        if (!script.doTick(player, data, i))
+                            break;
                 }
             } finally {
                 for (int i = 0; i < postTimes; i++) {
                     if (timesPair != null)
                         timesPair.setValue((double) i);
                     for (Script script : data.getPostLines())
-                        script.doTick(player, data, i);
+                        if (!script.doTick(player, data, i))
+                            break;
                 }
             }
-            if (data.isDebugModeEnabled())
-                MessageUtils.sendActionBar(player, Component.text(data.getVariables().stream().map(pair -> "[" + pair.getKey() + ": " + String.format("%,.2f", pair.getValue()) + "]").collect(Collectors.joining(", "))));
         } finally {
             timings.stopTiming();
         }
@@ -209,19 +209,21 @@ public class Effect {
     public Pair<Script, Integer> readLine(String line, int varIndex, boolean inLine) {
         if (line.equalsIgnoreCase("none"))
             return new Pair<>(new EmptyScript(), varIndex);
+        else if (line.equalsIgnoreCase("return"))
+            return new Pair<>(new ReturnScript(), varIndex);
 
         var inst = TreasurePlugin.getInstance();
 
         int interval = -1;
         int intervalIndex = line.lastIndexOf("~");
         if (intervalIndex != -1) {
-            String _value = line.substring(intervalIndex + 1);
+            var args = Patterns.TILDE.split(line, 2);
             try {
-                interval = Integer.parseInt(_value);
+                interval = Integer.parseInt(args[1]);
             } catch (Exception ignored) {
                 inst.getLogger().warning("Invalid interval syntax: " + line);
             }
-            line = line.substring(0, intervalIndex);
+            line = args[0];
         }
 
         Script script = null;
@@ -233,6 +235,9 @@ public class Effect {
         } catch (Exception e) {
             return new Pair<>(null, varIndex);
         }
+
+        if (args.length == 1)
+            return new Pair<>(null, varIndex);
 
         switch (type) {
             case "conditional" -> {
@@ -258,7 +263,7 @@ public class Effect {
                 }
             }
             case "variable" -> {
-                String eval = line.substring("variable ".length());
+                String eval = args[1];
                 Matcher evalMatcher = Patterns.EVAL.matcher(eval);
 
                 if (evalMatcher.matches()) {
@@ -422,8 +427,16 @@ public class Effect {
                 }
             }
             case "actionbar" -> {
-                String message = line.substring(10);
+                String message = args[1];
                 script = new ActionBar(message);
+            }
+            case "chat" -> {
+                String message = args[1];
+                script = new ChatMessage(message);
+            }
+            case "title" -> {
+                String message = args[1];
+                script = new TitleReader().read(message);
             }
         }
 

@@ -13,12 +13,12 @@ public abstract class Script implements Cloneable {
     int interval = -1;
     boolean postLine = false;
 
-    public abstract void tick(Player player, EffectData data, int times);
+    public abstract boolean tick(Player player, EffectData data, int times);
 
-    public void doTick(Player player, EffectData data, int times) {
+    public boolean doTick(Player player, EffectData data, int times) {
         if (interval > 0 && !TimeKeeper.isElapsed(interval))
-            return;
-        tick(player, data, times);
+            return true;
+        return tick(player, data, times);
     }
 
     public Script cloneScript() {

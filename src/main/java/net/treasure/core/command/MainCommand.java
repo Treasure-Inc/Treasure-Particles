@@ -6,9 +6,9 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Private;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
+import lombok.AllArgsConstructor;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.command.gui.EffectsGUI;
 import net.treasure.effect.Effect;
@@ -19,8 +19,11 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+@AllArgsConstructor
 @CommandAlias("treasureelytra|trelytra|tre")
 public class MainCommand extends BaseCommand {
+
+    TreasurePlugin plugin;
 
     @HelpCommand
     @CommandPermission("%basecmd")
@@ -30,12 +33,11 @@ public class MainCommand extends BaseCommand {
 
     @Subcommand("toggle")
     public void toggle(Player player) {
-        var data = TreasurePlugin.getInstance().getPlayerManager().getPlayerData(player);
+        var data = plugin.getPlayerManager().getPlayerData(player);
         data.setEffectsEnabled(!data.isEffectsEnabled());
         MessageUtils.sendParsed(player, String.format(Messages.EFFECT_TOGGLE, data.isEffectsEnabled() ? Messages.ENABLED : Messages.DISABLED));
     }
 
-    @Private
     @CommandPermission("%basecmd")
     @Subcommand("select|sel")
     @CommandCompletion("@effects")
@@ -44,7 +46,7 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(player, Messages.EFFECT_NO_PERMISSION);
             return;
         }
-        TreasurePlugin.getInstance().getPlayerManager().getPlayerData(player).setCurrentEffect(player, effect);
+        plugin.getPlayerManager().getPlayerData(player).setCurrentEffect(player, effect);
         MessageUtils.sendParsed(player, String.format(Messages.EFFECT_SELECTED, effect.getDisplayName()));
     }
 
@@ -52,24 +54,24 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("%admincmd")
     public void reload(CommandSender sender) {
         MessageUtils.sendParsed(sender, Messages.RELOADING);
-        TreasurePlugin.getInstance().reload();
+        plugin.reload();
         MessageUtils.sendParsed(sender, Messages.RELOADED);
     }
 
-    @Subcommand("changes|changelog|updates")
+    @Subcommand("changelog|changes|updates")
     @CommandCompletion("@versions")
+    @CommandPermission("%changelog")
     public void changelog(CommandSender sender, @Single @Optional String version) {
         var v = version;
         if (v == null)
-            v = TreasurePlugin.getInstance().getDescription().getVersion();
-        var notificationManager = TreasurePlugin.getInstance().getNotificationManager();
+            v = plugin.getDescription().getVersion();
+        var notificationManager = plugin.getNotificationManager();
         List<String> changelog = notificationManager.changelog(v);
         if (changelog == null) {
             MessageUtils.sendParsed(sender, Messages.PREFIX + (version == null ? "No changelog for latest version. " : " Unknown version: " + v));
             return;
         }
         MessageUtils.sendParsed(sender, Messages.PREFIX + "<aqua><b>v" + v);
-        for (String s : changelog)
-            MessageUtils.sendParsed(sender, s);
+        MessageUtils.openBook(sender, changelog);
     }
 }
