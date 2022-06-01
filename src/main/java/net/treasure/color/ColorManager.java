@@ -38,7 +38,7 @@ public class ColorManager implements DataHolder {
 
     @Override
     public boolean checkVersion() {
-        return false;
+        return true;
     }
 
     public Color get(String key) {

@@ -1,13 +1,14 @@
 package net.treasure.effect.script.message.reader;
 
 import net.treasure.core.TreasurePlugin;
+import net.treasure.effect.Effect;
 import net.treasure.effect.script.message.Title;
-import net.treasure.effect.script.reader.ScriptReader;
+import net.treasure.effect.script.ScriptReader;
 
 public class TitleReader implements ScriptReader<Title> {
 
     @Override
-    public Title read(String line) {
+    public Title read(Effect effect, String line) {
         var array = line.toCharArray();
         var builder = Title.builder();
         StringBuilder type = new StringBuilder(), message = new StringBuilder();

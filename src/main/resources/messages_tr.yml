@@ -1,4 +1,4 @@
-version: "1.1.0"
+version: "1.2.0"
 prefix: "<gradient:#A3BCF9:#576490>[TʀEʟʏᴛʀᴀ] <reset>"
 effect-no-permission: "<red>Bu efekti kullanabilmek için yeterli yetkin yok!"
 effect-selected: "<aqua>Efekt seçildi: %s"

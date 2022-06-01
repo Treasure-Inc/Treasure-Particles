@@ -1,10 +1,12 @@
-package net.treasure.effect.script;
+package net.treasure.effect.script.particle;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import net.treasure.color.data.ColorData;
+import net.treasure.color.data.RGBColorData;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.script.Script;
 import net.treasure.util.Vectors;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,33 +14,41 @@ import org.bukkit.util.Vector;
 import xyz.xenondevs.particle.ParticleBuilder;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.PropertyType;
+import xyz.xenondevs.particle.data.color.DustData;
+import xyz.xenondevs.particle.data.color.NoteColor;
 
 @Builder
 @AllArgsConstructor
 public class ParticleSpawner extends Script {
 
-    private ParticleEffect effect;
-    private String x, y, z, from, offsetX, offsetY, offsetZ;
-    private ColorData colorData;
+    ParticleEffect effect;
+    ParticleOrigin origin;
+    String x, y, z, offsetX, offsetY, offsetZ;
+    ColorData colorData;
     int amount;
     @Builder.Default
-    public float multiplier = Float.MIN_VALUE;
+    float multiplier = Float.MIN_VALUE;
     @Builder.Default
     float speed = Float.MIN_VALUE;
+    @Builder.Default
+    float size = Float.MIN_VALUE;
     @Builder.Default
     boolean direction = false;
 
     @Override
     public boolean tick(Player player, EffectData data, int times) {
+        if (this.origin == null)
+            return true;
+
         Location origin;
         double x = 0, y = 0, z = 0;
         double offsetX = 0, offsetY = 0, offsetZ = 0;
-        if (from.equalsIgnoreCase("head"))
-            origin = player.getEyeLocation();
-        else if (from.equalsIgnoreCase("feet"))
-            origin = player.getLocation();
-        else
-            return true;
+
+        origin = switch (this.origin) {
+            case HEAD -> player.getEyeLocation();
+            case FEET -> player.getLocation();
+        };
+
         if (multiplier != Float.MIN_VALUE)
             origin = origin.add(player.getLocation().getDirection().multiply(multiplier));
 
@@ -46,8 +56,7 @@ public class ParticleSpawner extends Script {
             try {
                 x = Double.parseDouble(this.x);
             } catch (Exception e) {
-                boolean negative = this.x.startsWith("-");
-                x = data.getVariable(player, this.x.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                x = Double.parseDouble(data.replaceVariables(player, this.x));
             }
         }
 
@@ -55,8 +64,7 @@ public class ParticleSpawner extends Script {
             try {
                 y = Double.parseDouble(this.y);
             } catch (Exception e) {
-                boolean negative = this.y.startsWith("-");
-                y = data.getVariable(player, this.y.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                y = Double.parseDouble(data.replaceVariables(player, this.y));
             }
         }
 
@@ -64,8 +72,7 @@ public class ParticleSpawner extends Script {
             try {
                 z = Double.parseDouble(this.z);
             } catch (Exception e) {
-                boolean negative = this.z.startsWith("-");
-                z = data.getVariable(player, this.z.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                z = Double.parseDouble(data.replaceVariables(player, this.z));
             }
         }
 
@@ -73,8 +80,7 @@ public class ParticleSpawner extends Script {
             try {
                 offsetX = Double.parseDouble(this.offsetX);
             } catch (Exception e) {
-                boolean negative = this.offsetX.startsWith("-");
-                offsetX = data.getVariable(player, this.offsetX.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                offsetX = Double.parseDouble(data.replaceVariables(player, this.offsetX));
             }
         }
 
@@ -82,8 +88,7 @@ public class ParticleSpawner extends Script {
             try {
                 offsetY = Double.parseDouble(this.offsetY);
             } catch (Exception e) {
-                boolean negative = this.offsetY.startsWith("-");
-                offsetY = data.getVariable(player, this.offsetY.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                offsetY = Double.parseDouble(data.replaceVariables(player, this.offsetY));
             }
         }
 
@@ -91,8 +96,7 @@ public class ParticleSpawner extends Script {
             try {
                 offsetZ = Double.parseDouble(this.offsetZ);
             } catch (Exception e) {
-                boolean negative = this.offsetZ.startsWith("-");
-                offsetZ = data.getVariable(player, this.offsetZ.substring(negative ? 1 : 0)).getValue() * (negative ? -1 : 1);
+                offsetZ = Double.parseDouble(data.replaceVariables(player, this.offsetZ));
             }
         }
 
@@ -102,14 +106,22 @@ public class ParticleSpawner extends Script {
             vector = Vectors.rotateAroundAxisY(vector, player.getEyeLocation().getYaw());
             origin = origin.add(player.getLocation().getDirection()).add(vector);
         } else {
-            if (x != 0 || y != 0 || z != 0)
-                origin = origin.add(x, y, z);
+            origin = origin.add(x, y, z);
         }
 
         ParticleBuilder builder = new ParticleBuilder(effect);
-        if (effect.hasProperty(PropertyType.COLORABLE) && colorData != null) {
-            builder.setColor(colorData.next());
+
+        // Particle Data
+        if (effect.hasProperty(PropertyType.DUST) && colorData != null && colorData instanceof RGBColorData rgb && size != Float.MIN_VALUE) {
+            builder.setParticleData(new DustData(rgb.next(), size));
+        } else if (effect.hasProperty(PropertyType.COLORABLE) && colorData != null) {
+            if (effect.equals(ParticleEffect.NOTE) && colorData.isNote()) {
+                builder.setParticleData(new NoteColor(colorData.index()));
+            } else if (colorData instanceof RGBColorData rgb) {
+                builder.setColor(rgb.next());
+            }
         }
+
         builder.setLocation(origin);
         builder.setOffset(new Vector(offsetX, offsetY, offsetZ));
         builder.setAmount(amount);
@@ -123,6 +135,6 @@ public class ParticleSpawner extends Script {
 
     @Override
     public ParticleSpawner clone() {
-        return new ParticleSpawner(effect, x, y, z, from, offsetX, offsetY, offsetZ, colorData, amount, multiplier, speed, direction);
+        return new ParticleSpawner(effect, origin, x, y, z, offsetX, offsetY, offsetZ, colorData, amount, multiplier, speed, size, direction);
     }
 }

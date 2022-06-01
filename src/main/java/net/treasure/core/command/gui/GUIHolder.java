@@ -2,7 +2,7 @@ package net.treasure.core.command.gui;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.treasure.color.data.ColorData;
+import net.treasure.color.data.RGBColorData;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -13,5 +13,5 @@ import java.util.HashMap;
 public class GUIHolder implements InventoryHolder {
     private Inventory inventory;
     private int page;
-    private HashMap<Integer, ColorData> updateSlots;
+    private HashMap<Integer, RGBColorData> updateSlots;
 }

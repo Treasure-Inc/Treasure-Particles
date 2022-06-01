@@ -1,14 +1,16 @@
 package net.treasure.core.command.gui.task;
 
 import lombok.Getter;
-import net.treasure.color.data.ColorData;
 import net.treasure.core.command.gui.GUIHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 public class GUIUpdater implements Runnable {
 
@@ -29,9 +31,9 @@ public class GUIUpdater implements Runnable {
                 iterator.remove();
                 continue;
             }
-            for (Map.Entry<Integer, ColorData> set : holder.getUpdateSlots().entrySet()) {
+            for (var set : holder.getUpdateSlots().entrySet()) {
                 int slot = set.getKey();
-                ColorData data = set.getValue();
+                var data = set.getValue();
                 if (data == null || slot < 0 || slot > 53) continue;
                 ItemStack item = holder.getInventory().getItem(slot);
                 if (item == null) continue;

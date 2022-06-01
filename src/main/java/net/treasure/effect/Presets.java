@@ -1,4 +1,4 @@
-package net.treasure.effect.script.preset;
+package net.treasure.effect;
 
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;

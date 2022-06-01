@@ -13,6 +13,7 @@ public class MathUtil {
     private static final double degFull, degToIndex;
     private static final double[] sin, cos;
     private static final DecimalFormat DF;
+
     static {
         DF = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         DF.setMaximumFractionDigits(340);
@@ -133,10 +134,14 @@ public class MathUtil {
                     x = parseFactor();
                     x = switch (func) {
                         case "sqrt" -> Math.sqrt(x);
-                        case "sin" -> MathUtil.sin(x);
-                        case "cos" -> MathUtil.cos(x);
+                        case "sin" -> sin(x);
+                        case "cos" -> cos(x);
                         case "tan" -> Math.tan(x);
                         case "cot" -> 1 / Math.tan(x);
+                        case "sec" -> 1 / cos(x);
+                        case "cosec" -> 1 / sin(x);
+                        case "asin" -> Math.asin(x);
+                        case "acos" -> Math.acos(x);
                         case "abs" -> Math.abs(x);
                         case "atan" -> Math.atan2(save, x);
                         default -> throw new RuntimeException("Unknown function: " + func);

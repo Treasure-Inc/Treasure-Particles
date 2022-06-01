@@ -18,7 +18,7 @@ public class Title extends Script {
 
     @Override
     public boolean tick(Player player, EffectData data, int times) {
-        MessageUtils.sendTitleParsed(player, title, subtitle, fadeIn, stay, fadeOut);
+        MessageUtils.sendTitleParsed(player, data.replaceVariables(player, title), data.replaceVariables(player, subtitle), fadeIn, stay, fadeOut);
         return true;
     }
 

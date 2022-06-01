@@ -1,7 +1,8 @@
-package net.treasure.effect.script;
+package net.treasure.effect.script.sound;
 
 import lombok.Builder;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.script.Script;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,7 @@ public class PlaySound extends Script {
     }
 
     @Override
-    public Script clone() {
+    public PlaySound clone() {
         return new PlaySound(sound, clientSide, volume, pitch);
     }
 }

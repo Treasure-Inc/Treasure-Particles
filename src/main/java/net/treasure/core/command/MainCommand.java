@@ -50,6 +50,13 @@ public class MainCommand extends BaseCommand {
         MessageUtils.sendParsed(player, String.format(Messages.EFFECT_SELECTED, effect.getDisplayName()));
     }
 
+    @CommandPermission("%basecmd")
+    @Subcommand("reset")
+    public void resetEffect(Player player) {
+        plugin.getPlayerManager().getPlayerData(player).setCurrentEffect(player, null);
+
+    }
+
     @Subcommand("reload|rl")
     @CommandPermission("%admincmd")
     public void reload(CommandSender sender) {

@@ -4,8 +4,6 @@ import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
 import net.treasure.effect.script.conditional.reader.ConditionReader;
-import net.treasure.effect.script.message.Title;
-import net.treasure.effect.script.message.reader.TitleReader;
 import net.treasure.util.MathUtil;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
@@ -25,20 +23,9 @@ import java.util.regex.Matcher;
 public class TestFeatures {
 
     @Test
-    public void testSplit() {
-        String line = "title=asdasdasd &asd asd &a; asdas das dqweq= &&& subtitle=qweqdasdadafsa&f asd&&fasdf a&sdfasdf 454787 &&& fadeIn=40 &&& fadeOut=30 &&& stay=100";
-        var title = new TitleReader().read(line);
-        System.out.println(title.getTitle());
-        System.out.println(title.getSubtitle());
-        System.out.println(title.getFadeIn());
-        System.out.println(title.getStay());
-        System.out.println(title.getFadeOut());
-    }
-
-    @Test
     public void testReader() {
         var reader = new ConditionReader(null);
-        var parent = reader.read("((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
+        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
 //        var parent = reader.read("((p==1 && q==1) || (r==0 && s==0))");
 //        var parent = reader.read("(p==1 && q==1 && r==1)");
         System.out.println("-----RESULTS " + parent.inner.size());
@@ -99,9 +86,9 @@ public class TestFeatures {
     @Test
     public void testReplace() {
         final Set<Pair<String, Double>> variables = new HashSet<>();
-        variables.add(new Pair<>("phase", 0.0));
+        variables.add(new Pair<>("phase", 150.0547789798));
         EffectData data = new EffectData(variables);
-        String eval = replaceVariables(data, "actionbar {i:phase}");
+        String eval = replaceVariables(data, "actionbar {%,.2f:phase}");
         System.out.println("Result: " + eval);
     }
 
@@ -111,8 +98,7 @@ public class TestFeatures {
         var array = line.toCharArray();
         int startPos = -1;
         StringBuilder variable = new StringBuilder();
-        char cast = ' ';
-        char last = ' ';
+        StringBuilder format = new StringBuilder();
         for (int pos = 0; pos < array.length; pos++) {
             var c = array[pos];
             switch (c) {
@@ -140,31 +126,30 @@ public class TestFeatures {
                         value = preset;
                     } else
                         value = p.getValue();
-                    switch (cast) {
-                        case ' ', 'd' -> builder.append(value);
-                        case 'i' -> builder.append((int) value);
-                    }
-                    cast = ' ';
+
+                    if (!format.isEmpty())
+                        builder.append(String.format(format.toString(), value));
+                    else
+                        builder.append(value);
 
                     startPos = -1;
                     variable = new StringBuilder();
+                    format = new StringBuilder();
                 }
                 case ':' -> {
-                    if (startPos != -1)
-                        cast = last;
-                    else
-                        builder.append(c);
-                }
-                default -> {
                     if (startPos != -1) {
-                        if (pos + 1 < array.length && array[pos + 1] == ':')
-                            break;
-                        variable.append(c);
+                        format = variable;
+                        variable = new StringBuilder();
                     } else
                         builder.append(c);
                 }
+                default -> {
+                    if (startPos != -1)
+                        variable.append(c);
+                    else
+                        builder.append(c);
+                }
             }
-            last = c;
         }
         return builder.toString();
     }

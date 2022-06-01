@@ -1,13 +1,13 @@
 package net.treasure.core.command.gui;
 
-import net.treasure.color.data.ColorData;
+import net.treasure.color.data.RGBColorData;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
 import net.treasure.effect.data.EffectData;
-import net.treasure.util.CustomItem;
 import net.treasure.locale.Messages;
+import net.treasure.util.CustomItem;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -57,7 +57,7 @@ public class EffectsGUI {
             inventory.setItem(52, new CustomItem(Material.ENDER_PEARL).setDisplayName(MessageUtils.parseLegacy(Messages.GUI_NEXT_PAGE)).build());
 
         boolean hasAnimation = false;
-        HashMap<Integer, ColorData> updateSlots = null;
+        HashMap<Integer, RGBColorData> updateSlots = null;
 
         for (int i = page * 28; i < (page + 1) * 28; i++) {
             if (effects.size() <= i) {
@@ -72,7 +72,7 @@ public class EffectsGUI {
                     updateSlots = new HashMap<>();
                 net.treasure.color.Color _color = TreasurePlugin.getInstance().getColorManager().get(effect.getArmorColor());
                 if (_color != null) {
-                    ColorData _data = new ColorData(_color, 1f, true);
+                    var _data = new RGBColorData(_color, 1f, true);
                     updateSlots.put(where, _data);
                     color = _data.nextBukkit();
                 } else {
@@ -86,7 +86,7 @@ public class EffectsGUI {
                     .changeArmorColor(color)
                     .addData("effect", effect.getKey())
                     .glow(data.getCurrentEffect() != null && data.getCurrentEffect().equals(effect))
-                    .addItemFlags(ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
+                    .addItemFlags(ItemFlag.values())
                     .build());
         }
 

@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 @Setter
 public abstract class Script implements Cloneable {
 
-    int interval = -1;
-    boolean postLine = false;
+    protected int interval = -1, index;
+    protected String tickHandlerKey = null;
 
     public abstract boolean tick(Player player, EffectData data, int times);
 
@@ -24,7 +24,7 @@ public abstract class Script implements Cloneable {
     public Script cloneScript() {
         var script = clone();
         script.interval = interval;
-        script.postLine = postLine;
+        script.tickHandlerKey = tickHandlerKey;
         return script;
     }
 

@@ -1,4 +1,4 @@
-package net.treasure.effect.script;
+package net.treasure.effect.script.variable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.script.Script;
 import net.treasure.util.MathUtil;
 import net.treasure.util.Pair;
 import org.bukkit.entity.Player;
@@ -14,10 +15,9 @@ import java.util.Set;
 
 @Builder
 @AllArgsConstructor
+@Getter
 public class Variable extends Script {
 
-    @Getter
-    private int index;
     private String variable;
     private Operator operator;
     private String eval;
@@ -28,8 +28,7 @@ public class Variable extends Script {
         if (pair == null) return true;
         Effect effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
-            var array = isPostLine() ? effect.getCachePost() : effect.getCache();
-            pair.setValue(array[times][index]);
+            pair.setValue(effect.getCache().get(tickHandlerKey)[times][index]);
             return true;
         }
         double val;
@@ -77,7 +76,7 @@ public class Variable extends Script {
 
     @Override
     public Variable clone() {
-        return new Variable(index, variable, operator, eval);
+        return new Variable(variable, operator, eval);
     }
 
     public enum Operator {

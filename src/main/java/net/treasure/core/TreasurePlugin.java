@@ -69,16 +69,16 @@ public class TreasurePlugin extends JavaPlugin {
         dataHolders = new ArrayList<>();
         debugModeEnabled = new File(getDataFolder(), "dev").exists();
 
+        // Main Config
+        saveDefaultConfig();
+        configure();
+
         // Database
         database = new Database();
         if (!database.connect()) {
             disable();
             return;
         }
-
-        // Main Config
-        saveDefaultConfig();
-        configure();
 
         // Initialize data holders
         messages = new Messages();
