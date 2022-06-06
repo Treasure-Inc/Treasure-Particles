@@ -2,6 +2,7 @@ package net.treasure.effect.data;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.treasure.common.Permissions;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.TickHandler;
@@ -19,7 +20,7 @@ public class EffectData {
     private Effect currentEffect;
 
     @Setter
-    private boolean enabled = false, effectsEnabled = true, debugModeEnabled;
+    private boolean enabled = false, effectsEnabled = true, notificationsEnabled, debugModeEnabled;
 
     private final Set<Pair<String, Double>> variables;
 
@@ -42,7 +43,7 @@ public class EffectData {
         this.currentEffect = currentEffect;
         this.variables.clear();
         this.tickHandlers.clear();
-        this.debugModeEnabled = player.hasPermission("trelytra.debug") && TreasurePlugin.getInstance().isDebugModeEnabled();
+        this.debugModeEnabled = player.hasPermission(Permissions.DEBUG) && TreasurePlugin.getInstance().isDebugModeEnabled();
         if (this.currentEffect != null)
             this.currentEffect.initialize(player, this);
     }

@@ -2,20 +2,18 @@ package net.treasure.color.data;
 
 import net.treasure.color.Color;
 
-import java.util.List;
-
 public class RGBColorData extends ColorData {
 
-    final List<java.awt.Color> colors;
+    final Color color;
 
     public RGBColorData(Color color, float speed, boolean revertWhenDone) {
         super(speed, revertWhenDone);
-        this.colors = color.getColors();
-        this.size = colors.size();
+        this.color = color;
+        this.size = color.getColors().size();
     }
 
     public java.awt.Color next() {
-        return colors.get(index());
+        return color.getColors().get(index());
     }
 
     public org.bukkit.Color nextBukkit() {

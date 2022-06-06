@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import net.treasure.color.data.ColorData;
 import net.treasure.color.data.RGBColorData;
+import net.treasure.color.data.RandomNoteData;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
@@ -14,6 +15,7 @@ import org.bukkit.util.Vector;
 import xyz.xenondevs.particle.ParticleBuilder;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.PropertyType;
+import xyz.xenondevs.particle.data.ParticleData;
 import xyz.xenondevs.particle.data.color.DustData;
 import xyz.xenondevs.particle.data.color.NoteColor;
 
@@ -25,6 +27,7 @@ public class ParticleSpawner extends Script {
     ParticleOrigin origin;
     String x, y, z, offsetX, offsetY, offsetZ;
     ColorData colorData;
+    ParticleData particleData;
     int amount;
     @Builder.Default
     float multiplier = Float.MIN_VALUE;
@@ -112,11 +115,13 @@ public class ParticleSpawner extends Script {
         ParticleBuilder builder = new ParticleBuilder(effect);
 
         // Particle Data
-        if (effect.hasProperty(PropertyType.DUST) && colorData != null && colorData instanceof RGBColorData rgb && size != Float.MIN_VALUE) {
+        if (particleData != null) {
+            builder.setParticleData(particleData);
+        } else if (effect.hasProperty(PropertyType.DUST) && colorData != null && colorData instanceof RGBColorData rgb && size != Float.MIN_VALUE) {
             builder.setParticleData(new DustData(rgb.next(), size));
         } else if (effect.hasProperty(PropertyType.COLORABLE) && colorData != null) {
             if (effect.equals(ParticleEffect.NOTE) && colorData.isNote()) {
-                builder.setParticleData(new NoteColor(colorData.index()));
+                builder.setParticleData(colorData instanceof RandomNoteData randomNoteData ? randomNoteData.next() : new NoteColor(colorData.index()));
             } else if (colorData instanceof RGBColorData rgb) {
                 builder.setColor(rgb.next());
             }
@@ -135,6 +140,6 @@ public class ParticleSpawner extends Script {
 
     @Override
     public ParticleSpawner clone() {
-        return new ParticleSpawner(effect, origin, x, y, z, offsetX, offsetY, offsetZ, colorData, amount, multiplier, speed, size, direction);
+        return new ParticleSpawner(effect, origin, x, y, z, offsetX, offsetY, offsetZ, colorData, particleData, amount, multiplier, speed, size, direction);
     }
 }

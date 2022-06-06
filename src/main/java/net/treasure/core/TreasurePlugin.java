@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.treasure.color.ColorManager;
+import net.treasure.common.Permissions;
 import net.treasure.core.command.MainCommand;
 import net.treasure.core.command.gui.GUIListener;
 import net.treasure.core.command.gui.task.GUIUpdater;
@@ -30,20 +31,22 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Getter
 public class TreasurePlugin extends JavaPlugin {
 
     @Getter
     private static TreasurePlugin instance;
+    public static final String VERSION = "1.2.0";
 
+    // Timings
     private static TimingManager timingManager;
 
     // Data Holders
     private Messages messages;
     private EffectManager effectManager;
     private ColorManager colorManager;
+    private Permissions permissions;
     private List<DataHolder> dataHolders;
 
     private Database database;
@@ -58,7 +61,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     private boolean debugModeEnabled;
     private Random random;
-    private int taskId = -5;
+    private int GUI_TASK = -5;
 
     @Override
     public void onEnable() {
@@ -111,24 +114,27 @@ public class TreasurePlugin extends JavaPlugin {
 
         playerManager = new PlayerManager();
 
-        // Register command stuffs
+        // Command stuffs
         commandManager = new BukkitCommandManager(this);
         commandManager.getCommandContexts().registerContext(
                 Effect.class,
                 Effect.getContextResolver());
+
+        // Permissions
+        permissions = new Permissions();
+        permissions.initialize();
+        dataHolders.add(permissions);
+
+        // Main command with completions
         commandManager.registerCommand(new MainCommand(this));
         var completions = commandManager.getCommandCompletions();
-        completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).collect(Collectors.toList()));
+        completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).toList());
         completions.registerStaticCompletion("versions", notificationManager.getVersions());
-        var replacements = commandManager.getCommandReplacements();
-
-        replacements.addReplacement("basecmd", config.getString("permissions.menu", "trelytra.menu"));
-        replacements.addReplacement("admincmd", config.getString("permissions.admin", "trelytra.admin"));
-        replacements.addReplacement("changelog", "trelytra.notifications");
 
         // Adventure
         this.adventure = BukkitAudiences.create(this);
 
+        // Initialize players
         for (Player player : Bukkit.getOnlinePlayers())
             playerManager.initializePlayer(player);
 
@@ -137,8 +143,9 @@ public class TreasurePlugin extends JavaPlugin {
         pluginManager.registerEvents(new JoinQuitListener(this), this);
         pluginManager.registerEvents(new GUIListener(), this);
         if (config.getBoolean("gui.animation", true))
-            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
+            GUI_TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
 
+        // bStats
         var metrics = new Metrics(this, 14508);
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
         metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
@@ -181,18 +188,17 @@ public class TreasurePlugin extends JavaPlugin {
         notificationManager.setEnabled(config.getBoolean("notifications", true));
 
         // GUI Animations
-        if (taskId != -5 && !config.getBoolean("gui.animation", true)) {
-            Bukkit.getScheduler().cancelTask(taskId);
-            taskId = -5;
+        if (GUI_TASK != -5 && !config.getBoolean("gui.animation", true)) {
+            Bukkit.getScheduler().cancelTask(GUI_TASK);
+            GUI_TASK = -5;
             getLogger().info("> Disabled gui animations");
-        } else if (taskId == -5 && config.getBoolean("gui.animation", true)) {
-            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
+        } else if (GUI_TASK == -5 && config.getBoolean("gui.animation", true)) {
+            GUI_TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
             getLogger().info("> Enabled gui animations");
         }
 
         // Command Permissions
-        commandManager.getCommandReplacements().addReplacement("basecmd", config.getString("permissions.menu", "trelytra.menu"));
-        commandManager.getCommandReplacements().addReplacement("admincmd", config.getString("permissions.admin", "trelytra.admin"));
+        permissions.reload();
         getLogger().info("Reloaded permissions!");
 
         getLogger().info("Reloaded TreasureElytra!");
@@ -205,7 +211,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     public void configure() {
         var config = getConfig();
-        if (!config.contains("permissions") || !config.contains("locale"))
+        if (!VERSION.equals(config.getString("version")))
             saveResource("config.yml", true);
     }
 

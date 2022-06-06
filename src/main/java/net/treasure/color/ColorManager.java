@@ -1,6 +1,7 @@
 package net.treasure.color;
 
 import lombok.Getter;
+import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.util.color.Gradient;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class ColorManager implements DataHolder {
 
+    public static final String VERSION = "1.2.0";
     final ConfigurationGenerator generator;
 
     @Getter
@@ -38,7 +40,7 @@ public class ColorManager implements DataHolder {
 
     @Override
     public boolean checkVersion() {
-        return true;
+        return VERSION.equals(generator.getConfiguration().getString("version"));
     }
 
     public Color get(String key) {
@@ -49,6 +51,12 @@ public class ColorManager implements DataHolder {
         var config = generator.getConfiguration();
         if (config == null)
             return;
+
+        if (!checkVersion()) {
+            generator.reset();
+            config = generator.generate();
+            TreasurePlugin.logger().warning("Generated new colors.yml (v" + VERSION + ")");
+        }
 
         ConfigurationSection section = config.getConfigurationSection("colors");
         if (section == null)

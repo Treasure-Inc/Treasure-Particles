@@ -1,5 +1,6 @@
 package net.treasure.effect;
 
+import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,6 +30,12 @@ public class Presets implements DataHolder {
     @Override
     public boolean checkVersion() {
         return true;
+    }
+
+    public void reset() {
+        generator.reset();
+        configuration = generator.generate();
+        TreasurePlugin.logger().warning("Generated new effects.yml (v" + EffectManager.VERSION + ")");
     }
 
     public List<String> get(String key) {

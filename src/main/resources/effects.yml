@@ -1,6 +1,6 @@
 version: 1.2.0
 effects:
-  circle:
+  rainbow-circle:
     displayName: "%rainbow-circle"
     armorColor: "rainbow"
     permission: "%rainbow"
@@ -14,8 +14,8 @@ effects:
           - variable r=2*{PI}*{i}/32
           - variable x=cos({r})
           - variable y=sin({r})
-          - particle [effect=redstone,direction=true,x={x},y={y},amount=10,from=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
-  circleline:
+          - particle [effect=redstone,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
+  rainbow-line:
     displayName: "%rainbow-line"
     armorColor: "rainbow"
     permission: "%rainbow"
@@ -24,8 +24,8 @@ effects:
       do:
         times: 8
         scripts:
-          - particle [effect=redstone,amount=10,from=head,colorScheme={name=rainbow;speed=1;revertWhenDone=false}]
-  spiral:
+          - particle [effect=redstone,size=10,origin=head,colorScheme={name=rainbow;speed=0.1;revertWhenDone=false}]
+  rainbow-spiral:
     displayName: "%rainbow-spiral"
     armorColor: "rainbow"
     permission: "%rainbow"
@@ -36,14 +36,71 @@ effects:
         scripts:
           - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=rainbow;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,amount=10,direction=true,x={x},y={z},origin=feet,colorScheme={name=rainbow;revertWhenDone=true;speed=1}]
       doPost:
         scripts:
           - variable step=({step} + 1) % 120
-  line:
+  rainbow-note:
+    displayName: "%rainbow-note"
+    permission: "%rainbow"
+    armorColor: "rainbow"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=note,colorScheme={name=rainbow;speed=0.5;note=true},origin=feet]
+  random-note:
+    displayName: "%random-note"
+    armorColor: "#36d15f"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=note,colorScheme={name=random-note;note=true;size=24},origin=feet]
+  helix-rainbow:
+    displayName: "%helix-rainbow"
+    armorColor: "rainbow"
+    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
+    interval: 1
+    onTick:
+      do:
+        times: 8
+        scripts:
+          - "variable x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "variable y=({stepY} / {maxStepY}) * 1.5"
+          - "variable z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
+          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
+          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
+          - "particle [effect=redstone,x={y},y={x},z={z},amount=10,origin=head,colorScheme={name=rainbow;speed=0.025;revertWhenDone=true}]"
+      doPost:
+        scripts:
+          - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
+          - "conditional (reverse==1) ? preset quadhelix-reverse : none"
+          - "conditional (reverse==0) ? preset quadhelix-normal : none"
+  helix:
+    displayName: "%helix"
+    armorColor: "gradient2"
+    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
+    interval: 1
+    onTick:
+      do:
+        times: 8
+        scripts:
+          - "variable x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "variable y=({stepY} / {maxStepY}) * 1.5"
+          - "variable z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
+          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
+          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
+          - "particle [effect=end_rod,x={y},y={x},z={z},amount=0,origin=head]"
+      doPost:
+        scripts:
+          - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
+          - "conditional (reverse==1) ? preset quadhelix-reverse : none"
+          - "conditional (reverse==0) ? preset quadhelix-normal : none"
+  triple-line:
     displayName: "%line"
     armorColor: "redtoblue"
-    variables: [ 'r', 'x1', 'y1', 'z1', 'y2' ]
+    variables: [ 'r', 'x1', 'y1', 'z1', 'y2', 'z2' ]
     interval: 1
     onTick:
       do:
@@ -53,9 +110,10 @@ effects:
           - variable y1=sin({r})
           - variable z1=sin({r})
           - variable y2={y1}*2
-          - particle [effect=redstone,y={y2},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
-          - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
-          - particle [effect=redstone,x=-{x1},y={y1},z=-{z1},amount=10,from=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+          - variable z2={z1}*-1
+          - particle [effect=redstone,y={y2},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,x=-{x1},y={y1},z={z2},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
   orbit:
     displayName: "%orbit"
     armorColor: "gradient1"
@@ -67,7 +125,7 @@ effects:
         scripts:
           - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
           - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-          - particle [effect=redstone,amount=10,direction=true,x={x},y={z},from=feet,colorScheme={name=gradient1;revertWhenDone=true;speed=0.75}]
+          - particle [effect=redstone,amount=10,direction=true,x={x},y={z},origin=feet,colorScheme={name=gradient1;revertWhenDone=true;speed=0.75}]
       doPost:
         scripts:
           - variable step=({step} + 1) % 120
@@ -84,14 +142,14 @@ effects:
           - variable r={i}*{PI}/24
           - variable x=cos({r})
           - variable z=sin({r})
-          - particle [effect=end_rod,direction=true,x={x},y={z},amount=0,from=head*15]
+          - particle [effect=end_rod,direction=true,x={x},y={z},amount=0,origin=head*15]
       doPost:
         scripts:
           - sound [name=entity.arrow.hit_player,clientSide=true,volume=0.1,pitch=1]
   planor:
     displayName: "%planor"
     armorColor: "#32a852"
-    variables: [ 'step','x','z','angle','xAng','zAng' ]
+    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
     interval: 1
     onTick:
       do:
@@ -102,7 +160,7 @@ effects:
           - variable angle=atan({z},{x})
           - variable xAng=cos({angle})
           - variable zAng=sin({angle})
-          - particle [effect=totem,amount=0,offset={x={xAng};y=0;z={zAng}},speed=0.375,from=feet]
+          - particle [effect=totem,amount=0,offset={x={xAng};y=0;z={zAng}},speed=0.375,origin=feet]
       doPost:
         scripts:
           - variable step=({step} + {PI} / 20) % 40
@@ -119,49 +177,7 @@ effects:
           - variable angle=0.4*{i}
           - variable x=cos({angle})
           - variable z=sin({angle})
-          - particle [effect=electric_spark,x={x},y={z},direction=true,from=feet,amount=0]
-  helix:
-    displayName: "%helix"
-    armorColor: "gradient2"
-    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
-    interval: 1
-    onTick:
-      do:
-        times: 8
-        scripts:
-          - "variable x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "variable y=({stepY} / {maxStepY}) * 1.5"
-          - "variable z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
-          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
-          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
-          - "particle [effect=end_rod,x={y},y={x},z={z},amount=0,from=head]"
-      doPost:
-        scripts:
-          - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
-          - "conditional (reverse==1) ? preset quadhelix-reverse : none"
-          - "conditional (reverse==0) ? preset quadhelix-normal : none"
-  helix-rainbow:
-    displayName: "%helix-rainbow"
-    armorColor: "rainbow"
-    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
-    interval: 1
-    onTick:
-      do:
-        times: 8
-        scripts:
-          - "variable x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "variable y=({stepY} / {maxStepY}) * 1.5"
-          - "variable z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
-          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
-          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
-          - "particle [effect=redstone,x={y},y={x},z={z},amount=10,from=head,colorScheme={name=rainbow;speed=0.025;revertWhenDone=true}]"
-      doPost:
-        scripts:
-          - "conditional (stepX>=80) ? variable stepX=0 : variable stepX+=1"
-          - "conditional (reverse==1) ? preset quadhelix-reverse : none"
-          - "conditional (reverse==0) ? preset quadhelix-normal : none"
+          - particle [effect=electric_spark,x={x},y={z},direction=true,origin=feet,amount=0]
   rain:
     displayName: "%rain"
     variables: [ 'r', 'x', 'z' ]
@@ -174,7 +190,7 @@ effects:
           - variable r={i}*{PI}/24
           - variable x=cos({r})*{RANDOM}*2.5
           - variable z=sin({r})*{RANDOM}*2.5
-          - particle [effect=drip_water,direction=true,x={x},y={z},amount=0,from=head*2]
+          - particle [effect=drip_water,direction=true,x={x},y={z},amount=0,origin=head*2]
   rocket:
     displayName: "%rocket"
     variables: [ 'r', 'x', 'z' ]
@@ -187,4 +203,54 @@ effects:
           - variable r={i}*{PI}/24
           - variable x=cos({r})*{RANDOM}
           - variable z=sin({r})*{RANDOM}
-          - particle [effect=glow_squid_ink,direction=true,x={x},y={z},amount=0,from=head*-2.5]
+          - particle [effect=glow_squid_ink,direction=true,x={x},y={z},amount=0,origin=head*-2.5]
+  redtail:
+    displayName: "%red-tail"
+    permission: "%tail"
+    armorColor: "#a83252"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=block_marker,block={material=fire_coral_block},origin=feet]
+  yellowtail:
+    displayName: "%yellow-tail"
+    permission: "%tail"
+    armorColor: "#d1b536"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=block_marker,block={material=horn_coral_block},origin=feet]
+  rainbowtail:
+    displayName: "%rainbow-tail"
+    permission: "%tail"
+    armorColor: "rainbow"
+    variables: [ 'step' ]
+    onTick:
+      do:
+        scripts:
+          - "conditional (step==9) ? variable step=0 : variable step+=1 ~5"
+          - "conditional (step==0) ? particle [effect=block_marker,block={material=red_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==1) ? particle [effect=block_marker,block={material=orange_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==2) ? particle [effect=block_marker,block={material=yellow_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==3) ? particle [effect=block_marker,block={material=green_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==4) ? particle [effect=block_marker,block={material=lime_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==5) ? particle [effect=block_marker,block={material=cyan_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==6) ? particle [effect=block_marker,block={material=blue_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==7) ? particle [effect=block_marker,block={material=magenta_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==8) ? particle [effect=block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
+  pulse:
+    displayName: "%pulse"
+    armorColor: "gradient3"
+    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng', 'radius=0.5', 'temp' ]
+    interval: 15
+    onTick:
+      do:
+        times: 50
+        scripts:
+          - variable x=cos({PI} * {i} / 25) * {radius}
+          - variable z=sin({PI} * {i} / 25) * {radius}
+          - variable angle=atan({z},{x})
+          - variable xAng=cos({angle})
+          - variable zAng=sin({angle})
+          - "conditional (playerYaw<90 && playerYaw>-90) ? preset swap-x-z-ang : none"
+          - particle [effect=flame,direction=true,x={z},y={x},amount=0,offset={x={xAng};z=0;y={zAng}},speed=0.1,origin=head]

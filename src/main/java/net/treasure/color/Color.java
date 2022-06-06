@@ -8,10 +8,10 @@ import java.util.List;
 public class Color {
 
     @Getter
-    private final String key;
+    final String key;
 
     @Getter
-    private final List<java.awt.Color> colors;
+    final List<java.awt.Color> colors;
 
     public Color(String key) {
         this.key = key;

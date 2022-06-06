@@ -161,7 +161,7 @@ public class TestFeatures {
             System.out.println(matcher.group("type") + " --> " + matcher.group("value"));
         }
         String offset = "{x={xAng};y=0;z={zAng}}";
-        matcher = Patterns.OFFSET.matcher(offset);
+        matcher = Patterns.INNER_SCRIPT.matcher(offset);
         while (matcher.find())
             System.out.println(matcher.group("type") + " --> " + matcher.group("value"));
     }

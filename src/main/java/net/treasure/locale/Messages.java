@@ -12,7 +12,7 @@ public class Messages implements DataHolder {
     public static String LOCALE;
     public static final String
             VERSION = "1.2.0",
-            UPDATE_DESCRIPTION = "Bump version";
+            UPDATE_DESCRIPTION = "New messages";
     private ConfigurationGenerator generator;
 
     public static String PREFIX,
@@ -20,6 +20,8 @@ public class Messages implements DataHolder {
             EFFECT_NO_PERMISSION,
             EFFECT_UNKNOWN,
             EFFECT_TOGGLE,
+            EFFECT_RESET,
+            NOTIFICATIONS_TOGGLE,
             GUI_TITLE,
             GUI_NEXT_PAGE,
             GUI_PREVIOUS_PAGE,
@@ -79,6 +81,8 @@ public class Messages implements DataHolder {
             EFFECT_NO_PERMISSION = PREFIX + config.getString("effect-no-permission", "<red>You don't have enough permission to use that effect!");
             EFFECT_UNKNOWN = PREFIX + config.getString("effect-unknown", "<red>Couldn't find any effect with name %s");
             EFFECT_TOGGLE = PREFIX + config.getString("effect-toggle", "<gray>Elytra Effects: %s");
+            EFFECT_RESET = PREFIX + config.getString("effect-reset", "<gray>Elytra Effect: <red>OFF");
+            NOTIFICATIONS_TOGGLE = PREFIX + config.getString("notifications-toggle", "<gray>Notifications: %s");
 
             GUI_TITLE = config.getString("gui-title", "<aqua><b>Effects");
             GUI_EFFECT_SELECTED = config.getString("gui-effect-selected", "<green>Selected!");

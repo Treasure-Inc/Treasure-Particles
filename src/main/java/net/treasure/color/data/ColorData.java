@@ -25,6 +25,13 @@ public class ColorData {
         this.note = note;
     }
 
+    public ColorData(float speed, boolean revertWhenDone, boolean note, int size) {
+        this.speed = speed;
+        this.revertWhenDone = revertWhenDone;
+        this.note = note;
+        this.size = size;
+    }
+
     public int index() {
         currentIndex += forward ? (speed) : (-speed);
         if (forward ? currentIndex >= size : currentIndex < 0) {
@@ -35,10 +42,11 @@ public class ColorData {
     }
 
     public static ColorData initialize(String input) {
-        Matcher colorMatcher = Patterns.COLOR.matcher(input);
+        Matcher colorMatcher = Patterns.INNER_SCRIPT.matcher(input);
         String colorName = "";
         boolean revertWhenDone = false, note = false;
         float colorSpeed = 1;
+        int size = 1;
         while (colorMatcher.find()) {
             String type = colorMatcher.group("type");
             String value = colorMatcher.group("value");
@@ -56,10 +64,25 @@ public class ColorData {
                     try {
                         colorSpeed = Float.parseFloat(value);
                     } catch (Exception ignored) {
+                        TreasurePlugin.logger().warning("Unexpected speed value: " + value);
+                    }
+                    break;
+                case "size":
+                    try {
+                        size = Integer.parseInt(value);
+                    } catch (Exception ignored) {
+                        TreasurePlugin.logger().warning("Unexpected size value: " + value);
                     }
                     break;
             }
         }
-        return note ? new ColorData(colorSpeed, revertWhenDone, true) : new RGBColorData(TreasurePlugin.getInstance().getColorManager().get(colorName), colorSpeed, revertWhenDone);
+        if (note) {
+            return switch (colorName) {
+                case "random-note" -> new RandomNoteData(size);
+                case "rainbow" -> new ColorData(colorSpeed, revertWhenDone, true, 24);
+                default -> new ColorData(colorSpeed, revertWhenDone, true, size);
+            };
+        } else
+            return new RGBColorData(TreasurePlugin.getInstance().getColorManager().get(colorName), colorSpeed, revertWhenDone);
     }
 }

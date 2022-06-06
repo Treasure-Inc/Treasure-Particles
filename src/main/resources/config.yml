@@ -1,8 +1,15 @@
+version: "1.2.0"
 locale: EN
 notifications: true
 gui:
   animation: true
 permissions:
+  # General
   menu: "trelytra.menu"
   admin: "trelytra.admin"
+  changelog: "trelytra.changelog"
+  debug: "trelytra.debug"
+  # Effects
   rainbow: "trelytra.rainbow"
+  tail: "trelytra.tail"
+  experimental: "trelytra.experimental"

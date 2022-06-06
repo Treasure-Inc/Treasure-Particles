@@ -1,3 +1,4 @@
+version: "1.2.0"
 colors:
   redtoblue:
     values: [ "#FC5C7D", "#6A82FB" ]
@@ -7,4 +8,7 @@ colors:
     size: 100
   gradient2:
     values: [ "#FFFFFF", "#89918b" ]
+    size: 20
+  gradient3:
+    values: [ "#d13636", "#d16536" ]
     size: 20

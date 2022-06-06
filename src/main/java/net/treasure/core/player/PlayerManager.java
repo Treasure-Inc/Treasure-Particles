@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PlayerManager {
 
@@ -29,9 +30,9 @@ public class PlayerManager {
         gson = new Gson();
     }
 
-    public void initializePlayer(Player player) {
-        var inst = TreasurePlugin.getInstance();
-        Bukkit.getScheduler().runTaskAsynchronously(inst, () -> {
+    public CompletableFuture<EffectData> initializePlayer(Player player) {
+        return CompletableFuture.supplyAsync(() -> {
+            var inst = TreasurePlugin.getInstance();
             var database = inst.getDatabase();
 
             EffectData data = new EffectData();
@@ -57,11 +58,13 @@ public class PlayerManager {
                 database.close(ps, rs);
             }
 
-            if (playerData == null) return;
+            if (playerData == null) return null;
             Effect effect = inst.getEffectManager().get(playerData.effectName);
             if (effect != null)
                 data.setCurrentEffect(player, effect);
+            data.setNotificationsEnabled(playerData.notificationsEnabled);
             data.setEffectsEnabled(playerData.effectsEnabled);
+            return data;
         });
     }
 
@@ -77,7 +80,7 @@ public class PlayerManager {
         var inst = TreasurePlugin.getInstance();
         var data = playersData.remove(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(inst, () -> {
-            PlayerData playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled());
+            PlayerData playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled(), data.isNotificationsEnabled());
             if (data.getCurrentEffect() != null)
                 inst.getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
             else
@@ -99,7 +102,7 @@ public class PlayerManager {
                 data.setEnabled(false);
                 continue;
             }
-            Effect effect = TreasurePlugin.getInstance().getEffectManager().get(data.getCurrentEffect().getKey());
+            Effect effect = inst.getEffectManager().get(data.getCurrentEffect().getKey());
             data.setCurrentEffect(player, null);
             if (effect != null && effect.canUse(player))
                 data.setCurrentEffect(player, effect);

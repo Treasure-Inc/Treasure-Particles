@@ -70,7 +70,7 @@ public class EffectsGUI {
                 hasAnimation = true;
                 if (updateSlots == null)
                     updateSlots = new HashMap<>();
-                net.treasure.color.Color _color = TreasurePlugin.getInstance().getColorManager().get(effect.getArmorColor());
+                var _color = TreasurePlugin.getInstance().getColorManager().get(effect.getArmorColor());
                 if (_color != null) {
                     var _data = new RGBColorData(_color, 1f, true);
                     updateSlots.put(where, _data);

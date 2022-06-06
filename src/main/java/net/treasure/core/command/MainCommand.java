@@ -32,7 +32,7 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("toggle")
-    public void toggle(Player player) {
+    public void toggleEffects(Player player) {
         var data = plugin.getPlayerManager().getPlayerData(player);
         data.setEffectsEnabled(!data.isEffectsEnabled());
         MessageUtils.sendParsed(player, String.format(Messages.EFFECT_TOGGLE, data.isEffectsEnabled() ? Messages.ENABLED : Messages.DISABLED));
@@ -54,7 +54,7 @@ public class MainCommand extends BaseCommand {
     @Subcommand("reset")
     public void resetEffect(Player player) {
         plugin.getPlayerManager().getPlayerData(player).setCurrentEffect(player, null);
-
+        player.sendMessage(Messages.EFFECT_RESET);
     }
 
     @Subcommand("reload|rl")
@@ -80,5 +80,13 @@ public class MainCommand extends BaseCommand {
         }
         MessageUtils.sendParsed(sender, Messages.PREFIX + "<aqua><b>v" + v);
         MessageUtils.openBook(sender, changelog);
+    }
+
+    @Subcommand("notifications")
+    @CommandPermission("%notifications")
+    public void toggleNotifications(Player player) {
+        var data = plugin.getPlayerManager().getPlayerData(player);
+        data.setNotificationsEnabled(!data.isNotificationsEnabled());
+        MessageUtils.sendParsed(player, String.format(Messages.NOTIFICATIONS_TOGGLE, data.isNotificationsEnabled() ? Messages.ENABLED : Messages.DISABLED));
     }
 }

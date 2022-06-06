@@ -95,6 +95,7 @@ public class EffectManager implements DataHolder {
             return;
 
         if (!checkVersion()) {
+            presets.reset();
             generator.reset();
             config = generator.getConfiguration();
             inst.getLogger().warning("Generated new effects.yml (v" + VERSION + ")");
@@ -111,7 +112,7 @@ public class EffectManager implements DataHolder {
                 String path = key + ".";
 
                 String displayName = section.getString(path + "displayName", key);
-                if (displayName.startsWith("%"))
+                if (displayName != null && displayName.startsWith("%"))
                     displayName = messages.get("effects." + displayName.substring(1), displayName);
 
                 String permission = section.getString(path + "permission");
@@ -145,6 +146,7 @@ public class EffectManager implements DataHolder {
 
                 effects.add(effect);
             } catch (Exception e) {
+                e.printStackTrace();
                 inst.getLogger().warning("Couldn't load effect: " + key);
             }
         }
@@ -155,6 +157,7 @@ public class EffectManager implements DataHolder {
     }
 
     public <S> S read(Effect effect, String key, String line) {
+        // noinspection unchecked
         return (S) readers.get(key).read(effect, line);
     }
 
