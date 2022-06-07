@@ -14,7 +14,40 @@ effects:
           - variable r=2*{PI}*{i}/32
           - variable x=cos({r})
           - variable y=sin({r})
-          - particle [effect=redstone,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
+          - particle [effect=redstone,size=1,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
+  rainbow-circle-transition:
+    displayName: "%rainbow-circle-transition"
+    armorColor: "rainbow"
+    permission: "%rainbow"
+    variables: [ 'r', 'x', 'y' ]
+    enableCaching: true
+    interval: 1
+    onTick:
+      do:
+        times: 32
+        scripts:
+          - variable r=2*{PI}*{i}/32
+          - variable x=cos({r})
+          - variable y=sin({r})
+          - particle [effect=DUST_COLOR_TRANSITION,size=1,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
+  rainbow-random:
+    displayName: "%rainbow-random"
+    armorColor: "rainbow"
+    permission: "%rainbow"
+    variables: [ 'r', 'x', 'y', 'angle', 'xAng', 'yAng' ]
+    enableCaching: true
+    interval: 1
+    onTick:
+      do:
+        times: 32
+        scripts:
+          - variable r=2*{PI}*{i}/32
+          - variable x=cos({r})
+          - variable y=sin({r})
+          - variable angle=atan({y},{x})
+          - variable xAng=cos({angle})
+          - variable yAng=sin({angle})
+          - particle [effect=redstone,direction=true,x={x},y={y},offset={x={x};y={y}},amount=5,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
   rainbow-line:
     displayName: "%rainbow-line"
     armorColor: "rainbow"
@@ -100,7 +133,7 @@ effects:
   triple-line:
     displayName: "%line"
     armorColor: "redtoblue"
-    variables: [ 'r', 'x1', 'y1', 'z1', 'y2', 'z2' ]
+    variables: [ 'r', 'x1', 'y1', 'z1', 'x2', 'y2', 'z2' ]
     interval: 1
     onTick:
       do:
@@ -110,10 +143,11 @@ effects:
           - variable y1=sin({r})
           - variable z1=sin({r})
           - variable y2={y1}*2
+          - variable x2={x1}*-1
           - variable z2={z1}*-1
           - particle [effect=redstone,y={y2},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
           - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
-          - particle [effect=redstone,x=-{x1},y={y1},z={z2},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,x={x2},y={y1},z={z2},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
   orbit:
     displayName: "%orbit"
     armorColor: "gradient1"
@@ -146,8 +180,8 @@ effects:
       doPost:
         scripts:
           - sound [name=entity.arrow.hit_player,clientSide=true,volume=0.1,pitch=1]
-  planor:
-    displayName: "%planor"
+  planner:
+    displayName: "%planner"
     armorColor: "#32a852"
     variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
     interval: 1
@@ -228,7 +262,7 @@ effects:
     onTick:
       do:
         scripts:
-          - "conditional (step==9) ? variable step=0 : variable step+=1 ~5"
+          - "conditional (step==8) ? variable step=0 : variable step+=1 ~5"
           - "conditional (step==0) ? particle [effect=block_marker,block={material=red_stained_glass_pane},origin=feet] : none"
           - "conditional (step==1) ? particle [effect=block_marker,block={material=orange_stained_glass_pane},origin=feet] : none"
           - "conditional (step==2) ? particle [effect=block_marker,block={material=yellow_stained_glass_pane},origin=feet] : none"
@@ -254,3 +288,20 @@ effects:
           - variable zAng=sin({angle})
           - "conditional (playerYaw<90 && playerYaw>-90) ? preset swap-x-z-ang : none"
           - particle [effect=flame,direction=true,x={z},y={x},amount=0,offset={x={xAng};z=0;y={zAng}},speed=0.1,origin=head]
+  soul:
+    displayName: "%soul"
+    armorColor: "gradient4"
+    variables: [ 'r', 'x', 'y', 'angle', 'xAng', 'yAng' ]
+    enableCaching: true
+    interval: 2
+    onTick:
+      do:
+        times: 32
+        scripts:
+          - variable r=2*{PI}*{i}/32
+          - variable x=cos({r})
+          - variable y=sin({r})
+          - variable angle=atan({x},{y})
+          - variable xAng=cos({angle})
+          - variable yAng=sin({angle})
+          - particle [effect=soul,direction=true,x={x},y={y},offset={x={xAng};y={yAng}},speed=0.25,amount=0,origin=head*-1.25]

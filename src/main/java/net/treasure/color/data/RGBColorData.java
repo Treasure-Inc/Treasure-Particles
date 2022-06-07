@@ -9,7 +9,7 @@ public class RGBColorData extends ColorData {
     public RGBColorData(Color color, float speed, boolean revertWhenDone) {
         super(speed, revertWhenDone);
         this.color = color;
-        this.size = color.getColors().size();
+        this.max = color.getColors().size();
     }
 
     public java.awt.Color next() {

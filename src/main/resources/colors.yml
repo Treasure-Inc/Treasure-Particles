@@ -12,3 +12,6 @@ colors:
   gradient3:
     values: [ "#d13636", "#d16536" ]
     size: 20
+  gradient4:
+    values: [ "#2e1c1a", "#4254f5" ]
+    size: 20

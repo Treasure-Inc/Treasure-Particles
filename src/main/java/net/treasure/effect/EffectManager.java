@@ -5,6 +5,7 @@ import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
+import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.listener.GlideListener;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.ScriptReader;
@@ -156,12 +157,14 @@ public class EffectManager implements DataHolder {
         this.readers.put(key, reader);
     }
 
-    public <S> S read(Effect effect, String key, String line) {
+    public <S> S read(Effect effect, String key, String line) throws ReaderException {
+        if (!readers.containsKey(key))
+            throw new ReaderException("Invalid script type: " + key);
         // noinspection unchecked
         return (S) readers.get(key).read(effect, line);
     }
 
-    public Script readLine(Effect effect, String line) {
+    public Script readLine(Effect effect, String line) throws ReaderException {
         var inst = TreasurePlugin.getInstance();
 
         int interval = -1;
@@ -171,7 +174,7 @@ public class EffectManager implements DataHolder {
             try {
                 interval = Integer.parseInt(args[1]);
             } catch (Exception ignored) {
-                inst.getLogger().warning("Invalid interval syntax: " + line);
+                inst.getLogger().warning(effect.getPrefix() + "Invalid interval syntax: " + line);
             }
             line = args[0];
         }

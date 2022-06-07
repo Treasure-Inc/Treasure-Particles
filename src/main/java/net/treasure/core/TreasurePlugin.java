@@ -205,7 +205,7 @@ public class TreasurePlugin extends JavaPlugin {
     }
 
     public void disable() {
-        getLogger().log(Level.WARNING, "Couldn't initialize TreasureElytra!");
+        getLogger().warning("Couldn't initialize TreasureElytra!");
         getPluginLoader().disablePlugin(this);
     }
 

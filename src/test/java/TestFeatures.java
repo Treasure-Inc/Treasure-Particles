@@ -158,6 +158,8 @@ public class TestFeatures {
     public void testPatterns() {
         Matcher matcher = Patterns.SCRIPT.matcher("particle [effect=end_rod,amount=0,offset={x={xAng};y=0;z={zAng}},direction=true,speed=0.375]");
         while (matcher.find()) {
+            System.out.println("start: " + matcher.start());
+            System.out.println("end: " + matcher.end());
             System.out.println(matcher.group("type") + " --> " + matcher.group("value"));
         }
         String offset = "{x={xAng};y=0;z={zAng}}";

@@ -2,6 +2,7 @@ package net.treasure.effect.script.variable.reader;
 
 import net.treasure.common.Patterns;
 import net.treasure.effect.Effect;
+import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.ScriptReader;
 import net.treasure.effect.script.variable.Variable;
 
@@ -10,7 +11,7 @@ import java.util.regex.Matcher;
 public class VariableReader implements ScriptReader<Variable> {
 
     @Override
-    public Variable read(Effect effect, String line) {
+    public Variable read(Effect effect, String line) throws ReaderException {
         Matcher evalMatcher = Patterns.EVAL.matcher(line);
 
         if (evalMatcher.matches()) {
@@ -18,6 +19,8 @@ public class VariableReader implements ScriptReader<Variable> {
             if (effect.hasVariable(variable)) {
                 var operator = evalMatcher.group(2);
                 var eval = evalMatcher.group(3);
+
+                int start = evalMatcher.start(), end = evalMatcher.end();
 
                 Variable.VariableBuilder builder = Variable.builder();
                 builder.variable(variable);
@@ -29,7 +32,7 @@ public class VariableReader implements ScriptReader<Variable> {
                     case "*" -> builder.operator(Variable.Operator.MULTIPLY);
                     case "/" -> builder.operator(Variable.Operator.DIVISION);
                     default -> {
-                        error(line, "Invalid operator (" + operator + ")");
+                        error(effect, line, start, end, "Invalid operator (" + operator + ")");
                         return null;
                     }
                 }

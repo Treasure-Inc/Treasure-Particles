@@ -3,13 +3,14 @@ package net.treasure.color.data;
 import lombok.Getter;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
+import net.treasure.effect.exception.ReaderException;
 
 import java.util.regex.Matcher;
 
 @Getter
 public class ColorData {
 
-    int size;
+    protected int min, max;
     float currentIndex = -1;
     final float speed;
     final boolean revertWhenDone, note;
@@ -25,28 +26,31 @@ public class ColorData {
         this.note = note;
     }
 
-    public ColorData(float speed, boolean revertWhenDone, boolean note, int size) {
+    public ColorData(float speed, boolean revertWhenDone, boolean note, int min, int max) {
         this.speed = speed;
         this.revertWhenDone = revertWhenDone;
         this.note = note;
-        this.size = size;
+        this.min = min;
+        this.max = max;
     }
 
     public int index() {
         currentIndex += forward ? (speed) : (-speed);
-        if (forward ? currentIndex >= size : currentIndex < 0) {
-            currentIndex = revertWhenDone ? (forward ? size - 2 : 1) : 0;
+        if (forward ? currentIndex >= max : currentIndex < min) {
+            currentIndex = revertWhenDone ? (forward ? max - 2 : 1) : min;
             forward = revertWhenDone != forward;
         }
-        return (int) (currentIndex = Math.max(0, currentIndex));
+        return (int) (currentIndex = Math.max(min, currentIndex));
     }
 
-    public static ColorData initialize(String input) {
+    public static ColorData initialize(String input) throws ReaderException {
         Matcher colorMatcher = Patterns.INNER_SCRIPT.matcher(input);
         String colorName = "";
         boolean revertWhenDone = false, note = false;
         float colorSpeed = 1;
-        int size = 1;
+
+        int min = 0, max = 1;
+
         while (colorMatcher.find()) {
             String type = colorMatcher.group("type");
             String value = colorMatcher.group("value");
@@ -64,25 +68,45 @@ public class ColorData {
                     try {
                         colorSpeed = Float.parseFloat(value);
                     } catch (Exception ignored) {
-                        TreasurePlugin.logger().warning("Unexpected speed value: " + value);
+                        throw new ReaderException("Unexpected speed value: " + value);
                     }
                     break;
                 case "size":
                     try {
-                        size = Integer.parseInt(value);
+                        max = Integer.parseInt(value);
                     } catch (Exception ignored) {
-                        TreasurePlugin.logger().warning("Unexpected size value: " + value);
+                        var args = Patterns.DOUBLE.split(value);
+                        boolean success = false;
+                        try {
+                            if (args.length != 2)
+                                throw new Exception();
+                            min = Integer.parseInt(args[0]);
+                            max = Integer.parseInt(args[1]);
+                            success = true;
+                        } catch (Exception ignored2) {
+                        }
+                        if (!success)
+                            throw new ReaderException("Unexpected size value: " + value);
                     }
                     break;
             }
         }
         if (note) {
             return switch (colorName) {
-                case "random-note" -> new RandomNoteData(size);
-                case "rainbow" -> new ColorData(colorSpeed, revertWhenDone, true, 24);
-                default -> new ColorData(colorSpeed, revertWhenDone, true, size);
+                case "random-note" -> new RandomNoteColorData(min, max);
+                case "rainbow" -> new ColorData(colorSpeed, revertWhenDone, true, min, 24);
+                default -> {
+                    if (!colorName.isEmpty())
+                        throw new ReaderException("Unexpected color name value (note): " + colorName);
+                    yield new ColorData(colorSpeed, revertWhenDone, true, min, max);
+                }
             };
-        } else
-            return new RGBColorData(TreasurePlugin.getInstance().getColorManager().get(colorName), colorSpeed, revertWhenDone);
+        } else {
+            var color = TreasurePlugin.getInstance().getColorManager().get(colorName);
+            if (color == null) {
+                throw new ReaderException("Unexpected color scheme name value: " + colorName);
+            }
+            return new RGBColorData(color, colorSpeed, revertWhenDone);
+        }
     }
 }

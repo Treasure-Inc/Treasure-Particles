@@ -7,6 +7,7 @@ import lombok.Getter;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.conditional.ConditionalScript;
 import net.treasure.effect.script.variable.Variable;
@@ -184,17 +185,28 @@ public class Effect {
     public List<Script> readFromFile(String tickHandlerKey, List<String> _lines) {
         List<Script> lines = new ArrayList<>();
         var effectManager = TreasurePlugin.getInstance().getEffectManager();
+        var logger = TreasurePlugin.logger();
         for (String line : _lines) {
-            var script = effectManager.readLine(this, line);
-            if (script != null) {
-                script.setTickHandlerKey(tickHandlerKey);
-                lines.add(script);
-            } else
-                TreasurePlugin.logger().log(Level.WARNING, "Couldn't read line: " + line);
+            try {
+                var script = effectManager.readLine(this, line);
+                if (script != null) {
+                    script.setTickHandlerKey(tickHandlerKey);
+                    lines.add(script);
+                } else
+                    logger.log(Level.WARNING, getPrefix() + "Couldn't read line: " + line);
+            } catch (ReaderException e) {
+                if (e.getMessage() != null) {
+                    logger.log(Level.WARNING, getPrefix() + "Couldn't read line: " + line);
+                    logger.warning("└ " + e.getMessage());
+                }
+            }
         }
         return lines;
     }
 
+    public String getPrefix() {
+        return "[" + key + "] ";
+    }
 
     public static ContextResolver<Effect, BukkitCommandExecutionContext> getContextResolver() {
         return (c) -> {

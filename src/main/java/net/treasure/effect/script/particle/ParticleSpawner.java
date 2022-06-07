@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import net.treasure.color.data.ColorData;
 import net.treasure.color.data.RGBColorData;
-import net.treasure.color.data.RandomNoteData;
+import net.treasure.color.data.RandomNoteColorData;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
@@ -16,6 +16,7 @@ import xyz.xenondevs.particle.ParticleBuilder;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.PropertyType;
 import xyz.xenondevs.particle.data.ParticleData;
+import xyz.xenondevs.particle.data.color.DustColorTransitionData;
 import xyz.xenondevs.particle.data.color.DustData;
 import xyz.xenondevs.particle.data.color.NoteColor;
 
@@ -117,11 +118,16 @@ public class ParticleSpawner extends Script {
         // Particle Data
         if (particleData != null) {
             builder.setParticleData(particleData);
-        } else if (effect.hasProperty(PropertyType.DUST) && colorData != null && colorData instanceof RGBColorData rgb && size != Float.MIN_VALUE) {
-            builder.setParticleData(new DustData(rgb.next(), size));
+        } else if (effect.hasProperty(PropertyType.DUST) && colorData != null && colorData instanceof RGBColorData rgb) {
+            if (effect.equals(ParticleEffect.DUST_COLOR_TRANSITION))
+                builder.setParticleData(new DustColorTransitionData(rgb.next(), rgb.next(), size != Float.MIN_VALUE ? size : 0));
+            else if (size != Float.MIN_VALUE)
+                builder.setParticleData(new DustData(rgb.next(), size));
+            else
+                builder.setColor(rgb.next());
         } else if (effect.hasProperty(PropertyType.COLORABLE) && colorData != null) {
             if (effect.equals(ParticleEffect.NOTE) && colorData.isNote()) {
-                builder.setParticleData(colorData instanceof RandomNoteData randomNoteData ? randomNoteData.next() : new NoteColor(colorData.index()));
+                builder.setParticleData(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.next() : new NoteColor(colorData.index()));
             } else if (colorData instanceof RGBColorData rgb) {
                 builder.setColor(rgb.next());
             }
