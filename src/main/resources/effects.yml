@@ -58,6 +58,20 @@ effects:
         times: 8
         scripts:
           - particle [effect=redstone,size=10,origin=head,colorScheme={name=rainbow;speed=0.1;revertWhenDone=false}]
+  rainbow-flag:
+    displayName: "%rainbow-flag"
+    armorColor: "rainbow"
+    permission: "%rainbow"
+    variables: [ 'r', 'x' ]
+    enableCaching: true
+    interval: 1
+    onTick:
+      do:
+        times: 16
+        scripts:
+          - variable r={PI}*{i}/16
+          - variable x=cos({r})
+          - particle [effect=redstone,direction=true,x={x},y=-0.5,amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.075}]
   rainbow-spiral:
     displayName: "%rainbow-spiral"
     armorColor: "rainbow"
@@ -69,10 +83,27 @@ effects:
         scripts:
           - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=redstone,amount=10,direction=true,x={x},y={z},origin=feet,colorScheme={name=rainbow;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,size=5,direction=true,x={x},y={z},origin=feet,colorScheme={name=rainbow;revertWhenDone=true;speed=0.5}]
       doPost:
         scripts:
           - variable step=({step} + 1) % 120
+  spiral:
+    displayName: "%spiral"
+    armorColor: "gradient5"
+    variables: [ 'stepX', 'stepY=-60', 'x', 'y', 'z' ]
+    onTick:
+      do:
+        times: 12
+        scripts:
+          - variable stepY+=10
+          - variable x=-(cos((({stepX}+{stepY}) / 90) * {PI} * 2))
+          - variable y={stepY}/180
+          - variable z=-(sin((({stepX}+{stepY}) / 90) * {PI} * 2))
+          - particle [effect=redstone,amount=5,x={x},z={y},y={z},direction=true,origin=head,colorScheme={name=gradient5;revertWhenDone=true;speed=0.05}]
+      step:
+        scripts:
+          - variable stepY=-60
+          - variable stepX+=1
   rainbow-note:
     displayName: "%rainbow-note"
     permission: "%rainbow"
@@ -238,23 +269,47 @@ effects:
           - variable x=cos({r})*{RANDOM}
           - variable z=sin({r})*{RANDOM}
           - particle [effect=glow_squid_ink,direction=true,x={x},y={z},amount=0,origin=head*-2.5]
-  redtail:
+  red-tail:
     displayName: "%red-tail"
     permission: "%tail"
     armorColor: "#a83252"
     onTick:
       do:
         scripts:
-          - particle [effect=block_marker,block={material=fire_coral_block},origin=feet]
-  yellowtail:
+          - particle [effect=block_marker,block={material=fire_coral},origin=feet]
+  yellow-tail:
     displayName: "%yellow-tail"
     permission: "%tail"
     armorColor: "#d1b536"
     onTick:
       do:
         scripts:
-          - particle [effect=block_marker,block={material=horn_coral_block},origin=feet]
-  rainbowtail:
+          - particle [effect=block_marker,block={material=horn_coral},origin=feet]
+  pink-tail:
+    displayName: "%pink-tail"
+    permission: "%tail"
+    armorColor: "#f59fda"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=block_marker,block={material=brain_coral},origin=feet]
+  purple-tail:
+    displayName: "%purple-tail"
+    permission: "%tail"
+    armorColor: "#7134eb"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=block_marker,block={material=bubble_coral},origin=feet]
+  blue-tail:
+    displayName: "%blue-tail"
+    permission: "%tail"
+    armorColor: "#2658ad"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=block_marker,block={material=tube_coral},origin=feet]
+  rainbow-tail:
     displayName: "%rainbow-tail"
     permission: "%tail"
     armorColor: "rainbow"
@@ -305,3 +360,32 @@ effects:
           - variable xAng=cos({angle})
           - variable yAng=sin({angle})
           - particle [effect=soul,direction=true,x={x},y={y},offset={x={xAng};y={yAng}},speed=0.25,amount=0,origin=head*-1.25]
+  plane:
+    displayName: "%plane"
+    armorColor: "#b58500"
+    onTick:
+      do:
+        scripts:
+          - particle [effect=wax_on,direction=true,x=1,origin=head]
+          - particle [effect=wax_on,direction=true,x=-1,origin=head]
+          - particle [effect=wax_off,direction=true,origin=head]
+  heart:
+    displayName: "%heart"
+    permission: "%heart"
+    armorColor: "heart"
+    interval: 15
+    variables: [ 'x=-2', 'y1', 'y2' ]
+    onTick:
+      effect:
+        times: 19
+        scripts:
+          - variable x+=0.2
+          - variable y1=1.75*(1-(abs({x})-1)^2)^1/2
+          - particle [effect=heart,direction=true,x={x},y={y1},origin=feet]
+          - variable y2=acos(1-abs({x}))-{PI}+0.55
+          - particle [effect=heart,direction=true,x={x},y={y2},origin=feet]
+      check:
+        scripts:
+          - particle [effect=heart,direction=true,origin=feet]
+          - particle [effect=heart,direction=true,y=-2.25,origin=feet]
+          - variable x=-2

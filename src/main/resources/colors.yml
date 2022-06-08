@@ -3,6 +3,9 @@ colors:
   redtoblue:
     values: [ "#FC5C7D", "#6A82FB" ]
     size: 50
+  heart:
+    values: [ '#f54242', '#fc9090' ]
+    size: 7
   gradient1:
     values: [ "#6699CC", "#FFF275", "#FF8C42", "#FF3C38", "#A23E48" ]
     size: 100
@@ -15,3 +18,16 @@ colors:
   gradient4:
     values: [ "#2e1c1a", "#4254f5" ]
     size: 20
+  gradient5:
+    values:
+      - "#F72585"
+      - "#B5179E"
+      - "#7209B7"
+      - "#560BAD"
+      - "#480CA8"
+      - "#3A0CA3"
+      - "#3F37C9"
+      - "#4361EE"
+      - "#4895EF"
+      - "#4CC9F0"
+    size: 50
