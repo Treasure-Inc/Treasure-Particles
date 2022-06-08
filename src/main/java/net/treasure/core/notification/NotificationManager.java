@@ -18,7 +18,8 @@ public class NotificationManager {
             "1.0.4",
             "1.0.5",
             "1.1.0",
-            "1.1.1"
+            "1.1.1",
+            "1.2.0"
     );
 
     // Needs rework
@@ -73,7 +74,7 @@ public class NotificationManager {
                             "<gold>[2]</gold> Added new script type <gold>\"none\"</gold> (especially for conditions)<br>" +
                             "<gold>[3]</gold> Added new script type <gold>\"preset\"</gold><br>" +
                             "<gold>[4]</gold> Added new file named <gold>\"presets.yml\"</gold><br><br>" +
-                            "<i>See our <gold><hover:show_text:'<gold>Click!'><click:open_url:'https://github.com/ItsZypec/Treasure-Elytra/wiki'>Wiki Page</click></hover></gold> for detailed information.",
+                            "<i>See our <gold><hover:show_text:'<gold>Click!'><click:open_url:'https://github.com/Treasure-Inc/Treasure-Elytra/wiki'>Wiki Page</click></hover></gold> for detailed information.",
 
                     "<gold>[5]</gold> Added permission for admin commands (trelytra.admin)<br>" +
                             "<gold>[6]</gold> Added permission for base command (trelytra.menu)<br><br>" +
@@ -108,6 +109,31 @@ public class NotificationManager {
                             "<gold>[5]</gold> Optimized login listener",
                     "<gold>[6]</gold> Added disable option for GUI animations to <gold>config.yml</gold><br>" +
                             "<gold>[7]</gold> Added tab completion for \"<gold>/trelytra select</gold>\" command"
+            );
+            case "1.2.0" -> List.of(
+                    "<b>IMPORTANT!</b><br><br>You cannot use your current <gold>effects.yml</gold> file with the new version, you must update your effects by the new scheme or if you haven't changed anything yet, just delete the file and let the plugin create a new version of it.",
+                    "<gold><b>[NEW] API Support</b></gold><br><br>" +
+                            "<gold>[1]</gold> TreasureElytra now provides an API for you to add your custom script types<br>" +
+                            "<gold>  •</gold> You can check out the <gold><hover:show_text:'<gold>Click!'><click:open_url:'https://github.com/Treasure-Inc/Treasure-Elytra/wiki'>Wiki Page</click></hover></gold> for detailed information",
+
+                    "<br><br><br><br><br><br><gold><b>[!] Effects",
+                    "<gold>[1]</gold> Added version for <gold>effects.yml</gold> file (1.2.0)<br>" +
+                            "<gold>[2]</gold> Added new effects (current effect size: 28)<br>" +
+                            "<gold>[3]</gold> Added support for <gold>block_marker</gold> and <gold>item_crack</gold> particles<br>" +
+                            "<gold>[4]</gold> Added support for <gold>note</gold> particle (<dark_gray>rainbow</dark_gray> & <dark_gray>random-note</dark_gray> color options)",
+                    "<gold>[5]</gold> Added support for <gold>dust_color_transition</gold> particle (color transitions)<br>" +
+                            "<gold>[6]</gold> You can now define multiple tick handler",
+
+                    "<gold><b>[!] Bug Fixes</b></gold><br><br>" +
+                            "<gold>[1]</gold> Fixed an issue related to database<br>" +
+                            "<gold>[2]</gold> Fixed the issues with the caching system",
+
+                    "<br><br><br><br><br><br><gold><b>[!] Changes",
+                    "<gold>[1]</gold> Added detailed log messages for errors and warnings<br>" +
+                            "<gold>[2]</gold> Added <gold>/trelytra reset</gold> and <gold>/trelytra notifications</gold> commands<br>" +
+                            "<gold>[3]</gold> Added version for <gold>config.yml</gold> file (1.2.0)<br>" +
+                            "<gold>[4]</gold> Added version for <gold>colors.yml</gold> file (1.2.0)<br>" +
+                            "<gold>[5]</gold> Updated messages version to 1.2.0 (new message translations)"
             );
             default -> List.of("<red>WHAT?");
         });

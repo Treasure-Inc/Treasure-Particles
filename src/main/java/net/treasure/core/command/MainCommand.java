@@ -78,7 +78,7 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(sender, Messages.PREFIX + (version == null ? "No changelog for latest version. " : " Unknown version: " + v));
             return;
         }
-        MessageUtils.sendParsed(sender, Messages.PREFIX + "<aqua><b>v" + v);
+        changelog.add(0, "<br><br><br><br><br><br><dark_aqua><b>Version " + v);
         MessageUtils.openBook(sender, changelog);
     }
 
