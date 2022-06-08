@@ -90,6 +90,7 @@ public class EffectManager implements DataHolder {
     }
 
     public void loadEffects() {
+        var current = System.currentTimeMillis();
         var inst = TreasurePlugin.getInstance();
         var config = generator.getConfiguration();
         if (config == null)
@@ -151,6 +152,7 @@ public class EffectManager implements DataHolder {
                 inst.getLogger().warning("Couldn't load effect: " + key);
             }
         }
+        inst.getLogger().info("Loaded " + effects.size() + " effects (" + (System.currentTimeMillis() - current) + "ms)");
     }
 
     public void registerReader(String key, ScriptReader<?> reader) {

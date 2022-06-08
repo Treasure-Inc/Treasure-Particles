@@ -64,6 +64,8 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        var current = System.currentTimeMillis();
+
         instance = this;
         timingManager = TimingManager.of(this);
 
@@ -109,7 +111,7 @@ public class TreasurePlugin extends JavaPlugin {
 
         // Load colors & effects
         colorManager.loadColors();
-        effectManager.loadEffects();
+        Bukkit.getScheduler().runTaskAsynchronously(TreasurePlugin.getInstance(), () -> effectManager.loadEffects());
 
         playerManager = new PlayerManager();
 
@@ -148,6 +150,8 @@ public class TreasurePlugin extends JavaPlugin {
         var metrics = new Metrics(this, 14508);
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
         metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
+
+        getLogger().info("Enabled TrElytra (" + (System.currentTimeMillis() - current) + "ms)");
     }
 
     @Override
