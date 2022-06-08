@@ -29,7 +29,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Getter
@@ -165,7 +164,7 @@ public class TreasurePlugin extends JavaPlugin {
         // config.yml
         configure();
         reloadConfig();
-        getLogger().info("Reloaded config.yml!");
+        getLogger().info("Reloaded config!");
 
         // Data Holders
         dataHolders.forEach(DataHolder::reload);

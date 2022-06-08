@@ -12,7 +12,7 @@ public class ColorData {
 
     protected int min, max;
     float currentIndex = -1;
-    final float speed;
+    float speed;
     final boolean revertWhenDone, note;
     boolean forward = true;
 
@@ -41,6 +41,16 @@ public class ColorData {
             forward = revertWhenDone != forward;
         }
         return (int) (currentIndex = Math.max(min, currentIndex));
+    }
+
+    public int tempIndex() {
+        var currentIndex = this.currentIndex;
+        currentIndex += forward ? (speed) : (-speed);
+        if (forward ? currentIndex >= max : currentIndex < min) {
+            currentIndex = revertWhenDone ? (forward ? max - 2 : 1) : min;
+            forward = revertWhenDone != forward;
+        }
+        return (int) (Math.max(min, currentIndex));
     }
 
     public static ColorData initialize(String input) throws ReaderException {

@@ -120,7 +120,7 @@ public class ParticleSpawner extends Script {
             builder.setParticleData(particleData);
         } else if (effect.hasProperty(PropertyType.DUST) && colorData != null && colorData instanceof RGBColorData rgb) {
             if (effect.equals(ParticleEffect.DUST_COLOR_TRANSITION))
-                builder.setParticleData(new DustColorTransitionData(rgb.next(), rgb.next(), size != Float.MIN_VALUE ? size : 0));
+                builder.setParticleData(new DustColorTransitionData(rgb.next(), rgb.tempNext(), size != Float.MIN_VALUE ? size : 0));
             else if (size != Float.MIN_VALUE)
                 builder.setParticleData(new DustData(rgb.next(), size));
             else

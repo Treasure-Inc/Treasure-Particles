@@ -16,6 +16,14 @@ public class RGBColorData extends ColorData {
         return color.getColors().get(index());
     }
 
+    public java.awt.Color tempNext() {
+        var tempSpeed = this.speed;
+        this.speed += 15f;
+        var next = color.getColors().get(tempIndex());
+        this.speed = tempSpeed;
+        return next;
+    }
+
     public org.bukkit.Color nextBukkit() {
         var color = next();
         return org.bukkit.Color.fromRGB(color.getRed(), color.getGreen(), color.getBlue());
