@@ -18,7 +18,8 @@ public class GlideListener implements Listener {
             TreasurePlugin.getInstance().getPlayerManager().initializePlayer(player);
             data = TreasurePlugin.getInstance().getPlayerManager().getPlayerData(player);
         }
+        if (data.getCurrentEffect() != null && !data.getCurrentEffect().canUse(player))
+            data.setCurrentEffect(player, null);
         data.setEnabled(event.isGliding());
-        data.setStartedGliding(event.isGliding() ? System.currentTimeMillis() : -1);
     }
 }

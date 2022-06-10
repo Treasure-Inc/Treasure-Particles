@@ -1,4 +1,4 @@
-version: 1.2.0
+version: 1.2.2
 effects:
   rainbow-circle:
     displayName: "%rainbow-circle"
@@ -14,7 +14,7 @@ effects:
           - variable r=2*{PI}*{i}/32
           - variable x=cos({r})
           - variable y=sin({r})
-          - particle [effect=redstone,size=1,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
+          - particle [effect=redstone,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
   rainbow-circle-transition:
     displayName: "%rainbow-circle-transition"
     armorColor: "rainbow"
@@ -29,24 +29,21 @@ effects:
           - variable r=2*{PI}*{i}/32
           - variable x=cos({r})
           - variable y=sin({r})
-          - particle [effect=DUST_COLOR_TRANSITION,size=1,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
+          - particle [effect=DUST_COLOR_TRANSITION,direction=true,x={x},y={y},amount=10,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
   rainbow-random:
     displayName: "%rainbow-random"
     armorColor: "rainbow"
     permission: "%rainbow"
-    variables: [ 'r', 'x', 'y', 'angle', 'xAng', 'yAng' ]
-    enableCaching: true
+    variables: [ 'r', 'x', 'y' ]
     interval: 1
+    enableCaching: true
     onTick:
       do:
         times: 32
         scripts:
           - variable r=2*{PI}*{i}/32
-          - variable x=cos({r})
-          - variable y=sin({r})
-          - variable angle=atan({y},{x})
-          - variable xAng=cos({angle})
-          - variable yAng=sin({angle})
+          - variable x=cos({r})/2
+          - variable y=sin({r})/2
           - particle [effect=redstone,direction=true,x={x},y={y},offset={x={x};y={y}},amount=5,origin=head*-1.25,colorScheme={name=rainbow;speed=0.75;revertWhenDone=false}]
   rainbow-line:
     displayName: "%rainbow-line"
@@ -389,3 +386,14 @@ effects:
           - particle [effect=heart,direction=true,origin=feet]
           - particle [effect=heart,direction=true,y=-2.25,origin=feet]
           - variable x=-2
+  sonic:
+    displayName: "%sonic"
+    permission: "%sonic"
+    armorColor: "#65f5fc"
+    description:
+      - "%exclusive-19"
+    interval: 3
+    onTick:
+      effect:
+        scripts:
+          - particle [effect=sonic_boom,origin=head]

@@ -1,8 +1,22 @@
-version: "1.2.0"
+version: "1.2.2"
 locale: EN
 notifications: true
 gui:
   animation: true
+  next-page:
+    slot: 53
+    item: ENDER_PEARL
+  previous-page:
+    slot: 45
+    item: ENDER_EYE
+  close:
+    slot: 49
+    item: BARRIER
+  reset:
+    slot: 50
+    item: RED_STAINED_GLASS_PANE
+  borders: BLACK_STAINED_GLASS_PANE
+  default-icon: LEATHER_BOOTS
 permissions:
   # General
   menu: "trelytra.menu"
@@ -12,4 +26,4 @@ permissions:
   # Effects
   rainbow: "trelytra.rainbow"
   tail: "trelytra.tail"
-  experimental: "trelytra.experimental"
+  sonic: "trelytra.sonic"

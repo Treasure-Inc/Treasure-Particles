@@ -9,7 +9,8 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.treasure.color.ColorManager;
 import net.treasure.common.Permissions;
 import net.treasure.core.command.MainCommand;
-import net.treasure.core.command.gui.GUIListener;
+import net.treasure.core.command.gui.listener.GUIListener;
+import net.treasure.core.command.gui.GUIElements;
 import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.database.Database;
@@ -36,7 +37,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Getter
     private static TreasurePlugin instance;
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.2.2";
 
     // Timings
     private static TimingManager timingManager;
@@ -46,6 +47,7 @@ public class TreasurePlugin extends JavaPlugin {
     private EffectManager effectManager;
     private ColorManager colorManager;
     private Permissions permissions;
+    private GUIElements guiElements;
     private List<DataHolder> dataHolders;
 
     private Database database;
@@ -102,6 +104,10 @@ public class TreasurePlugin extends JavaPlugin {
             return;
         }
         dataHolders.add(colorManager);
+
+        guiElements = new GUIElements();
+        guiElements.initialize();
+        dataHolders.add(guiElements);
 
         var config = getConfig();
 

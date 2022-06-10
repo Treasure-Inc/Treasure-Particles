@@ -127,9 +127,10 @@ public class CustomItem {
     public CustomItem changeArmorColor(Color color) {
         if (color == null)
             return this;
-        LeatherArmorMeta lam = (LeatherArmorMeta) this.i.getItemMeta();
-        lam.setColor(color);
-        this.i.setItemMeta(lam);
+        if (this.i.getItemMeta() != null && this.i.getItemMeta() instanceof LeatherArmorMeta lam) {
+            lam.setColor(color);
+            this.i.setItemMeta(lam);
+        }
         return this;
     }
 

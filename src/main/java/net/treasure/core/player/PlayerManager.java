@@ -50,6 +50,8 @@ public class PlayerManager {
                 rs = ps.executeQuery();
                 if (rs.next())
                     playerData = gson.fromJson(rs.getString("data"), PlayerData.class);
+                else
+                    playerData = new PlayerData();
             } catch (SQLException exception) {
                 exception.printStackTrace();
             } catch (JsonSyntaxException exception) {
@@ -60,7 +62,7 @@ public class PlayerManager {
 
             if (playerData == null) return null;
             Effect effect = inst.getEffectManager().get(playerData.effectName);
-            if (effect != null)
+            if (effect != null && effect.canUse(player))
                 data.setCurrentEffect(player, effect);
             data.setNotificationsEnabled(playerData.notificationsEnabled);
             data.setEffectsEnabled(playerData.effectsEnabled);

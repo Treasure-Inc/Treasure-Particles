@@ -11,7 +11,7 @@ public class Messages implements DataHolder {
 
     public static String LOCALE;
     public static final String
-            VERSION = "1.2.0",
+            VERSION = "1.2.2",
             UPDATE_DESCRIPTION = "New messages";
     private ConfigurationGenerator generator;
 
@@ -21,6 +21,7 @@ public class Messages implements DataHolder {
             EFFECT_UNKNOWN,
             EFFECT_TOGGLE,
             EFFECT_RESET,
+            EFFECT_RESET_OTHER,
             NOTIFICATIONS_TOGGLE,
             GUI_TITLE,
             GUI_NEXT_PAGE,
@@ -29,6 +30,7 @@ public class Messages implements DataHolder {
             GUI_EFFECT_SELECTED,
             GUI_SELECT_EFFECT,
             GUI_RESET_EFFECT,
+            GUI_RESET_EFFECT_CURRENT,
             RELOADING,
             RELOADED,
             ENABLED,
@@ -82,12 +84,14 @@ public class Messages implements DataHolder {
             EFFECT_UNKNOWN = PREFIX + config.getString("effect-unknown", "<red>Couldn't find any effect with name %s");
             EFFECT_TOGGLE = PREFIX + config.getString("effect-toggle", "<gray>Elytra Effects: %s");
             EFFECT_RESET = PREFIX + config.getString("effect-reset", "<gray>Elytra Effect: <red>OFF");
+            EFFECT_RESET_OTHER = PREFIX + config.getString("effect-reset-other", "<gray>Elytra Effect (%s): <red>OFF");
             NOTIFICATIONS_TOGGLE = PREFIX + config.getString("notifications-toggle", "<gray>Notifications: %s");
 
             GUI_TITLE = config.getString("gui-title", "<aqua><b>Effects");
             GUI_EFFECT_SELECTED = config.getString("gui-effect-selected", "<green>Selected!");
             GUI_SELECT_EFFECT = config.getString("gui-select-effect", "<dark_gray>• <green>Click to use this effect!");
             GUI_RESET_EFFECT = config.getString("gui-reset-effect", "<yellow>Reset Effect");
+            GUI_RESET_EFFECT_CURRENT = config.getString("gui-reset-effect-current", "<gray>Selected: <gold>%s");
             GUI_NEXT_PAGE = config.getString("gui-next-page", "<green>> Next Page");
             GUI_PREVIOUS_PAGE = config.getString("gui-previous-page", "<green>< Previous Page");
             GUI_CLOSE = config.getString("gui-close", "<red>Close");

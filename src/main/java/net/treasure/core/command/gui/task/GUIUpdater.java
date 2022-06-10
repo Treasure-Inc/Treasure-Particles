@@ -37,10 +37,10 @@ public class GUIUpdater implements Runnable {
                 if (data == null || slot < 0 || slot > 53) continue;
                 ItemStack item = holder.getInventory().getItem(slot);
                 if (item == null) continue;
-                LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
-                if (meta == null) continue;
-                meta.setColor(data.nextBukkit());
-                item.setItemMeta(meta);
+                if (item.getItemMeta() != null && item.getItemMeta() instanceof LeatherArmorMeta meta) {
+                    meta.setColor(data.nextBukkit());
+                    item.setItemMeta(meta);
+                }
             }
         }
     }

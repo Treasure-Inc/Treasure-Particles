@@ -10,6 +10,9 @@ import net.treasure.effect.script.particle.ParticleSpawner;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import xyz.xenondevs.particle.ParticleEffect;
+import xyz.xenondevs.particle.PropertyType;
+import xyz.xenondevs.particle.data.SculkChargeData;
+import xyz.xenondevs.particle.data.ShriekData;
 import xyz.xenondevs.particle.data.texture.BlockTexture;
 import xyz.xenondevs.particle.data.texture.ItemTexture;
 
@@ -44,7 +47,6 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     }
                 }
                 case "origin" -> {
-
                     if (value.startsWith("head")) {
                         origin = ParticleOrigin.HEAD;
                     } else if (value.startsWith("feet")) {
@@ -65,6 +67,10 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     }
                 }
                 case "colorscheme" -> {
+                    if (particle != null && !particle.hasProperty(PropertyType.COLORABLE)) {
+                        error(effect, line, start, end, "You cannot use 'colorScheme' with this particle effect: " + particle.name());
+                        continue;
+                    }
                     try {
                         var colorData = ColorData.initialize(value);
                         builder.colorData(colorData);
@@ -73,6 +79,10 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     }
                 }
                 case "offset" -> {
+                    if (particle != null && !particle.hasProperty(PropertyType.DIRECTIONAL) && !particle.hasProperty(PropertyType.DUST)) {
+                        error(effect, line, start, end, "You cannot use 'offset' with this particle effect: " + particle.name());
+                        continue;
+                    }
                     Matcher offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
                     while (offsetMatcher.find()) {
                         String _type = offsetMatcher.group("type");
@@ -108,6 +118,10 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     }
                 }
                 case "size" -> {
+                    if (particle != null && !particle.hasProperty(PropertyType.DUST)) {
+                        error(effect, line, start, end, "You cannot use 'size' with this particle effect: " + particle.name());
+                        continue;
+                    }
                     try {
                         builder.size(Float.parseFloat(value));
                     } catch (Exception ignored) {
@@ -115,6 +129,10 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     }
                 }
                 case "block" -> {
+                    if (particle != null && !particle.hasProperty(PropertyType.REQUIRES_BLOCK)) {
+                        error(effect, line, start, end, "You cannot use 'block' with this particle effect: " + particle.name());
+                        continue;
+                    }
                     Material material = null;
                     byte data = 0;
                     Matcher offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
@@ -136,6 +154,10 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         error(effect, line, start, end, "Material is null");
                 }
                 case "item" -> {
+                    if (particle != null && !particle.hasProperty(PropertyType.REQUIRES_ITEM)) {
+                        error(effect, line, start, end, "You cannot use 'item' with this particle effect: " + particle.name());
+                        continue;
+                    }
                     Material material = null;
                     int data = 0;
                     Matcher offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
@@ -161,6 +183,28 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         builder.particleData(new ItemTexture(item));
                     } else
                         error(effect, line, start, end, "Material is null");
+                }
+                case "delay" -> {
+                    if (particle != null && !particle.equals(ParticleEffect.SHRIEK)) {
+                        error(effect, line, start, end, "You can only use 'delay' with SHRIEK effect.");
+                        continue;
+                    }
+                    try {
+                        builder.particleData(new ShriekData(Integer.parseInt(value)));
+                    } catch (Exception ignored) {
+                        error(effect, line, start, end, "Unexpected delay value: " + value);
+                    }
+                }
+                case "roll" -> {
+                    if (particle != null && !particle.equals(ParticleEffect.SCULK_CHARGE)) {
+                        error(effect, line, start, end, "You can only use 'roll' with SCULK_CHARGE effect.");
+                        continue;
+                    }
+                    try {
+                        builder.particleData(new SculkChargeData(Float.parseFloat(value)));
+                    } catch (Exception ignored) {
+                        error(effect, line, start, end, "Unexpected roll value: " + value);
+                    }
                 }
                 case "x" -> builder.x(value);
                 case "y" -> builder.y(value);

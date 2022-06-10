@@ -19,7 +19,9 @@ public class NotificationManager {
             "1.0.5",
             "1.1.0",
             "1.1.1",
-            "1.2.0"
+            "1.2.0",
+            "1.2.1",
+            "1.2.2"
     );
 
     // Needs rework
@@ -134,6 +136,32 @@ public class NotificationManager {
                             "<gold>[3]</gold> Added version for <gold>config.yml</gold> file (1.2.0)<br>" +
                             "<gold>[4]</gold> Added version for <gold>colors.yml</gold> file (1.2.0)<br>" +
                             "<gold>[5]</gold> Updated messages version to 1.2.0 (new message translations)"
+            );
+            case "1.2.1" -> List.of(
+                    "<gold><b>[!] Changes</b></gold><br><br>" +
+                            "<gold>[1]</gold> <gold>1.19</gold> Support"
+            );
+            case "1.2.2" -> List.of(
+                    "<gold><b>[!] Effects GUI</b></gold><br><br>" +
+                            "<gold>[1]</gold> You can now change the item types and slots in the effects GUI<br><br>" +
+                            "<gold>[2]</gold> Added <dark_gray>Current Effect: EFFECT</dark_gray> lore for Reset Effects button",
+
+                    "<br><br><br><br><br><br><gold><b>[!] Effects",
+                    "<gold>[1]</gold> Added support for <gold>sculk_charge</gold> and <gold>shriek</gold> particles<br><br>" +
+                            "<gold>  •</gold> You can define <dark_gray>roll</dark_gray> value for sculk charge effect<br><br>" +
+                            "<gold>  •</gold> You can define <dark_gray>delay</dark_gray> value for shriek effect<br>",
+                    "<gold>[2]</gold> Added icon and description options for effects<br><br>" +
+                            "<gold>[3]</gold> Updated effects version to 1.2.2 (new <dark_gray>sonic</dark_gray> effect for 1.19)",
+
+                    "<gold><b>[!] Bug Fixes</b></gold><br><br>" +
+                            "<gold>[1]</gold> Fixed an issue related to <gold>/trelytra reset</gold> respond message<br><br>" +
+                            "<gold>[2]</gold> Fixed an issue related to effects GUI",
+
+                    "<br><br><br><br><br><br><gold><b>[!] Changes",
+                    "<gold>[1]</gold> Added page argument <i>(optional)</i> for base command <gold>/trelytra [page]</gold><br><br>" +
+                            "<gold>[2]</gold> Added player argument for reset effect command <gold>/trelytra reset [player]</gold> (admin command)",
+                    "<gold>[3]</gold> Updated messages version to 1.2.2 (new translations)<br><br>" +
+                            "<gold>[4]</gold> Updated config version to 1.2.2 (gui options)"
             );
             default -> List.of("<red>WHAT?");
         });

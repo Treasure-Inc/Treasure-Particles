@@ -27,9 +27,6 @@ public class EffectData {
     @Setter
     private LinkedHashMap<String, TickHandler> tickHandlers;
 
-    @Setter
-    private long startedGliding;
-
     public EffectData(Set<Pair<String, Double>> variables) {
         this.variables = variables;
     }

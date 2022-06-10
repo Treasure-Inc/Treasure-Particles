@@ -3,6 +3,7 @@ package net.treasure.effect;
 import lombok.Getter;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
+import net.treasure.core.command.gui.GUIElements;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.effect.exception.ReaderException;
@@ -22,18 +23,20 @@ import net.treasure.effect.script.variable.reader.VariableReader;
 import net.treasure.effect.task.ParticleTask;
 import net.treasure.util.Pair;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 
 @Getter
 public class EffectManager implements DataHolder {
 
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.2.2";
 
     ConfigurationGenerator generator;
 
@@ -109,6 +112,7 @@ public class EffectManager implements DataHolder {
 
         var messages = inst.getMessages();
         var mainConfig = inst.getConfig();
+
         for (String key : section.getKeys(false)) {
             try {
                 String path = key + ".";
@@ -135,9 +139,23 @@ public class EffectManager implements DataHolder {
                     ));
                 }
 
+                Material icon;
+                try {
+                    icon = Material.valueOf(section.getString(path + "icon").toUpperCase(Locale.ENGLISH));
+                } catch (Exception ignored) {
+                    icon = GUIElements.DEFAULT_ICON;
+                }
+
                 Effect effect = new Effect(
                         key,
                         displayName,
+                        section.contains(path + "description") ?
+                                section.getStringList(path + "description")
+                                        .stream()
+                                        .map(s -> s.startsWith("%") ? messages.get("descriptions." + s.substring(1), s) : s)
+                                        .toList()
+                                : null,
+                        icon,
                         section.getString(path + "armorColor"),
                         permission,
                         section.getStringList(path + "variables"),
