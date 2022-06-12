@@ -9,8 +9,8 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.treasure.color.ColorManager;
 import net.treasure.common.Permissions;
 import net.treasure.core.command.MainCommand;
-import net.treasure.core.command.gui.listener.GUIListener;
 import net.treasure.core.command.gui.GUIElements;
+import net.treasure.core.command.gui.listener.GUIListener;
 import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.database.Database;
@@ -86,6 +86,12 @@ public class TreasurePlugin extends JavaPlugin {
             return;
         }
 
+        // Command stuffs
+        commandManager = new BukkitCommandManager(this);
+
+        // Adventure
+        this.adventure = BukkitAudiences.create(this);
+
         // Initialize data holders
         messages = new Messages();
         messages.initialize();
@@ -121,12 +127,6 @@ public class TreasurePlugin extends JavaPlugin {
 
         playerManager = new PlayerManager();
 
-        // Command stuffs
-        commandManager = new BukkitCommandManager(this);
-        commandManager.getCommandContexts().registerContext(
-                Effect.class,
-                Effect.getContextResolver());
-
         // Permissions
         permissions = new Permissions();
         permissions.initialize();
@@ -137,9 +137,6 @@ public class TreasurePlugin extends JavaPlugin {
         var completions = commandManager.getCommandCompletions();
         completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).toList());
         completions.registerStaticCompletion("versions", notificationManager.getVersions());
-
-        // Adventure
-        this.adventure = BukkitAudiences.create(this);
 
         // Initialize players
         for (Player player : Bukkit.getOnlinePlayers())
@@ -157,7 +154,7 @@ public class TreasurePlugin extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
         metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
 
-        getLogger().info("Enabled TrElytra (" + (System.currentTimeMillis() - current) + "ms)");
+        getLogger().info("Enabled TreasureElytra (" + (System.currentTimeMillis() - current) + "ms)");
     }
 
     @Override

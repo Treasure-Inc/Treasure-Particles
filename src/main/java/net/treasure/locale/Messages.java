@@ -1,21 +1,35 @@
 package net.treasure.locale;
 
+import co.aikar.commands.MessageKeys;
+import co.aikar.commands.MinecraftMessageKeys;
+import co.aikar.locales.MessageKeyProvider;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
+import net.treasure.util.message.MessageUtils;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class Messages implements DataHolder {
 
     public static String LOCALE;
     public static final String
-            VERSION = "1.2.2",
+            VERSION = "1.2.3",
             UPDATE_DESCRIPTION = "New messages";
     private ConfigurationGenerator generator;
 
     public static String PREFIX,
+            COMMAND_USAGE,
+            COMMAND_ERROR,
+            COMMAND_MUST_BE_A_NUMBER,
+            COMMAND_USERNAME_TOO_SHORT,
+            COMMAND_NOT_A_VALID_NAME,
+            COMMAND_NO_PLAYER_FOUND_SERVER,
+            COMMAND_NO_PLAYER_FOUND_OFFLINE,
+            COMMAND_NO_PERMISSION,
             EFFECT_SELECTED,
             EFFECT_NO_PERMISSION,
             EFFECT_UNKNOWN,
@@ -101,6 +115,32 @@ public class Messages implements DataHolder {
 
             ENABLED = config.getString("enabled", "<green>Enabled");
             DISABLED = config.getString("disabled", "<red>Disabled");
+
+            // Commands
+
+            COMMAND_USAGE = config.getString("commands.usage", "<yellow>Usage:<gray> %s");
+            COMMAND_ERROR = config.getString("commands.error", "<red>Error: %s");
+            COMMAND_MUST_BE_A_NUMBER = config.getString("commands.must-be-a-number", "<red>%s must be a number.");
+            COMMAND_USERNAME_TOO_SHORT = config.getString("commands.username-too-short", "<red>Username too short, must be at least three characters.");
+            COMMAND_NOT_A_VALID_NAME = config.getString("commands.not-a-valid-name", "<red>%s is not a valid username.");
+            COMMAND_NO_PLAYER_FOUND_SERVER = config.getString("commands.no-player-found-server", "<red>No player matching %s is connected to this server.");
+            COMMAND_NO_PLAYER_FOUND_OFFLINE = config.getString("commands.no-player-found-offline", "<red>No player matching %s could be found.");
+            COMMAND_NO_PERMISSION = config.getString("commands.no-permission", "<red>You don't have enough permission to use this effect!");
+
+            var commandManager = inst.getCommandManager();
+            Map<MessageKeyProvider, String> messages = new HashMap<>();
+            messages.put(MessageKeys.INVALID_SYNTAX, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_USAGE, "{command} {syntax}")));
+            messages.put(MessageKeys.ERROR_PREFIX, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_ERROR, "{message}")));
+            messages.put(MessageKeys.MUST_BE_A_NUMBER, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_MUST_BE_A_NUMBER, "{num}")));
+            messages.put(MinecraftMessageKeys.USERNAME_TOO_SHORT, MessageUtils.parseLegacy(Messages.PREFIX + COMMAND_USERNAME_TOO_SHORT));
+            messages.put(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NOT_A_VALID_NAME, "{name}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NO_PLAYER_FOUND_SERVER, "{search}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
+            messages.put(MessageKeys.PERMISSION_DENIED, MessageUtils.parseLegacy(Messages.PREFIX + COMMAND_NO_PERMISSION));
+            messages.put(MessageKeys.PERMISSION_DENIED_PARAMETER, MessageUtils.parseLegacy(Messages.PREFIX + COMMAND_NO_PERMISSION));
+
+            commandManager.getLocales().addMessages(java.util.Locale.ENGLISH, messages);
             return true;
         } catch (Exception exception) {
             TreasurePlugin.logger().log(Level.WARNING, "Couldn't load messages from messages_" + LOCALE + ".yml", exception);

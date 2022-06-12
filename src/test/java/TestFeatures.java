@@ -25,9 +25,9 @@ public class TestFeatures {
     @Test
     public void testReader() {
         var reader = new ConditionReader(null);
-        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
-//        var parent = reader.read("((p==1 && q==1) || (r==0 && s==0))");
-//        var parent = reader.read("(p==1 && q==1 && r==1)");
+//        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
+//        var parent = reader.read(null,"((p==1 && q==1) || (r==0 && s==0))");
+        var parent = reader.read(null, "(p%10==1)");
         System.out.println("-----RESULTS " + parent.inner.size());
         var gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(gson.toJson(parent));

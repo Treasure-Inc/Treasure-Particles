@@ -3,6 +3,7 @@ package net.treasure.effect.script.conditional;
 import lombok.Getter;
 import lombok.ToString;
 import net.treasure.effect.data.EffectData;
+import net.treasure.util.MathUtil;
 import org.bukkit.entity.Player;
 
 @Getter
@@ -12,12 +13,13 @@ public class Condition implements Predicate {
     String variable;
     Operator operator;
     double value;
-    boolean defaultValue;
+    boolean hasEquation, defaultValue;
 
-    public Condition(String variable, Operator operator, double value) {
+    public Condition(String variable, Operator operator, double value, boolean hasEquation) {
         this.variable = variable;
         this.operator = operator;
         this.value = value;
+        this.hasEquation = hasEquation;
     }
 
     public Condition(boolean defaultValue) {
@@ -28,7 +30,10 @@ public class Condition implements Predicate {
     public boolean test(Player player, EffectData data) {
         if (data == null)
             return defaultValue;
-        var current = data.getVariable(player, variable).getValue();
+        double current;
+        if (hasEquation) {
+            current = MathUtil.eval(variable);
+        } else current = data.getVariable(player, variable).getValue();
         return switch (operator) {
             case EQUAL -> current == value;
             case NOT_EQUAL -> current != value;
@@ -46,16 +51,5 @@ public class Condition implements Predicate {
         GREATER_THAN_OR_EQUAL,
         LESS_THAN,
         LESS_THAN_OR_EQUAL;
-
-        public static Operator toOperator(String s) {
-            return switch (s) {
-                case "==" -> EQUAL;
-                case ">" -> GREATER_THAN;
-                case ">=" -> GREATER_THAN_OR_EQUAL;
-                case "<" -> LESS_THAN;
-                case "<=" -> LESS_THAN_OR_EQUAL;
-                default -> null;
-            };
-        }
     }
 }

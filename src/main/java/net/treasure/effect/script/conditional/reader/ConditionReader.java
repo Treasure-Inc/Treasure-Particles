@@ -27,6 +27,7 @@ public class ConditionReader implements ScriptReader<ConditionGroup> {
         StringBuilder variable = new StringBuilder();
         double value;
         int valuePos = -1;
+        boolean hasEquation = false;
 
         var array = line.toCharArray();
         for (int pos = 0; pos < array.length; pos++) {
@@ -54,17 +55,20 @@ public class ConditionReader implements ScriptReader<ConditionGroup> {
                     current = new ConditionGroup();
 
                 // Add condition to current
-                current.conditions.add(new Condition(variable.toString(), variableOperator, value));
+                current.conditions.add(new Condition(variable.toString(), variableOperator, value, hasEquation));
 
                 // Reset condition stuffs
                 valuePos = -1;
                 variableOperator = null;
                 variable = new StringBuilder();
+                hasEquation = false;
             }
 
-            if (Character.isAlphabetic(c)) // Check if char is alphabetic (condition variable)
+            if (variableOperator == null && c != '(' && c != ')' && c != '<' && c != '>' && c != '=' && c != '&' && c != '|' && c != ' ') { // Check if char is alphabetic (condition variable)
                 variable.append(c);
-            else if ((c >= '0' && c <= '9') || c == '.' || c == '-') { // Check char is digit (condition value start position)
+                if (!Character.isAlphabetic(c))
+                    hasEquation = true;
+            } else if (variableOperator != null && ((c >= '0' && c <= '9') || c == '.' || c == '-')) { // Check char is digit (condition value start position)
                 if (valuePos == -1)
                     valuePos = pos;
             } else // others

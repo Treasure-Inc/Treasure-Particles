@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Name;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Private;
 import co.aikar.commands.annotation.Single;
@@ -24,7 +25,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 @AllArgsConstructor
-@CommandAlias("treasureelytra|trelytra|tre")
+@CommandAlias("trelytra|treasureelytra|tre")
 public class MainCommand extends BaseCommand {
 
     TreasurePlugin plugin;
@@ -50,7 +51,12 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("%basecmd")
     @Subcommand("select|sel")
     @CommandCompletion("@effects")
-    public void selectEffect(Player player, Effect effect) {
+    public void selectEffect(Player player, @Name("effect") @Single String key) {
+        Effect effect = plugin.getEffectManager().get(key);
+        if (effect == null) {
+            MessageUtils.sendParsed(player, String.format(Messages.EFFECT_UNKNOWN, key));
+            return;
+        }
         if (!effect.canUse(player)) {
             MessageUtils.sendParsed(player, Messages.EFFECT_NO_PERMISSION);
             return;

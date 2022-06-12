@@ -6,7 +6,7 @@
 
     <groupId>net.treasure</groupId>
     <artifactId>TreasureElytra</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
@@ -80,7 +80,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>C:\Users\itszy\Desktop\Testing\plugins\TrElytra.jar</outputFile>
+                            <outputFile>C:\Users\itszy\Desktop\FFA\plugins\TrElytra.jar</outputFile>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
@@ -137,7 +137,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.10.1</version>
+            <version>4.11.0</version>
         </dependency>
 
         <dependency>
@@ -149,7 +149,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <version>4.10.1</version>
+            <version>4.11.0</version>
         </dependency>
 
         <dependency>

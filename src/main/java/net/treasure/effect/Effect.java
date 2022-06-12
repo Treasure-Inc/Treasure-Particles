@@ -1,8 +1,5 @@
 package net.treasure.effect;
 
-import co.aikar.commands.BukkitCommandExecutionContext;
-import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.contexts.ContextResolver;
 import lombok.Getter;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
@@ -11,7 +8,6 @@ import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.conditional.ConditionalScript;
 import net.treasure.effect.script.variable.Variable;
-import net.treasure.locale.Messages;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
 import net.treasure.util.message.MessageUtils;
@@ -212,17 +208,5 @@ public class Effect {
 
     public String getPrefix() {
         return "[" + key + "] ";
-    }
-
-    public static ContextResolver<Effect, BukkitCommandExecutionContext> getContextResolver() {
-        return (c) -> {
-            String key = c.popFirstArg();
-            Effect effect = TreasurePlugin.getInstance().getEffectManager().get(key);
-            if (effect != null) {
-                return effect;
-            } else {
-                throw new InvalidCommandArgument(String.format(Messages.EFFECT_UNKNOWN, key));
-            }
-        };
     }
 }
