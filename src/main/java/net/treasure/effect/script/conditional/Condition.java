@@ -32,7 +32,7 @@ public class Condition implements Predicate {
             return defaultValue;
         double current;
         if (hasEquation) {
-            current = MathUtil.eval(variable);
+            current = MathUtil.eval(data.replaceVariables(player, variable));
         } else current = data.getVariable(player, variable).getValue();
         return switch (operator) {
             case EQUAL -> current == value;
