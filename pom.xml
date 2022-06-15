@@ -80,7 +80,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>C:\Users\itszy\Desktop\FFA\plugins\TrElytra.jar</outputFile>
+                            <outputFile>C:\Users\itszy\Desktop\Testing\plugins\TrElytra.jar</outputFile>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
