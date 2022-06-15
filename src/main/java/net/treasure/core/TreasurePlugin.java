@@ -123,7 +123,7 @@ public class TreasurePlugin extends JavaPlugin {
 
         // Load colors & effects
         colorManager.loadColors();
-        Bukkit.getScheduler().runTaskAsynchronously(TreasurePlugin.getInstance(), () -> effectManager.loadEffects());
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> effectManager.loadEffects());
 
         playerManager = new PlayerManager();
 
