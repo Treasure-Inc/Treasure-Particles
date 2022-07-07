@@ -37,10 +37,11 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Getter
     private static TreasurePlugin instance;
-    public static final String VERSION = "1.2.2";
+    public static final String VERSION = "1.2.3";
 
     // Timings
     private static TimingManager timingManager;
+    private static boolean timingsEnabled;
 
     // Data Holders
     private Messages messages;
@@ -69,7 +70,6 @@ public class TreasurePlugin extends JavaPlugin {
         var current = System.currentTimeMillis();
 
         instance = this;
-        timingManager = TimingManager.of(this);
 
         random = new Random();
         dataHolders = new ArrayList<>();
@@ -79,12 +79,18 @@ public class TreasurePlugin extends JavaPlugin {
         saveDefaultConfig();
         configure();
 
+        // Timings
+        timingManager = TimingManager.of(this);
+        timingsEnabled = getConfig().getBoolean("timings", true);
+
         // Database
         database = new Database();
         if (!database.connect()) {
             disable();
             return;
         }
+
+        playerManager = new PlayerManager();
 
         // Command stuffs
         commandManager = new BukkitCommandManager(this);
@@ -124,8 +130,6 @@ public class TreasurePlugin extends JavaPlugin {
         // Load colors & effects
         colorManager.loadColors();
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> effectManager.loadEffects());
-
-        playerManager = new PlayerManager();
 
         // Permissions
         permissions = new Permissions();
@@ -187,6 +191,12 @@ public class TreasurePlugin extends JavaPlugin {
         if (tempDebugMode != debugModeEnabled)
             getLogger().info("> Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
 
+        // Timings
+        final var tempTimings = timingsEnabled;
+        timingsEnabled = getConfig().getBoolean("timings", true);
+        if (tempTimings != timingsEnabled)
+            getLogger().info("> Timings " + (timingsEnabled ? "enabled!" : "disabled!"));
+
         // Config Stuffs
         var config = getConfig();
 
@@ -226,6 +236,6 @@ public class TreasurePlugin extends JavaPlugin {
     }
 
     public static MCTiming timing(String name) {
-        return timingManager.of(name);
+        return timingsEnabled ? timingManager.of(name) : null;
     }
 }

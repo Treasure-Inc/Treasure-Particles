@@ -7,7 +7,7 @@ import java.util.List;
 
 @AllArgsConstructor
 public class TickHandler {
-
+    String name;
     int times;
     List<Script> lines;
 }

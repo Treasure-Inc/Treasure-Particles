@@ -60,7 +60,7 @@ public class Effect {
         for (var entry : tickHandlers.entrySet()) {
             var tickHandlerKey = entry.getKey();
             var pair = entry.getValue();
-            lines.put(tickHandlerKey, new TickHandler(pair.getKey(), readFromFile(tickHandlerKey, pair.getValue())));
+            lines.put(tickHandlerKey, new TickHandler(tickHandlerKey, pair.getKey(), readFromFile(tickHandlerKey, pair.getValue())));
         }
 
         addVariable("i");
@@ -73,8 +73,8 @@ public class Effect {
         return permission == null || player.hasPermission(permission);
     }
 
-    public void initialize(Player player, EffectData data) {
-        if (TreasurePlugin.getInstance().isDebugModeEnabled())
+    public void initialize(Player player, EffectData data, boolean debugModeEnabled) {
+        if (debugModeEnabled)
             TreasurePlugin.logger().info("Initializing effect for player: " + player.getName());
         for (var pair : variables)
             data.getVariables().add(new Pair<>(pair.getKey(), pair.getValue()));
@@ -139,11 +139,14 @@ public class Effect {
         if (!TimeKeeper.isElapsed(interval))
             return;
         var timings = TreasurePlugin.timing("Effect: " + key + ", Player: " + player.getName());
+        TickHandler last = null;
         try {
-            timings.startTiming();
+            if (timings != null)
+                timings.startTiming();
             var timesPair = data.getVariable(player, "i");
             for (var entry : data.getTickHandlers().entrySet()) {
                 var tickHandler = entry.getValue();
+                last = tickHandler;
                 for (int i = 0; i < tickHandler.times; i++) {
                     timesPair.setValue((double) i);
                     for (Script script : tickHandler.lines)
@@ -151,8 +154,11 @@ public class Effect {
                             break;
                 }
             }
+        } catch (Exception e) {
+            TreasurePlugin.logger().log(Level.WARNING, (last != null ? "Tick Handler: " + last.name : "Unexpected error.") + " Effect=" + key, e);
         } finally {
-            timings.stopTiming();
+            if (timings != null)
+                timings.stopTiming();
         }
     }
 

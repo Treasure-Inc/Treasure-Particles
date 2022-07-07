@@ -1,6 +1,12 @@
-version: "1.2.2"
+version: "1.2.3"
+# Messages locale
 locale: EN
+# Toggle timings report for effects
+timings: true
+# Toggle notifications for all players.
+# Players can disable notifications by themselves even if you enable them from here.
 notifications: true
+# GUI options
 gui:
   animation: true
   next-page:
@@ -19,11 +25,14 @@ gui:
   default-icon: LEATHER_BOOTS
 permissions:
   # General
-  menu: "trelytra.menu"
-  admin: "trelytra.admin"
-  changelog: "trelytra.changelog"
-  debug: "trelytra.debug"
-  # Effects
-  rainbow: "trelytra.rainbow"
-  tail: "trelytra.tail"
-  sonic: "trelytra.sonic"
+  menu: "trelytra.menu" # Base command permission
+  admin: "trelytra.admin" # Admin commands permission
+  changelog: "trelytra.changelog" # Changelog command permission
+  notification: "trelytra.notification" # Notification (and notification command) permission
+  debug: "trelytra.debug" # Debug command permission
+  # Only some effects have permission by default.
+  # Please check the effects.yml file if you want to add permissions to effects.
+  # You can read the wiki page for detailed information: https://github.com/Treasure-Inc/Treasure-Elytra/wiki/Permissions
+  rainbow: "trelytra.rainbow" # Permission for rainbow effects group
+  tail: "trelytra.tail" # Permission for tail effects group
+  sonic: "trelytra.sonic" # Permission for sonic effect

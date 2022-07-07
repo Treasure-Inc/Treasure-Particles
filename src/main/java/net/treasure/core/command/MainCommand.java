@@ -19,8 +19,10 @@ import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.effect.Effect;
 import net.treasure.locale.Messages;
 import net.treasure.util.message.MessageUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
@@ -104,7 +106,7 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("notifications")
-    @CommandPermission("%notifications")
+    @CommandPermission("%notification")
     public void toggleNotifications(Player player) {
         var data = plugin.getPlayerManager().getPlayerData(player);
         data.setNotificationsEnabled(!data.isNotificationsEnabled());
@@ -113,9 +115,56 @@ public class MainCommand extends BaseCommand {
 
     @Private
     @CommandPermission("%admincmd")
-    @Subcommand("debug")
-    public void debug(CommandSender sender) {
+    @Subcommand("debug menu")
+    public void debugMenu(CommandSender sender) {
         MessageUtils.sendParsed(sender, Messages.PREFIX + "<gray>Menu Viewers: <yellow>" + GUIUpdater.getPlayers().size());
         MessageUtils.sendParsed(sender, Messages.PREFIX + "<gray>Players Using Elytra Effect: <yellow>" + plugin.getPlayerManager().getPlayersData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
+    }
+
+    @Private
+    @CommandPermission("%admincmd")
+    @Subcommand("debug effects")
+    public void debug(Player player) {
+        var effects = plugin.getEffectManager().getEffects();
+        if (effects.isEmpty()) {
+            MessageUtils.sendParsed(player, Messages.PREFIX + "<gray>No.");
+            return;
+        }
+        var data = plugin.getPlayerManager().getPlayerData(player);
+        new BukkitRunnable() {
+
+            int index = -1;
+            int i = 0;
+            Effect current = null;
+
+            @Override
+            public void run() {
+                if (!player.isOnline()) {
+                    cancel();
+                    return;
+                }
+                if (i % 7 == 0) {
+                    index++;
+                    try {
+                        current = effects.get(index);
+                    } catch (Exception e) {
+                        MessageUtils.sendParsed(player, Messages.PREFIX + "<dark_red>Cancelled.");
+                        cancel();
+                        return;
+                    }
+                    data.setCurrentEffect(player, current);
+                    MessageUtils.sendParsed(player, Messages.EFFECT_SELECTED.formatted(current.getDisplayName()));
+                    MessageUtils.sendParsed(Bukkit.getConsoleSender(), Messages.EFFECT_SELECTED.formatted(current.getDisplayName()));
+                }
+                if (current == null) {
+                    MessageUtils.sendParsed(player, Messages.PREFIX + "<red>Cancelled.");
+                    cancel();
+                    return;
+                }
+                var dir = player.getLocation().getDirection();
+                player.setVelocity(dir.setX(dir.getX() * 1.25).setZ(dir.getZ() * 1.25));
+                i++;
+            }
+        }.runTaskTimer(plugin, 0, 20);
     }
 }

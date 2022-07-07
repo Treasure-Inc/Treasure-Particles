@@ -36,8 +36,9 @@ public class ParticleTask implements Runnable {
             if (!player.isGliding())
                 continue;
 
-            if (data.getCurrentEffect() != null)
-                data.getCurrentEffect().doTick(player, data);
+            var current = data.getCurrentEffect();
+            if (current != null)
+                current.doTick(player, data);
         }
     }
 }

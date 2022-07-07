@@ -8,6 +8,7 @@ public class Permissions implements DataHolder {
     public static String BASE,
             ADMIN,
             CHANGELOG,
+            NOTIFICATION,
             DEBUG;
 
     @Override
@@ -24,6 +25,7 @@ public class Permissions implements DataHolder {
         replacements.addReplacement("basecmd", BASE = config.getString("permissions.menu", "trelytra.menu"));
         replacements.addReplacement("admincmd", ADMIN = config.getString("permissions.admin", "trelytra.admin"));
         replacements.addReplacement("changelog", CHANGELOG = config.getString("permissions.changelog", "trelytra.changelog"));
+        replacements.addReplacement("notification", NOTIFICATION = config.getString("permissions.notification", "trelytra.notification"));
         replacements.addReplacement("debug", DEBUG = config.getString("permissions.debug", "trelytra.debug"));
         return true;
     }

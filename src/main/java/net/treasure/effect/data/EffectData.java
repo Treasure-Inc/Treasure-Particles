@@ -37,12 +37,16 @@ public class EffectData {
     }
 
     public void setCurrentEffect(Player player, Effect currentEffect) {
+        var debugModeEnabled = TreasurePlugin.getInstance().isDebugModeEnabled();
         this.currentEffect = currentEffect;
         this.variables.clear();
         this.tickHandlers.clear();
-        this.debugModeEnabled = player.hasPermission(Permissions.DEBUG) && TreasurePlugin.getInstance().isDebugModeEnabled();
-        if (this.currentEffect != null)
-            this.currentEffect.initialize(player, this);
+        this.debugModeEnabled = player.hasPermission(Permissions.DEBUG) && debugModeEnabled;
+
+        if (this.currentEffect != null) {
+            this.currentEffect.initialize(player, this, debugModeEnabled);
+        } else if (debugModeEnabled)
+            TreasurePlugin.logger().info("Reset " + player.getName() + "'s effect data");
     }
 
     public Pair<String, Double> getVariable(Player player, String variable) {

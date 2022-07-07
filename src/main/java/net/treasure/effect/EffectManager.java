@@ -49,8 +49,11 @@ public class EffectManager implements DataHolder {
         this.effects = new ArrayList<>();
         this.presets = new Presets();
         this.readers = new HashMap<>();
-        Bukkit.getPluginManager().registerEvents(new GlideListener(), TreasurePlugin.getInstance());
-        Bukkit.getScheduler().runTaskTimerAsynchronously(TreasurePlugin.getInstance(), new ParticleTask(), 0, 1);
+
+        var inst = TreasurePlugin.getInstance();
+
+        Bukkit.getPluginManager().registerEvents(new GlideListener(inst.getPlayerManager()), inst);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new ParticleTask(), 0, 1);
 
         registerReader("variable", new VariableReader());
         registerReader("particle", new ParticleReader());
