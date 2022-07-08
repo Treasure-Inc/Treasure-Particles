@@ -21,7 +21,8 @@ public class NotificationManager {
             "1.1.1",
             "1.2.0",
             "1.2.1",
-            "1.2.2"
+            "1.2.2",
+            "1.2.3"
     );
 
     // Needs rework
@@ -162,6 +163,19 @@ public class NotificationManager {
                             "<gold>[2]</gold> Added player argument for reset effect command <gold>/trelytra reset [player]</gold> (admin command)",
                     "<gold>[3]</gold> Updated messages version to 1.2.2 (new translations)<br><br>" +
                             "<gold>[4]</gold> Updated config version to 1.2.2 (gui options)"
+            );
+            case "1.2.3" -> List.of(
+                    "<gold><b>[!] Conditions</b></gold><br><br>" +
+                            "<gold>[1]</gold> Added mathematical equation support for conditions",
+
+                    "<gold><b>[!] Bug Fixes</b></gold><br><br>" +
+                            "<gold>[1]</gold> Fixed the issues related to command responses",
+
+
+                    "<br><br><br><br><br><br><gold><b>[!] Changes",
+                    "<gold>[1]</gold> Added translations for commands<br><br>" +
+                            "<gold>[2]</gold> Updated messages version to 1.2.3 (command translations)<br><br>" +
+                            "<gold>[3]</gold> Updated config version to 1.2.3 (permission for notifications)"
             );
             default -> List.of("<red>WHAT?");
         });
