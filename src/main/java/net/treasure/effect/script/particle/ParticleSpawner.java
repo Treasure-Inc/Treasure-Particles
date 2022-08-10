@@ -104,11 +104,22 @@ public class ParticleSpawner extends Script {
             }
         }
 
+        var offset = new Vector(offsetX, offsetY, offsetZ);
+
         if (direction) {
-            Vector vector = new Vector(x, y, z);
+
+            var direction = player.getLocation().getDirection();
+
+            var vector = new Vector(x, y, z);
             vector = Vectors.rotateAroundAxisX(vector, player.getEyeLocation().getPitch());
             vector = Vectors.rotateAroundAxisY(vector, player.getEyeLocation().getYaw());
-            origin = origin.add(player.getLocation().getDirection()).add(vector);
+            origin = origin.add(direction.clone().add(vector));
+
+            if (offsetX != 0 || offsetY != 0 || offsetZ != 0) {
+                offset = Vectors.rotateAroundAxisX(offset, player.getEyeLocation().getPitch());
+                offset = Vectors.rotateAroundAxisY(offset, player.getEyeLocation().getYaw());
+                offset = offset.add(direction.clone().add(offset));
+            }
         } else {
             origin = origin.add(x, y, z);
         }
@@ -134,7 +145,7 @@ public class ParticleSpawner extends Script {
         }
 
         builder.setLocation(origin);
-        builder.setOffset(new Vector(offsetX, offsetY, offsetZ));
+        builder.setOffset(offset);
         builder.setAmount(amount);
         if (speed != Float.MIN_VALUE)
             builder.setSpeed(speed);
