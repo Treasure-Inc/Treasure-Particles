@@ -55,6 +55,7 @@ effects:
   blue-tail: "<#2658ad>Mavi Kuyruk"
   rainbow-tail: "<rainbow>Rengarenk Kuyruk"
   pulse: "<gold>Nabız"
+  pulse-reverse: "<dark_aqua>Ters Nabız"
   soul: "<#4254f5>Ruh"
   plane: "<#b58500>Uçak"
   heart: "<#f54242>Kalp"

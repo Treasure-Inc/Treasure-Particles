@@ -1,4 +1,4 @@
-version: "1.2.3"
+version: "1.3.0"
 prefix: "<gradient:#A3BCF9:#576490>[TʀEʟʏᴛʀᴀ] <reset>"
 commands:
   usage: "<yellow>Usage:<gray> %s"
@@ -55,6 +55,7 @@ effects:
   blue-tail: "<#2658ad>Blue Tail"
   rainbow-tail: "<rainbow>Rainbow Tail"
   pulse: "<gold>Pulse"
+  pulse-reverse: "<dark_aqua>Reverse Pulse"
   soul: "<#4254f5>Soul"
   plane: "<#b58500>Plane"
   heart: "<#f54242>Heart"

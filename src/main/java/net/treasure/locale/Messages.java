@@ -17,7 +17,7 @@ public class Messages implements DataHolder {
 
     public static String LOCALE;
     public static final String
-            VERSION = "1.2.3",
+            VERSION = "1.3.0",
             UPDATE_DESCRIPTION = "New messages";
     private ConfigurationGenerator generator;
 

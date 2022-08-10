@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Locale {
+    GERMAN("de"),
     ENGLISH("en"),
     TURKISH("tr");
     final String key;
