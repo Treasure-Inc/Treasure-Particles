@@ -82,11 +82,8 @@ public class PlayerManager {
         var inst = TreasurePlugin.getInstance();
         var data = playersData.remove(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(inst, () -> {
-            PlayerData playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled(), data.isNotificationsEnabled());
-            if (data.getCurrentEffect() != null)
-                inst.getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
-            else
-                inst.getDatabase().update("DELETE FROM data WHERE uuid=?", player.getUniqueId().toString());
+            var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled(), data.isNotificationsEnabled());
+            inst.getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
         });
     }
 

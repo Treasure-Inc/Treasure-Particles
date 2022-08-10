@@ -15,8 +15,6 @@ public class ParticleTask implements Runnable {
     @Override
     public void run() {
         TimeKeeper.increaseTime();
-        if (TimeKeeper.getTimeElapsed() > 1000L * 60)
-            TimeKeeper.reset();
         Iterator<Map.Entry<UUID, EffectData>> iterator = TreasurePlugin.getInstance().getPlayerManager().getPlayersData().entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<UUID, EffectData> set = iterator.next();

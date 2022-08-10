@@ -56,6 +56,8 @@ public class Effect {
         for (String var : variables)
             if (checkVariable(var))
                 addVariable(var);
+            else
+                TreasurePlugin.logger().warning(var + " is pre-defined variable.");
 
         for (var entry : tickHandlers.entrySet()) {
             var tickHandlerKey = entry.getKey();
