@@ -1,4 +1,4 @@
-version: 1.2.2
+version: 1.3.0
 effects:
   rainbow-circle:
     displayName: "%rainbow-circle"
@@ -222,7 +222,7 @@ effects:
           - variable angle=atan({z},{x})
           - variable xAng=cos({angle})
           - variable zAng=sin({angle})
-          - particle [effect=totem,amount=0,offset={x={xAng};y=0;z={zAng}},speed=0.375,origin=feet]
+          - particle [effect=totem,direction=true,amount=0,offset={x={xAng};y={zAng}},speed=0.375,origin=feet]
       doPost:
         scripts:
           - variable step=({step} + {PI} / 20) % 40
@@ -327,19 +327,35 @@ effects:
   pulse:
     displayName: "%pulse"
     armorColor: "gradient3"
-    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng', 'radius=0.5', 'temp' ]
+    variables: [ 'x', 'y', 'angle', 'xAng', 'yAng', 'radius=0.5' ]
     interval: 15
+    enableCaching: true
     onTick:
       do:
         times: 50
         scripts:
           - variable x=cos({PI} * {i} / 25) * {radius}
-          - variable z=sin({PI} * {i} / 25) * {radius}
-          - variable angle=atan({z},{x})
+          - variable y=sin({PI} * {i} / 25) * {radius}
+          - variable angle=atan({y},{x})
           - variable xAng=cos({angle})
-          - variable zAng=sin({angle})
-          - "conditional (playerYaw<90 && playerYaw>-90) ? preset swap-x-z-ang : none"
-          - particle [effect=flame,direction=true,x={z},y={x},amount=0,offset={x={xAng};z=0;y={zAng}},speed=0.1,origin=head]
+          - variable yAng=sin({angle})
+          - particle [effect=flame,direction=true,x={x},y={y},amount=0,offset={x={xAng};y={yAng}},speed=0.1,origin=head]
+  pulse-reverse:
+    displayName: "%pulse-reverse"
+    armorColor: "dark-aqua-to-black"
+    variables: [ 'x', 'y', 'angle', 'xAng', 'yAng', 'radius=0.5' ]
+    interval: 10
+    enableCaching: true
+    onTick:
+      do:
+        times: 50
+        scripts:
+          - variable x=cos({PI} * {i} / 25) * {radius}
+          - variable y=sin({PI} * {i} / 25) * {radius}
+          - variable angle=atan({y},{x})
+          - variable xAng=cos({angle})
+          - variable yAng=sin({angle})
+          - particle [effect=nautilus,direction=true,x={x},y={y},amount=0,offset={x={xAng};y={yAng}},speed=1,origin=head]
   soul:
     displayName: "%soul"
     armorColor: "gradient4"
@@ -354,8 +370,8 @@ effects:
           - variable x=cos({r})
           - variable y=sin({r})
           - variable angle=atan({x},{y})
-          - variable xAng=cos({angle})
-          - variable yAng=sin({angle})
+          - variable xAng=cos({angle})/10
+          - variable yAng=sin({angle})/10
           - particle [effect=soul,direction=true,x={x},y={y},offset={x={xAng};y={yAng}},speed=0.25,amount=0,origin=head*-1.25]
   plane:
     displayName: "%plane"
