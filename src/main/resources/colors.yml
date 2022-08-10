@@ -1,4 +1,4 @@
-version: "1.2.0"
+version: "1.3.0"
 colors:
   redtoblue:
     values: [ "#FC5C7D", "#6A82FB" ]
@@ -31,3 +31,5 @@ colors:
       - "#4895EF"
       - "#4CC9F0"
     size: 50
+  dark-aqua-to-black:
+    values: [ "#3449eb", "#10174f", "#111530" ]
