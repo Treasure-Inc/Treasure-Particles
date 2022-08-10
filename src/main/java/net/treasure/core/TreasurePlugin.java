@@ -20,6 +20,7 @@ import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
 import net.treasure.locale.Messages;
+import net.treasure.util.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -54,6 +55,7 @@ public class TreasurePlugin extends JavaPlugin {
     private Database database;
     private PlayerManager playerManager;
     private NotificationManager notificationManager;
+    private UpdateChecker updateChecker;
 
     // ACF
     private BukkitCommandManager commandManager;
@@ -153,6 +155,10 @@ public class TreasurePlugin extends JavaPlugin {
         if (config.getBoolean("gui.animation", true))
             GUI_TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
 
+        // Update Checker
+        updateChecker = new UpdateChecker(this);
+        updateChecker.check();
+
         // bStats
         var metrics = new Metrics(this, 14508);
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
@@ -237,5 +243,9 @@ public class TreasurePlugin extends JavaPlugin {
 
     public static MCTiming timing(String name) {
         return timingsEnabled ? timingManager.of(name) : null;
+    }
+
+    public String getVersion() {
+        return VERSION;
     }
 }
