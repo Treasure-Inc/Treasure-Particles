@@ -1,4 +1,4 @@
-package net.treasure.util;
+package net.treasure.util.item;
 
 import net.treasure.core.TreasurePlugin;
 import org.bukkit.Color;

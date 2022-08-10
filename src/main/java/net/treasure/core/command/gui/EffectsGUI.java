@@ -5,7 +5,7 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.effect.Effect;
 import net.treasure.locale.Messages;
-import net.treasure.util.CustomItem;
+import net.treasure.util.item.CustomItem;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
