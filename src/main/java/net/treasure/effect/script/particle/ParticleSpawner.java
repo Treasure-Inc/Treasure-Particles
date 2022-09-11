@@ -5,6 +5,7 @@ import lombok.Builder;
 import net.treasure.color.data.ColorData;
 import net.treasure.color.data.RGBColorData;
 import net.treasure.color.data.RandomNoteColorData;
+import net.treasure.common.Permissions;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
@@ -51,6 +52,7 @@ public class ParticleSpawner extends Script {
         origin = switch (this.origin) {
             case HEAD -> player.getEyeLocation();
             case FEET -> player.getLocation();
+            case WORLD -> new Location(player.getWorld(), 0, 0, 0);
         };
 
         if (multiplier != Float.MIN_VALUE)
@@ -151,7 +153,7 @@ public class ParticleSpawner extends Script {
             builder.setSpeed(speed);
 
         var playerManager = TreasurePlugin.getInstance().getPlayerManager();
-        builder.display(viewer -> playerManager.getPlayerData(viewer).isEffectsEnabled());
+        builder.display(viewer -> playerManager.getPlayerData(viewer).canSeeEffects(viewer));
         return true;
     }
 

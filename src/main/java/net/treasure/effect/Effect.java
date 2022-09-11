@@ -11,8 +11,8 @@ import net.treasure.effect.script.variable.Variable;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
 import net.treasure.util.message.MessageUtils;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class Effect {
 
     private final String key, displayName, armorColor, permission;
     private final List<String> description;
-    private final Material icon;
+    private final ItemStack icon;
 
     private final int interval;
 
@@ -39,7 +39,7 @@ public class Effect {
 
     private final boolean enableCaching;
 
-    public Effect(String key, String displayName, List<String> description, Material icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers) {
+    public Effect(String key, String displayName, List<String> description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers) {
         this.key = key;
         this.displayName = displayName;
         this.description = description != null ? description.stream().map(MessageUtils::parseLegacy).toList() : null;

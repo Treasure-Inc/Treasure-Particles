@@ -23,20 +23,19 @@ import net.treasure.effect.script.variable.reader.VariableReader;
 import net.treasure.effect.task.ParticleTask;
 import net.treasure.util.Pair;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 
 @Getter
 public class EffectManager implements DataHolder {
 
     public static final String VERSION = "1.3.0";
+    public static boolean EFFECTS_VISIBILITY_PERMISSION = false;
 
     ConfigurationGenerator generator;
 
@@ -71,11 +70,14 @@ public class EffectManager implements DataHolder {
     public boolean initialize() {
         try {
             if (!presets.initialize()) return false;
-            return generator.generate() != null;
+            var config = generator.generate();
+            if (config == null) return false;
+            EFFECTS_VISIBILITY_PERMISSION = config.getBoolean("permissions.effects_visibility_permission", false);
         } catch (Exception e) {
             TreasurePlugin.logger().log(Level.WARNING, "Couldn't load/create effects.yml", e);
             return false;
         }
+        return true;
     }
 
     @Override
@@ -109,9 +111,8 @@ public class EffectManager implements DataHolder {
             inst.getLogger().warning("Generated new effects.yml (v" + VERSION + ")");
         }
 
-        ConfigurationSection section = config.getConfigurationSection("effects");
-        if (section == null)
-            return;
+        var section = config.getConfigurationSection("effects");
+        if (section == null) return;
 
         var messages = inst.getMessages();
         var mainConfig = inst.getConfig();
@@ -142,12 +143,7 @@ public class EffectManager implements DataHolder {
                     ));
                 }
 
-                Material icon;
-                try {
-                    icon = Material.valueOf(section.getString(path + "icon").toUpperCase(Locale.ENGLISH));
-                } catch (Exception ignored) {
-                    icon = GUIElements.DEFAULT_ICON;
-                }
+                ItemStack icon = GUIElements.getItemStack(config, path + "icon", GUIElements.DEFAULT_ICON);
 
                 Effect effect = new Effect(
                         key,

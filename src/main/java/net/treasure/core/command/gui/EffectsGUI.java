@@ -10,7 +10,6 @@ import net.treasure.util.message.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class EffectsGUI {
         var data = inst.getPlayerManager().getPlayerData(player);
 
         GUIHolder holder = new GUIHolder();
-        Inventory inventory = Bukkit.createInventory(holder, 54, MessageUtils.parseLegacy(Messages.GUI_TITLE));
+        var inventory = Bukkit.createInventory(holder, 54, MessageUtils.parseLegacy(Messages.GUI_TITLE));
         holder.setInventory(inventory);
         holder.setPage(page);
 

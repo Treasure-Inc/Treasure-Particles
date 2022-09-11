@@ -35,13 +35,6 @@ public class CustomItem {
         this.i = itemStack.clone();
     }
 
-    public CustomItem addEnchant(Enchantment enchantment, int level) {
-        ItemMeta meta = this.i.getItemMeta();
-        meta.addEnchant(enchantment, level, true);
-        this.i.setItemMeta(meta);
-        return this;
-    }
-
     public CustomItem addItemFlags(ItemFlag... flag) {
         ItemMeta meta = this.i.getItemMeta();
         meta.addItemFlags(flag);
@@ -52,7 +45,8 @@ public class CustomItem {
     public CustomItem addLore(String... args) {
         if (args == null || (args.length == 1 && args[0] == null))
             return this;
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         if (meta.getLore() != null) {
             List<String> old = meta.getLore();
             old.addAll(Arrays.stream(args).filter(Objects::nonNull).collect(Collectors.toList()));
@@ -66,7 +60,8 @@ public class CustomItem {
     public CustomItem addLore(List<String> list) {
         if (list == null)
             return this;
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         if (meta.getLore() != null) {
             List<String> old = meta.getLore();
             old.addAll(list);
@@ -80,28 +75,32 @@ public class CustomItem {
     public CustomItem setLore(String... args) {
         if (args == null || (args.length == 1 && args[0] == null))
             return this;
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         meta.setLore(Arrays.stream(args).filter(Objects::nonNull).collect(Collectors.toList()));
         this.i.setItemMeta(meta);
         return this;
     }
 
     public CustomItem setLore(List<String> list) {
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         meta.setLore(list.stream().filter(Objects::nonNull).collect(Collectors.toList()));
         this.i.setItemMeta(meta);
         return this;
     }
 
     public CustomItem addData(String key, String value) {
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         meta.getPersistentDataContainer().set(new NamespacedKey(TreasurePlugin.getInstance(), key), PersistentDataType.STRING, value);
         this.i.setItemMeta(meta);
         return this;
     }
 
     public CustomItem glow() {
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         meta.addEnchant(Enchantment.LUCK, 1, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         this.i.setItemMeta(meta);
@@ -109,7 +108,8 @@ public class CustomItem {
     }
 
     public CustomItem glow(boolean glow) {
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         if (!glow) {
             meta.removeEnchant(Enchantment.LUCK);
         } else {
@@ -118,10 +118,6 @@ public class CustomItem {
         }
         this.i.setItemMeta(meta);
         return this;
-    }
-
-    public boolean isGlowing() {
-        return this.i.getItemMeta().hasEnchants();
     }
 
     public CustomItem changeArmorColor(Color color) {
@@ -135,7 +131,8 @@ public class CustomItem {
     }
 
     public CustomItem setDisplayName(String string) {
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         meta.setDisplayName(string);
         this.i.setItemMeta(meta);
         return this;
@@ -146,12 +143,16 @@ public class CustomItem {
         return this;
     }
 
-    public ItemStack build() {
-        return this.i;
+    public CustomItem setCustomModelData(int customModelData) {
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
+        meta.setCustomModelData(customModelData);
+        this.i.setItemMeta(meta);
+        return this;
     }
 
-    public CustomItem clone() {
-        return new CustomItem(this.i);
+    public ItemStack build() {
+        return this.i;
     }
 
     public CustomItem setItemStack(ItemStack itemStack) {

@@ -17,7 +17,6 @@ import xyz.xenondevs.particle.data.texture.BlockTexture;
 import xyz.xenondevs.particle.data.texture.ItemTexture;
 
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,9 +27,9 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
         ParticleEffect particle = null;
         ParticleOrigin origin = null;
 
-        ParticleSpawner.ParticleSpawnerBuilder builder = ParticleSpawner.builder();
+        var builder = ParticleSpawner.builder();
 
-        Matcher particleMatcher = Patterns.SCRIPT.matcher(line);
+        var particleMatcher = Patterns.SCRIPT.matcher(line);
         while (particleMatcher.find()) {
             String key = particleMatcher.group("type");
             String value = particleMatcher.group("value");
@@ -42,7 +41,7 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     try {
                         particle = ParticleEffect.valueOf(value.toUpperCase(Locale.ENGLISH));
                         builder.effect(particle);
-                    } catch (Exception | ExceptionInInitializerError | NoClassDefFoundError ignored) {
+                    } catch (Exception | Error ignored) {
                         error(effect, line, start, end, "Unexpected effect value: " + value);
                     }
                 }
@@ -51,6 +50,8 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         origin = ParticleOrigin.HEAD;
                     } else if (value.startsWith("feet")) {
                         origin = ParticleOrigin.FEET;
+                    } else if (value.startsWith("world")) {
+                        origin = ParticleOrigin.WORLD;
                     } else {
                         error(effect, line, start, end, "Unexpected origin value: " + value);
                         continue;
@@ -83,7 +84,7 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         error(effect, line, start, end, "You cannot use 'offset' with this particle effect: " + particle.name());
                         continue;
                     }
-                    Matcher offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
+                    var offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
                     while (offsetMatcher.find()) {
                         String _type = offsetMatcher.group("type");
                         String _value = offsetMatcher.group("value");
@@ -135,15 +136,15 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     }
                     Material material = null;
                     byte data = 0;
-                    Matcher offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
+                    var offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
                     while (offsetMatcher.find()) {
                         String _type = offsetMatcher.group("type");
                         String _value = offsetMatcher.group("value");
                         try {
-                            if (_type.equalsIgnoreCase("material"))
-                                material = Material.valueOf(_value.toUpperCase(Locale.ENGLISH));
-                            else if (_type.equalsIgnoreCase("data"))
-                                data = Byte.parseByte(_value);
+                            switch (_type) {
+                                case "material" -> material = Material.valueOf(_value.toUpperCase(Locale.ENGLISH));
+                                case "data" -> data = Byte.parseByte(_value);
+                            }
                         } catch (Exception ignored) {
                             error(effect, line, offsetMatcher.start(), offsetMatcher.end(), "Unexpected value for " + _type + ": " + _value);
                         }
@@ -151,7 +152,7 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     if (material != null)
                         builder.particleData(new BlockTexture(material, data));
                     else
-                        error(effect, line, start, end, "Material is null");
+                        error(effect, line, start, end, "Material cannot be null");
                 }
                 case "item" -> {
                     if (particle != null && !particle.hasProperty(PropertyType.REQUIRES_ITEM)) {
@@ -160,15 +161,15 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                     }
                     Material material = null;
                     int data = 0;
-                    Matcher offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
+                    var offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
                     while (offsetMatcher.find()) {
                         String _type = offsetMatcher.group("type");
                         String _value = offsetMatcher.group("value");
                         try {
-                            if (_type.equalsIgnoreCase("material"))
-                                material = Material.valueOf(_value.toUpperCase(Locale.ENGLISH));
-                            else if (_type.equalsIgnoreCase("data"))
-                                data = Integer.parseInt(_value);
+                            switch (_type) {
+                                case "material" -> material = Material.valueOf(_value.toUpperCase(Locale.ENGLISH));
+                                case "data" -> data = Integer.parseInt(_value);
+                            }
                         } catch (Exception ignored) {
                             error(effect, line, offsetMatcher.start(), offsetMatcher.end(), "Unexpected value for " + _type + ": " + _value);
                         }
@@ -182,7 +183,7 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         }
                         builder.particleData(new ItemTexture(item));
                     } else
-                        error(effect, line, start, end, "Material is null");
+                        error(effect, line, start, end, "Material cannot be null");
                 }
                 case "delay" -> {
                     if (particle != null && !particle.equals(ParticleEffect.SHRIEK)) {

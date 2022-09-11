@@ -9,6 +9,7 @@ public class Permissions implements DataHolder {
             ADMIN,
             CHANGELOG,
             NOTIFICATION,
+            CAN_SEE_EFFECTS,
             DEBUG;
 
     @Override
@@ -27,6 +28,8 @@ public class Permissions implements DataHolder {
         replacements.addReplacement("changelog", CHANGELOG = config.getString("permissions.changelog", "trelytra.changelog"));
         replacements.addReplacement("notification", NOTIFICATION = config.getString("permissions.notification", "trelytra.notification"));
         replacements.addReplacement("debug", DEBUG = config.getString("permissions.debug", "trelytra.debug"));
+
+        CAN_SEE_EFFECTS = config.getString("permissions.can_see_effects", "trelytra.can_see_effects");
         return true;
     }
 

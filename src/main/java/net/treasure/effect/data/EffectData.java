@@ -5,6 +5,7 @@ import lombok.Setter;
 import net.treasure.common.Permissions;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
+import net.treasure.effect.EffectManager;
 import net.treasure.effect.TickHandler;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
@@ -129,5 +130,9 @@ public class EffectData {
             }
         }
         return builder.toString();
+    }
+
+    public boolean canSeeEffects(Player player) {
+        return effectsEnabled && (!EffectManager.EFFECTS_VISIBILITY_PERMISSION || player.hasPermission(Permissions.CAN_SEE_EFFECTS));
     }
 }
