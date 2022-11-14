@@ -1,4 +1,4 @@
-package net.treasure.core.command.gui;
+package net.treasure.core.gui;
 
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.DataHolder;
@@ -57,9 +57,11 @@ public class GUIElements implements DataHolder {
             var material = Material.valueOf(section.getString("material").toUpperCase(Locale.ENGLISH));
             var customModelData = section.getInt("customModelData", 0);
             var amount = section.getInt("amount", 1);
+            var glow = section.getBoolean("glow", false);
             return new CustomItem(material)
                     .setAmount(amount)
                     .setCustomModelData(customModelData)
+                    .glow(glow)
                     .build();
         } catch (Exception ignored) {
             return defaultValue;

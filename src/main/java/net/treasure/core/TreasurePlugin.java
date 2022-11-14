@@ -1,36 +1,33 @@
 package net.treasure.core;
 
 import co.aikar.commands.BukkitCommandManager;
-import co.aikar.commands.lib.timings.MCTiming;
-import co.aikar.commands.lib.timings.TimingManager;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.treasure.color.ColorManager;
 import net.treasure.common.Permissions;
 import net.treasure.core.command.MainCommand;
-import net.treasure.core.command.gui.GUIElements;
-import net.treasure.core.command.gui.listener.GUIListener;
-import net.treasure.core.command.gui.task.GUIUpdater;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.database.Database;
+import net.treasure.core.gui.GUIElements;
+import net.treasure.core.gui.listener.GUIListener;
+import net.treasure.core.gui.task.GUIUpdater;
+import net.treasure.core.integration.Expansions;
 import net.treasure.core.listener.JoinQuitListener;
 import net.treasure.core.notification.NotificationManager;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
-import net.treasure.locale.Messages;
+import net.treasure.locale.Translations;
 import net.treasure.util.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 @Getter
@@ -40,16 +37,12 @@ public class TreasurePlugin extends JavaPlugin {
     private static TreasurePlugin instance;
     public static final String VERSION = "1.3.0";
 
-    // Timings
-    private static TimingManager timingManager;
-    private static boolean timingsEnabled;
-
     // Data Holders
-    private Messages messages;
+    private Translations translations;
     private EffectManager effectManager;
     private ColorManager colorManager;
     private Permissions permissions;
-    private GUIElements guiElements;
+    private GUIElements GUIElements;
     private List<DataHolder> dataHolders;
 
     private Database database;
@@ -64,8 +57,10 @@ public class TreasurePlugin extends JavaPlugin {
     private BukkitAudiences adventure;
 
     private boolean debugModeEnabled;
-    private Random random;
-    private int GUI_TASK = -5;
+    @Accessors(fluent = true)
+    private int guiTask = -5, guiInterval = 2;
+    @Accessors(fluent = true)
+    private float guiColorCycleSpeed = 0.75f;
 
     @Override
     public void onEnable() {
@@ -73,17 +68,12 @@ public class TreasurePlugin extends JavaPlugin {
 
         instance = this;
 
-        random = new Random();
         dataHolders = new ArrayList<>();
         debugModeEnabled = new File(getDataFolder(), "dev").exists();
 
         // Main Config
         saveDefaultConfig();
         configure();
-
-        // Timings
-        timingManager = TimingManager.of(this);
-        timingsEnabled = getConfig().getBoolean("timings", true);
 
         // Database
         database = new Database();
@@ -92,6 +82,7 @@ public class TreasurePlugin extends JavaPlugin {
             return;
         }
 
+        // Initialize player manager
         playerManager = new PlayerManager();
 
         // Command stuffs
@@ -100,11 +91,12 @@ public class TreasurePlugin extends JavaPlugin {
         // Adventure
         this.adventure = BukkitAudiences.create(this);
 
-        // Initialize data holders
-        messages = new Messages();
-        messages.initialize();
-        dataHolders.add(messages);
+        //region Initialize data holders
+        translations = new Translations();
+        translations.initialize();
+        dataHolders.add(translations);
 
+        // Effects
         effectManager = new EffectManager();
         if (!effectManager.initialize()) {
             disable();
@@ -112,6 +104,7 @@ public class TreasurePlugin extends JavaPlugin {
         }
         dataHolders.add(effectManager);
 
+        // Colors
         colorManager = new ColorManager();
         if (!colorManager.initialize()) {
             disable();
@@ -119,9 +112,17 @@ public class TreasurePlugin extends JavaPlugin {
         }
         dataHolders.add(colorManager);
 
-        guiElements = new GUIElements();
-        guiElements.initialize();
-        dataHolders.add(guiElements);
+        // GUI Elements (Items)
+        GUIElements = new GUIElements();
+        GUIElements.initialize();
+        dataHolders.add(GUIElements);
+
+        // Permissions
+        permissions = new Permissions();
+        permissions.initialize();
+        dataHolders.add(permissions);
+
+        //endregion
 
         var config = getConfig();
 
@@ -133,11 +134,6 @@ public class TreasurePlugin extends JavaPlugin {
         colorManager.loadColors();
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> effectManager.loadEffects());
 
-        // Permissions
-        permissions = new Permissions();
-        permissions.initialize();
-        dataHolders.add(permissions);
-
         // Main command with completions
         commandManager.registerCommand(new MainCommand(this));
         var completions = commandManager.getCommandCompletions();
@@ -145,15 +141,18 @@ public class TreasurePlugin extends JavaPlugin {
         completions.registerStaticCompletion("versions", notificationManager.getVersions());
 
         // Initialize players
-        for (Player player : Bukkit.getOnlinePlayers())
+        for (var player : Bukkit.getOnlinePlayers())
             playerManager.initializePlayer(player);
 
         // Listeners & Tasks
         var pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new JoinQuitListener(this), this);
         pluginManager.registerEvents(new GUIListener(), this);
-        if (config.getBoolean("gui.animation", true))
-            GUI_TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
+        if (config.getBoolean("gui.animation.enabled", true)) {
+            guiInterval = config.getInt("gui.animation.interval", guiInterval);
+            guiColorCycleSpeed = (float) config.getDouble("gui.animation.color-cycle-speed", guiColorCycleSpeed);
+            guiTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, guiInterval).getTaskId();
+        }
 
         // Update Checker
         updateChecker = new UpdateChecker(this);
@@ -163,6 +162,10 @@ public class TreasurePlugin extends JavaPlugin {
         var metrics = new Metrics(this, 14508);
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
         metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
+
+        // PlaceholderAPI
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
+            new Expansions(playerManager).register();
 
         getLogger().info("Enabled TreasureElytra (" + (System.currentTimeMillis() - current) + "ms)");
     }
@@ -179,6 +182,7 @@ public class TreasurePlugin extends JavaPlugin {
         getLogger().info("Reloading TreasureElytra");
 
         // config.yml
+        saveDefaultConfig();
         configure();
         reloadConfig();
         getLogger().info("Reloaded config!");
@@ -197,12 +201,6 @@ public class TreasurePlugin extends JavaPlugin {
         if (tempDebugMode != debugModeEnabled)
             getLogger().info("> Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
 
-        // Timings
-        final var tempTimings = timingsEnabled;
-        timingsEnabled = getConfig().getBoolean("timings", true);
-        if (tempTimings != timingsEnabled)
-            getLogger().info("> Timings " + (timingsEnabled ? "enabled!" : "disabled!"));
-
         // Config Stuffs
         var config = getConfig();
 
@@ -210,12 +208,14 @@ public class TreasurePlugin extends JavaPlugin {
         notificationManager.setEnabled(config.getBoolean("notifications", true));
 
         // GUI Animations
-        if (GUI_TASK != -5 && !config.getBoolean("gui.animation", true)) {
-            Bukkit.getScheduler().cancelTask(GUI_TASK);
-            GUI_TASK = -5;
+        if (guiTask != -5 && !config.getBoolean("gui.animation", true)) {
+            Bukkit.getScheduler().cancelTask(guiTask);
+            guiTask = -5;
             getLogger().info("> Disabled gui animations");
-        } else if (GUI_TASK == -5 && config.getBoolean("gui.animation", true)) {
-            GUI_TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, 2).getTaskId();
+        } else if (guiTask == -5 && config.getBoolean("gui.animation", true)) {
+            guiInterval = config.getInt("gui.animation.interval", guiInterval);
+            guiColorCycleSpeed = (float) config.getDouble("gui.animation.color-cycle-speed", guiColorCycleSpeed);
+            guiTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, guiInterval).getTaskId();
             getLogger().info("> Enabled gui animations");
         }
 
@@ -239,10 +239,6 @@ public class TreasurePlugin extends JavaPlugin {
 
     public static Logger logger() {
         return instance.getLogger();
-    }
-
-    public static MCTiming timing(String name) {
-        return timingsEnabled ? timingManager.of(name) : null;
     }
 
     public String getVersion() {

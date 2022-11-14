@@ -1,6 +1,7 @@
 package net.treasure.effect.data;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.treasure.common.Permissions;
 import net.treasure.core.TreasurePlugin;
@@ -16,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 @Getter
+@RequiredArgsConstructor
 public class EffectData {
 
     private Effect currentEffect;
@@ -27,10 +29,6 @@ public class EffectData {
 
     @Setter
     private LinkedHashMap<String, TickHandler> tickHandlers;
-
-    public EffectData(Set<Pair<String, Double>> variables) {
-        this.variables = variables;
-    }
 
     public EffectData() {
         this.variables = new HashSet<>();

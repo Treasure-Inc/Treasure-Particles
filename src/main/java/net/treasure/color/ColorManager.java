@@ -6,8 +6,8 @@ import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.util.color.Gradient;
 import net.treasure.util.color.Rainbow;
-import org.bukkit.configuration.ConfigurationSection;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +18,7 @@ public class ColorManager implements DataHolder {
     final ConfigurationGenerator generator;
 
     @Getter
-    final List<Color> colors;
+    final List<ColorScheme> colors;
 
     public ColorManager() {
         this.colors = new ArrayList<>();
@@ -43,7 +43,7 @@ public class ColorManager implements DataHolder {
         return VERSION.equals(generator.getConfiguration().getString("version"));
     }
 
-    public Color get(String key) {
+    public ColorScheme get(String key) {
         return colors.stream().filter(color -> color.getKey().equalsIgnoreCase(key)).findFirst().orElse(null);
     }
 
@@ -58,26 +58,33 @@ public class ColorManager implements DataHolder {
             TreasurePlugin.logger().warning("Generated new colors.yml (v" + VERSION + ")");
         }
 
-        ConfigurationSection section = config.getConfigurationSection("colors");
+        var section = config.getConfigurationSection("colors");
         if (section == null)
             return;
 
         for (String key : section.getKeys(false)) {
-            if (key.equalsIgnoreCase("rainbow"))
+            if (!checkColorSchemeName(key))
                 continue;
             String path = key + ".";
             if (!section.contains(path + "values"))
                 continue;
-            GradientColor color = new GradientColor(
+            GradientColorScheme color = new GradientColorScheme(
                     key,
                     section.getInt(path + "size", 10),
-                    section.getStringList(path + "values").stream().map(Gradient::hex2Rgb).toArray(java.awt.Color[]::new)
+                    section.getStringList(path + "values").stream().map(Gradient::hex2Rgb).toArray(Color[]::new)
             );
             colors.add(color);
         }
 
-        Color rainbow = new Color("rainbow");
+        ColorScheme rainbow = new ColorScheme("rainbow");
         rainbow.getColors().addAll(Arrays.asList(new Rainbow().colors(25)));
         colors.add(rainbow);
+    }
+
+    public boolean checkColorSchemeName(String name) {
+        return switch (name) {
+            case "rainbow" -> false;
+            default -> true;
+        };
     }
 }

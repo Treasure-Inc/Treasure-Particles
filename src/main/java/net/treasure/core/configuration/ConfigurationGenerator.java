@@ -9,8 +9,6 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -66,9 +64,9 @@ public class ConfigurationGenerator {
         var dataFolder = plugin.getDataFolder();
         var file = new File(dataFolder, directory);
         try {
-            Files.copy(file, new File(dataFolder, directory + "_" + UUID.randomUUID() + ".old"));
+            Files.copy(file, new File(dataFolder, "old_" + directory + "_" + UUID.randomUUID() + ".yml"));
         } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't copy old file: " + fileName + ".old", e);
+            plugin.getLogger().log(Level.SEVERE, "Couldn't copy old file: " + fileName + ".yml", e);
         }
 
         saveResource(true);
@@ -76,7 +74,7 @@ public class ConfigurationGenerator {
     }
 
     private void saveResource(boolean replace) {
-        InputStream in = plugin.getResource(fileName);
+        var in = plugin.getResource(fileName);
         if (in == null) {
             plugin.getLogger().warning("The embedded resource '" + fileName + "' cannot be found");
             return;
@@ -98,7 +96,7 @@ public class ConfigurationGenerator {
             if (outFile.exists() && !replace)
                 return;
 
-            OutputStream out = new FileOutputStream(outFile);
+            var out = new FileOutputStream(outFile);
             byte[] buf = new byte[1024];
 
             int len;

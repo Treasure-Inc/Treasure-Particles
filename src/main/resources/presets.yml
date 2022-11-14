@@ -12,7 +12,7 @@ swap-x-y:
   - "variable temp={x}"
   - "variable x={y}"
   - "variable y={temp}"
-swap-x-z-ang:
+swap-x-z:
   - "variable temp={x}"
   - "variable x={z}"
   - "variable z={temp}"

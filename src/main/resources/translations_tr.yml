@@ -1,14 +1,7 @@
-version: "1.2.3"
-prefix: "<gradient:#A3BCF9:#576490>[TʀEʟʏᴛʀᴀ] <reset>"
-commands:
-  usage: "<yellow>Kullanım:<gray> %s"
-  error: "<red>Hata: %s"
-  must-be-a-number: "<red>%s bir sayı değil, lütfen bir sayı giriniz."
-  username-too-short: "<red>Kullanıcı ismi çok kısa, en az 3 karakter olmalı."
-  not-a-valid-name: "<red>%s geçerli bir kullanıcı ismi değil."
-  no-player-found-server: "<red>Sunucuya daha önceden %s ismiyle eşleşen bir oyuncu katılmamış."
-  no-player-found-offline: "<red>Sunucuda %s ismiyle eşleşen aktif bir oyuncu bulunamadı."
-  no-permission: "<red>Bu komutu kullanabilmek için yeterli yetkin yok!"
+# Bu değeri değiştirmeyin!
+version: "1.3.0"
+# Çeviriler
+prefix: "<gradient:#EF476F:#FFD166><b>TrElytra <dark_gray>| <reset>"
 effect-no-permission: "<red>Bu efekti kullanabilmek için yeterli yetkin yok!"
 effect-selected: "<aqua>Efekt seçildi:<reset> %s"
 effect-unknown: "<red>%s isminde bir efekt bulunamadı."
@@ -18,10 +11,10 @@ effect-reset-other: "<gray>%s adlı oyuncunun elitra efekti sıfırlandı."
 notifications: "<gray>Bildirimler: %s"
 reloading: "<yellow>TreasureElytra yenileniyor..."
 reloaded: "<green>Başarıyla yenilendi!"
-enabled: "<green>Aktif"
+enabled: "<green>Açık"
 disabled: "<red>Kapalı"
-# GUI Messages
-gui-title: "<aqua><b>Efektler"
+# GUI Mesajları
+gui-title: "        <gradient:#EF476F:#FFD166><b>Treasure Elytra"
 gui-effect-selected: "<green>Seçildi!"
 gui-select-effect: "<dark_gray>• <green>Tıkla ve efekti kullan!"
 gui-reset-effect: "<yellow>Efekti Sıfırla"
@@ -29,6 +22,7 @@ gui-reset-effect-current: "<gray>Seçili Efekt: <gold>%s"
 gui-next-page: "<green>> Sonraki Sayfa"
 gui-previous-page: "<green>< Önceki Sayfa"
 gui-close: "<red>Kapat"
+# Efekt İsimleri
 effects:
   rainbow-circle: "<rainbow>Rengarenk Daire"
   rainbow-circle-transition: "<rainbow>Rengarenk Daire <gray>v2"
@@ -39,7 +33,7 @@ effects:
   spiral: "<#3A0CA3>Spiral"
   rainbow-note: "<rainbow>Rengarenk Notalar"
   random-note: "<#36d15f>Rastgele Notalar"
-  line: "<gradient:red:blue>Üçlü Çizgi"
+  triple-line: "<gradient:red:blue>Üçlü Çizgi"
   orbit: "<gradient:#FF8C42:#FF3C38>Yörünge"
   parkour: "<b>Parkur!"
   planner: "<gradient:green:dark_green>Planör"
@@ -60,5 +54,21 @@ effects:
   plane: "<#b58500>Uçak"
   heart: "<#f54242>Kalp"
   sonic: "<#65f5fc>Sonik"
+# Efekt Açıklamaları
 descriptions:
   exclusive-19: "<gray><b>Gereken Sürüm</b> <gold>1.19"
+# Placeholder Mesajları
+placeholders:
+  current-effect-null: "Yok"
+  enabled: "Açık"
+  disabled: "Kapalı"
+# Komut Mesajları
+commands:
+  usage: "<yellow>Kullanım:<gray> %s"
+  error: "<red>Hata: %s"
+  must-be-a-number: "<red>%s bir sayı değil, lütfen bir sayı giriniz."
+  username-too-short: "<red>Kullanıcı ismi çok kısa, en az 3 karakter olmalı."
+  not-a-valid-name: "<red>%s geçerli bir kullanıcı ismi değil."
+  no-player-found-server: "<red>Sunucuya daha önceden %s ismiyle eşleşen bir oyuncu katılmamış."
+  no-player-found-offline: "<red>Sunucuda %s ismiyle eşleşen aktif bir oyuncu bulunamadı."
+  no-permission: "<red>Bu komutu kullanabilmek için yeterli yetkin yok!"

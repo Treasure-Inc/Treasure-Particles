@@ -2,11 +2,12 @@ package net.treasure.color;
 
 import net.treasure.util.color.Gradient;
 
+import java.awt.*;
 import java.util.Arrays;
 
-public class GradientColor extends Color {
+public class GradientColorScheme extends ColorScheme {
 
-    public GradientColor(String key, int size, java.awt.Color... colors) {
+    public GradientColorScheme(String key, int size, Color... colors) {
         super(key);
         this.getColors().addAll(Arrays.asList(new Gradient(colors).colors(size)));
     }

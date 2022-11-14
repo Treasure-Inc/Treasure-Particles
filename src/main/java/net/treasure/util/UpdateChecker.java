@@ -22,7 +22,7 @@ public class UpdateChecker implements Listener {
             if (!plugin.getVersion().equals(version)) {
                 plugin.getLogger().warning("New version of TreasureElytra available!");
                 plugin.getLogger().warning(" • Your version: " + plugin.getVersion());
-                plugin.getLogger().warning(" • Latest version: " + version);
+                plugin.getLogger().warning(" • Latest version: §n" + version);
                 plugin.getLogger().warning("");
                 plugin.getLogger().warning("Please update to the newest version.");
                 plugin.getLogger().warning("");

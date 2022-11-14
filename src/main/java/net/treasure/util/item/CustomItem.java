@@ -1,13 +1,11 @@
 package net.treasure.util.item;
 
-import net.treasure.core.TreasurePlugin;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -17,7 +15,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CustomItem {
-    private ItemStack i;
+
+    private final ItemStack i;
 
     public CustomItem(Material material) {
         this.i = new ItemStack(material);
@@ -36,7 +35,8 @@ public class CustomItem {
     }
 
     public CustomItem addItemFlags(ItemFlag... flag) {
-        ItemMeta meta = this.i.getItemMeta();
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
         meta.addItemFlags(flag);
         this.i.setItemMeta(meta);
         return this;
@@ -90,10 +90,10 @@ public class CustomItem {
         return this;
     }
 
-    public CustomItem addData(String key, String value) {
+    public CustomItem addData(NamespacedKey key, String value) {
         var meta = this.i.getItemMeta();
         if (meta == null) return this;
-        meta.getPersistentDataContainer().set(new NamespacedKey(TreasurePlugin.getInstance(), key), PersistentDataType.STRING, value);
+        meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
         this.i.setItemMeta(meta);
         return this;
     }
@@ -121,8 +121,7 @@ public class CustomItem {
     }
 
     public CustomItem changeArmorColor(Color color) {
-        if (color == null)
-            return this;
+        if (color == null) return this;
         if (this.i.getItemMeta() != null && this.i.getItemMeta() instanceof LeatherArmorMeta lam) {
             lam.setColor(color);
             this.i.setItemMeta(lam);
@@ -153,10 +152,5 @@ public class CustomItem {
 
     public ItemStack build() {
         return this.i;
-    }
-
-    public CustomItem setItemStack(ItemStack itemStack) {
-        this.i = itemStack;
-        return this;
     }
 }

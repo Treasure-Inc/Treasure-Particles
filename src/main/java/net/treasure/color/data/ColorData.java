@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.util.IntRange;
 
 import java.util.regex.Matcher;
 
@@ -65,40 +66,27 @@ public class ColorData {
             String type = colorMatcher.group("type");
             String value = colorMatcher.group("value");
             switch (type) {
-                case "name":
-                    colorName = value;
-                    break;
-                case "revertWhenDone":
-                    revertWhenDone = Boolean.parseBoolean(value);
-                    break;
-                case "note":
-                    note = Boolean.parseBoolean(value);
-                    break;
-                case "speed":
+                case "name" -> colorName = value;
+                case "revertWhenDone" -> revertWhenDone = Boolean.parseBoolean(value);
+                case "note" -> note = Boolean.parseBoolean(value);
+                case "speed" -> {
                     try {
                         colorSpeed = Float.parseFloat(value);
                     } catch (Exception ignored) {
                         throw new ReaderException("Unexpected speed value: " + value);
                     }
-                    break;
-                case "size":
+                }
+                case "size" -> {
                     try {
                         max = Integer.parseInt(value);
                     } catch (Exception ignored) {
-                        var args = Patterns.DOUBLE.split(value);
-                        boolean success = false;
-                        try {
-                            if (args.length != 2)
-                                throw new Exception();
-                            min = Integer.parseInt(args[0]);
-                            max = Integer.parseInt(args[1]);
-                            success = true;
-                        } catch (Exception ignored2) {
-                        }
-                        if (!success)
+                        var range = IntRange.of(value);
+                        if (range == null)
                             throw new ReaderException("Unexpected size value: " + value);
+                        min = range.min();
+                        max = range.max();
                     }
-                    break;
+                }
             }
         }
         if (note) {
@@ -113,9 +101,7 @@ public class ColorData {
             };
         } else {
             var color = TreasurePlugin.getInstance().getColorManager().get(colorName);
-            if (color == null) {
-                throw new ReaderException("Unexpected color scheme name value: " + colorName);
-            }
+            if (color == null) throw new ReaderException("Unexpected color scheme name value: " + colorName);
             return new RGBColorData(color, colorSpeed, revertWhenDone);
         }
     }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.Effect;
 import net.treasure.effect.data.EffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,10 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class PlayerManager {
 
@@ -30,8 +27,12 @@ public class PlayerManager {
         gson = new Gson();
     }
 
-    public CompletableFuture<EffectData> initializePlayer(Player player) {
-        return CompletableFuture.supplyAsync(() -> {
+    public void initializePlayer(Player player) {
+        this.initializePlayer(player, null);
+    }
+
+    public void initializePlayer(Player player, Consumer<EffectData> callback) {
+        Bukkit.getScheduler().runTaskAsynchronously(TreasurePlugin.getInstance(), () -> {
             var inst = TreasurePlugin.getInstance();
             var database = inst.getDatabase();
 
@@ -60,13 +61,15 @@ public class PlayerManager {
                 database.close(ps, rs);
             }
 
-            if (playerData == null) return null;
-            Effect effect = inst.getEffectManager().get(playerData.effectName);
+            if (playerData == null) return;
+            var effect = inst.getEffectManager().get(playerData.effectName);
             if (effect != null && effect.canUse(player))
                 data.setCurrentEffect(player, effect);
             data.setNotificationsEnabled(playerData.notificationsEnabled);
             data.setEffectsEnabled(playerData.effectsEnabled);
-            return data;
+
+            if (callback != null)
+                callback.accept(data);
         });
     }
 
@@ -89,10 +92,10 @@ public class PlayerManager {
 
     public void reload() {
         var inst = TreasurePlugin.getInstance();
-        for (Iterator<Map.Entry<UUID, EffectData>> iterator = playersData.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<UUID, EffectData> set = iterator.next();
-            EffectData data = set.getValue();
-            Player player = Bukkit.getPlayer(set.getKey());
+        for (var iterator = playersData.entrySet().iterator(); iterator.hasNext(); ) {
+            var set = iterator.next();
+            var data = set.getValue();
+            var player = Bukkit.getPlayer(set.getKey());
             if (player == null) {
                 iterator.remove();
                 continue;
@@ -101,7 +104,7 @@ public class PlayerManager {
                 data.setEnabled(false);
                 continue;
             }
-            Effect effect = inst.getEffectManager().get(data.getCurrentEffect().getKey());
+            var effect = inst.getEffectManager().get(data.getCurrentEffect().getKey());
             data.setCurrentEffect(player, null);
             if (effect != null && effect.canUse(player))
                 data.setCurrentEffect(player, effect);

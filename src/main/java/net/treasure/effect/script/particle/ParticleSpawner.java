@@ -109,7 +109,6 @@ public class ParticleSpawner extends Script {
         var offset = new Vector(offsetX, offsetY, offsetZ);
 
         if (direction) {
-
             var direction = player.getLocation().getDirection();
 
             var vector = new Vector(x, y, z);

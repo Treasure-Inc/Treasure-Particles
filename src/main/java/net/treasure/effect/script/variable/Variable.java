@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.Effect;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import net.treasure.util.MathUtil;
@@ -24,9 +23,9 @@ public class Variable extends Script {
 
     @Override
     public boolean tick(Player player, EffectData data, int times) {
-        Pair<String, Double> pair = data.getVariable(player, variable);
+        var pair = data.getVariable(player, variable);
         if (pair == null) return true;
-        Effect effect = data.getCurrentEffect();
+        var effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
             pair.setValue(effect.getCache().get(tickHandlerKey)[times][index]);
             return true;
@@ -40,10 +39,10 @@ public class Variable extends Script {
         }
         switch (operator) {
             case EQUAL -> pair.setValue(val);
-            case PLUS -> pair.setValue(pair.getValue() + val);
-            case MINUS -> pair.setValue(pair.getValue() - val);
+            case ADD -> pair.setValue(pair.getValue() + val);
+            case SUBTRACT -> pair.setValue(pair.getValue() - val);
             case MULTIPLY -> pair.setValue(pair.getValue() * val);
-            case DIVISION -> pair.setValue(pair.getValue() / val);
+            case DIVIDE -> pair.setValue(pair.getValue() / val);
         }
         return true;
     }
@@ -66,10 +65,10 @@ public class Variable extends Script {
         }
         switch (operator) {
             case EQUAL -> pair.setValue(val);
-            case PLUS -> pair.setValue(pair.getValue() + val);
-            case MINUS -> pair.setValue(pair.getValue() - val);
+            case ADD -> pair.setValue(pair.getValue() + val);
+            case SUBTRACT -> pair.setValue(pair.getValue() - val);
             case MULTIPLY -> pair.setValue(pair.getValue() * val);
-            case DIVISION -> pair.setValue(pair.getValue() / val);
+            case DIVIDE -> pair.setValue(pair.getValue() / val);
         }
         return pair.getValue();
     }
@@ -81,9 +80,9 @@ public class Variable extends Script {
 
     public enum Operator {
         EQUAL,
-        PLUS,
-        MINUS,
+        ADD,
+        SUBTRACT,
         MULTIPLY,
-        DIVISION
+        DIVIDE
     }
 }

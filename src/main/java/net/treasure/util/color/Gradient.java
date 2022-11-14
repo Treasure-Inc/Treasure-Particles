@@ -1,6 +1,5 @@
 package net.treasure.util.color;
 
-
 import java.awt.*;
 
 public class Gradient {

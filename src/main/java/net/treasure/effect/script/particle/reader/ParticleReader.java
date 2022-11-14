@@ -67,7 +67,7 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         }
                     }
                 }
-                case "colorscheme" -> {
+                case "colorscheme", "color" -> {
                     if (particle != null && !particle.hasProperty(PropertyType.COLORABLE)) {
                         error(effect, line, start, end, "You cannot use 'colorScheme' with this particle effect: " + particle.name());
                         continue;
@@ -103,7 +103,7 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         }
                     }
                 }
-                case "direction" -> builder.direction(Boolean.parseBoolean(value));
+                case "direction", "directional" -> builder.direction(Boolean.parseBoolean(value));
                 case "amount" -> {
                     try {
                         builder.amount(Integer.parseInt(value));

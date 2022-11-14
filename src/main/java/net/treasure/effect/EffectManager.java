@@ -3,7 +3,7 @@ package net.treasure.effect;
 import lombok.Getter;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.core.command.gui.GUIElements;
+import net.treasure.core.gui.GUIElements;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.effect.exception.ReaderException;
@@ -114,7 +114,7 @@ public class EffectManager implements DataHolder {
         var section = config.getConfigurationSection("effects");
         if (section == null) return;
 
-        var messages = inst.getMessages();
+        var messages = inst.getTranslations();
         var mainConfig = inst.getConfig();
 
         for (String key : section.getKeys(false)) {

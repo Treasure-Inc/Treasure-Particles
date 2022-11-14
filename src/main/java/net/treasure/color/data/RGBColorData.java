@@ -1,22 +1,24 @@
 package net.treasure.color.data;
 
-import net.treasure.color.Color;
+import net.treasure.color.ColorScheme;
+
+import java.awt.Color;
 
 public class RGBColorData extends ColorData {
 
-    final Color color;
+    final ColorScheme color;
 
-    public RGBColorData(Color color, float speed, boolean revertWhenDone) {
+    public RGBColorData(ColorScheme color, float speed, boolean revertWhenDone) {
         super(speed, revertWhenDone);
         this.color = color;
         this.max = color.getColors().size();
     }
 
-    public java.awt.Color next() {
+    public Color next() {
         return color.getColors().get(index());
     }
 
-    public java.awt.Color tempNext() {
+    public Color tempNext() {
         var tempSpeed = this.speed;
         this.speed += 15f;
         var next = color.getColors().get(tempIndex());

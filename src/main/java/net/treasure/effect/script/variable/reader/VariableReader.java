@@ -27,10 +27,10 @@ public class VariableReader implements ScriptReader<Variable> {
                 builder.eval(eval);
                 switch (operator) {
                     case "" -> builder.operator(Variable.Operator.EQUAL);
-                    case "+" -> builder.operator(Variable.Operator.PLUS);
-                    case "-" -> builder.operator(Variable.Operator.MINUS);
+                    case "+" -> builder.operator(Variable.Operator.ADD);
+                    case "-" -> builder.operator(Variable.Operator.SUBTRACT);
                     case "*" -> builder.operator(Variable.Operator.MULTIPLY);
-                    case "/" -> builder.operator(Variable.Operator.DIVISION);
+                    case "/" -> builder.operator(Variable.Operator.DIVIDE);
                     default -> {
                         error(effect, line, start, end, "Invalid operator (" + operator + ")");
                         return null;

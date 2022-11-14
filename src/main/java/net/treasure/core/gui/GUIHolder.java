@@ -1,4 +1,4 @@
-package net.treasure.core.command.gui;
+package net.treasure.core.gui;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +13,5 @@ import java.util.HashMap;
 public class GUIHolder implements InventoryHolder {
     private Inventory inventory;
     private int page;
-    private HashMap<Integer, RGBColorData> updateSlots;
+    private HashMap<Integer, RGBColorData> animatedSlots;
 }

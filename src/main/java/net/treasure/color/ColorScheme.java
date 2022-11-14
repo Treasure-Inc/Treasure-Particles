@@ -2,18 +2,17 @@ package net.treasure.color;
 
 import lombok.Getter;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Color {
+@Getter
+public class ColorScheme {
 
-    @Getter
     final String key;
+    final List<Color> colors;
 
-    @Getter
-    final List<java.awt.Color> colors;
-
-    public Color(String key) {
+    public ColorScheme(String key) {
         this.key = key;
         this.colors = new ArrayList<>();
     }

@@ -13,23 +13,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class Messages implements DataHolder {
+public class Translations implements DataHolder {
 
     public static String LOCALE;
     public static final String
             VERSION = "1.3.0",
-            UPDATE_DESCRIPTION = "New messages";
+            UPDATE_DESCRIPTION = "New translations";
     private ConfigurationGenerator generator;
 
     public static String PREFIX,
-            COMMAND_USAGE,
-            COMMAND_ERROR,
-            COMMAND_MUST_BE_A_NUMBER,
-            COMMAND_USERNAME_TOO_SHORT,
-            COMMAND_NOT_A_VALID_NAME,
-            COMMAND_NO_PLAYER_FOUND_SERVER,
-            COMMAND_NO_PLAYER_FOUND_OFFLINE,
-            COMMAND_NO_PERMISSION,
             EFFECT_SELECTED,
             EFFECT_NO_PERMISSION,
             EFFECT_UNKNOWN,
@@ -48,7 +40,18 @@ public class Messages implements DataHolder {
             RELOADING,
             RELOADED,
             ENABLED,
-            DISABLED;
+            DISABLED,
+            COMMAND_USAGE,
+            COMMAND_ERROR,
+            COMMAND_MUST_BE_A_NUMBER,
+            COMMAND_USERNAME_TOO_SHORT,
+            COMMAND_NOT_A_VALID_NAME,
+            COMMAND_NO_PLAYER_FOUND_SERVER,
+            COMMAND_NO_PLAYER_FOUND_OFFLINE,
+            COMMAND_NO_PERMISSION,
+            PAPI_CURRENT_EFFECT_NULL,
+            PAPI_ENABLED,
+            PAPI_DISABLED;
 
     @Override
     public boolean checkVersion() {
@@ -58,19 +61,19 @@ public class Messages implements DataHolder {
     @Override
     public boolean initialize() {
         for (var locale : Locale.values())
-            new ConfigurationGenerator("messages_" + locale.getKey() + ".yml", "messages").generate();
+            new ConfigurationGenerator("translations_" + locale.getKey() + ".yml", "translations").generate();
 
         try {
             var inst = TreasurePlugin.getInstance();
             LOCALE = inst.getConfig().getString("locale", "en").toLowerCase(java.util.Locale.ENGLISH);
 
-            this.generator = new ConfigurationGenerator("messages_" + LOCALE + ".yml", "messages");
+            this.generator = new ConfigurationGenerator("translations_" + LOCALE + ".yml", "translations");
             var config = generator.generate();
             String notify = null;
 
             if (generator.generate() == null) {
                 LOCALE = Locale.ENGLISH.key;
-                this.generator = new ConfigurationGenerator("messages_" + LOCALE + ".yml", "messages");
+                this.generator = new ConfigurationGenerator("translations_" + LOCALE + ".yml", "translations");
                 config = generator.generate();
                 notify = "unknown locale";
             } else if (!checkVersion()) {
@@ -83,11 +86,11 @@ public class Messages implements DataHolder {
                 throw new Exception();
 
             // Version Update (v1.0.5 > v1.1.0)
-            if (new File(inst.getDataFolder(), "messages_" + LOCALE + ".yml").exists())
+            if (new File(inst.getDataFolder(), "translations_" + LOCALE + ".yml").exists())
                 notify = "directory change";
 
             if (notify != null) {
-                inst.getLogger().warning("Generated new messages_" + LOCALE + ".yml (v" + VERSION + ") due to " + notify + ". Changelog:");
+                inst.getLogger().warning("Generated new 'translations_" + LOCALE + ".yml' (v" + VERSION + ") due to " + notify + ". Changelog:");
                 inst.getLogger().warning(UPDATE_DESCRIPTION);
             }
 
@@ -116,6 +119,12 @@ public class Messages implements DataHolder {
             ENABLED = config.getString("enabled", "<green>Enabled");
             DISABLED = config.getString("disabled", "<red>Disabled");
 
+            // PAPI
+
+            PAPI_CURRENT_EFFECT_NULL = config.getString("placeholders.current-effect-null", "None");
+            PAPI_ENABLED = config.getString("placeholders.enabled", "Enabled");
+            PAPI_DISABLED = config.getString("placeholders.disabled", "Disabled");
+
             // Commands
 
             COMMAND_USAGE = config.getString("commands.usage", "<yellow>Usage:<gray> %s");
@@ -129,21 +138,21 @@ public class Messages implements DataHolder {
 
             var commandManager = inst.getCommandManager();
             Map<MessageKeyProvider, String> messages = new HashMap<>();
-            messages.put(MessageKeys.INVALID_SYNTAX, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_USAGE, "{command} {syntax}")));
-            messages.put(MessageKeys.ERROR_PREFIX, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_ERROR, "{message}")));
-            messages.put(MessageKeys.MUST_BE_A_NUMBER, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_MUST_BE_A_NUMBER, "{num}")));
-            messages.put(MinecraftMessageKeys.USERNAME_TOO_SHORT, MessageUtils.parseLegacy(Messages.PREFIX + COMMAND_USERNAME_TOO_SHORT));
-            messages.put(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NOT_A_VALID_NAME, "{name}")));
-            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NO_PLAYER_FOUND_SERVER, "{search}")));
-            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
-            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND, MessageUtils.parseLegacy(String.format(Messages.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
-            messages.put(MessageKeys.PERMISSION_DENIED, MessageUtils.parseLegacy(Messages.PREFIX + COMMAND_NO_PERMISSION));
-            messages.put(MessageKeys.PERMISSION_DENIED_PARAMETER, MessageUtils.parseLegacy(Messages.PREFIX + COMMAND_NO_PERMISSION));
+            messages.put(MessageKeys.INVALID_SYNTAX, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_USAGE, "{command} {syntax}")));
+            messages.put(MessageKeys.ERROR_PREFIX, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_ERROR, "{message}")));
+            messages.put(MessageKeys.MUST_BE_A_NUMBER, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_MUST_BE_A_NUMBER, "{num}")));
+            messages.put(MinecraftMessageKeys.USERNAME_TOO_SHORT, MessageUtils.parseLegacy(Translations.PREFIX + COMMAND_USERNAME_TOO_SHORT));
+            messages.put(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NOT_A_VALID_NAME, "{name}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NO_PLAYER_FOUND_SERVER, "{search}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
+            messages.put(MessageKeys.PERMISSION_DENIED, MessageUtils.parseLegacy(Translations.PREFIX + COMMAND_NO_PERMISSION));
+            messages.put(MessageKeys.PERMISSION_DENIED_PARAMETER, MessageUtils.parseLegacy(Translations.PREFIX + COMMAND_NO_PERMISSION));
 
             commandManager.getLocales().addMessages(java.util.Locale.ENGLISH, messages);
             return true;
         } catch (Exception exception) {
-            TreasurePlugin.logger().log(Level.WARNING, "Couldn't load messages from messages_" + LOCALE + ".yml", exception);
+            TreasurePlugin.logger().log(Level.WARNING, "Couldn't load translations from 'translations_" + LOCALE + ".yml'", exception);
             return false;
         }
     }

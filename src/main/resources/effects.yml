@@ -1,9 +1,10 @@
-version: 1.3.0
+# Do not change!
+version: "1.3.0"
 effects:
   rainbow-circle:
     displayName: "%rainbow-circle"
     armorColor: "rainbow"
-    permission: "%rainbow"
+    permission: "%rainbow-effects"
     variables: [ 'r', 'x', 'y' ]
     enableCaching: true
     interval: 1
@@ -18,7 +19,7 @@ effects:
   rainbow-circle-transition:
     displayName: "%rainbow-circle-transition"
     armorColor: "rainbow"
-    permission: "%rainbow"
+    permission: "%rainbow-effects"
     variables: [ 'r', 'x', 'y' ]
     enableCaching: true
     interval: 1
@@ -33,7 +34,7 @@ effects:
   rainbow-random:
     displayName: "%rainbow-random"
     armorColor: "rainbow"
-    permission: "%rainbow"
+    permission: "%rainbow-effects"
     variables: [ 'r', 'x', 'y' ]
     interval: 1
     enableCaching: true
@@ -48,7 +49,7 @@ effects:
   rainbow-line:
     displayName: "%rainbow-line"
     armorColor: "rainbow"
-    permission: "%rainbow"
+    permission: "%rainbow-effects"
     interval: 1
     onTick:
       do:
@@ -58,7 +59,7 @@ effects:
   rainbow-flag:
     displayName: "%rainbow-flag"
     armorColor: "rainbow"
-    permission: "%rainbow"
+    permission: "%rainbow-effects"
     variables: [ 'r', 'x' ]
     enableCaching: true
     interval: 1
@@ -72,7 +73,7 @@ effects:
   rainbow-spiral:
     displayName: "%rainbow-spiral"
     armorColor: "rainbow"
-    permission: "%rainbow"
+    permission: "%rainbow-effects"
     variables: [ 'x','z','step' ]
     interval: 1
     onTick:
@@ -86,7 +87,7 @@ effects:
           - variable step=({step} + 1) % 120
   spiral:
     displayName: "%spiral"
-    armorColor: "gradient5"
+    armorColor: "gradient-spiral"
     variables: [ 'stepX', 'stepY=-60', 'x', 'y', 'z' ]
     onTick:
       do:
@@ -96,14 +97,14 @@ effects:
           - variable x=-(cos((({stepX}+{stepY}) / 90) * {PI} * 2))
           - variable y={stepY}/180
           - variable z=-(sin((({stepX}+{stepY}) / 90) * {PI} * 2))
-          - particle [effect=redstone,amount=5,x={x},z={y},y={z},direction=true,origin=head,colorScheme={name=gradient5;revertWhenDone=true;speed=0.05}]
+          - particle [effect=redstone,amount=5,x={x},z={y},y={z},direction=true,origin=head,colorScheme={name=gradient-spiral;revertWhenDone=true;speed=0.05}]
       step:
         scripts:
           - variable stepY=-60
           - variable stepX+=1
   rainbow-note:
     displayName: "%rainbow-note"
-    permission: "%rainbow"
+    permission: "%rainbow-effects"
     armorColor: "rainbow"
     onTick:
       do:
@@ -139,7 +140,7 @@ effects:
           - "conditional (reverse==0) ? preset quadhelix-normal : none"
   helix:
     displayName: "%helix"
-    armorColor: "gradient2"
+    armorColor: "gradient-white-to-gray"
     variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
     interval: 1
     onTick:
@@ -159,8 +160,8 @@ effects:
           - "conditional (reverse==1) ? preset quadhelix-reverse : none"
           - "conditional (reverse==0) ? preset quadhelix-normal : none"
   triple-line:
-    displayName: "%line"
-    armorColor: "redtoblue"
+    displayName: "%triple-line"
+    armorColor: "gradient-red-to-blue"
     variables: [ 'r', 'x1', 'y1', 'z1', 'x2', 'y2', 'z2' ]
     interval: 1
     onTick:
@@ -173,12 +174,12 @@ effects:
           - variable y2={y1}*2
           - variable x2={x1}*-1
           - variable z2={z1}*-1
-          - particle [effect=redstone,y={y2},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
-          - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
-          - particle [effect=redstone,x={x2},y={y1},z={z2},amount=10,origin=head*2,colorScheme={name=redtoblue;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,y={y2},amount=10,origin=head*2,colorScheme={name=gradient-red-to-blue;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,x={x1},y={y1},z={z1},amount=10,origin=head*2,colorScheme={name=gradient-red-to-blue;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,x={x2},y={y1},z={z2},amount=10,origin=head*2,colorScheme={name=gradient-red-to-blue;revertWhenDone=true;speed=1}]
   orbit:
     displayName: "%orbit"
-    armorColor: "gradient1"
+    armorColor: "gradient-red-yellow-blue"
     variables: [ 'x', 'z', 'step' ]
     interval: 1
     onTick:
@@ -187,7 +188,7 @@ effects:
         scripts:
           - variable x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
           - variable z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-          - particle [effect=redstone,amount=10,direction=true,x={x},y={z},origin=feet,colorScheme={name=gradient1;revertWhenDone=true;speed=0.75}]
+          - particle [effect=redstone,amount=10,direction=true,x={x},y={z},origin=feet,colorScheme={name=gradient-red-yellow-blue;revertWhenDone=true;speed=0.75}]
       doPost:
         scripts:
           - variable step=({step} + 1) % 120
@@ -268,7 +269,7 @@ effects:
           - particle [effect=glow_squid_ink,direction=true,x={x},y={z},amount=0,origin=head*-2.5]
   red-tail:
     displayName: "%red-tail"
-    permission: "%tail"
+    permission: "%tail-effects"
     armorColor: "#a83252"
     onTick:
       do:
@@ -276,7 +277,7 @@ effects:
           - particle [effect=block_marker,block={material=fire_coral},origin=feet]
   yellow-tail:
     displayName: "%yellow-tail"
-    permission: "%tail"
+    permission: "%tail-effects"
     armorColor: "#d1b536"
     onTick:
       do:
@@ -284,7 +285,7 @@ effects:
           - particle [effect=block_marker,block={material=horn_coral},origin=feet]
   pink-tail:
     displayName: "%pink-tail"
-    permission: "%tail"
+    permission: "%tail-effects"
     armorColor: "#f59fda"
     onTick:
       do:
@@ -292,7 +293,7 @@ effects:
           - particle [effect=block_marker,block={material=brain_coral},origin=feet]
   purple-tail:
     displayName: "%purple-tail"
-    permission: "%tail"
+    permission: "%tail-effects"
     armorColor: "#7134eb"
     onTick:
       do:
@@ -300,7 +301,7 @@ effects:
           - particle [effect=block_marker,block={material=bubble_coral},origin=feet]
   blue-tail:
     displayName: "%blue-tail"
-    permission: "%tail"
+    permission: "%tail-effects"
     armorColor: "#2658ad"
     onTick:
       do:
@@ -308,7 +309,7 @@ effects:
           - particle [effect=block_marker,block={material=tube_coral},origin=feet]
   rainbow-tail:
     displayName: "%rainbow-tail"
-    permission: "%tail"
+    permission: "%tail-effects"
     armorColor: "rainbow"
     variables: [ 'step' ]
     onTick:
@@ -326,7 +327,7 @@ effects:
           - "conditional (step==8) ? particle [effect=block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
   pulse:
     displayName: "%pulse"
-    armorColor: "gradient3"
+    armorColor: "gradient-red-to-gold"
     variables: [ 'x', 'y', 'angle', 'xAng', 'yAng', 'radius=0.5' ]
     interval: 15
     enableCaching: true
@@ -342,7 +343,7 @@ effects:
           - particle [effect=flame,direction=true,x={x},y={y},amount=0,offset={x={xAng};y={yAng}},speed=0.1,origin=head]
   pulse-reverse:
     displayName: "%pulse-reverse"
-    armorColor: "dark-aqua-to-black"
+    armorColor: "gradient-dark-aqua-to-black"
     variables: [ 'x', 'y', 'angle', 'xAng', 'yAng', 'radius=0.5' ]
     interval: 10
     enableCaching: true
@@ -358,7 +359,7 @@ effects:
           - particle [effect=nautilus,direction=true,x={x},y={y},amount=0,offset={x={xAng};y={yAng}},speed=1,origin=head]
   soul:
     displayName: "%soul"
-    armorColor: "gradient4"
+    armorColor: "gradient-aqua-to-brown"
     variables: [ 'r', 'x', 'y', 'angle', 'xAng', 'yAng' ]
     enableCaching: true
     interval: 2

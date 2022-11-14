@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 
 @Getter
 public class Effect {
@@ -62,7 +61,7 @@ public class Effect {
         for (var entry : tickHandlers.entrySet()) {
             var tickHandlerKey = entry.getKey();
             var pair = entry.getValue();
-            lines.put(tickHandlerKey, new TickHandler(tickHandlerKey, pair.getKey(), readFromFile(tickHandlerKey, pair.getValue())));
+            lines.put(tickHandlerKey, new TickHandler(tickHandlerKey, pair.getKey(), readScripts(tickHandlerKey, pair.getValue())));
         }
 
         addVariable("i");
@@ -140,11 +139,8 @@ public class Effect {
     public void doTick(Player player, EffectData data) {
         if (!TimeKeeper.isElapsed(interval))
             return;
-        var timings = TreasurePlugin.timing("Effect: " + key + ", Player: " + player.getName());
         TickHandler last = null;
         try {
-            if (timings != null)
-                timings.startTiming();
             var timesPair = data.getVariable(player, "i");
             for (var entry : data.getTickHandlers().entrySet()) {
                 var tickHandler = entry.getValue();
@@ -158,14 +154,11 @@ public class Effect {
             }
         } catch (Exception e) {
             TreasurePlugin.logger().log(Level.WARNING, (last != null ? "Tick Handler: " + last.name : "Unexpected error.") + " Effect=" + key, e);
-        } finally {
-            if (timings != null)
-                timings.stopTiming();
         }
     }
 
     public void addVariable(String var) {
-        Matcher matcher = Patterns.VARIABLE.matcher(var);
+        var matcher = Patterns.VARIABLE.matcher(var);
         if (matcher.matches()) {
             String key = matcher.group("name");
             try {
@@ -192,7 +185,7 @@ public class Effect {
         };
     }
 
-    public List<Script> readFromFile(String tickHandlerKey, List<String> _lines) {
+    public List<Script> readScripts(String tickHandlerKey, List<String> _lines) {
         List<Script> lines = new ArrayList<>();
         var effectManager = TreasurePlugin.getInstance().getEffectManager();
         var logger = TreasurePlugin.logger();
@@ -216,5 +209,9 @@ public class Effect {
 
     public String getPrefix() {
         return "[" + key + "] ";
+    }
+
+    public String getParsedDisplayName() {
+        return MessageUtils.parseLegacy(displayName);
     }
 }
