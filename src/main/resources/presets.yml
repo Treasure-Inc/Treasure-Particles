@@ -16,3 +16,6 @@ swap-x-z:
   - "variable temp={x}"
   - "variable x={z}"
   - "variable z={temp}"
+elytra-boost-1s: "conditional ({CTM} - {LBM} > 1000) ? return : none"
+elytra-boost-3s: "conditional ({CTM} - {LBM} > 3000) ? return : none"
+elytra-boost-5s: "conditional ({CTM} - {LBM} > 5000) ? return : none"

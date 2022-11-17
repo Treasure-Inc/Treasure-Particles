@@ -256,16 +256,17 @@ effects:
           - particle [effect=drip_water,direction=true,x={x},y={z},amount=0,origin=head*2]
   rocket:
     displayName: "%rocket"
-    variables: [ 'r', 'x', 'z' ]
+    variables: [ 'r', 'x', 'z', 'radius=1' ]
     armorColor: "#FFFFFF"
     interval: 2
     onTick:
       do:
         times: 24
         scripts:
+          - "conditional ({CTM} - {LBM} > 3000) ? variable radius=0.1 : variable radius=1"
           - variable r={i}*{PI}/24
-          - variable x=cos({r})*{RANDOM}
-          - variable z=sin({r})*{RANDOM}
+          - variable x=cos({r})*{RANDOM}*{radius}
+          - variable z=sin({r})*{RANDOM}*{radius}
           - particle [effect=glow_squid_ink,direction=true,x={x},y={z},amount=0,origin=head*-2.5]
   red-tail:
     displayName: "%red-tail"
