@@ -18,7 +18,7 @@ public class Translations implements DataHolder {
     public static String LOCALE;
     public static final String
             VERSION = "1.3.0",
-            UPDATE_DESCRIPTION = "New translations";
+            UPDATE_DESCRIPTION = "New translations, Spanish & German support";
     private ConfigurationGenerator generator;
 
     public static String PREFIX,
@@ -86,7 +86,7 @@ public class Translations implements DataHolder {
                 throw new Exception();
 
             // Version Update (v1.0.5 > v1.1.0)
-            if (new File(inst.getDataFolder(), "translations_" + LOCALE + ".yml").exists())
+            if (new File(inst.getDataFolder(), "messages_" + LOCALE + ".yml").exists())
                 notify = "directory change";
 
             if (notify != null) {
@@ -94,9 +94,9 @@ public class Translations implements DataHolder {
                 inst.getLogger().warning(UPDATE_DESCRIPTION);
             }
 
-            PREFIX = config.getString("prefix", "<gradient:#A3BCF9:#576490>[TʀEʟʏᴛʀᴀ] <reset>");
+            PREFIX = config.getString("prefix", "<gradient:#EF476F:#FFD166><b>TrElytra <dark_gray>| <reset>");
 
-            EFFECT_SELECTED = PREFIX + config.getString("effect-selected", "<aqua>Selected: %s");
+            EFFECT_SELECTED = PREFIX + config.getString("effect-selected", "<green>Selected:<reset> %s");
             EFFECT_NO_PERMISSION = PREFIX + config.getString("effect-no-permission", "<red>You don't have enough permission to use that effect!");
             EFFECT_UNKNOWN = PREFIX + config.getString("effect-unknown", "<red>Couldn't find any effect with name %s");
             EFFECT_TOGGLE = PREFIX + config.getString("effect-toggle", "<gray>Elytra Effects: %s");
@@ -104,7 +104,7 @@ public class Translations implements DataHolder {
             EFFECT_RESET_OTHER = PREFIX + config.getString("effect-reset-other", "<gray>Elytra Effect (%s): <red>OFF");
             NOTIFICATIONS_TOGGLE = PREFIX + config.getString("notifications-toggle", "<gray>Notifications: %s");
 
-            GUI_TITLE = config.getString("gui-title", "<aqua><b>Effects");
+            GUI_TITLE = config.getString("gui-title", "        <gradient:#EF476F:#FFD166><b>Treasure Elytra");
             GUI_EFFECT_SELECTED = config.getString("gui-effect-selected", "<green>Selected!");
             GUI_SELECT_EFFECT = config.getString("gui-select-effect", "<dark_gray>• <green>Click to use this effect!");
             GUI_RESET_EFFECT = config.getString("gui-reset-effect", "<yellow>Reset Effect");
@@ -113,7 +113,7 @@ public class Translations implements DataHolder {
             GUI_PREVIOUS_PAGE = config.getString("gui-previous-page", "<green>< Previous Page");
             GUI_CLOSE = config.getString("gui-close", "<red>Close");
 
-            RELOADING = PREFIX + config.getString("reloading", "<yellow>Reloading configurations...");
+            RELOADING = PREFIX + config.getString("reloading", "<yellow>Reloading TreasureElytra...");
             RELOADED = PREFIX + config.getString("reloaded", "<green>Reloaded!");
 
             ENABLED = config.getString("enabled", "<green>Enabled");
