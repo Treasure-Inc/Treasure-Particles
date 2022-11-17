@@ -30,6 +30,9 @@ public class EffectData {
     @Setter
     private LinkedHashMap<String, TickHandler> tickHandlers;
 
+    @Setter
+    private long lastBoostMillis;
+
     public EffectData() {
         this.variables = new HashSet<>();
         this.tickHandlers = new LinkedHashMap<>();
@@ -63,6 +66,7 @@ public class EffectData {
             case "playerX" -> location.getX();
             case "playerY" -> location.getY();
             case "playerZ" -> location.getZ();
+            case "lastBoostMillis", "LBM" -> (double) lastBoostMillis;
             default -> null;
         };
         return value == null ? null : new Pair<>(variable, value);
@@ -93,9 +97,10 @@ public class EffectData {
                     double value;
                     if (p == null) {
                         Double preset = switch (result) {
-                            case "TICK" -> (double) TimeKeeper.getTimeElapsed();
-                            case "PI" -> Math.PI;
-                            case "RANDOM" -> Math.random();
+                            case "tick", "TICK" -> (double) TimeKeeper.getTimeElapsed();
+                            case "pi", "PI" -> Math.PI;
+                            case "random", "RANDOM" -> Math.random();
+                            case "currentTimeMillis", "CTM" -> (double) System.currentTimeMillis();
                             default -> null;
                         };
                         if (preset == null) break;

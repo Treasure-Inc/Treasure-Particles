@@ -3,10 +3,11 @@ package net.treasure.effect;
 import lombok.Getter;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.core.gui.GUIElements;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
+import net.treasure.core.gui.GUIElements;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.listener.ElytraBoostListener;
 import net.treasure.effect.listener.GlideListener;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.ScriptReader;
@@ -20,7 +21,7 @@ import net.treasure.effect.script.particle.reader.ParticleReader;
 import net.treasure.effect.script.preset.reader.PresetReader;
 import net.treasure.effect.script.sound.reader.SoundReader;
 import net.treasure.effect.script.variable.reader.VariableReader;
-import net.treasure.effect.task.ParticleTask;
+import net.treasure.effect.task.EffectsTask;
 import net.treasure.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -51,9 +52,23 @@ public class EffectManager implements DataHolder {
 
         var inst = TreasurePlugin.getInstance();
 
-        Bukkit.getPluginManager().registerEvents(new GlideListener(inst.getPlayerManager()), inst);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new ParticleTask(), 0, 1);
+        // Register listeners
+        var pm = Bukkit.getPluginManager();
+        pm.registerEvents(new GlideListener(inst.getPlayerManager()), inst);
+        try {
+            Class.forName("com.destroystokyo.paper.event.player.PlayerElytraBoostEvent");
+            pm.registerEvents(new ElytraBoostListener(inst.getPlayerManager()), inst);
+            if (inst.isDebugModeEnabled())
+                inst.getLogger().info("Registered PlayerElytraBoostEvent listener");
+        } catch (Exception ignored) {
+            if (inst.isDebugModeEnabled())
+                inst.getLogger().warning("Couldn't register PlayerElytraBoostEvent listener (Paper 1.17+)");
+        }
 
+        // Run effects task
+        Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new EffectsTask(), 0, 1);
+
+        // Register readers
         registerReader("variable", new VariableReader());
         registerReader("particle", new ParticleReader());
         registerReader("preset", new PresetReader());

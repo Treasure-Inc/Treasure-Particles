@@ -180,7 +180,12 @@ public class Effect {
 
     public boolean checkVariable(String var) {
         return switch (var) {
-            case "i", "PI", "TICK", "RANDOM", "playerYaw", "playerPitch", "playerX", "playerY", "playerZ" -> false;
+            case "i", "pi", "PI",
+                    "tick", "TICK",
+                    "random", "RANDOM",
+                    "currentTimeMillis", "CTM",
+                    "lastBoostMillis", "LBM",
+                    "playerYaw", "playerPitch", "playerX", "playerY", "playerZ" -> false;
             default -> true;
         };
     }
