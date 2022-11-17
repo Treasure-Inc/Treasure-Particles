@@ -13,14 +13,14 @@ public class GlideListener implements Listener {
 
     PlayerManager playerManager;
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void on(EntityToggleGlideEvent event) {
         if (!(event.getEntity() instanceof Player player))
             return;
-        var data = playerManager.getPlayerData(player);
+        var data = playerManager.getEffectData(player);
         if (data == null) {
             playerManager.initializePlayer(player);
-            data = playerManager.getPlayerData(player);
+            data = playerManager.getEffectData(player);
         }
         if (data == null) {
             TreasurePlugin.logger().warning("Couldn't initialize " + player.getName() + "'s data");

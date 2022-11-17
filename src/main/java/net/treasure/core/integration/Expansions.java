@@ -20,7 +20,7 @@ public class Expansions extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, @NotNull String params) {
         if (player == null) return null;
 
-        var data = playerManager.getPlayerData(player);
+        var data = playerManager.getEffectData(player);
         if (data == null) return null;
 
         return switch (params) {

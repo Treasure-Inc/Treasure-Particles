@@ -57,11 +57,11 @@ effects:
 # Effects Descriptions
 descriptions:
   exclusive-19: "<gray><b>Required Version</b> <gold>1.19"
-# Placeholder Mesajları
+# Placeholder Messages
 placeholders:
   current-effect-null: "None"
-  enabled: "Açık"
-  disabled: "Kapalı"
+  enabled: "Enabled"
+  disabled: "Disabled"
 # Commands
 commands:
   usage: "<yellow>Usage:<gray> %s"

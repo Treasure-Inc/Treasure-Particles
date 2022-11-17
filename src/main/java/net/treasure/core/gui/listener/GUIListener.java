@@ -25,7 +25,7 @@ public class GUIListener implements Listener {
         if (item == null || !item.hasItemMeta()) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        var data = TreasurePlugin.getInstance().getPlayerManager().getPlayerData(player);
+        var data = TreasurePlugin.getInstance().getPlayerManager().getEffectData(player);
 
         if (item.getItemMeta() == null) return;
         var pdc = item.getItemMeta().getPersistentDataContainer();

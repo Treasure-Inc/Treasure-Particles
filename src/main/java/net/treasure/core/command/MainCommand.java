@@ -43,7 +43,7 @@ public class MainCommand extends BaseCommand {
 
     @Subcommand("toggle")
     public void toggleEffects(Player player) {
-        var data = plugin.getPlayerManager().getPlayerData(player);
+        var data = plugin.getPlayerManager().getEffectData(player);
         data.setEffectsEnabled(!data.isEffectsEnabled());
         MessageUtils.sendParsed(player, String.format(Translations.EFFECT_TOGGLE, data.isEffectsEnabled() ? Translations.ENABLED : Translations.DISABLED));
     }
@@ -61,7 +61,7 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(player, Translations.EFFECT_NO_PERMISSION);
             return;
         }
-        plugin.getPlayerManager().getPlayerData(player).setCurrentEffect(player, effect);
+        plugin.getPlayerManager().getEffectData(player).setCurrentEffect(player, effect);
         MessageUtils.sendParsed(player, String.format(Translations.EFFECT_SELECTED, effect.getDisplayName()));
     }
 
@@ -70,7 +70,7 @@ public class MainCommand extends BaseCommand {
     public void resetEffect(Player sender, @Optional @CommandPermission("%admincmd") OnlinePlayer reset) {
         boolean self = reset == null || reset.player.equals(sender);
         Player player = self ? sender : reset.player;
-        plugin.getPlayerManager().getPlayerData(player).setCurrentEffect(player, null);
+        plugin.getPlayerManager().getEffectData(player).setCurrentEffect(player, null);
         MessageUtils.sendParsed(player, Translations.EFFECT_RESET);
         if (!self)
             MessageUtils.sendParsed(sender, String.format(Translations.EFFECT_RESET_OTHER, reset.player.getName()));
@@ -106,7 +106,7 @@ public class MainCommand extends BaseCommand {
     @Subcommand("notifications")
     @CommandPermission("%notification")
     public void toggleNotifications(Player player) {
-        var data = plugin.getPlayerManager().getPlayerData(player);
+        var data = plugin.getPlayerManager().getEffectData(player);
         data.setNotificationsEnabled(!data.isNotificationsEnabled());
         MessageUtils.sendParsed(player, String.format(Translations.NOTIFICATIONS_TOGGLE, data.isNotificationsEnabled() ? Translations.ENABLED : Translations.DISABLED));
     }
@@ -130,7 +130,7 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(player, Translations.PREFIX + "<gray>No.");
             return;
         }
-        var data = plugin.getPlayerManager().getPlayerData(player);
+        var data = plugin.getPlayerManager().getEffectData(player);
         new BukkitRunnable() {
 
             int index = -1;

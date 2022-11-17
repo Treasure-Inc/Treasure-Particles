@@ -4,7 +4,7 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.util.TimeKeeper;
 import org.bukkit.Bukkit;
 
-public class ParticleTask implements Runnable {
+public class EffectsTask implements Runnable {
 
     @Override
     public void run() {

@@ -73,11 +73,11 @@ public class PlayerManager {
         });
     }
 
-    public EffectData getPlayerData(Player player) {
-        return getPlayerData(player.getUniqueId());
+    public EffectData getEffectData(Player player) {
+        return getEffectData(player.getUniqueId());
     }
 
-    public EffectData getPlayerData(UUID uuid) {
+    public EffectData getEffectData(UUID uuid) {
         return playersData.get(uuid);
     }
 

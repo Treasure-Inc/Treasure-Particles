@@ -19,7 +19,7 @@ public class EffectsGUI {
     public static void open(Player player, int page) {
         var inst = TreasurePlugin.getInstance();
         var effectManager = inst.getEffectManager();
-        var data = inst.getPlayerManager().getPlayerData(player);
+        var data = inst.getPlayerManager().getEffectData(player);
 
         var holder = new GUIHolder();
         var inventory = Bukkit.createInventory(holder, 54, MessageUtils.parseLegacy(Translations.GUI_TITLE));
