@@ -24,3 +24,9 @@ colors:
   heart:
     values: [ '#f54242', '#fc9090' ]
     size: 7
+  rocket:
+    values: [ '#5bf5c7', '#42ff75', "#0eb33b", "#0eb381" ]
+    size: 10
+  christmas:
+    values: [ '#ef233c', '#d5f2e3', '#73ba9b', '#003e1f', '#d90429', '#823a14' ]
+    size: 30

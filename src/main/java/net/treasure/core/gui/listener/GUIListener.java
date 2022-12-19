@@ -4,8 +4,10 @@ import net.treasure.common.Keys;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.gui.EffectsGUI;
 import net.treasure.core.gui.GUIHolder;
+import net.treasure.core.gui.config.GUISounds;
 import net.treasure.core.gui.task.GUIUpdater;
 import net.treasure.locale.Translations;
+import net.treasure.util.Pair;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,20 +35,30 @@ public class GUIListener implements Listener {
         if (pdc.has(Keys.BUTTON_TYPE, PersistentDataType.STRING)) {
             var buttonType = pdc.get(Keys.BUTTON_TYPE, PersistentDataType.STRING);
             if (buttonType == null) return;
+            Pair<String, float[]> sound = null;
             switch (buttonType) {
-                case "PREVIOUS_PAGE" -> EffectsGUI.open(player, holder.getPage() - 1);
-                case "NEXT_PAGE" -> EffectsGUI.open(player, holder.getPage() + 1);
+                case "NEXT_PAGE" -> {
+                    sound = GUISounds.NEXT_PAGE;
+                    EffectsGUI.open(player, holder.getPage() + 1);
+                }
+                case "PREVIOUS_PAGE" -> {
+                    sound = GUISounds.PREVIOUS_PAGE;
+                    EffectsGUI.open(player, holder.getPage() - 1);
+                }
                 case "CLOSE" -> player.closeInventory();
                 case "RESET" -> {
+                    sound = GUISounds.RESET;
                     data.setCurrentEffect(player, null);
                     EffectsGUI.open(player, holder.getPage());
                 }
             }
+            if (sound != null)
+                player.playSound(player.getLocation(), sound.getKey(), sound.getValue()[0], sound.getValue()[1]);
             return;
         }
 
         if (pdc.has(Keys.EFFECT, PersistentDataType.STRING)) {
-            String effectKey = pdc.get(Keys.EFFECT, PersistentDataType.STRING);
+            var effectKey = pdc.get(Keys.EFFECT, PersistentDataType.STRING);
             var effect = TreasurePlugin.getInstance().getEffectManager().get(effectKey);
             if (!effect.canUse(player)) {
                 player.closeInventory();
@@ -55,6 +67,9 @@ public class GUIListener implements Listener {
             data.setCurrentEffect(player, effect);
             MessageUtils.sendParsed(player, String.format(Translations.EFFECT_SELECTED, effect.getDisplayName()));
             player.closeInventory();
+
+            var sound = GUISounds.SELECT;
+            player.playSound(player.getLocation(), sound.getKey(), sound.getValue()[0], sound.getValue()[1]);
         }
     }
 

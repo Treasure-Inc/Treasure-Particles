@@ -6,11 +6,16 @@ import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.Ticks;
 import net.treasure.core.TreasurePlugin;
+import net.treasure.locale.Translations;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -19,7 +24,18 @@ import java.util.List;
 @Accessors(fluent = true)
 public class MessageUtils {
 
-    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final MiniMessage miniMessage = MiniMessage.builder()
+            .tags(TagResolver.builder()
+                    .resolver(TagResolver.standard())
+                    .resolvers(
+                            Placeholder.parsed("prefix", Translations.PREFIX),
+                            TagResolver.resolver("changelog", (args, context) -> Tag.styling(ClickEvent.suggestCommand("/trelytra changelog"))),
+                            TagResolver.resolver("spigot", (args, context) -> Tag.styling(ClickEvent.openUrl("https://www.spigotmc.org/resources/99860/"))),
+                            TagResolver.resolver("github", (args, context) -> Tag.styling(ClickEvent.openUrl("https://github.com/Treasure-Inc/Treasure-Elytra/"))),
+                            TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://github.com/Treasure-Inc/Treasure-Elytra/wiki/")))
+
+                    ).build()
+            ).build();
     private static final BukkitAudiences adventure;
     @Getter
     private static final LegacyComponentSerializer serializer;

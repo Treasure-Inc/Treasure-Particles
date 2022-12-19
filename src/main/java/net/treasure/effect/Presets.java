@@ -35,7 +35,7 @@ public class Presets implements DataHolder {
     public void reset() {
         generator.reset();
         configuration = generator.generate();
-        TreasurePlugin.logger().warning("Generated new effects.yml (v" + EffectManager.VERSION + ")");
+        TreasurePlugin.logger().warning("Generated new presets.yml (v" + EffectManager.VERSION + ")");
     }
 
     public List<String> get(String key) {

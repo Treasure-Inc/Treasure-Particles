@@ -3,6 +3,9 @@ package net.treasure.core.gui;
 import net.treasure.color.data.RGBColorData;
 import net.treasure.common.Keys;
 import net.treasure.core.TreasurePlugin;
+import net.treasure.core.configuration.DataHolder;
+import net.treasure.core.gui.config.GUIElements;
+import net.treasure.core.gui.config.GUISounds;
 import net.treasure.core.gui.task.GUIUpdater;
 import net.treasure.locale.Translations;
 import net.treasure.util.item.CustomItem;
@@ -14,7 +17,33 @@ import org.bukkit.inventory.ItemFlag;
 
 import java.util.HashMap;
 
-public class EffectsGUI {
+public class EffectsGUI implements DataHolder {
+
+    GUIElements elements;
+    GUISounds sounds;
+
+    public EffectsGUI() {
+        elements = new GUIElements();
+        sounds = new GUISounds();
+    }
+
+    @Override
+    public boolean checkVersion() {
+        return true;
+    }
+
+    @Override
+    public boolean initialize() {
+        elements.initialize();
+        sounds.initialize();
+        return true;
+    }
+
+    @Override
+    public void reload() {
+        elements.reload();
+        sounds.reload();
+    }
 
     public static void open(Player player, int page) {
         var inst = TreasurePlugin.getInstance();
@@ -98,9 +127,9 @@ public class EffectsGUI {
 
             inventory.setItem(where, new CustomItem(effect.getIcon())
                     .setDisplayName("§f" + MessageUtils.parseLegacy(effect.getDisplayName()))
-                    .setLore(MessageUtils.parseLegacy(effect.equals(data.getCurrentEffect()) ? Translations.GUI_EFFECT_SELECTED : Translations.GUI_SELECT_EFFECT))
-                    .addLore(effect.getDescription() != null ? "§b" : null)
                     .addLore(effect.getDescription())
+                    .addLore(effect.getDescription() != null ? "§b" : null)
+                    .addLore(MessageUtils.parseLegacy(effect.equals(data.getCurrentEffect()) ? Translations.GUI_EFFECT_SELECTED : Translations.GUI_SELECT_EFFECT))
                     .changeArmorColor(color)
                     .addData(Keys.EFFECT, effect.getKey())
                     .glow(data.getCurrentEffect() != null && data.getCurrentEffect().equals(effect))

@@ -41,7 +41,7 @@ public class Effect {
     public Effect(String key, String displayName, List<String> description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers) {
         this.key = key;
         this.displayName = displayName;
-        this.description = description != null ? description.stream().map(MessageUtils::parseLegacy).toList() : null;
+        this.description = description;
         this.icon = icon;
         this.armorColor = armorColor;
         this.permission = permission;
@@ -52,11 +52,11 @@ public class Effect {
         this.lines = new LinkedHashMap<>();
         this.cache = new HashMap<>();
 
-        for (String var : variables)
-            if (checkVariable(var))
-                addVariable(var);
+        for (var variable : variables)
+            if (checkVariable(variable))
+                addVariable(variable);
             else
-                TreasurePlugin.logger().warning(var + " is pre-defined variable.");
+                TreasurePlugin.logger().warning(variable + " is pre-defined variable.");
 
         for (var entry : tickHandlers.entrySet()) {
             var tickHandlerKey = entry.getKey();
@@ -83,7 +83,7 @@ public class Effect {
     }
 
     public void preTick() {
-        Set<Pair<String, Double>> variables = new HashSet<>(this.variables);
+        var variables = new HashSet<>(this.variables);
         var timesPairOptional = variables.stream().filter(pair -> pair.getKey().equalsIgnoreCase("i")).findFirst();
         Pair<String, Double> timesPair;
         if (timesPairOptional.isPresent())
@@ -95,7 +95,7 @@ public class Effect {
         int index = 0;
         for (var entry : lines.entrySet()) {
             var tickHandler = entry.getValue();
-            for (Script script : tickHandler.lines) {
+            for (var script : tickHandler.lines) {
                 if (script instanceof Variable) {
                     script.setIndex(index);
                 } else if (script instanceof ConditionalScript conditionalScript) {
@@ -190,16 +190,16 @@ public class Effect {
         };
     }
 
-    public List<Script> readScripts(String tickHandlerKey, List<String> _lines) {
-        List<Script> lines = new ArrayList<>();
+    public List<Script> readScripts(String tickHandlerKey, List<String> lines) {
+        List<Script> scripts = new ArrayList<>();
         var effectManager = TreasurePlugin.getInstance().getEffectManager();
         var logger = TreasurePlugin.logger();
-        for (String line : _lines) {
+        for (var line : lines) {
             try {
                 var script = effectManager.readLine(this, line);
                 if (script != null) {
                     script.setTickHandlerKey(tickHandlerKey);
-                    lines.add(script);
+                    scripts.add(script);
                 } else
                     logger.log(Level.WARNING, getPrefix() + "Couldn't read line: " + line);
             } catch (ReaderException e) {
@@ -209,7 +209,7 @@ public class Effect {
                 }
             }
         }
-        return lines;
+        return scripts;
     }
 
     public String getPrefix() {

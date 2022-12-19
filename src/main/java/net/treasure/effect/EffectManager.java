@@ -5,7 +5,7 @@ import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
-import net.treasure.core.gui.GUIElements;
+import net.treasure.core.gui.config.GUIElements;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.listener.ElytraBoostListener;
 import net.treasure.effect.listener.GlideListener;
@@ -23,8 +23,8 @@ import net.treasure.effect.script.sound.reader.SoundReader;
 import net.treasure.effect.script.variable.reader.VariableReader;
 import net.treasure.effect.task.EffectsTask;
 import net.treasure.util.Pair;
+import net.treasure.util.message.MessageUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class EffectManager implements DataHolder {
     public static final String VERSION = "1.3.0";
     public static boolean EFFECTS_VISIBILITY_PERMISSION = false;
 
-    ConfigurationGenerator generator;
+    final ConfigurationGenerator generator;
 
     final List<Effect> effects;
     final Presets presets;
@@ -66,7 +66,7 @@ public class EffectManager implements DataHolder {
         }
 
         // Run effects task
-        Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new EffectsTask(), 0, 1);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new EffectsTask(inst.getPlayerManager()), 0, 1);
 
         // Register readers
         registerReader("variable", new VariableReader());
@@ -120,14 +120,22 @@ public class EffectManager implements DataHolder {
             return;
 
         if (!checkVersion()) {
-            presets.reset();
-            generator.reset();
-            config = generator.getConfiguration();
-            inst.getLogger().warning("Generated new effects.yml (v" + VERSION + ")");
+            if (!TreasurePlugin.getInstance().isAutoUpdateEnabled()) {
+                TreasurePlugin.logger().warning("New version of effects.yml available (v" + VERSION + ")");
+                TreasurePlugin.logger().warning("New version of presets.yml available (v" + VERSION + ")");
+            } else {
+                presets.reset();
+                generator.reset();
+                config = generator.getConfiguration();
+                inst.getLogger().warning("Generated new effects.yml (v" + VERSION + ")");
+            }
         }
 
         var section = config.getConfigurationSection("effects");
-        if (section == null) return;
+        if (section == null) {
+            inst.getLogger().warning("Couldn't find any effect");
+            return;
+        }
 
         var messages = inst.getTranslations();
         var mainConfig = inst.getConfig();
@@ -136,14 +144,17 @@ public class EffectManager implements DataHolder {
             try {
                 String path = key + ".";
 
+                // Display Name
                 String displayName = section.getString(path + "displayName", key);
                 if (displayName != null && displayName.startsWith("%"))
                     displayName = messages.get("effects." + displayName.substring(1), displayName);
 
+                // Permission
                 String permission = section.getString(path + "permission");
                 if (permission != null && permission.startsWith("%"))
                     permission = mainConfig.getString("permissions." + permission.substring(1), permission);
 
+                // Tick Handlers
                 var handlerSection = section.getConfigurationSection(path + "onTick");
                 if (handlerSection == null) {
                     inst.getLogger().warning("Effect must have onTick section: " + key);
@@ -151,24 +162,32 @@ public class EffectManager implements DataHolder {
                 }
 
                 LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers = new LinkedHashMap<>();
-                for (String tickHandlerKey : handlerSection.getKeys(false)) {
+                for (var tickHandlerKey : handlerSection.getKeys(false)) {
                     tickHandlers.put(tickHandlerKey, new Pair<>(
                             handlerSection.getInt(tickHandlerKey + ".times", 1),
                             handlerSection.getStringList(tickHandlerKey + ".scripts")
                     ));
                 }
 
-                ItemStack icon = GUIElements.getItemStack(config, path + "icon", GUIElements.DEFAULT_ICON);
+                // Icon
+                var icon = GUIElements.getItemStack(config, "effects." + path + "icon", GUIElements.DEFAULT_ICON);
 
-                Effect effect = new Effect(
+                // Description
+                List<String> description;
+                if (section.contains(path + "description")) {
+                    description = new ArrayList<>();
+                    for (var s : section.getStringList(path + "description")) {
+                        var translated = MessageUtils.parseLegacy(messages.translate(s));
+                        description.addAll(List.of(translated.split("%nl%")));
+                    }
+                } else {
+                    description = null;
+                }
+
+                var effect = new Effect(
                         key,
                         displayName,
-                        section.contains(path + "description") ?
-                                section.getStringList(path + "description")
-                                        .stream()
-                                        .map(s -> s.startsWith("%") ? messages.get("descriptions." + s.substring(1), s) : s)
-                                        .toList()
-                                : null,
+                        description,
                         icon,
                         section.getString(path + "armorColor"),
                         permission,
@@ -180,8 +199,7 @@ public class EffectManager implements DataHolder {
 
                 effects.add(effect);
             } catch (Exception e) {
-                e.printStackTrace();
-                inst.getLogger().warning("Couldn't load effect: " + key);
+                inst.getLogger().log(Level.WARNING, "Couldn't load effect: " + key, e);
             }
         }
         inst.getLogger().info("Loaded " + effects.size() + " effects (" + (System.currentTimeMillis() - current) + "ms)");

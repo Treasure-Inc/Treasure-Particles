@@ -9,7 +9,7 @@ import net.treasure.common.Permissions;
 import net.treasure.core.command.MainCommand;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.database.Database;
-import net.treasure.core.gui.GUIElements;
+import net.treasure.core.gui.EffectsGUI;
 import net.treasure.core.gui.listener.GUIListener;
 import net.treasure.core.gui.task.GUIUpdater;
 import net.treasure.core.integration.Expansions;
@@ -42,7 +42,7 @@ public class TreasurePlugin extends JavaPlugin {
     private EffectManager effectManager;
     private ColorManager colorManager;
     private Permissions permissions;
-    private GUIElements GUIElements;
+    private EffectsGUI gui;
     private List<DataHolder> dataHolders;
 
     private Database database;
@@ -57,6 +57,7 @@ public class TreasurePlugin extends JavaPlugin {
     private BukkitAudiences adventure;
 
     private boolean debugModeEnabled;
+    private boolean autoUpdateEnabled = true;
     @Accessors(fluent = true)
     private int guiTask = -5, guiInterval = 2;
     @Accessors(fluent = true)
@@ -96,14 +97,6 @@ public class TreasurePlugin extends JavaPlugin {
         translations.initialize();
         dataHolders.add(translations);
 
-        // Effects
-        effectManager = new EffectManager();
-        if (!effectManager.initialize()) {
-            disable();
-            return;
-        }
-        dataHolders.add(effectManager);
-
         // Colors
         colorManager = new ColorManager();
         if (!colorManager.initialize()) {
@@ -112,10 +105,18 @@ public class TreasurePlugin extends JavaPlugin {
         }
         dataHolders.add(colorManager);
 
-        // GUI Elements (Items)
-        GUIElements = new GUIElements();
-        GUIElements.initialize();
-        dataHolders.add(GUIElements);
+        // Effects
+        effectManager = new EffectManager();
+        if (!effectManager.initialize()) {
+            disable();
+            return;
+        }
+        dataHolders.add(effectManager);
+
+        // Effects GUI
+        gui = new EffectsGUI();
+        gui.initialize();
+        dataHolders.add(gui);
 
         // Permissions
         permissions = new Permissions();
@@ -183,8 +184,8 @@ public class TreasurePlugin extends JavaPlugin {
 
         // config.yml
         saveDefaultConfig();
-        configure();
         reloadConfig();
+        configure();
         getLogger().info("Reloaded config!");
 
         // Data Holders
@@ -196,8 +197,8 @@ public class TreasurePlugin extends JavaPlugin {
         getLogger().info("Reloaded player manager!");
 
         // Debug Mode
-        final var tempDebugMode = this.debugModeEnabled;
-        debugModeEnabled = new File(getDataFolder(), "dev").exists();
+        final var tempDebugMode = debugModeEnabled;
+        this.debugModeEnabled = new File(getDataFolder(), "dev").exists();
         if (tempDebugMode != debugModeEnabled)
             getLogger().info("> Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
 
@@ -210,14 +211,15 @@ public class TreasurePlugin extends JavaPlugin {
         // GUI Animations
         if (guiTask != -5 && !config.getBoolean("gui.animation", true)) {
             Bukkit.getScheduler().cancelTask(guiTask);
-            guiTask = -5;
+            this.guiTask = -5;
             getLogger().info("> Disabled gui animations");
         } else if (guiTask == -5 && config.getBoolean("gui.animation", true)) {
-            guiInterval = config.getInt("gui.animation.interval", guiInterval);
-            guiColorCycleSpeed = (float) config.getDouble("gui.animation.color-cycle-speed", guiColorCycleSpeed);
-            guiTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, guiInterval).getTaskId();
+            this.guiTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, guiInterval).getTaskId();
             getLogger().info("> Enabled gui animations");
         }
+
+        this.guiInterval = config.getInt("gui.animation.interval", guiInterval);
+        this.guiColorCycleSpeed = (float) config.getDouble("gui.animation.color-cycle-speed", guiColorCycleSpeed);
 
         // Command Permissions
         permissions.reload();
@@ -235,6 +237,7 @@ public class TreasurePlugin extends JavaPlugin {
         var config = getConfig();
         if (!VERSION.equals(config.getString("version")))
             saveResource("config.yml", true);
+        this.autoUpdateEnabled = config.getBoolean("auto-update-configurations", true);
     }
 
     public static Logger logger() {

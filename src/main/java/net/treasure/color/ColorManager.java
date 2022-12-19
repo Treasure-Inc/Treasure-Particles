@@ -53,9 +53,13 @@ public class ColorManager implements DataHolder {
             return;
 
         if (!checkVersion()) {
-            generator.reset();
-            config = generator.generate();
-            TreasurePlugin.logger().warning("Generated new colors.yml (v" + VERSION + ")");
+            if (!TreasurePlugin.getInstance().isAutoUpdateEnabled()) {
+                TreasurePlugin.logger().warning("New version of colors.yml available (v" + VERSION + ")");
+            } else {
+                generator.reset();
+                config = generator.generate();
+                TreasurePlugin.logger().warning("Generated new colors.yml (v" + VERSION + ")");
+            }
         }
 
         var section = config.getConfigurationSection("colors");

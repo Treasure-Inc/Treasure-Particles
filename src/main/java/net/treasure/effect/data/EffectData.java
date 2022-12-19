@@ -83,15 +83,12 @@ public class EffectData {
             var c = array[pos];
             switch (c) {
                 case '{' -> {
-                    if (startPos != -1) {
-                        return null;
-                    }
+                    if (startPos != -1) return null;
                     startPos = pos;
                 }
                 case '}' -> {
-                    if (startPos == -1) {
-                        return null;
-                    }
+                    if (startPos == -1) return null;
+
                     var result = variable.toString();
                     var p = getVariable(player, result);
                     double value;

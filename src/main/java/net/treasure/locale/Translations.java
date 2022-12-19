@@ -7,6 +7,7 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.util.message.MessageUtils;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -19,7 +20,8 @@ public class Translations implements DataHolder {
     public static final String
             VERSION = "1.3.0",
             UPDATE_DESCRIPTION = "New translations, Spanish & German support";
-    private ConfigurationGenerator generator;
+
+    private FileConfiguration config;
 
     public static String PREFIX,
             EFFECT_SELECTED,
@@ -29,6 +31,7 @@ public class Translations implements DataHolder {
             EFFECT_RESET,
             EFFECT_RESET_OTHER,
             NOTIFICATIONS_TOGGLE,
+            NOTIFICATION,
             GUI_TITLE,
             GUI_NEXT_PAGE,
             GUI_PREVIOUS_PAGE,
@@ -55,31 +58,38 @@ public class Translations implements DataHolder {
 
     @Override
     public boolean checkVersion() {
-        return VERSION.equals(generator.getConfiguration().getString("version"));
+        return VERSION.equals(config.getString("version"));
     }
 
     @Override
     public boolean initialize() {
         for (var locale : Locale.values())
-            new ConfigurationGenerator("translations_" + locale.getKey() + ".yml", "translations").generate();
+            locale.generate();
 
         try {
             var inst = TreasurePlugin.getInstance();
             LOCALE = inst.getConfig().getString("locale", "en").toLowerCase(java.util.Locale.ENGLISH);
 
-            this.generator = new ConfigurationGenerator("translations_" + LOCALE + ".yml", "translations");
-            var config = generator.generate();
+            var generator = new ConfigurationGenerator("translations_" + LOCALE + ".yml", "translations");
+            config = generator.generate();
             String notify = null;
 
-            if (generator.generate() == null) {
+            if (config == null) {
                 LOCALE = Locale.ENGLISH.key;
-                this.generator = new ConfigurationGenerator("translations_" + LOCALE + ".yml", "translations");
+                inst.getConfig().set("locale", LOCALE);
+                inst.saveConfig();
+
+                generator = new ConfigurationGenerator("translations_" + LOCALE + ".yml", "translations");
                 config = generator.generate();
                 notify = "unknown locale";
             } else if (!checkVersion()) {
-                generator.reset();
-                config = generator.getConfiguration();
-                notify = "version change";
+                if (!TreasurePlugin.getInstance().isAutoUpdateEnabled()) {
+                    TreasurePlugin.logger().warning("New version of translations_" + LOCALE + ".yml available (v" + VERSION + ")");
+                } else {
+                    generator.reset();
+                    config = generator.getConfiguration();
+                    notify = "version change";
+                }
             }
 
             if (config == null)
@@ -96,13 +106,14 @@ public class Translations implements DataHolder {
 
             PREFIX = config.getString("prefix", "<gradient:#EF476F:#FFD166><b>TrElytra <dark_gray>| <reset>");
 
-            EFFECT_SELECTED = PREFIX + config.getString("effect-selected", "<green>Selected:<reset> %s");
-            EFFECT_NO_PERMISSION = PREFIX + config.getString("effect-no-permission", "<red>You don't have enough permission to use that effect!");
-            EFFECT_UNKNOWN = PREFIX + config.getString("effect-unknown", "<red>Couldn't find any effect with name %s");
-            EFFECT_TOGGLE = PREFIX + config.getString("effect-toggle", "<gray>Elytra Effects: %s");
-            EFFECT_RESET = PREFIX + config.getString("effect-reset", "<gray>Elytra Effect: <red>OFF");
-            EFFECT_RESET_OTHER = PREFIX + config.getString("effect-reset-other", "<gray>Elytra Effect (%s): <red>OFF");
-            NOTIFICATIONS_TOGGLE = PREFIX + config.getString("notifications-toggle", "<gray>Notifications: %s");
+            EFFECT_SELECTED = config.getString("effect-selected", "<green>Selected:<reset> %s");
+            EFFECT_NO_PERMISSION = config.getString("effect-no-permission", "<red>You don't have enough permission to use that effect!");
+            EFFECT_UNKNOWN = config.getString("effect-unknown", "<red>Couldn't find any effect with name %s");
+            EFFECT_TOGGLE = config.getString("effect-toggle", "<gray>Elytra Effects: %s");
+            EFFECT_RESET = config.getString("effect-reset", "<gray>Elytra Effect: <red>OFF");
+            EFFECT_RESET_OTHER = config.getString("effect-reset-other", "<gray>Elytra Effect (%s): <red>OFF");
+            NOTIFICATIONS_TOGGLE = config.getString("notifications-toggle", "<gray>Notifications: %s");
+            NOTIFICATION = config.getString("notification", "<prefix> <aqua><b><changelog>Changelog</changelog></b> <dark_gray>/</dark_gray> <b><github>GitHub</github></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>");
 
             GUI_TITLE = config.getString("gui-title", "        <gradient:#EF476F:#FFD166><b>Treasure Elytra");
             GUI_EFFECT_SELECTED = config.getString("gui-effect-selected", "<green>Selected!");
@@ -113,8 +124,8 @@ public class Translations implements DataHolder {
             GUI_PREVIOUS_PAGE = config.getString("gui-previous-page", "<green>< Previous Page");
             GUI_CLOSE = config.getString("gui-close", "<red>Close");
 
-            RELOADING = PREFIX + config.getString("reloading", "<yellow>Reloading TreasureElytra...");
-            RELOADED = PREFIX + config.getString("reloaded", "<green>Reloaded!");
+            RELOADING = config.getString("reloading", "<yellow>Reloading TreasureElytra...");
+            RELOADED = config.getString("reloaded", "<green>Reloaded!");
 
             ENABLED = config.getString("enabled", "<green>Enabled");
             DISABLED = config.getString("disabled", "<red>Disabled");
@@ -138,16 +149,16 @@ public class Translations implements DataHolder {
 
             var commandManager = inst.getCommandManager();
             Map<MessageKeyProvider, String> messages = new HashMap<>();
-            messages.put(MessageKeys.INVALID_SYNTAX, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_USAGE, "{command} {syntax}")));
-            messages.put(MessageKeys.ERROR_PREFIX, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_ERROR, "{message}")));
-            messages.put(MessageKeys.MUST_BE_A_NUMBER, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_MUST_BE_A_NUMBER, "{num}")));
-            messages.put(MinecraftMessageKeys.USERNAME_TOO_SHORT, MessageUtils.parseLegacy(Translations.PREFIX + COMMAND_USERNAME_TOO_SHORT));
-            messages.put(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NOT_A_VALID_NAME, "{name}")));
-            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NO_PLAYER_FOUND_SERVER, "{search}")));
-            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
-            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND, MessageUtils.parseLegacy(String.format(Translations.PREFIX + COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
-            messages.put(MessageKeys.PERMISSION_DENIED, MessageUtils.parseLegacy(Translations.PREFIX + COMMAND_NO_PERMISSION));
-            messages.put(MessageKeys.PERMISSION_DENIED_PARAMETER, MessageUtils.parseLegacy(Translations.PREFIX + COMMAND_NO_PERMISSION));
+            messages.put(MessageKeys.INVALID_SYNTAX, MessageUtils.parseLegacy(String.format(COMMAND_USAGE, "{command} {syntax}")));
+            messages.put(MessageKeys.ERROR_PREFIX, MessageUtils.parseLegacy(String.format(COMMAND_ERROR, "{message}")));
+            messages.put(MessageKeys.MUST_BE_A_NUMBER, MessageUtils.parseLegacy(String.format(COMMAND_MUST_BE_A_NUMBER, "{num}")));
+            messages.put(MinecraftMessageKeys.USERNAME_TOO_SHORT, MessageUtils.parseLegacy(COMMAND_USERNAME_TOO_SHORT));
+            messages.put(MinecraftMessageKeys.IS_NOT_A_VALID_NAME, MessageUtils.parseLegacy(String.format(COMMAND_NOT_A_VALID_NAME, "{name}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_SERVER, MessageUtils.parseLegacy(String.format(COMMAND_NO_PLAYER_FOUND_SERVER, "{search}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE, MessageUtils.parseLegacy(String.format(COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
+            messages.put(MinecraftMessageKeys.NO_PLAYER_FOUND, MessageUtils.parseLegacy(String.format(COMMAND_NO_PLAYER_FOUND_OFFLINE, "{search}")));
+            messages.put(MessageKeys.PERMISSION_DENIED, MessageUtils.parseLegacy(COMMAND_NO_PERMISSION));
+            messages.put(MessageKeys.PERMISSION_DENIED_PARAMETER, MessageUtils.parseLegacy(COMMAND_NO_PERMISSION));
 
             commandManager.getLocales().addMessages(java.util.Locale.ENGLISH, messages);
             return true;
@@ -163,10 +174,57 @@ public class Translations implements DataHolder {
     }
 
     public String get(String key) {
-        return generator.getConfiguration().getString(key, "UNKNOWN");
+        return config.getString(key, "UNKNOWN");
     }
 
     public String get(String key, String defaultValue) {
-        return generator.getConfiguration().getString(key, defaultValue);
+        return config.getString(key, defaultValue);
+    }
+
+    public String translate(String message) {
+        StringBuilder output = new StringBuilder();
+
+        var array = message.toCharArray();
+        int startPos = -1;
+        StringBuilder sb = new StringBuilder();
+
+        for (int pos = 0; pos < array.length; pos++) {
+            var c = array[pos];
+            switch (c) {
+                case '%' -> {
+                    if (startPos == -1) {
+                        sb = new StringBuilder();
+                        startPos = pos;
+                        continue;
+                    }
+                    if (sb.isEmpty()) {
+                        output.append(c);
+                        sb = new StringBuilder();
+                        startPos = pos;
+                        continue;
+                    }
+                    var result = sb.toString();
+                    output.append(config.getString("descriptions." + result, result));
+                    startPos = -1;
+                    sb = new StringBuilder();
+                    continue;
+                }
+                case ' ' -> {
+                    if (startPos != -1) {
+                        output.append(sb);
+                        sb = new StringBuilder();
+                        startPos = pos;
+                        continue;
+                    }
+                }
+            }
+
+            if (startPos != -1)
+                sb.append(c);
+            else
+                output.append(c);
+        }
+
+        return output.toString();
     }
 }

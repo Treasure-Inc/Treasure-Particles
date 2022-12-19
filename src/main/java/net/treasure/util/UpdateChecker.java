@@ -1,6 +1,7 @@
 package net.treasure.util;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.treasure.core.TreasurePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -10,16 +11,20 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UpdateChecker implements Listener {
 
     private static final String RESOURCE_ID = "99860";
 
     private final TreasurePlugin plugin;
+    @Getter
+    private boolean updateAvailable;
 
     public void check() {
         getVersion(version -> {
             if (!plugin.getVersion().equals(version)) {
+                updateAvailable = true;
+
                 plugin.getLogger().warning("New version of TreasureElytra available!");
                 plugin.getLogger().warning(" • Your version: " + plugin.getVersion());
                 plugin.getLogger().warning(" • Latest version: §n" + version);

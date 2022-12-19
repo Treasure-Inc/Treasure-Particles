@@ -3,35 +3,45 @@ version: "1.3.0"
 # Translations locale
 locale: EN
 # Toggle notifications
-# Players can disable notifications for themselves even if notifications is enabled
-# If you disable notifications, it will be disabled for all players
+# Players can disable notifications for themselves even if 'notifications' is enabled
+# If you set 'notifications' to false, it will be disabled for all players
 notifications: true
+# Toggle auto-update configurations
+# Disable this setting if you don't want your configurations to update automatically
+# If you set 'auto-update-configurations' to true, outdated files will automatically back up and be replaced with newer versions of it
+auto-update-configurations: true
 # GUI options
 gui:
   animation: # GUI animations
     enabled: true
     interval: 2 # in ticks
-    color-cycle-speed: 0.75 # in decimal
-  next-page: # Next page button item
-    slot: 53
-    item:
-      material: ENDER_PEARL
-  previous-page: # Previous page button item
-    slot: 45
-    item:
-      material: ENDER_EYE
-  close: # Close button item
-    slot: 49
-    item:
-      material: BARRIER
-  reset: # Reset effects button item
-    slot: 50
-    item:
-      material: RED_STAINED_GLASS_PANE
-  borders: # Borders item
-    material: BLACK_STAINED_GLASS_PANE
-  default-icon: # Default effect icon item
-    material: LEATHER_BOOTS
+    color-cycle-speed: 0.85 # in decimal
+  sounds: # GUI sounds (SOUND VOLUME PITCH) (Leave it blank if you don't want it to play sound)
+    next-page: "minecraft:item.book.page_turn 1 1"
+    previous-page: "minecraft:item.book.page_turn 1 1"
+    reset: ""
+    select: "minecraft:block.note_block.pling 1 2"
+  elements:
+    next-page: # Next page button item
+      slot: 53
+      item:
+        material: ENDER_PEARL
+    previous-page: # Previous page button item
+      slot: 45
+      item:
+        material: ENDER_EYE
+    close: # Close button item
+      slot: 49
+      item:
+        material: BARRIER
+    reset: # Reset effects button item
+      slot: 50
+      item:
+        material: RED_STAINED_GLASS_PANE
+    borders: # Borders item
+      material: BLACK_STAINED_GLASS_PANE
+    default-icon: # Default effect icon item
+      material: LEATHER_BOOTS
 permissions:
   # General
   menu: "trelytra.menu" # Base command permission
@@ -53,3 +63,4 @@ permissions:
   rainbow-effects: "trelytra.rainbow" # Permission for rainbow effects group
   tail-effects: "trelytra.tail" # Permission for tail effects group
   sonic: "trelytra.sonic" # Permission for sonic effect
+  christmas: "trelytra.effects.christmas" # Permission for Christmas effects group

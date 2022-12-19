@@ -22,6 +22,51 @@ import java.util.regex.Matcher;
 
 public class TestFeatures {
 
+    public String translate(String message) {
+        StringBuilder output = new StringBuilder();
+
+        var array = message.toCharArray();
+        int startPos = -1;
+        StringBuilder sb = new StringBuilder();
+
+        for (int pos = 0; pos < array.length; pos++) {
+            var c = array[pos];
+            if (c == '%') {
+                if (startPos == -1) {
+                    sb = new StringBuilder();
+                    startPos = pos;
+                    continue;
+                }
+
+                if (sb.isEmpty()) {
+                    output.append(c);
+                    sb = new StringBuilder();
+                    startPos = pos;
+                    continue;
+                }
+
+                var result = sb.toString();
+                output.append("translated");
+
+                startPos = -1;
+                sb = new StringBuilder();
+                continue;
+            }
+
+            if (startPos != -1)
+                sb.append(c);
+            else
+                output.append(c);
+        }
+
+        return output.toString();
+    }
+
+    @Test
+    public void testTranslate() {
+        System.out.println(translate("fasdfasdfsdaf f& afewx %asdasd% xqweqwe"));
+    }
+
     @Test
     public void testReader() {
         final Set<Pair<String, Double>> variables = new HashSet<>();

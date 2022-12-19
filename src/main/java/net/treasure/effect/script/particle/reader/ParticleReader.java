@@ -1,6 +1,7 @@
 package net.treasure.effect.script.particle.reader;
 
 import net.treasure.color.data.ColorData;
+import net.treasure.color.data.SingleColorData;
 import net.treasure.common.Patterns;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
@@ -16,6 +17,7 @@ import xyz.xenondevs.particle.data.ShriekData;
 import xyz.xenondevs.particle.data.texture.BlockTexture;
 import xyz.xenondevs.particle.data.texture.ItemTexture;
 
+import java.awt.*;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -76,6 +78,12 @@ public class ParticleReader implements ScriptReader<ParticleSpawner> {
                         var colorData = ColorData.initialize(value);
                         builder.colorData(colorData);
                     } catch (ReaderException e) {
+                        try {
+                            var color = Color.decode("#" + value);
+                            builder.colorData(new SingleColorData(color));
+                            continue;
+                        } catch (Exception ignored) {
+                        }
                         error(effect, line, start, end, e.getMessage());
                     }
                 }

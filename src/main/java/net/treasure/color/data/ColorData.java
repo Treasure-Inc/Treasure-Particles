@@ -6,6 +6,7 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.util.IntRange;
 
+import java.awt.*;
 import java.util.regex.Matcher;
 
 @Getter
@@ -52,6 +53,10 @@ public class ColorData {
             forward = revertWhenDone != forward;
         }
         return (int) (Math.max(min, currentIndex));
+    }
+
+    public Color next() {
+        return null;
     }
 
     public static ColorData initialize(String input) throws ReaderException {

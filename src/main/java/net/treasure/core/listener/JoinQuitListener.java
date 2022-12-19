@@ -21,9 +21,9 @@ public class JoinQuitListener implements Listener {
         var player = event.getPlayer();
         plugin.getPlayerManager().initializePlayer(player, data -> {
             if (player.hasPermission(Permissions.ADMIN) && plugin.getNotificationManager().isEnabled() && data.isNotificationsEnabled()) {
-                MessageUtils.sendParsed(player, Translations.PREFIX + "<aqua><b><click:suggest_command:'/trelytra changelog'><hover:show_text:'<aqua>Click!'>Changelog</click></b> <dark_gray>|</dark_gray> " +
-                        "<b><click:open_url:'https://www.spigotmc.org/resources/99860/'><hover:show_text:'<aqua>Click'>Spigot Page</b> <dark_gray>|</dark_gray> " +
-                        "<b><click:open_url:'https://github.com/Treasure-Inc/Treasure-Elytra/wiki/'><hover:show_text:'<aqua>Click!'>Wiki Page");
+                MessageUtils.sendParsed(player, Translations.NOTIFICATION);
+                if (plugin.getUpdateChecker().isUpdateAvailable())
+                    MessageUtils.sendParsed(player, "<prefix> <green>New version of TreasureElytra available!");
             }
         });
     }

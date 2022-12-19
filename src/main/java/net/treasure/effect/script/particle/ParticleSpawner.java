@@ -129,18 +129,19 @@ public class ParticleSpawner extends Script {
         // Particle Data
         if (particleData != null) {
             builder.setParticleData(particleData);
-        } else if (effect.hasProperty(PropertyType.DUST) && colorData != null && colorData instanceof RGBColorData rgb) {
-            if (effect.equals(ParticleEffect.DUST_COLOR_TRANSITION))
+        } else if (effect.hasProperty(PropertyType.DUST) && colorData != null) {
+            if (effect.equals(ParticleEffect.DUST_COLOR_TRANSITION) && colorData instanceof RGBColorData rgb)
                 builder.setParticleData(new DustColorTransitionData(rgb.next(), rgb.tempNext(), size != Float.MIN_VALUE ? size : 1));
             else if (size != Float.MIN_VALUE)
-                builder.setParticleData(new DustData(rgb.next(), size));
+                builder.setParticleData(new DustData(colorData.next(), size));
             else
-                builder.setColor(rgb.next());
+                builder.setColor(colorData.next());
         } else if (effect.hasProperty(PropertyType.COLORABLE) && colorData != null) {
             if (effect.equals(ParticleEffect.NOTE) && colorData.isNote()) {
-                builder.setParticleData(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.next() : new NoteColor(colorData.index()));
-            } else if (colorData instanceof RGBColorData rgb) {
-                builder.setColor(rgb.next());
+                builder.setParticleData(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : new NoteColor(colorData.index()));
+            } else {
+                var color = colorData.next();
+                builder.setColor(color);
             }
         }
 

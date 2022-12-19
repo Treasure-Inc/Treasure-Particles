@@ -36,11 +36,15 @@ public class ConfigurationGenerator {
 
     public YamlConfiguration generate(Plugin plugin) {
         this.plugin = plugin;
-        File file = new File(plugin.getDataFolder(), directory);
+        var file = new File(plugin.getDataFolder(), directory);
         try {
             boolean exists = file.exists();
             if (!exists)
                 saveResource(false);
+            if (!file.exists()) {
+                this.configuration = null;
+                return null;
+            }
             return configuration = YamlConfiguration.loadConfiguration(file);
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +68,7 @@ public class ConfigurationGenerator {
         var dataFolder = plugin.getDataFolder();
         var file = new File(dataFolder, directory);
         try {
-            Files.copy(file, new File(dataFolder, "old_" + directory + "_" + UUID.randomUUID() + ".yml"));
+            Files.copy(file, new File(dataFolder, "old_" + fileName + "_" + UUID.randomUUID() + ".yml"));
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Couldn't copy old file: " + fileName + ".yml", e);
         }
@@ -80,9 +84,9 @@ public class ConfigurationGenerator {
             return;
         }
 
-        File outFile = new File(plugin.getDataFolder(), directory);
-        int lastIndex = directory.lastIndexOf('/');
-        File outDir = new File(plugin.getDataFolder(), directory.substring(0, Math.max(lastIndex, 0)));
+        var outFile = new File(plugin.getDataFolder(), directory);
+        var lastIndex = directory.lastIndexOf('/');
+        var outDir = new File(plugin.getDataFolder(), directory.substring(0, Math.max(lastIndex, 0)));
 
         boolean exists = outDir.exists();
         if (!exists)

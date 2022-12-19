@@ -17,6 +17,7 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.core.gui.EffectsGUI;
 import net.treasure.core.gui.task.GUIUpdater;
 import net.treasure.effect.Effect;
+import net.treasure.locale.Locale;
 import net.treasure.locale.Translations;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.Bukkit;
@@ -28,7 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 @CommandAlias("trelytra|treasureelytra|tre")
 public class MainCommand extends BaseCommand {
 
-    TreasurePlugin plugin;
+    final TreasurePlugin plugin;
 
     @Default
     @CatchUnknown
@@ -52,7 +53,7 @@ public class MainCommand extends BaseCommand {
     @Subcommand("select|sel")
     @CommandCompletion("@effects")
     public void selectEffect(Player player, @Name("effect") @Single String key) {
-        Effect effect = plugin.getEffectManager().get(key);
+        var effect = plugin.getEffectManager().get(key);
         if (effect == null) {
             MessageUtils.sendParsed(player, String.format(Translations.EFFECT_UNKNOWN, key));
             return;
@@ -69,7 +70,7 @@ public class MainCommand extends BaseCommand {
     @Subcommand("reset")
     public void resetEffect(Player sender, @Optional @CommandPermission("%admincmd") OnlinePlayer reset) {
         boolean self = reset == null || reset.player.equals(sender);
-        Player player = self ? sender : reset.player;
+        var player = self ? sender : reset.player;
         plugin.getPlayerManager().getEffectData(player).setCurrentEffect(player, null);
         MessageUtils.sendParsed(player, Translations.EFFECT_RESET);
         if (!self)
@@ -84,6 +85,22 @@ public class MainCommand extends BaseCommand {
         MessageUtils.sendParsed(sender, Translations.RELOADED);
     }
 
+    @Subcommand("locale")
+    @CommandPermission("%admincmd")
+    public void locale(CommandSender sender, @Optional @Single String locale) {
+        if (locale == null) {
+            boolean supported = Locale.isSupported(Translations.LOCALE);
+            MessageUtils.sendParsed(sender, "<prefix> <gray>Locale: <gold>" + Translations.LOCALE + "</gold> (<i>" + (supported ? "<green>supported" : "not supported") + "</i>)");
+            return;
+        }
+        plugin.getConfig().set("locale", locale);
+        plugin.saveConfig();
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            plugin.reload();
+            MessageUtils.sendParsed(sender, "<prefix> <gray>Set locale to <gold>" + locale + "</gold>.");
+        });
+    }
+
     @Subcommand("changelog|changes|updates")
     @CommandCompletion("@versions")
     @CommandPermission("%changelog")
@@ -94,12 +111,14 @@ public class MainCommand extends BaseCommand {
         var notificationManager = plugin.getNotificationManager();
         var changelog = notificationManager.changelog(v);
         if (changelog == null) {
-            MessageUtils.sendParsed(sender, Translations.PREFIX + (version == null ? "No changelog for latest version. " : " Unknown version: " + v));
+            MessageUtils.sendParsed(sender, version == null ? "<prefix> No changelog for latest version. " : "<prefix> Unknown version: " + v);
             return;
         }
-        changelog.add(0, "<br><br><br><br><br><dark_aqua><b>Version " + v +
-                "<reset><br>• <hover:show_text:'<dark_aqua>Click!'><click:open_url:'https://github.com/Treasure-Inc/Treasure-Elytra/wiki'>Wiki Page</click></hover>" +
-                "<br>• <hover:show_text:'<dark_aqua>Click!'><click:open_url:'https://www.spigotmc.org/resources/trelytra-let-your-elytra-create-wonderful-particles.99860/'>Spigot Page</click></hover>");
+        changelog.add(0, "<br><gradient:#EF476F:#FFD166><b> TREASURE ELYTRA</b><br><#947931><i>   by Treasure Inc.</i><br><br><br><br><dark_aqua><b>Version " + v + "<reset>" +
+                "<br>• <hover:show_text:'<dark_aqua>Click!'><spigot>SpigotMC</spigot></hover>" +
+                "<br>• <hover:show_text:'<dark_aqua>Click!'><github>GitHub</github></hover>" +
+                "<br>• <hover:show_text:'<dark_aqua>Click!'><wiki>Wiki Page</wiki></hover>"
+        );
         MessageUtils.openBook(sender, changelog);
     }
 
@@ -115,10 +134,10 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("%admincmd")
     @Subcommand("debug menu")
     public void debugMenu(CommandSender sender) {
-        MessageUtils.sendParsed(sender, Translations.PREFIX + "<gray>Menu Viewers: <yellow>" + GUIUpdater.getPlayers().size());
-        MessageUtils.sendParsed(sender, Translations.PREFIX + "<gray>Players Using Elytra Effect: <yellow>" + plugin.getPlayerManager().getPlayersData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
-        MessageUtils.sendParsed(sender, Translations.PREFIX + "<gray>Color Cycle Speed: <gold>" + plugin.guiColorCycleSpeed());
-        MessageUtils.sendParsed(sender, Translations.PREFIX + "<gray>Animation Interval: <gold>" + plugin.guiInterval());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Menu Viewers Size: <yellow>" + GUIUpdater.getPlayers().size());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Players Using Elytra Effect: <yellow>" + plugin.getPlayerManager().getPlayersData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Color Cycle Speed: <gold>" + plugin.guiColorCycleSpeed());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Animation Interval: <gold>" + plugin.guiInterval());
     }
 
     @Private
@@ -127,7 +146,7 @@ public class MainCommand extends BaseCommand {
     public void debug(Player player) {
         var effects = plugin.getEffectManager().getEffects();
         if (effects.isEmpty()) {
-            MessageUtils.sendParsed(player, Translations.PREFIX + "<gray>No.");
+            MessageUtils.sendParsed(player, "<prefix> <gray>No.");
             return;
         }
         var data = plugin.getPlayerManager().getEffectData(player);
@@ -148,7 +167,7 @@ public class MainCommand extends BaseCommand {
                     try {
                         current = effects.get(index);
                     } catch (Exception e) {
-                        MessageUtils.sendParsed(player, Translations.PREFIX + "<dark_red>Cancelled.");
+                        MessageUtils.sendParsed(player, "<prefix> <dark_red>Cancelled.");
                         cancel();
                         return;
                     }
@@ -157,7 +176,7 @@ public class MainCommand extends BaseCommand {
                     MessageUtils.sendParsed(Bukkit.getConsoleSender(), Translations.EFFECT_SELECTED.formatted(current.getDisplayName()));
                 }
                 if (current == null) {
-                    MessageUtils.sendParsed(player, Translations.PREFIX + "<red>Cancelled.");
+                    MessageUtils.sendParsed(player, "<prefix> <red>Cancelled.");
                     cancel();
                     return;
                 }

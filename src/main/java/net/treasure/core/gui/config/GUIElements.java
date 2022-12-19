@@ -1,4 +1,4 @@
-package net.treasure.core.gui;
+package net.treasure.core.gui.config;
 
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.DataHolder;
@@ -19,7 +19,7 @@ public class GUIElements implements DataHolder {
     public static Pair<Integer, ItemStack> CLOSE = new Pair<>(49, new ItemStack(Material.BARRIER));
     public static Pair<Integer, ItemStack> RESET = new Pair<>(50, new ItemStack(Material.RED_STAINED_GLASS_PANE));
 
-    FileConfiguration config;
+    private FileConfiguration config;
 
     @Override
     public boolean checkVersion() {
@@ -45,16 +45,16 @@ public class GUIElements implements DataHolder {
         initialize();
     }
 
-    private ItemStack getItemStack(String key, ItemStack defaultValue) {
-        return getItemStack(config, "gui." + key, defaultValue);
+    private ItemStack getItemStack(String path, ItemStack defaultValue) {
+        return getItemStack(config, "gui.elements." + path, defaultValue);
     }
 
-    public static ItemStack getItemStack(FileConfiguration config, String key, ItemStack defaultValue) {
+    public static ItemStack getItemStack(FileConfiguration config, String path, ItemStack defaultValue) {
         try {
-            var section = config.getConfigurationSection(key);
+            var section = config.getConfigurationSection(path);
             if (section == null) return defaultValue;
             //noinspection ConstantConditions
-            var material = Material.valueOf(section.getString("material").toUpperCase(Locale.ENGLISH));
+            var material = Material.getMaterial(section.getString("material").toUpperCase(Locale.ENGLISH));
             var customModelData = section.getInt("customModelData", 0);
             var amount = section.getInt("amount", 1);
             var glow = section.getBoolean("glow", false);
@@ -63,14 +63,16 @@ public class GUIElements implements DataHolder {
                     .setCustomModelData(customModelData)
                     .glow(glow)
                     .build();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            if (TreasurePlugin.getInstance().isDebugModeEnabled())
+                e.printStackTrace();
             return defaultValue;
         }
     }
 
-    private int getSlot(String key, int defaultValue) {
+    private int getSlot(String path, int defaultValue) {
         try {
-            return config.getInt("gui." + key);
+            return config.getInt("gui.elements." + path);
         } catch (Exception ignored) {
             return defaultValue;
         }

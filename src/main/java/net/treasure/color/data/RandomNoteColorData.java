@@ -9,7 +9,7 @@ public class RandomNoteColorData extends ColorData {
         super(0, false, true, min, max);
     }
 
-    public NoteColor next() {
+    public NoteColor random() {
         return new NoteColor(MathUtils.generateRandomInteger(min, max));
     }
 }
