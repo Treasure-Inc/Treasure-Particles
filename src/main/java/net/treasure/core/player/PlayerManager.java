@@ -8,7 +8,6 @@ import net.treasure.effect.data.EffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,7 +44,7 @@ public class PlayerManager {
             ResultSet rs = null;
 
             try {
-                Connection connection = database.getConnection();
+                var connection = database.getConnection();
                 ps = connection.prepareStatement("SELECT data FROM data WHERE uuid=?");
                 ps.setString(1, player.getUniqueId().toString());
                 rs = ps.executeQuery();
@@ -82,12 +81,13 @@ public class PlayerManager {
     }
 
     public void remove(Player player) {
-        var inst = TreasurePlugin.getInstance();
         var data = playersData.remove(player.getUniqueId());
-        Bukkit.getScheduler().runTaskAsynchronously(inst, () -> {
-            var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled(), data.isNotificationsEnabled());
-            inst.getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(TreasurePlugin.getInstance(), () -> save(player, data));
+    }
+
+    public void save(Player player, EffectData data) {
+        var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled(), data.isNotificationsEnabled());
+        TreasurePlugin.getInstance().getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
     }
 
     public void reload() {

@@ -90,9 +90,9 @@ public class TreasurePlugin extends JavaPlugin {
         commandManager = new BukkitCommandManager(this);
 
         // Adventure
-        this.adventure = BukkitAudiences.create(this);
+        adventure = BukkitAudiences.create(this);
 
-        //region Initialize data holders
+        // Translations
         translations = new Translations();
         translations.initialize();
         dataHolders.add(translations);
@@ -122,8 +122,6 @@ public class TreasurePlugin extends JavaPlugin {
         permissions = new Permissions();
         permissions.initialize();
         dataHolders.add(permissions);
-
-        //endregion
 
         var config = getConfig();
 
@@ -161,8 +159,17 @@ public class TreasurePlugin extends JavaPlugin {
 
         // bStats
         var metrics = new Metrics(this, 14508);
+        metrics.addCustomChart(new SimplePie("locale", () -> Translations.LOCALE));
+
         metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
         metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
+
+        metrics.addCustomChart(new SimplePie("debug_mode_enabled", () -> String.valueOf(debugModeEnabled)));
+        metrics.addCustomChart(new SimplePie("auto_update_enabled", () -> String.valueOf(autoUpdateEnabled)));
+
+        metrics.addCustomChart(new SimplePie("gui_animation_enabled", () -> String.valueOf(guiTask != -5)));
+        metrics.addCustomChart(new SimplePie("gui_animation_interval", () -> String.valueOf(guiInterval)));
+        metrics.addCustomChart(new SimplePie("gui_animation_speed", () -> String.valueOf(guiColorCycleSpeed)));
 
         // PlaceholderAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))

@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static net.treasure.common.Keys.NAMESPACE;
+
 public class Translations implements DataHolder {
 
     public static String LOCALE;
@@ -52,6 +54,8 @@ public class Translations implements DataHolder {
             COMMAND_NO_PLAYER_FOUND_SERVER,
             COMMAND_NO_PLAYER_FOUND_OFFLINE,
             COMMAND_NO_PERMISSION,
+            COMMAND_ARG_PAGE,
+            COMMAND_ARG_EFFECT,
             PAPI_CURRENT_EFFECT_NULL,
             PAPI_ENABLED,
             PAPI_DISABLED;
@@ -106,48 +110,49 @@ public class Translations implements DataHolder {
 
             PREFIX = config.getString("prefix", "<gradient:#EF476F:#FFD166><b>TrElytra <dark_gray>| <reset>");
 
-            EFFECT_SELECTED = config.getString("effect-selected", "<green>Selected:<reset> %s");
-            EFFECT_NO_PERMISSION = config.getString("effect-no-permission", "<red>You don't have enough permission to use that effect!");
-            EFFECT_UNKNOWN = config.getString("effect-unknown", "<red>Couldn't find any effect with name %s");
-            EFFECT_TOGGLE = config.getString("effect-toggle", "<gray>Elytra Effects: %s");
-            EFFECT_RESET = config.getString("effect-reset", "<gray>Elytra Effect: <red>OFF");
-            EFFECT_RESET_OTHER = config.getString("effect-reset-other", "<gray>Elytra Effect (%s): <red>OFF");
-            NOTIFICATIONS_TOGGLE = config.getString("notifications-toggle", "<gray>Notifications: %s");
+            // Translations
+            EFFECT_SELECTED = config.getString("effect-selected", "<prefix> <green>Selected:<reset> %s");
+            EFFECT_NO_PERMISSION = config.getString("effect-no-permission", "<prefix> <red>You don't have enough permission to use that effect!");
+            EFFECT_UNKNOWN = config.getString("effect-unknown", "<prefix> <red>Couldn't find any effect with name %s");
+            EFFECT_TOGGLE = config.getString("effect-toggle", "<prefix> <gray>Elytra Effects: %s");
+            EFFECT_RESET = config.getString("effect-reset", "<prefix> <gray>Elytra Effect: <red>OFF");
+            EFFECT_RESET_OTHER = config.getString("effect-reset-other", "<prefix> <gray>Elytra Effect (%s): <red>OFF");
+            NOTIFICATIONS_TOGGLE = config.getString("notifications-toggle", "<prefix> <gray>Notifications: %s");
             NOTIFICATION = config.getString("notification", "<prefix> <aqua><b><changelog>Changelog</changelog></b> <dark_gray>/</dark_gray> <b><github>GitHub</github></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>");
 
+            RELOADING = config.getString("reloading", "<prefix> <yellow>Reloading TreasureElytra...");
+            RELOADED = config.getString("reloaded", "<prefix> <green>Reloaded!");
+
+            ENABLED = config.getString("enabled", "<green>Enabled");
+            DISABLED = config.getString("disabled", "<red>Disabled");
+
+            // GUI
             GUI_TITLE = config.getString("gui-title", "        <gradient:#EF476F:#FFD166><b>Treasure Elytra");
             GUI_EFFECT_SELECTED = config.getString("gui-effect-selected", "<green>Selected!");
-            GUI_SELECT_EFFECT = config.getString("gui-select-effect", "<dark_gray>• <green>Click to use this effect!");
+            GUI_SELECT_EFFECT = config.getString("gui-select-effect", "<#87FF65>❤ Click to use this effect!");
             GUI_RESET_EFFECT = config.getString("gui-reset-effect", "<yellow>Reset Effect");
             GUI_RESET_EFFECT_CURRENT = config.getString("gui-reset-effect-current", "<gray>Selected: <gold>%s");
             GUI_NEXT_PAGE = config.getString("gui-next-page", "<green>> Next Page");
             GUI_PREVIOUS_PAGE = config.getString("gui-previous-page", "<green>< Previous Page");
             GUI_CLOSE = config.getString("gui-close", "<red>Close");
 
-            RELOADING = config.getString("reloading", "<yellow>Reloading TreasureElytra...");
-            RELOADED = config.getString("reloaded", "<green>Reloaded!");
-
-            ENABLED = config.getString("enabled", "<green>Enabled");
-            DISABLED = config.getString("disabled", "<red>Disabled");
-
             // PAPI
-
             PAPI_CURRENT_EFFECT_NULL = config.getString("placeholders.current-effect-null", "None");
             PAPI_ENABLED = config.getString("placeholders.enabled", "Enabled");
             PAPI_DISABLED = config.getString("placeholders.disabled", "Disabled");
 
             // Commands
-
-            COMMAND_USAGE = config.getString("commands.usage", "<yellow>Usage:<gray> %s");
-            COMMAND_ERROR = config.getString("commands.error", "<red>Error: %s");
-            COMMAND_MUST_BE_A_NUMBER = config.getString("commands.must-be-a-number", "<red>%s must be a number.");
-            COMMAND_USERNAME_TOO_SHORT = config.getString("commands.username-too-short", "<red>Username too short, must be at least three characters.");
-            COMMAND_NOT_A_VALID_NAME = config.getString("commands.not-a-valid-name", "<red>%s is not a valid username.");
-            COMMAND_NO_PLAYER_FOUND_SERVER = config.getString("commands.no-player-found-server", "<red>No player matching %s is connected to this server.");
-            COMMAND_NO_PLAYER_FOUND_OFFLINE = config.getString("commands.no-player-found-offline", "<red>No player matching %s could be found.");
-            COMMAND_NO_PERMISSION = config.getString("commands.no-permission", "<red>You don't have enough permission to use this effect!");
+            COMMAND_USAGE = config.getString("commands.usage", "<prefix> <yellow>Usage:<gray> %s");
+            COMMAND_ERROR = config.getString("commands.error", "<prefix> <red>Error: %s");
+            COMMAND_MUST_BE_A_NUMBER = config.getString("commands.must-be-a-number", "<prefix> <red>%s must be a number.");
+            COMMAND_USERNAME_TOO_SHORT = config.getString("commands.username-too-short", "<prefix> <red>Username too short, must be at least three characters.");
+            COMMAND_NOT_A_VALID_NAME = config.getString("commands.not-a-valid-name", "<prefix> <red>%s is not a valid username.");
+            COMMAND_NO_PLAYER_FOUND_SERVER = config.getString("commands.no-player-found-server", "<prefix> <red>No player matching %s is connected to this server.");
+            COMMAND_NO_PLAYER_FOUND_OFFLINE = config.getString("commands.no-player-found-offline", "<prefix> <red>No player matching %s could be found.");
+            COMMAND_NO_PERMISSION = config.getString("commands.no-permission", "<prefix> <red>You don't have enough permission to use this effect!");
 
             var commandManager = inst.getCommandManager();
+
             Map<MessageKeyProvider, String> messages = new HashMap<>();
             messages.put(MessageKeys.INVALID_SYNTAX, MessageUtils.parseLegacy(String.format(COMMAND_USAGE, "{command} {syntax}")));
             messages.put(MessageKeys.ERROR_PREFIX, MessageUtils.parseLegacy(String.format(COMMAND_ERROR, "{message}")));
@@ -161,6 +166,10 @@ public class Translations implements DataHolder {
             messages.put(MessageKeys.PERMISSION_DENIED_PARAMETER, MessageUtils.parseLegacy(COMMAND_NO_PERMISSION));
 
             commandManager.getLocales().addMessages(java.util.Locale.ENGLISH, messages);
+
+            var replacements = commandManager.getCommandReplacements();
+            replacements.addReplacement("page", COMMAND_ARG_PAGE = config.getString("commands.arg-page", "page"));
+            replacements.addReplacement("effect", COMMAND_ARG_EFFECT = config.getString("commands.arg-effect", "effect"));
             return true;
         } catch (Exception exception) {
             TreasurePlugin.logger().log(Level.WARNING, "Couldn't load translations from 'translations_" + LOCALE + ".yml'", exception);

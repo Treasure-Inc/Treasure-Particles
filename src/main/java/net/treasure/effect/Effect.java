@@ -76,7 +76,7 @@ public class Effect {
 
     public void initialize(Player player, EffectData data, boolean debugModeEnabled) {
         if (debugModeEnabled)
-            TreasurePlugin.logger().info("Initializing effect for player: " + player.getName());
+            TreasurePlugin.logger().info(getPrefix() + "Initializing effect for player: " + player.getName());
         for (var pair : variables)
             data.getVariables().add(new Pair<>(pair.getKey(), pair.getValue()));
         data.setTickHandlers(new LinkedHashMap<>(lines));

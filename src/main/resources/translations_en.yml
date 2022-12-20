@@ -17,7 +17,7 @@ disabled: "<red>Disabled"
 # GUI
 gui-title: "        <gradient:#EF476F:#FFD166><b>Treasure Elytra"
 gui-effect-selected: "<green>Selected!"
-gui-select-effect: "<green>❤ Click to use this effect!"
+gui-select-effect: "<#87FF65>❤ Click to use this effect!"
 gui-reset-effect: "<yellow>Reset Effect"
 gui-reset-effect-current: "<gray>Current Effect: <gold>%s"
 gui-next-page: "<green>> Next Page"
@@ -63,7 +63,7 @@ descriptions:
   exclusive-version: "<dark_gray>Required Version"
   seasonal-effect: "<dark_gray>Seasonal Effect"
   featured-behavior: "<dark_gray>Featured Behavior"
-  christmas: "<gradient:#FF6F59:#254441>The colors of New Year's Eve shimmer and shine."
+  christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Shine with New Year's colors."
   elytra-boost: "<#ffbc33>Effect changes when boosting elytra with fireworks."
 # Placeholder Messages
 placeholders:
@@ -80,3 +80,5 @@ commands:
   no-player-found-server: "<prefix> <red>No player matching %s is connected to this server."
   no-player-found-offline: "<prefix> <red>No player matching %s could be found."
   no-permission: "<prefix> <red>You don't have enough permission to perform this command!"
+  arg-page: "page"
+  arg-effect: "effect"

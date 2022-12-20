@@ -34,7 +34,7 @@ public class MainCommand extends BaseCommand {
     @Default
     @CatchUnknown
     @CommandPermission("%basecmd")
-    public void menu(Player player, @Default("0") int page) {
+    public void menu(Player player, @Default("0") @Name("%page") int page) {
         page = Math.max(0, page - 1);
         int maxPage = (plugin.getEffectManager().getEffects().size() / 28) + 1;
         if (page >= maxPage)
@@ -52,7 +52,7 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("%basecmd")
     @Subcommand("select|sel")
     @CommandCompletion("@effects")
-    public void selectEffect(Player player, @Name("effect") @Single String key) {
+    public void selectEffect(Player player, @Name("%effect") @Single String key) {
         var effect = plugin.getEffectManager().get(key);
         if (effect == null) {
             MessageUtils.sendParsed(player, String.format(Translations.EFFECT_UNKNOWN, key));
@@ -91,6 +91,7 @@ public class MainCommand extends BaseCommand {
         if (locale == null) {
             boolean supported = Locale.isSupported(Translations.LOCALE);
             MessageUtils.sendParsed(sender, "<prefix> <gray>Locale: <gold>" + Translations.LOCALE + "</gold> (<i>" + (supported ? "<green>supported" : "not supported") + "</i>)");
+            MessageUtils.sendParsed(sender, String.format(Translations.COMMAND_USAGE, "/trelytra locale [locale]"));
             return;
         }
         plugin.getConfig().set("locale", locale);

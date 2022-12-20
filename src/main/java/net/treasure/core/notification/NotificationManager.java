@@ -26,7 +26,7 @@ public class NotificationManager {
             "1.3.0"
     );
 
-    // Needs rework
+    // TODO Needs rework
     public List<String> changelog(String version) {
         if (!versions.contains(version))
             return null;
@@ -178,10 +178,45 @@ public class NotificationManager {
                             "<gold>[2]</gold> Updated messages version to 1.2.3 (command translations)<br><br>" +
                             "<gold>[3]</gold> Updated config version to 1.2.3 (permission for notifications)"
             );
+            case "1.3.0" -> List.of(
+                    "<b><u>Added</u></b><br><br>" +
+                            "<#48f542>❤</#48f542> <b>1.19.3</b> Support<br>" +
+                            "<#48f542>❤</#48f542> <b>PlaceholderAPI</b> Support<br>" +
+                            "<#48f542>❤</#48f542> New <b>effects</b><br>" +
+                            " <dark_gray>❥</dark_gray> <i>Reverse Pulse</i><br>" +
+                            " <dark_gray>❥</dark_gray> <i>Snow</i><br>" +
+                            " <dark_gray>❥</dark_gray> <i>Christmas/Circle</i><br>" +
+                            " <dark_gray>❥</dark_gray> <i>Christmas/Line</i><br>" +
+                            "<#48f542>❤</#48f542> Permission for effects visibility (<i>default: disabled</i>)",
+                    "<b><u>Added</u></b><br><br>" +
+                            "<#48f542>❤</#48f542> More customization options for GUI (<i>see config.yml</i>)<br>" +
+                            "<#48f542>❤</#48f542> Option for toggle auto configuration update<br>" +
+                            "<#48f542>❤</#48f542> Command to change locale in-game (<i>/trelytra locale</i>)<br>" +
+                            "<#48f542>❤</#48f542> Update Checker<br>" +
+                            "<#48f542>❤</#48f542> German & Spanish Translations",
+                    "<b><u>Changed</u></b><br><br>" +
+                            "<#3970e6>❤</#3970e6> Improved directional value in particle configuration<br>" +
+                            " <dark_gray>❥</dark_gray> Optimized vector rotation algorithm<br>" +
+                            " <dark_gray>❥</dark_gray> <i>directional</i> will apply to offset value<br>" +
+                            " <dark_gray><b>|</b></dark_gray> <i>Soul</i>, <i>Pulse</i> and <i>Planner</i> effects will be working better because of this change",
+                    "<b><u>Changed</u></b><br><br>" +
+                            "<#3970e6>❤</#3970e6> Better <i>Rocket</i> effect<br>" +
+                            "<#3970e6>❤</#3970e6> New prefix & GUI title<br>" +
+                            "<#3970e6>❤</#3970e6> Optimized effects task<br>" +
+                            "<#3970e6>❤</#3970e6> Support for single color when spawning colorable particles<br>" +
+                            "<#3970e6>❤</#3970e6> Bumped configurations' versions to 1.3.0",
+                    "<b><u>Bug Fixes</u></b><br><br>" +
+                            "<#8a39e6>❤</#8a39e6> Fixed an issue related to \"/trelytra notification\" command<br>" +
+                            "<#8a39e6>❤</#8a39e6> Fixed <i>config.yml</i> doesn't generate when reloading<br>" +
+                            "<#8a39e6>❤</#8a39e6> Fixed <i>effects.yml</i> reloading before colors.yml",
+                    "<b><u>Removed</u></b><br><br>" +
+                            "<#e63948>❤</#e63948> Timings Support"
+
+            );
             default -> List.of("<red>WHAT?");
         });
         var index = versions.indexOf(version);
-        String s = (index > 0 ? "<br><br><br><dark_aqua><b><hover:show_text:'<dark_aqua>Click!'><click:run_command:'/trelytra changes " + versions.get(index - 1) + "'>← PREVIOUS RELEASE</click></hover>" : "") +
+        String s = (index > 0 ? "<br><br><br><dark_aqua><b><hover:show_text:'<dark_aqua>Click!'><click:run_command:'/trelytra changes " + versions.get(index - 1) + "'>← PREVIOUS<br>   RELEASE</click></hover>" : "") +
                 (index + 1 < versions.size() ? "<br><br><br><dark_aqua><b><hover:show_text:'<dark_aqua>Click!'><click:run_command:'/trelytra changes " + versions.get(index + 1) + "'>→ NEXT RELEASE</click></hover> " : "");
         list.add(s);
         return list;

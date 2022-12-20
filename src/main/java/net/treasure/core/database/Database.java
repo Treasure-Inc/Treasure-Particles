@@ -4,7 +4,11 @@ import net.treasure.core.TreasurePlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class Database {
@@ -21,6 +25,14 @@ public class Database {
     }
 
     public Connection getConnection() {
+        if (connection != null) {
+            try {
+                if (!connection.isClosed())
+                    return connection;
+            } catch (SQLException ignored) {
+            }
+        }
+
         File dataFolder = new File(TreasurePlugin.getInstance().getDataFolder(), "database.db");
         boolean exists = dataFolder.exists();
         if (!exists) {
@@ -28,16 +40,14 @@ public class Database {
                 exists = dataFolder.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                TreasurePlugin.logger().log(Level.SEVERE, "File write error: database.db");
+                TreasurePlugin.logger().log(Level.SEVERE, "File write error: database.db", e);
                 return null;
             }
         }
         if (!exists)
             return null;
+
         try {
-            if (connection != null && !connection.isClosed()) {
-                return connection;
-            }
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + dataFolder);
             return connection;
@@ -78,10 +88,14 @@ public class Database {
         try {
             if (ps != null)
                 ps.close();
+        } catch (SQLException e) {
+            TreasurePlugin.logger().log(Level.WARNING, "Failed to close PreparedStatement", e);
+        }
+        try {
             if (rs != null)
                 rs.close();
-        } catch (SQLException ex) {
-            TreasurePlugin.logger().log(Level.SEVERE, "Failed to close MySQL connection: ", ex);
+        } catch (SQLException e) {
+            TreasurePlugin.logger().log(Level.WARNING, "Failed to close ResultSet ", e);
         }
     }
 }

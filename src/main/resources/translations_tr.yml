@@ -64,7 +64,7 @@ descriptions:
   seasonal-effect: "<dark_gray>Dönemsel Efekt"
   featured-behavior: "<dark_gray>Has Özellik"
   elytra-boost: "<#ffbc33>Havai fişek ile elitranı hızlandırdığında efekt değişir."
-  christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Yılbaşının harikulade renkleriyle uç!"
+  christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Yılbaşının harikulade renkleriyle ışılda!"
 # Placeholder Mesajları
 placeholders:
   current-effect-null: "Yok"
@@ -80,3 +80,5 @@ commands:
   no-player-found-server: "<prefix> <red>Sunucuya daha önceden %s ismiyle eşleşen bir oyuncu katılmamış."
   no-player-found-offline: "<prefix> <red>Sunucuda %s ismiyle eşleşen aktif bir oyuncu bulunamadı."
   no-permission: "<prefix> <red>Bu komutu kullanabilmek için yeterli yetkin yok!"
+  arg-page: "sayfa"
+  arg-effect: "efekt"
