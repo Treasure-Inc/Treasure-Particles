@@ -11,18 +11,18 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class PlayerManager {
 
     @Getter
-    private final HashMap<UUID, EffectData> playersData;
+    private final ConcurrentHashMap<UUID, EffectData> playersData;
     private final Gson gson;
 
     public PlayerManager() {
-        playersData = new HashMap<>();
+        playersData = new ConcurrentHashMap<>();
         gson = new Gson();
     }
 
