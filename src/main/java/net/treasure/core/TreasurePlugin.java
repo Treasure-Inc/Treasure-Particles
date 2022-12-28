@@ -61,7 +61,7 @@ public class TreasurePlugin extends JavaPlugin {
     @Accessors(fluent = true)
     private int guiTask = -5, guiInterval = 2;
     @Accessors(fluent = true)
-    private float guiColorCycleSpeed = 0.75f;
+    private float guiColorCycleSpeed = 0.85f;
 
     @Override
     public void onEnable() {
