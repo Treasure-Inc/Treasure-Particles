@@ -18,11 +18,11 @@ import java.util.function.Consumer;
 public class PlayerManager {
 
     @Getter
-    private final ConcurrentHashMap<UUID, EffectData> playersData;
+    private final ConcurrentHashMap<UUID, EffectData> data;
     private final Gson gson;
 
     public PlayerManager() {
-        playersData = new ConcurrentHashMap<>();
+        data = new ConcurrentHashMap<>();
         gson = new Gson();
     }
 
@@ -36,7 +36,7 @@ public class PlayerManager {
             var database = inst.getDatabase();
 
             EffectData data = new EffectData();
-            playersData.put(player.getUniqueId(), data);
+            this.data.put(player.getUniqueId(), data);
 
             PlayerData playerData = null;
 
@@ -77,11 +77,11 @@ public class PlayerManager {
     }
 
     public EffectData getEffectData(UUID uuid) {
-        return playersData.get(uuid);
+        return data.get(uuid);
     }
 
     public void remove(Player player) {
-        var data = playersData.remove(player.getUniqueId());
+        var data = this.data.remove(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(TreasurePlugin.getInstance(), () -> save(player, data));
     }
 
@@ -92,7 +92,7 @@ public class PlayerManager {
 
     public void reload() {
         var inst = TreasurePlugin.getInstance();
-        for (var iterator = playersData.entrySet().iterator(); iterator.hasNext(); ) {
+        for (var iterator = data.entrySet().iterator(); iterator.hasNext(); ) {
             var set = iterator.next();
             var data = set.getValue();
             var player = Bukkit.getPlayer(set.getKey());

@@ -1,7 +1,6 @@
 package net.treasure.effect.task;
 
 import lombok.AllArgsConstructor;
-import net.treasure.core.TreasurePlugin;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.util.TimeKeeper;
 import org.bukkit.Bukkit;
@@ -14,7 +13,7 @@ public class EffectsTask implements Runnable {
     @Override
     public void run() {
         TimeKeeper.increaseTime();
-        var iterator = playerManager.getPlayersData().entrySet().iterator();
+        var iterator = playerManager.getData().entrySet().iterator();
         while (iterator.hasNext()) {
             var set = iterator.next();
 
@@ -30,7 +29,7 @@ public class EffectsTask implements Runnable {
             if (!data.isEnabled())
                 continue;
 
-            if (!player.isGliding())
+            if (!player.isGliding() && !data.isDebugModeEnabled())
                 continue;
 
             var current = data.getCurrentEffect();
