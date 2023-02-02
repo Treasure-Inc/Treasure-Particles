@@ -86,6 +86,7 @@ public class PlayerManager {
     }
 
     public void save(Player player, EffectData data) {
+        if (data == null) return;
         var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled(), data.isNotificationsEnabled());
         TreasurePlugin.getInstance().getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
     }
