@@ -47,9 +47,6 @@ public class ParticleSpawner extends Script {
     protected BooleanArgument directional = new BooleanArgument(false);
 
     public ParticleBuilder tick(Player player, EffectData data) {
-        if (this.origin == null)
-            return null;
-
         Location origin;
 
         origin = switch (this.origin) {

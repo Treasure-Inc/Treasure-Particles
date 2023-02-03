@@ -42,6 +42,7 @@ public class ComponentLogger {
             error(effect, type, line, messages);
             return;
         }
+
         line = "<yellow>" + line.substring(0, start) + "<gold><u>" + line.substring(start, end) + "</u></gold>" + line.substring(end);
         MessageUtils.logParsed("<yellow>[TrElytra] <red><effect><yellow><type> <line>",
                 Placeholder.unparsed("effect", effect.getPrefix()),

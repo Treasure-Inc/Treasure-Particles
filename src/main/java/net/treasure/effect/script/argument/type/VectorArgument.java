@@ -18,19 +18,17 @@ public class VectorArgument implements ScriptArgument<Vector> {
         String x = null, y = null, z = null;
         var offsetMatcher = Patterns.INNER_SCRIPT.matcher(context.value());
         while (offsetMatcher.find()) {
-            String _type = offsetMatcher.group("type");
-            String _value = offsetMatcher.group("value");
+            String type = offsetMatcher.group("type");
+            String value = offsetMatcher.group("value");
             try {
-                if (_type.equalsIgnoreCase("x"))
-                    x = _value;
-                else if (_type.equalsIgnoreCase("y"))
-                    y = _value;
-                else if (_type.equalsIgnoreCase("z"))
-                    z = _value;
-                else
-                    ComponentLogger.error(context, "Unexpected offset value: " + _type);
+                switch (type) {
+                    case "x" -> x = value;
+                    case "y" -> y = value;
+                    case "z" -> z = value;
+                    default -> ComponentLogger.error(context, "Unexpected vector argument: " + type);
+                }
             } catch (Exception ignored) {
-                ComponentLogger.error(context, "Unexpected offset value: " + _type);
+                ComponentLogger.error(context, "Unexpected '" + type + "' value for vector argument: " + value);
             }
         }
         return new VectorArgument(x, y, z).validate(context);

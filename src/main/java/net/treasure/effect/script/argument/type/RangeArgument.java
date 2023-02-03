@@ -25,11 +25,12 @@ public class RangeArgument extends FloatArgument {
             try {
                 switch (type) {
                     case "val", "value" -> val = value;
-                    case "min" -> min = Float.parseFloat(value);
-                    case "max" -> max = Float.parseFloat(value);
+                    case "min" -> min = StaticArgument.asFloat(value);
+                    case "max" -> max = StaticArgument.asFloat(value);
+                    default -> ComponentLogger.error(context, "Unexpected Range argument: " + type);
                 }
             } catch (Exception ignored) {
-                ComponentLogger.error(context.effect(), context.type(), context.line(), matcher.start(), matcher.end(), "Unexpected value for " + type + ": " + value);
+                ComponentLogger.error(context, "Unexpected '" + type + "' value for range argument: " + value);
             }
         }
 

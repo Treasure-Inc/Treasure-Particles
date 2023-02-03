@@ -14,6 +14,7 @@ public class ItemStackArgument {
         Material material = null;
         int data = 0;
         var matcher = Patterns.INNER_SCRIPT.matcher(context.value());
+
         while (matcher.find()) {
             String type = matcher.group("type");
             String value = matcher.group("value");
@@ -21,21 +22,23 @@ public class ItemStackArgument {
                 switch (type) {
                     case "material" -> material = Material.valueOf(value.toUpperCase(Locale.ENGLISH));
                     case "data" -> data = Integer.parseInt(value);
+                    default -> ComponentLogger.error(context, "Unexpected Item argument: " + type);
                 }
             } catch (Exception ignored) {
-                ComponentLogger.error(context.effect(), context.type(), context.line(), matcher.start(), matcher.end(), "Unexpected value for " + type + ": " + value);
+                ComponentLogger.error(context, "Unexpected '" + type + "' value for item argument: " + value);
             }
         }
-        if (material != null) {
-            var item = new ItemStack(material);
-            var meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setCustomModelData(data);
-                item.setItemMeta(meta);
-            }
-            return item;
-        } else
+        if (material == null) {
             ComponentLogger.error(context, "Material cannot be null");
-        return null;
+            return null;
+        }
+
+        var item = new ItemStack(material);
+        var meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setCustomModelData(data);
+            item.setItemMeta(meta);
+        }
+        return item;
     }
 }

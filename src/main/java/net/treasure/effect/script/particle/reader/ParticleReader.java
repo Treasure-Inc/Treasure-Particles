@@ -53,7 +53,7 @@ public class ParticleReader<T extends ParticleSpawner> extends ScriptReader<DotP
         addValidArgument(c -> {
             var particle = c.script().effect();
             if (particle != null && !particle.hasProperty(PropertyType.COLORABLE)) {
-                error(c, "You cannot use 'colorScheme' with this particle effect: " + particle.name());
+                error(c, "You cannot use '" + c.type() + "' with this particle effect: " + particle.name());
                 return;
             }
             try {
@@ -101,26 +101,30 @@ public class ParticleReader<T extends ParticleSpawner> extends ScriptReader<DotP
         addValidArgument(c -> {
             var particle = c.script().effect();
             if (particle != null && !particle.equals(ParticleEffect.SHRIEK)) {
-                error(c, "You can only use 'delay' with SHRIEK effect.");
+                error(c, "You can only use 'delay' with SHRIEK particle effect.");
                 return;
             }
             try {
-                c.script().particleData(new ShriekData(Integer.parseInt(c.value())));
+                c.script().particleData(new ShriekData(StaticArgument.asInt(c)));
+            } catch (ReaderException e) {
+                error(c, "Unexpected 'delay' value: " + c.value(), e.getMessage());
             } catch (Exception ignored) {
-                error(c, "Unexpected delay value: " + c.value());
+                error(c, "Unexpected 'delay' value: " + c.value());
             }
         }, "delay");
 
         addValidArgument(c -> {
             var particle = c.script().effect();
             if (particle != null && !particle.equals(ParticleEffect.SCULK_CHARGE)) {
-                error(c, "You can only use 'roll' with SCULK_CHARGE effect.");
+                error(c, "You can only use 'roll' with SCULK_CHARGE particle effect.");
                 return;
             }
             try {
-                c.script().particleData(new SculkChargeData(Float.parseFloat(c.value())));
+                c.script().particleData(new SculkChargeData(StaticArgument.asFloat(c)));
+            } catch (ReaderException e) {
+                error(c, "Unexpected 'roll' value: " + c.value(), e.getMessage());
             } catch (Exception ignored) {
-                error(c, "Unexpected roll value: " + c.value());
+                error(c, "Unexpected 'roll' value: " + c.value());
             }
         }, "roll");
     }

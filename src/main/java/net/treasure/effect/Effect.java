@@ -125,14 +125,14 @@ public class Effect {
         // Get variable 'i'
         var ip = data.getVariable(null, Variable.I);
         if (ip == null) {
-            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.I is null)");
+            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.I == null)");
             return;
         }
 
         // Get variable 'times'
         var tp = data.getVariable(null, Variable.TIMES);
         if (tp == null) {
-            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.TIMES is null)");
+            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.TIMES == null)");
             return;
         }
 
@@ -151,12 +151,15 @@ public class Effect {
     }
 
     public void doTick(Player player, EffectData data) {
-        if (!TimeKeeper.isElapsed(interval))
-            return;
+        if (!TimeKeeper.isElapsed(interval)) return;
         TickHandler last = null;
         try {
             var ip = data.getVariable(player, Variable.I);
             var tp = data.getVariable(player, Variable.TIMES);
+            if (ip == null || tp == null) {
+                TreasurePlugin.logger().warning(getPrefix() + "Couldn't tick effect (Variable.I || Variable.TIMES == null)");
+                return;
+            }
             for (var entry : data.getTickHandlers().entrySet()) {
                 var tickHandler = entry.getValue();
                 last = tickHandler;

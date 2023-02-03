@@ -35,16 +35,24 @@ public class StaticArgument<T> {
     }
 
     public static int asInt(ReaderContext<?> context) throws ReaderException {
+        return asInt(context.value());
+    }
+
+    public static int asInt(String value) throws ReaderException {
         try {
-            return Integer.parseInt(context.value());
+            return Integer.parseInt(value);
         } catch (Exception e) {
             throw new ReaderException("Valid values for Static Integer argument: integers");
         }
     }
 
     public static float asFloat(ReaderContext<?> context) throws ReaderException {
+        return asFloat(context.value());
+    }
+
+    public static float asFloat(String value) throws ReaderException {
         try {
-            return Float.parseFloat(context.value());
+            return Float.parseFloat(value);
         } catch (Exception e) {
             throw new ReaderException("Valid values for Static Float argument: decimals");
         }
