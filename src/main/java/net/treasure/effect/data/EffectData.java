@@ -59,13 +59,16 @@ public class EffectData {
                 return pair;
         if (player == null)
             return null;
-        var location = player.getLocation();
-        Double value = switch (variable) {
-            case "playerYaw" -> (double) location.getYaw();
-            case "playerPitch" -> (double) location.getPitch();
-            case "playerX" -> location.getX();
-            case "playerY" -> location.getY();
-            case "playerZ" -> location.getZ();
+        var value = switch (variable) {
+            case "playerYaw" -> (double) player.getLocation().getYaw();
+            case "playerPitch" -> (double) player.getLocation().getPitch();
+            case "playerX" -> player.getLocation().getX();
+            case "playerY" -> player.getLocation().getY();
+            case "playerZ" -> player.getLocation().getZ();
+            case "velocityX" -> player.getVelocity().getX();
+            case "velocityY" -> player.getVelocity().getY();
+            case "velocityZ" -> player.getVelocity().getZ();
+            case "velocityLength" -> player.getVelocity().lengthSquared();
             case "lastBoostMillis", "LBM" -> (double) lastBoostMillis;
             default -> null;
         };

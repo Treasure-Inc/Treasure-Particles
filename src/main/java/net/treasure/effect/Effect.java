@@ -26,7 +26,7 @@ import java.util.logging.Level;
 public class Effect {
 
     private final String key, displayName, armorColor, permission;
-    private final List<String> description;
+    private final String[] description;
     private final ItemStack icon;
 
     private final int interval;
@@ -38,7 +38,7 @@ public class Effect {
 
     private final boolean enableCaching;
 
-    public Effect(String key, String displayName, List<String> description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers) {
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers) {
         this.key = key;
         this.displayName = displayName;
         this.description = description;
@@ -52,11 +52,16 @@ public class Effect {
         this.lines = new LinkedHashMap<>();
         this.cache = new HashMap<>();
 
-        for (var variable : variables)
-            if (checkVariable(variable))
+        for (var variable : variables) {
+            if (hasVariable(variable)) {
+                TreasurePlugin.logger().warning(getPrefix() + "Variable '" + variable + "' is already defined.");
+                continue;
+            }
+            if (checkPredefinedVariable(variable))
                 addVariable(variable);
             else
-                TreasurePlugin.logger().warning(variable + " is pre-defined variable.");
+                TreasurePlugin.logger().warning(getPrefix() + "'" + variable + "' is pre-defined variable.");
+        }
 
         for (var entry : tickHandlers.entrySet()) {
             var tickHandlerKey = entry.getKey();
@@ -64,7 +69,8 @@ public class Effect {
             lines.put(tickHandlerKey, new TickHandler(tickHandlerKey, pair.getKey(), readScripts(tickHandlerKey, pair.getValue())));
         }
 
-        addVariable("i");
+        addVariable(Variable.I);
+        addVariable(Variable.TIMES);
 
         if (enableCaching)
             preTick();
@@ -83,15 +89,8 @@ public class Effect {
     }
 
     public void preTick() {
-        var variables = new HashSet<>(this.variables);
-        var timesPairOptional = variables.stream().filter(pair -> pair.getKey().equalsIgnoreCase("i")).findFirst();
-        Pair<String, Double> timesPair;
-        if (timesPairOptional.isPresent())
-            timesPair = timesPairOptional.get();
-        else {
-            TreasurePlugin.logger().warning("Couldn't pre-tick effect: " + key);
-            return;
-        }
+        var data = new EffectData(variables);
+
         int index = 0;
         for (var entry : lines.entrySet()) {
             var tickHandler = entry.getValue();
@@ -123,11 +122,26 @@ public class Effect {
             cache.put(entry.getKey(), new double[tickHandler.times][index + 1]);
         }
 
+        // Get variable 'i'
+        var ip = data.getVariable(null, Variable.I);
+        if (ip == null) {
+            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.I is null)");
+            return;
+        }
+
+        // Get variable 'times'
+        var tp = data.getVariable(null, Variable.TIMES);
+        if (tp == null) {
+            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.TIMES is null)");
+            return;
+        }
+
         for (var entry : lines.entrySet()) {
             var tickHandler = entry.getValue();
+            tp.setValue((double) tickHandler.times);
             for (int i = 0; i < tickHandler.times; i++) {
-                timesPair.setValue((double) i);
-                for (Script script : tickHandler.lines) {
+                ip.setValue((double) i);
+                for (var script : tickHandler.lines) {
                     if (script instanceof Variable variable) {
                         cache.get(entry.getKey())[i][variable.getIndex()] = variable.preTick(variables);
                     }
@@ -141,19 +155,30 @@ public class Effect {
             return;
         TickHandler last = null;
         try {
-            var timesPair = data.getVariable(player, "i");
+            var ip = data.getVariable(player, Variable.I);
+            var tp = data.getVariable(player, Variable.TIMES);
             for (var entry : data.getTickHandlers().entrySet()) {
                 var tickHandler = entry.getValue();
                 last = tickHandler;
+                tp.setValue((double) tickHandler.times);
                 for (int i = 0; i < tickHandler.times; i++) {
-                    timesPair.setValue((double) i);
-                    for (Script script : tickHandler.lines)
-                        if (!script.doTick(player, data, i))
+                    ip.setValue((double) i);
+                    boolean breakHandler = false;
+                    for (var script : tickHandler.lines) {
+                        var result = script.doTick(player, data, tickHandler, i);
+                        if (result == Script.TickResult.BREAK)
                             break;
+                        else if (result == Script.TickResult.BREAK_HANDLER)
+                            breakHandler = true;
+                        else if (result == Script.TickResult.RETURN)
+                            return;
+                    }
+                    if (breakHandler)
+                        break;
                 }
             }
         } catch (Exception e) {
-            TreasurePlugin.logger().log(Level.WARNING, (last != null ? "Tick Handler: " + last.name : "Unexpected error.") + " Effect=" + key, e);
+            TreasurePlugin.logger().log(Level.WARNING, getPrefix() + (last != null ? "Tick Handler: " + last.name : "Unexpected error."), e);
         }
     }
 
@@ -178,14 +203,16 @@ public class Effect {
         return false;
     }
 
-    public boolean checkVariable(String var) {
+    public boolean checkPredefinedVariable(String var) {
         return switch (var) {
-            case "i", "pi", "PI",
+            case Variable.I, Variable.TIMES,
+                    "pi", "PI",
                     "tick", "TICK",
                     "random", "RANDOM",
                     "currentTimeMillis", "CTM",
                     "lastBoostMillis", "LBM",
-                    "playerYaw", "playerPitch", "playerX", "playerY", "playerZ" -> false;
+                    "playerYaw", "playerPitch", "playerX", "playerY", "playerZ",
+                    "velocityLength", "velocityX", "velocityY", "velocityZ" -> false;
             default -> true;
         };
     }
