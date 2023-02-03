@@ -20,6 +20,7 @@ import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
 import net.treasure.locale.Translations;
 import net.treasure.util.UpdateChecker;
+import net.treasure.util.logging.ComponentLogger;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -35,7 +36,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Getter
     private static TreasurePlugin instance;
-    public static final String VERSION = "1.3.0";
+    public static final String VERSION = "1.4.0";
 
     // Data Holders
     private Translations translations;
@@ -245,6 +246,7 @@ public class TreasurePlugin extends JavaPlugin {
         if (!VERSION.equals(config.getString("version")))
             saveResource("config.yml", true);
         this.autoUpdateEnabled = config.getBoolean("auto-update-configurations", true);
+        ComponentLogger.setColored(config.getBoolean("colored-error-logs", true));
     }
 
     public static Logger logger() {

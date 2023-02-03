@@ -23,10 +23,11 @@ public class NotificationManager {
             "1.2.1",
             "1.2.2",
             "1.2.3",
-            "1.3.0"
+            "1.3.0",
+            "1.4.0"
     );
 
-    // TODO Needs rework
+    // TODO will be improved in v1.5.0 (hopefully)
     public List<String> changelog(String version) {
         if (!versions.contains(version))
             return null;
