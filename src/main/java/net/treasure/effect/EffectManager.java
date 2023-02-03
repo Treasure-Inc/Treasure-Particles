@@ -11,13 +11,16 @@ import net.treasure.effect.listener.ElytraBoostListener;
 import net.treasure.effect.listener.GlideListener;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.basic.BreakHandlerScript;
+import net.treasure.effect.script.basic.BreakScript;
 import net.treasure.effect.script.basic.EmptyScript;
 import net.treasure.effect.script.basic.ReturnScript;
+import net.treasure.effect.script.basic.reader.BasicScriptReader;
 import net.treasure.effect.script.conditional.reader.ConditionalScriptReader;
 import net.treasure.effect.script.message.ActionBar;
 import net.treasure.effect.script.message.ChatMessage;
 import net.treasure.effect.script.message.reader.TitleReader;
-import net.treasure.effect.script.particle.reader.ParticleReader;
+import net.treasure.effect.script.particle.reader.DotParticleReader;
 import net.treasure.effect.script.preset.reader.PresetReader;
 import net.treasure.effect.script.sound.reader.SoundReader;
 import net.treasure.effect.script.variable.reader.VariableReader;
@@ -35,14 +38,14 @@ import java.util.logging.Level;
 @Getter
 public class EffectManager implements DataHolder {
 
-    public static final String VERSION = "1.3.0";
+    public static final String VERSION = "1.4.0";
     public static boolean EFFECTS_VISIBILITY_PERMISSION = false;
 
     final ConfigurationGenerator generator;
 
     final List<Effect> effects;
     final Presets presets;
-    final HashMap<String, ScriptReader<?>> readers;
+    final HashMap<String, ScriptReader<?, ?>> readers;
 
     public EffectManager() {
         this.generator = new ConfigurationGenerator("effects.yml");
@@ -69,16 +72,18 @@ public class EffectManager implements DataHolder {
         Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new EffectsTask(inst.getPlayerManager()), 0, 1);
 
         // Register readers
-        registerReader("variable", new VariableReader());
-        registerReader("particle", new ParticleReader());
+        registerReader("variable", new VariableReader(), "var");
+        registerReader("particle", new DotParticleReader());
         registerReader("preset", new PresetReader());
         registerReader("conditional", new ConditionalScriptReader());
         registerReader("sound", new SoundReader());
-        registerReader("chat", new ChatMessage());
-        registerReader("actionbar", new ActionBar());
+        registerReader("chat", new BasicScriptReader<>(ChatMessage::new));
+        registerReader("actionbar", new BasicScriptReader<>(ActionBar::new));
         registerReader("title", new TitleReader());
-        registerReader("none", new EmptyScript());
-        registerReader("return", new ReturnScript());
+        registerReader("none", new BasicScriptReader<>(s -> new EmptyScript()));
+        registerReader("return", new BasicScriptReader<>(s -> new ReturnScript()));
+        registerReader("break", new BasicScriptReader<>(s -> new BreakScript()));
+        registerReader("break-handler", new BasicScriptReader<>(s -> new BreakHandlerScript()));
     }
 
     @Override
@@ -187,7 +192,7 @@ public class EffectManager implements DataHolder {
                 var effect = new Effect(
                         key,
                         displayName,
-                        description,
+                        description != null ? description.toArray(String[]::new) : null,
                         icon,
                         section.getString(path + "armorColor"),
                         permission,
@@ -205,15 +210,17 @@ public class EffectManager implements DataHolder {
         inst.getLogger().info("Loaded " + effects.size() + " effects (" + (System.currentTimeMillis() - current) + "ms)");
     }
 
-    public void registerReader(String key, ScriptReader<?> reader) {
+    public void registerReader(String key, ScriptReader<?, ?> reader, String... aliases) {
         this.readers.put(key, reader);
+        for (var alias : aliases)
+            this.readers.put(alias, reader);
     }
 
-    public <S> S read(Effect effect, String key, String line) throws ReaderException {
-        if (!readers.containsKey(key))
-            throw new ReaderException("Invalid script type: " + key);
+    public <S> S read(Effect effect, String type, String line) throws ReaderException {
+        if (!readers.containsKey(type))
+            throw new ReaderException("Invalid script type: " + type);
         // noinspection unchecked
-        return (S) readers.get(key).read(effect, line);
+        return (S) readers.get(type).read(effect, type, line);
     }
 
     public Script readLine(Effect effect, String line) throws ReaderException {

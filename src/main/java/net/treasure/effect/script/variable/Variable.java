@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import net.treasure.core.TreasurePlugin;
+import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import net.treasure.util.MathUtil;
@@ -17,25 +18,28 @@ import java.util.Set;
 @Getter
 public class Variable extends Script {
 
+    public static final String I = "i";
+    public static final String TIMES = "TIMES";
+
     private String variable;
     private Operator operator;
     private String eval;
 
     @Override
-    public boolean tick(Player player, EffectData data, int times) {
+    public TickResult tick(Player player, EffectData data, TickHandler handler, int times) {
         var pair = data.getVariable(player, variable);
-        if (pair == null) return true;
+        if (pair == null) return TickResult.NORMAL;
         var effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
             pair.setValue(effect.getCache().get(tickHandlerKey)[times][index]);
-            return true;
+            return TickResult.NORMAL;
         }
         double val;
         try {
             val = MathUtil.eval(data.replaceVariables(player, eval));
         } catch (Exception e) {
             e.printStackTrace();
-            return true;
+            return TickResult.NORMAL;
         }
         switch (operator) {
             case EQUAL -> pair.setValue(val);
@@ -44,7 +48,7 @@ public class Variable extends Script {
             case MULTIPLY -> pair.setValue(pair.getValue() * val);
             case DIVIDE -> pair.setValue(pair.getValue() / val);
         }
-        return true;
+        return TickResult.NORMAL;
     }
 
     public double preTick(Set<Pair<String, Double>> variables) {
@@ -84,5 +88,9 @@ public class Variable extends Script {
         SUBTRACT,
         MULTIPLY,
         DIVIDE
+    }
+
+    public static String replace(String variable) {
+        return variable.replaceAll("\\{|}","");
     }
 }

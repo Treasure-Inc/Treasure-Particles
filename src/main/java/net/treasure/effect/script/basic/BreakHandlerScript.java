@@ -5,15 +5,15 @@ import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import org.bukkit.entity.Player;
 
-public class ReturnScript extends Script {
+public class BreakHandlerScript extends Script {
 
     @Override
     public TickResult tick(Player player, EffectData data, TickHandler handler, int times) {
-        return TickResult.RETURN;
+        return TickResult.BREAK_HANDLER;
     }
 
     @Override
-    public ReturnScript clone() {
-        return new ReturnScript();
+    public BreakHandlerScript clone() {
+        return new BreakHandlerScript();
     }
 }

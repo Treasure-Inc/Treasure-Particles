@@ -1,48 +1,33 @@
 package net.treasure.effect.script.sound.reader;
 
-import net.treasure.common.Patterns;
 import net.treasure.effect.Effect;
+import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.argument.type.StaticArgument;
 import net.treasure.effect.script.sound.PlaySound;
+import org.bukkit.SoundCategory;
 
-import java.util.regex.Matcher;
+public class SoundReader extends ScriptReader<SoundReaderContext, PlaySound> {
 
-public class SoundReader implements ScriptReader<PlaySound> {
+    public SoundReader() {
+        addValidArgument(c -> c.script().sound(c.value()), "name");
+        addValidArgument(c -> c.script().clientSide(Boolean.parseBoolean(c.value())), "clientside");
+        addValidArgument(c -> c.script().volume(StaticArgument.asFloat(c)), "volume");
+        addValidArgument(c -> c.script().pitch(StaticArgument.asFloat(c)), "pitch");
+        addValidArgument(c -> c.script().category(StaticArgument.asEnum(c, SoundCategory.class)));
+    }
 
     @Override
-    public PlaySound read(Effect effect, String line) {
-        PlaySound script = null;
+    public SoundReaderContext createContext(Effect effect, String type, String line) {
+        return new SoundReaderContext(effect, type, line);
+    }
 
-        String sound = null;
-        var builder = PlaySound.builder();
-
-        Matcher particleMatcher = Patterns.SCRIPT.matcher(line);
-        while (particleMatcher.find()) {
-            String key = particleMatcher.group("type");
-            String _value = particleMatcher.group("value");
-            if (key == null || _value == null)
-                continue;
-            if (key.equalsIgnoreCase("name")) {
-                sound = _value;
-                builder.sound(sound);
-            } else if (key.equalsIgnoreCase("clientside")) {
-                builder.clientSide(Boolean.parseBoolean(_value));
-            } else if (key.equalsIgnoreCase("volume")) {
-                try {
-                    builder.volume(Float.parseFloat(_value));
-                } catch (Exception ignored) {
-                }
-            } else if (key.equalsIgnoreCase("pitch")) {
-                try {
-                    builder.pitch(Float.parseFloat(_value));
-                } catch (Exception ignored) {
-                }
-            }
+    @Override
+    public boolean validate(SoundReaderContext context) throws ReaderException {
+        if (context.script().sound() == null) {
+            error(context.effect(), context.type(), context.line(), "Sound script must have a sound name");
+            return false;
         }
-
-        if (sound != null)
-            script = builder.build();
-
-        return script;
+        return true;
     }
 }

@@ -3,17 +3,18 @@ package net.treasure.effect.script.conditional.reader;
 import lombok.AllArgsConstructor;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
+import net.treasure.effect.script.ReaderContext;
+import net.treasure.effect.script.ScriptReader;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
-import net.treasure.effect.script.ScriptReader;
 
 @AllArgsConstructor
-public class ConditionReader implements ScriptReader<ConditionGroup> {
+public class ConditionReader extends ScriptReader<ReaderContext<?>, ConditionGroup> {
 
     TreasurePlugin plugin;
 
     @Override
-    public ConditionGroup read(Effect effect, String line) {
+    public ConditionGroup read(Effect effect, String type, String line) {
         ConditionGroup parent = null;
 
         ConditionGroup current = null, last = null;
@@ -64,7 +65,7 @@ public class ConditionReader implements ScriptReader<ConditionGroup> {
                 hasEquation = false;
             }
 
-            if (variableOperator == null && c != '(' && c != ')' && c != '<' && c != '>' && c != '=' && c != '&' && c != '|' && c != ' ') { // Check if char is alphabetic (condition variable)
+            if (variableOperator == null && c != '(' && c != ')' && c != '<' && c != '>' && c != '!' && c != '=' && c != '&' && c != '|' && c != ' ') { // Check if char is alphabetic (condition variable)
                 variable.append(c);
                 if (!Character.isAlphabetic(c))
                     hasEquation = true;

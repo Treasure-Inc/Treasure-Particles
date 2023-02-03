@@ -6,10 +6,15 @@ import net.treasure.common.Patterns;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.argument.type.BooleanArgument;
+import net.treasure.effect.script.argument.type.FloatArgument;
+import net.treasure.effect.script.argument.type.IntArgument;
+import net.treasure.effect.script.argument.type.ItemStackArgument;
+import net.treasure.effect.script.argument.type.RangeArgument;
+import net.treasure.effect.script.argument.type.StaticArgument;
+import net.treasure.effect.script.argument.type.VectorArgument;
 import net.treasure.effect.script.particle.ParticleOrigin;
 import net.treasure.effect.script.particle.ParticleSpawner;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.PropertyType;
 import xyz.xenondevs.particle.data.SculkChargeData;
@@ -22,212 +27,120 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ParticleReader implements ScriptReader<ParticleSpawner> {
+public class ParticleReader<T extends ParticleSpawner> extends ScriptReader<DotParticleReaderContext, T> {
+
+    public ParticleReader() {
+        addValidArgument(c -> c.script().effect(StaticArgument.asEnum(c, ParticleEffect.class)), "effect");
+
+        addValidArgument(c -> {
+            var args = Patterns.ASTERISK.split(c.value());
+            var origin = StaticArgument.asEnumArgument(c, ParticleOrigin.class).get(args[0]);
+            if (origin == null) return;
+            c.script().origin(origin);
+
+            if (args.length == 2) {
+                try {
+                    var multiplier = FloatArgument.read(c, args[1]);
+                    c.script().multiplier(multiplier);
+                } catch (Exception e) {
+                    error(c, "Invalid origin multiplier usage: " + c.value(), e.getMessage());
+                }
+            }
+        }, "origin");
+
+        addValidArgument(c -> c.script().position(VectorArgument.read(c)), "pos");
+
+        addValidArgument(c -> {
+            var particle = c.script().effect();
+            if (particle != null && !particle.hasProperty(PropertyType.COLORABLE)) {
+                error(c, "You cannot use 'colorScheme' with this particle effect: " + particle.name());
+                return;
+            }
+            try {
+                c.script().colorData(ColorData.fromString(c.value()));
+            } catch (ReaderException e) {
+                try {
+                    c.script().colorData(new SingleColorData(Color.decode("#" + c.value())));
+                    return;
+                } catch (Exception ignored) {
+                }
+                error(c, e.getMessage());
+            }
+        }, "color", "colorscheme");
+
+        addValidArgument(c -> c.script().directional(BooleanArgument.read(c)), "direction", "directional");
+
+        addValidArgument(c -> c.script().amount(IntArgument.read(c)), "amount");
+
+        addValidArgument(c -> c.script().speed(RangeArgument.read(c)), "speed");
+
+        addValidArgument(c -> c.script().size(RangeArgument.read(c)), "size");
+
+        addValidArgument(c -> {
+            var particle = c.script().effect();
+            if (particle != null && !particle.hasProperty(PropertyType.REQUIRES_ITEM)) {
+                error(c, "You cannot use 'item' with this particle effect: " + particle.name());
+                return;
+            }
+            var item = ItemStackArgument.read(c);
+            if (item == null) return;
+            c.script().particleData(new ItemTexture(item));
+        }, "item");
+
+        addValidArgument(c -> {
+            var particle = c.script().effect();
+            if (particle != null && !particle.hasProperty(PropertyType.REQUIRES_BLOCK)) {
+                error(c, "You cannot use 'block' with this particle effect: " + particle.name());
+                return;
+            }
+            var item = ItemStackArgument.read(c);
+            if (item == null) return;
+            c.script().particleData(new BlockTexture(item.getType()));
+        }, "block");
+
+        addValidArgument(c -> {
+            var particle = c.script().effect();
+            if (particle != null && !particle.equals(ParticleEffect.SHRIEK)) {
+                error(c, "You can only use 'delay' with SHRIEK effect.");
+                return;
+            }
+            try {
+                c.script().particleData(new ShriekData(Integer.parseInt(c.value())));
+            } catch (Exception ignored) {
+                error(c, "Unexpected delay value: " + c.value());
+            }
+        }, "delay");
+
+        addValidArgument(c -> {
+            var particle = c.script().effect();
+            if (particle != null && !particle.equals(ParticleEffect.SCULK_CHARGE)) {
+                error(c, "You can only use 'roll' with SCULK_CHARGE effect.");
+                return;
+            }
+            try {
+                c.script().particleData(new SculkChargeData(Float.parseFloat(c.value())));
+            } catch (Exception ignored) {
+                error(c, "Unexpected roll value: " + c.value());
+            }
+        }, "roll");
+    }
 
     @Override
-    public ParticleSpawner read(Effect effect, String line) throws ReaderException {
-        ParticleEffect particle = null;
-        ParticleOrigin origin = null;
+    public DotParticleReaderContext createContext(Effect effect, String type, String line) {
+        return new DotParticleReaderContext(effect, type, line);
+    }
 
-        var builder = ParticleSpawner.builder();
-
-        var particleMatcher = Patterns.SCRIPT.matcher(line);
-        while (particleMatcher.find()) {
-            String key = particleMatcher.group("type");
-            String value = particleMatcher.group("value");
-            int start = particleMatcher.start(), end = particleMatcher.end();
-            if (key == null || value == null)
-                continue;
-            switch (key.toLowerCase(Locale.ENGLISH)) {
-                case "effect" -> {
-                    try {
-                        particle = ParticleEffect.valueOf(value.toUpperCase(Locale.ENGLISH));
-                        builder.effect(particle);
-                    } catch (Exception | Error ignored) {
-                        error(effect, line, start, end, "Unexpected effect value: " + value);
-                    }
-                }
-                case "origin" -> {
-                    if (value.startsWith("head")) {
-                        origin = ParticleOrigin.HEAD;
-                    } else if (value.startsWith("feet")) {
-                        origin = ParticleOrigin.FEET;
-                    } else if (value.startsWith("world")) {
-                        origin = ParticleOrigin.WORLD;
-                    } else {
-                        error(effect, line, start, end, "Unexpected origin value: " + value);
-                        continue;
-                    }
-
-                    builder.origin(origin);
-                    String[] s = value.split("\\*");
-                    if (s.length == 2) {
-                        try {
-                            builder.multiplier(Float.parseFloat(s[1]));
-                        } catch (Exception ignored) {
-                            error(effect, line, start, end, "Invalid origin multiplier usage: " + value);
-                        }
-                    }
-                }
-                case "colorscheme", "color" -> {
-                    if (particle != null && !particle.hasProperty(PropertyType.COLORABLE)) {
-                        error(effect, line, start, end, "You cannot use 'colorScheme' with this particle effect: " + particle.name());
-                        continue;
-                    }
-                    try {
-                        var colorData = ColorData.initialize(value);
-                        builder.colorData(colorData);
-                    } catch (ReaderException e) {
-                        try {
-                            var color = Color.decode("#" + value);
-                            builder.colorData(new SingleColorData(color));
-                            continue;
-                        } catch (Exception ignored) {
-                        }
-                        error(effect, line, start, end, e.getMessage());
-                    }
-                }
-                case "offset" -> {
-                    if (particle != null && !particle.hasProperty(PropertyType.DIRECTIONAL) && !particle.hasProperty(PropertyType.DUST)) {
-                        error(effect, line, start, end, "You cannot use 'offset' with this particle effect: " + particle.name());
-                        continue;
-                    }
-                    var offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
-                    while (offsetMatcher.find()) {
-                        String _type = offsetMatcher.group("type");
-                        String _value = offsetMatcher.group("value");
-                        try {
-                            if (_type.equalsIgnoreCase("x"))
-                                builder.offsetX(_value);
-                            else if (_type.equalsIgnoreCase("y"))
-                                builder.offsetY(_value);
-                            else if (_type.equalsIgnoreCase("z"))
-                                builder.offsetZ(_value);
-                            else
-                                error(effect, line, start, end, "Unexpected offset value: " + _type);
-                        } catch (ReaderException ignored) {
-                        } catch (Exception ignored) {
-                            error(effect, line, start, end, "Unexpected offset value: " + _value);
-                        }
-                    }
-                }
-                case "direction", "directional" -> builder.direction(Boolean.parseBoolean(value));
-                case "amount" -> {
-                    try {
-                        builder.amount(Integer.parseInt(value));
-                    } catch (Exception ignored) {
-                        error(effect, line, start, end, "Unexpected particle amount value: " + value);
-                    }
-                }
-                case "speed" -> {
-                    try {
-                        builder.speed(Float.parseFloat(value));
-                    } catch (Exception ignored) {
-                        error(effect, line, start, end, "Unexpected particle speed value: " + value);
-                    }
-                }
-                case "size" -> {
-                    if (particle != null && !particle.hasProperty(PropertyType.DUST)) {
-                        error(effect, line, start, end, "You cannot use 'size' with this particle effect: " + particle.name());
-                        continue;
-                    }
-                    try {
-                        builder.size(Float.parseFloat(value));
-                    } catch (Exception ignored) {
-                        error(effect, line, start, end, "Unexpected particle size value: " + value);
-                    }
-                }
-                case "block" -> {
-                    if (particle != null && !particle.hasProperty(PropertyType.REQUIRES_BLOCK)) {
-                        error(effect, line, start, end, "You cannot use 'block' with this particle effect: " + particle.name());
-                        continue;
-                    }
-                    Material material = null;
-                    byte data = 0;
-                    var offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
-                    while (offsetMatcher.find()) {
-                        String _type = offsetMatcher.group("type");
-                        String _value = offsetMatcher.group("value");
-                        try {
-                            switch (_type) {
-                                case "material" -> material = Material.valueOf(_value.toUpperCase(Locale.ENGLISH));
-                                case "data" -> data = Byte.parseByte(_value);
-                            }
-                        } catch (Exception ignored) {
-                            error(effect, line, offsetMatcher.start(), offsetMatcher.end(), "Unexpected value for " + _type + ": " + _value);
-                        }
-                    }
-                    if (material != null)
-                        builder.particleData(new BlockTexture(material, data));
-                    else
-                        error(effect, line, start, end, "Material cannot be null");
-                }
-                case "item" -> {
-                    if (particle != null && !particle.hasProperty(PropertyType.REQUIRES_ITEM)) {
-                        error(effect, line, start, end, "You cannot use 'item' with this particle effect: " + particle.name());
-                        continue;
-                    }
-                    Material material = null;
-                    int data = 0;
-                    var offsetMatcher = Patterns.INNER_SCRIPT.matcher(value);
-                    while (offsetMatcher.find()) {
-                        String _type = offsetMatcher.group("type");
-                        String _value = offsetMatcher.group("value");
-                        try {
-                            switch (_type) {
-                                case "material" -> material = Material.valueOf(_value.toUpperCase(Locale.ENGLISH));
-                                case "data" -> data = Integer.parseInt(_value);
-                            }
-                        } catch (Exception ignored) {
-                            error(effect, line, offsetMatcher.start(), offsetMatcher.end(), "Unexpected value for " + _type + ": " + _value);
-                        }
-                    }
-                    if (material != null) {
-                        var item = new ItemStack(material);
-                        var meta = item.getItemMeta();
-                        if (meta != null) {
-                            meta.setCustomModelData(data);
-                            item.setItemMeta(meta);
-                        }
-                        builder.particleData(new ItemTexture(item));
-                    } else
-                        error(effect, line, start, end, "Material cannot be null");
-                }
-                case "delay" -> {
-                    if (particle != null && !particle.equals(ParticleEffect.SHRIEK)) {
-                        error(effect, line, start, end, "You can only use 'delay' with SHRIEK effect.");
-                        continue;
-                    }
-                    try {
-                        builder.particleData(new ShriekData(Integer.parseInt(value)));
-                    } catch (Exception ignored) {
-                        error(effect, line, start, end, "Unexpected delay value: " + value);
-                    }
-                }
-                case "roll" -> {
-                    if (particle != null && !particle.equals(ParticleEffect.SCULK_CHARGE)) {
-                        error(effect, line, start, end, "You can only use 'roll' with SCULK_CHARGE effect.");
-                        continue;
-                    }
-                    try {
-                        builder.particleData(new SculkChargeData(Float.parseFloat(value)));
-                    } catch (Exception ignored) {
-                        error(effect, line, start, end, "Unexpected roll value: " + value);
-                    }
-                }
-                case "x" -> builder.x(value);
-                case "y" -> builder.y(value);
-                case "z" -> builder.z(value);
-                default -> error(effect, line, start, end, "Unexpected type: " + key);
-            }
+    @Override
+    public boolean validate(DotParticleReaderContext context) throws ReaderException {
+        if (context.script().effect() == null) {
+            error(context.effect(), context.type(), context.line(), "You must define an 'effect' value");
+            return false;
         }
 
-        if (particle == null)
-            error(effect, line, "You must define an 'effect' value");
-
-        if (origin == null)
-            error(effect, line, "You must define an 'origin' value (" + Stream.of(ParticleOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
-
-        return particle != null && origin != null ? builder.build() : null;
+        if (context.script().origin() == null) {
+            error(context.effect(), context.type(), context.line(), "You must define an 'origin' value (" + Stream.of(ParticleOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
+            return false;
+        }
+        return true;
     }
 }

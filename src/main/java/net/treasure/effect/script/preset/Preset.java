@@ -1,6 +1,7 @@
 package net.treasure.effect.script.preset;
 
 import lombok.AllArgsConstructor;
+import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import org.bukkit.entity.Player;
@@ -13,11 +14,13 @@ public class Preset extends Script {
     List<Script> scripts;
 
     @Override
-    public boolean tick(Player player, EffectData data, int times) {
-        for (Script script : scripts)
-            if (!script.tick(player, data, times))
-                return false;
-        return true;
+    public TickResult tick(Player player, EffectData data, TickHandler handler, int times) {
+        for (var script : scripts) {
+            var result = script.tick(player, data, handler, times);
+            if (result != TickResult.NORMAL)
+                return result;
+        }
+        return TickResult.NORMAL;
     }
 
     @Override
