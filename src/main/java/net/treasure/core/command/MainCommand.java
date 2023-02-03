@@ -111,27 +111,6 @@ public class MainCommand extends BaseCommand {
         });
     }
 
-    @Subcommand("changelog|changes|updates")
-    @CommandCompletion("@versions")
-    @CommandPermission("%changelog")
-    public void changelog(CommandSender sender, @Single @Optional String version) {
-        var v = version;
-        if (v == null)
-            v = plugin.getDescription().getVersion();
-        var notificationManager = plugin.getNotificationManager();
-        var changelog = notificationManager.changelog(v);
-        if (changelog == null) {
-            MessageUtils.sendParsed(sender, version == null ? "<prefix> No changelog for latest version. " : "<prefix> Unknown version: " + v);
-            return;
-        }
-        changelog.add(0, "<br><font:uniform><gradient:#EF476F:#FFD166><b> TREASURE ELYTRA</b></font><br><#947931><i>   by Treasure Inc.</i><br><br><br><br><dark_aqua><b>Version " + v + "<reset>" +
-                "<br>• <hover:show_text:'<dark_aqua>Click!'><spigot>SpigotMC</spigot></hover>" +
-                "<br>• <hover:show_text:'<dark_aqua>Click!'><github>GitHub</github></hover>" +
-                "<br>• <hover:show_text:'<dark_aqua>Click!'><wiki>Wiki Page</wiki></hover>"
-        );
-        MessageUtils.openBook(sender, changelog);
-    }
-
     @Subcommand("notifications")
     @CommandPermission("%notification")
     public void toggleNotifications(Player player) {

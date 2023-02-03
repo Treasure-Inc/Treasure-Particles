@@ -29,7 +29,7 @@ public class MessageUtils {
                     .resolver(TagResolver.standard())
                     .resolvers(
                             Placeholder.parsed("prefix", Translations.PREFIX),
-                            TagResolver.resolver("changelog", (args, context) -> Tag.styling(ClickEvent.suggestCommand("/trelytra changelog"))),
+                            TagResolver.resolver("discord", (args, context) -> Tag.styling(ClickEvent.openUrl("https://dc.treas.store/"))),
                             TagResolver.resolver("spigot", (args, context) -> Tag.styling(ClickEvent.openUrl("https://www.spigotmc.org/resources/99860/"))),
                             TagResolver.resolver("github", (args, context) -> Tag.styling(ClickEvent.openUrl("https://github.com/Treasure-Inc/Treasure-Elytra/"))),
                             TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://github.com/Treasure-Inc/Treasure-Elytra/wiki/")))

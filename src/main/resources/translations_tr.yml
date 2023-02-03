@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.3.0"
+version: "1.4.0"
 # Çeviriler
 prefix: "<gradient:#EF476F:#FFD166><b>TrElytra <dark_gray>|<reset>"
 effect-no-permission: "<prefix> <red>Bu efekti kullanabilmek için yeterli yetkin yok!"
@@ -9,7 +9,7 @@ effect-toggle: "<prefix> <gray>Elitra Efektleri: %s"
 effect-reset: "<prefix> <gray>Elitra efekti sıfırlandı."
 effect-reset-other: "<prefix> <gray>%s adlı oyuncunun elitra efekti sıfırlandı."
 notifications: "<prefix> <gray>Bildirimler: %s"
-notification: "<prefix> <aqua><b><changelog>Güncellemeler</changelog></b> <dark_gray>/</dark_gray> <b><spigot>GitHub</spigot></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
+notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><spigot>GitHub</spigot></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
 reloading: "<prefix> <yellow>TreasureElytra yenileniyor..."
 reloaded: "<prefix> <green>Başarıyla yenilendi!"
 enabled: "<green>Açık"

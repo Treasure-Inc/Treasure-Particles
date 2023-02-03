@@ -20,8 +20,8 @@ public class Translations implements DataHolder {
 
     public static String LOCALE;
     public static final String
-            VERSION = "1.3.0",
-            UPDATE_DESCRIPTION = "New translations, Spanish & German support";
+            VERSION = "1.4.0",
+            UPDATE_DESCRIPTION = "Updated notification message";
 
     private FileConfiguration config;
 

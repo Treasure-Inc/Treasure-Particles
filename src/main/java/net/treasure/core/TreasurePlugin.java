@@ -14,7 +14,6 @@ import net.treasure.core.gui.listener.GUIListener;
 import net.treasure.core.gui.task.GUIUpdater;
 import net.treasure.core.integration.Expansions;
 import net.treasure.core.listener.JoinQuitListener;
-import net.treasure.core.notification.NotificationManager;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
@@ -48,7 +47,6 @@ public class TreasurePlugin extends JavaPlugin {
 
     private Database database;
     private PlayerManager playerManager;
-    private NotificationManager notificationManager;
     private UpdateChecker updateChecker;
 
     // ACF
@@ -59,6 +57,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     private boolean debugModeEnabled;
     private boolean autoUpdateEnabled = true;
+    private boolean notificationsEnabled;
     @Accessors(fluent = true)
     private int guiTask = -5, guiInterval = 2;
     @Accessors(fluent = true)
@@ -126,10 +125,6 @@ public class TreasurePlugin extends JavaPlugin {
 
         var config = getConfig();
 
-        // Notification Manager
-        notificationManager = new NotificationManager();
-        notificationManager.setEnabled(config.getBoolean("notifications", true));
-
         // Load colors & effects
         colorManager.loadColors();
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> effectManager.loadEffects());
@@ -138,7 +133,6 @@ public class TreasurePlugin extends JavaPlugin {
         commandManager.registerCommand(new MainCommand(this));
         var completions = commandManager.getCommandCompletions();
         completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).toList());
-        completions.registerStaticCompletion("versions", notificationManager.getVersions());
 
         // Initialize players
         for (var player : Bukkit.getOnlinePlayers())
@@ -213,9 +207,6 @@ public class TreasurePlugin extends JavaPlugin {
         // Config Stuffs
         var config = getConfig();
 
-        // Notification Manager
-        notificationManager.setEnabled(config.getBoolean("notifications", true));
-
         // GUI Animations
         if (guiTask != -5 && !config.getBoolean("gui.animation", true)) {
             Bukkit.getScheduler().cancelTask(guiTask);
@@ -245,6 +236,7 @@ public class TreasurePlugin extends JavaPlugin {
         var config = getConfig();
         if (!VERSION.equals(config.getString("version")))
             saveResource("config.yml", true);
+        this.notificationsEnabled = config.getBoolean("notifications", true);
         this.autoUpdateEnabled = config.getBoolean("auto-update-configurations", true);
         ComponentLogger.setColored(config.getBoolean("colored-error-logs", true));
     }
