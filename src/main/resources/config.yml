@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.3.0"
+version: "1.4.0"
 # Translations locale
 locale: EN
 # Toggle notifications
@@ -10,6 +10,9 @@ notifications: true
 # Disable this setting if you don't want your configurations to update automatically
 # If you set 'auto-update-configurations' to true, outdated files will automatically back up and be replaced with newer versions of it
 auto-update-configurations: true
+# Toggle colored error logs (console)
+# If this option is enabled, faulty parts will be underlined and highlighted in a different color
+colored-error-logs: true
 # GUI options
 gui:
   animation: # GUI animations
@@ -52,14 +55,14 @@ permissions:
 
   # Effects Visibility
   # You can show TrElytra effects for the players who have permission, just set the "effects_visibility_permission" to true
-  # If this enabled, give the "can_see_effects" permission to players
+  # If this option is enabled, give the "can_see_effects" permission to players
   effects_visibility_permission: false
   can_see_effects: "trelytra.can_see_effects"
 
   # Effects Permissions
   # Only some effects have permission by default
   # Please check the effects.yml file if you want to add permissions to effects
-  # You can read the wiki page for detailed information: https://github.com/Treasure-Inc/Treasure-Elytra/wiki/Permissions
+  # You can read the wiki page for detailed information: https://github.com/Treasure-Inc/Treasure-Elytra/wiki/Basic-Usage#permission
   rainbow-effects: "trelytra.rainbow" # Permission for rainbow effects group
   tail-effects: "trelytra.tail" # Permission for tail effects group
   sonic: "trelytra.sonic" # Permission for sonic effect
