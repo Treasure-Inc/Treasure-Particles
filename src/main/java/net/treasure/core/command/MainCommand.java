@@ -94,11 +94,20 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(sender, String.format(Translations.COMMAND_USAGE, "/trelytra locale [locale]"));
             return;
         }
+        if (locale.equals(Translations.LOCALE)) {
+            MessageUtils.sendParsed(sender, "<prefix> <gray>Locale already set to " + locale);
+            return;
+        }
+        var oldLocale = Translations.LOCALE;
         plugin.getConfig().set("locale", locale);
         plugin.saveConfig();
         Bukkit.getScheduler().runTask(plugin, () -> {
             plugin.reload();
-            MessageUtils.sendParsed(sender, "<prefix> <gray>Set locale to <gold>" + locale + "</gold>.");
+            if (oldLocale.equals(Translations.LOCALE)) {
+                MessageUtils.sendParsed(sender, "<prefix> <red>Couldn't set locale to " + locale);
+                return;
+            }
+            MessageUtils.sendParsed(sender, "<prefix> <gray>Set locale to <gold>" + locale);
         });
     }
 
@@ -115,7 +124,7 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(sender, version == null ? "<prefix> No changelog for latest version. " : "<prefix> Unknown version: " + v);
             return;
         }
-        changelog.add(0, "<br><gradient:#EF476F:#FFD166><b> TREASURE ELYTRA</b><br><#947931><i>   by Treasure Inc.</i><br><br><br><br><dark_aqua><b>Version " + v + "<reset>" +
+        changelog.add(0, "<br><font:uniform><gradient:#EF476F:#FFD166><b> TREASURE ELYTRA</b></font><br><#947931><i>   by Treasure Inc.</i><br><br><br><br><dark_aqua><b>Version " + v + "<reset>" +
                 "<br>• <hover:show_text:'<dark_aqua>Click!'><spigot>SpigotMC</spigot></hover>" +
                 "<br>• <hover:show_text:'<dark_aqua>Click!'><github>GitHub</github></hover>" +
                 "<br>• <hover:show_text:'<dark_aqua>Click!'><wiki>Wiki Page</wiki></hover>"
@@ -133,10 +142,28 @@ public class MainCommand extends BaseCommand {
 
     @Private
     @CommandPermission("%admincmd")
+    @Subcommand("debug toggle")
+    public void debugToggle(Player player) {
+        var data = plugin.getPlayerManager().getEffectData(player);
+        data.setDebugModeEnabled(!data.isDebugModeEnabled());
+        MessageUtils.sendParsed(player, "<prefix> <gray>Debug Mode Enabled: " + data.isDebugModeEnabled());
+    }
+
+    @Private
+    @CommandPermission("%admincmd")
+    @Subcommand("debug effect")
+    public void debugEffect(Player player) {
+        var data = plugin.getPlayerManager().getEffectData(player);
+        data.setEnabled(!data.isEnabled());
+        MessageUtils.sendParsed(player, "<prefix> <gray>Enabled: " + data.isEnabled());
+    }
+
+    @Private
+    @CommandPermission("%admincmd")
     @Subcommand("debug menu")
     public void debugMenu(CommandSender sender) {
         MessageUtils.sendParsed(sender, "<prefix> <gray>Menu Viewers Size: <yellow>" + GUIUpdater.getPlayers().size());
-        MessageUtils.sendParsed(sender, "<prefix> <gray>Players Using Elytra Effect: <yellow>" + plugin.getPlayerManager().getPlayersData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Players Using Elytra Effect: <yellow>" + plugin.getPlayerManager().getData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Color Cycle Speed: <gold>" + plugin.guiColorCycleSpeed());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Animation Interval: <gold>" + plugin.guiInterval());
     }
