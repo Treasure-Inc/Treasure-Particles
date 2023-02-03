@@ -20,6 +20,10 @@ public class JoinQuitListener implements Listener {
     public void on(PlayerJoinEvent event) {
         var player = event.getPlayer();
         plugin.getPlayerManager().initializePlayer(player, data -> {
+            if (!player.isOnline()) {
+                plugin.getPlayerManager().remove(player);
+                return;
+            }
             if (player.hasPermission(Permissions.ADMIN) && plugin.getNotificationManager().isEnabled() && data.isNotificationsEnabled()) {
                 MessageUtils.sendParsed(player, Translations.NOTIFICATION);
                 if (plugin.getUpdateChecker().isUpdateAvailable())
