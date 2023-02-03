@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ColorManager implements DataHolder {
 
-    public static final String VERSION = "1.3.0";
+    public static final String VERSION = "1.4.0";
     final ConfigurationGenerator generator;
 
     @Getter
@@ -81,7 +81,7 @@ public class ColorManager implements DataHolder {
         }
 
         ColorScheme rainbow = new ColorScheme("rainbow");
-        rainbow.getColors().addAll(Arrays.asList(new Rainbow().colors(25)));
+        rainbow.getColors().addAll(Arrays.asList(new Rainbow().colors(config.getInt("rainbow-colors-size", 25))));
         colors.add(rainbow);
     }
 
