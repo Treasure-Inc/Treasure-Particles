@@ -8,6 +8,7 @@ public final class Patterns {
     public static final Pattern SPACE = Pattern.compile(" ");
     public static final Pattern TILDE = Pattern.compile("~");
     public static final Pattern DOUBLE = Pattern.compile("\\.\\.");
+    public static final Pattern ASTERISK = Pattern.compile("\\*");
 
     // EFFECTS
     public static final Pattern VARIABLE = Pattern.compile("(?<name>[a-zA-Z\\d]+)(?:=)(?<default>[\\d.-]+)");

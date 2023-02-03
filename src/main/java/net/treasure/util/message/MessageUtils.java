@@ -45,6 +45,10 @@ public class MessageUtils {
         serializer = BukkitComponentSerializer.legacy();
     }
 
+    public static void logParsed(String message, TagResolver.Single... resolvers) {
+        adventure.console().sendMessage(miniMessage.deserialize(message, resolvers));
+    }
+
     public static void send(CommandSender sender, Component message) {
         adventure.sender(sender).sendMessage(message);
     }
