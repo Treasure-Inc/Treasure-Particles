@@ -27,6 +27,7 @@ gui-close: "<red>Cerrar"
 effects:
   rainbow-circle: "<rainbow>Círculo del arco iris"
   rainbow-circle-transition: "<rainbow>Círculo del arco iris <gray>v2"
+  rainbow-circle-acceleration: "<rainbow>Círculo del arco iris <gold>v3"
   rainbow-random: "<rainbow>Arcoíris"
   rainbow-line: "<rainbow>Linea Arcoíris"
   rainbow-flag: "<rainbow>Bandera Arcoíris"

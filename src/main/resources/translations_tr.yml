@@ -27,6 +27,7 @@ gui-close: "<red>Kapat"
 effects:
   rainbow-circle: "<rainbow>Rengarenk Daire"
   rainbow-circle-transition: "<rainbow>Rengarenk Daire <gray>v2"
+  rainbow-circle-acceleration: "<rainbow>Rengarenk Daire <gold>v3"
   rainbow-random: "<rainbow>Rengarenk"
   rainbow-line: "<rainbow>Rengarenk Çizgi"
   rainbow-flag: "<rainbow>Rengarenk Bayrak"

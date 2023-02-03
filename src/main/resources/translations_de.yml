@@ -27,6 +27,7 @@ gui-close: "<red>Schliessen"
 effects:
   rainbow-circle: "<rainbow>Bunter Kreis"
   rainbow-circle-transition: "<rainbow>Bunter Kreis <gray>v2"
+  rainbow-circle-acceleration: "<rainbow>Bunter Kreis <gold>v3"
   rainbow-random: "<rainbow>Bunt"
   rainbow-line: "<rainbow>Bunte Linie"
   rainbow-flag: "<rainbow>Bunte Flagge"

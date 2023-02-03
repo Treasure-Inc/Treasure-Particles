@@ -27,6 +27,7 @@ gui-close: "<red>Close"
 effects:
   rainbow-circle: "<rainbow>Rainbow Circle"
   rainbow-circle-transition: "<rainbow>Rainbow Circle <gray>v2"
+  rainbow-circle-acceleration: "<rainbow>Rainbow Circle <gold>v3"
   rainbow-random: "<rainbow>Rainbow"
   rainbow-line: "<rainbow>Rainbow Line"
   rainbow-flag: "<rainbow>Rainbow Flag"
