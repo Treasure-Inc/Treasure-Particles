@@ -22,49 +22,19 @@ import java.util.regex.Matcher;
 
 public class TestFeatures {
 
-    public String translate(String message) {
-        StringBuilder output = new StringBuilder();
-
-        var array = message.toCharArray();
-        int startPos = -1;
-        StringBuilder sb = new StringBuilder();
-
-        for (int pos = 0; pos < array.length; pos++) {
-            var c = array[pos];
-            if (c == '%') {
-                if (startPos == -1) {
-                    sb = new StringBuilder();
-                    startPos = pos;
-                    continue;
-                }
-
-                if (sb.isEmpty()) {
-                    output.append(c);
-                    sb = new StringBuilder();
-                    startPos = pos;
-                    continue;
-                }
-
-                var result = sb.toString();
-                output.append("translated");
-
-                startPos = -1;
-                sb = new StringBuilder();
-                continue;
-            }
-
-            if (startPos != -1)
-                sb.append(c);
-            else
-                output.append(c);
-        }
-
-        return output.toString();
-    }
-
     @Test
-    public void testTranslate() {
-        System.out.println(translate("fasdfasdfsdaf f& afewx %asdasd% xqweqwe"));
+    public void testLoop() {
+        for (var th : List.of("th1", "th2", "th3")) {
+            for (var times = 0; times < 3; times++) {
+                for (int script = 0; script < 5; script++) {
+                    System.out.println(th + "." + times + "." + script);
+                    if (th.equals("th1") && script == 1)
+                        break;
+                }
+                System.out.println(th + "." + times + "--");
+            }
+            System.out.println("-------");
+        }
     }
 
     @Test
@@ -75,7 +45,7 @@ public class TestFeatures {
         var reader = new ConditionReader(null);
 //        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
 //        var parent = reader.read(null,"((p==1 && q==1) || (r==0 && s==0))");
-        var parent = reader.read(null, "({p}/10==15)");
+        var parent = reader.read(null, null, "({p}/10==15)");
         System.out.println("Test Result: " + parent.test(null, new EffectData(variables)));
         System.out.println("-----RESULTS " + parent.inner.size());
         var gson = new GsonBuilder().setPrettyPrinting().create();
