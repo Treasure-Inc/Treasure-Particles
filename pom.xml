@@ -6,7 +6,7 @@
 
     <groupId>net.treasure</groupId>
     <artifactId>TreasureElytra</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
