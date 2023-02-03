@@ -59,7 +59,7 @@ public class ColorData {
         return null;
     }
 
-    public static ColorData initialize(String input) throws ReaderException {
+    public static ColorData fromString(String input) throws ReaderException {
         Matcher colorMatcher = Patterns.INNER_SCRIPT.matcher(input);
         String colorName = "";
         boolean revertWhenDone = false, note = false;
@@ -78,7 +78,7 @@ public class ColorData {
                     try {
                         colorSpeed = Float.parseFloat(value);
                     } catch (Exception ignored) {
-                        throw new ReaderException("Unexpected speed value: " + value);
+                        throw new ReaderException("Unexpected 'speed' value: " + value);
                     }
                 }
                 case "size" -> {
@@ -87,11 +87,12 @@ public class ColorData {
                     } catch (Exception ignored) {
                         var range = IntRange.of(value);
                         if (range == null)
-                            throw new ReaderException("Unexpected size value: " + value);
+                            throw new ReaderException("Unexpected 'size' value: " + value);
                         min = range.min();
                         max = range.max();
                     }
                 }
+                default -> throw new ReaderException("Unexpected 'color' argument: " + type);
             }
         }
         if (note) {
