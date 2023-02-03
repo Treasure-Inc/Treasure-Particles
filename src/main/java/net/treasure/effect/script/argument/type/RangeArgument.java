@@ -13,7 +13,7 @@ public class RangeArgument extends FloatArgument {
     Float min;
     Float max;
 
-    public static RangeArgument read(ReaderContext<?> context) {
+    public static RangeArgument read(ReaderContext<?> context) throws ReaderException {
         Float min = null;
         Float max = null;
         Object val = null;
@@ -33,8 +33,20 @@ public class RangeArgument extends FloatArgument {
             }
         }
 
-        if (val == null) return null;
-        if (min == null && max == null) return new RangeArgument(context);
+        if (val == null) {
+            var arg = context.value();
+            try {
+                Float.parseFloat(arg);
+                return new RangeArgument(arg);
+            } catch (Exception e) {
+                if (context.effect().hasVariable(Variable.replace(arg)))
+                    return new RangeArgument(arg);
+                else
+                    throw new ReaderException("Valid values for Float argument: decimals, {variable}");
+            }
+        }
+
+        if (min == null && max == null) return new RangeArgument(val);
 
         try {
             return new RangeArgument(Float.parseFloat(String.valueOf(val)), min, max).validate(context);
