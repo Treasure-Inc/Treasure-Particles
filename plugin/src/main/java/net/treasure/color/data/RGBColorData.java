@@ -19,9 +19,10 @@ public class RGBColorData extends ColorData {
         return color.getColors().get(index());
     }
 
-    public Color tempNext() {
+    @Override
+    public Color tempNext(EffectData data) {
         var tempSpeed = this.speed;
-        this.speed += 15f;
+        this.speed += this.max / 2f;
         var next = color.getColors().get(tempIndex());
         this.speed = tempSpeed;
         return next;
