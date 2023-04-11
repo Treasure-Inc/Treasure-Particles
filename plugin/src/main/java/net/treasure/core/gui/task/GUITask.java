@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GUIUpdater implements Runnable {
+public class GUITask implements Runnable {
 
     @Getter
     private static final List<UUID> players = new ArrayList<>();
@@ -35,7 +35,7 @@ public class GUIUpdater implements Runnable {
                 var item = holder.getInventory().getItem(slot);
                 if (item == null) continue;
                 if (item.getItemMeta() != null && item.getItemMeta() instanceof LeatherArmorMeta meta) {
-                    meta.setColor(data.nextBukkit());
+                    meta.setColor(data.next(null));
                     item.setItemMeta(meta);
                 }
             }

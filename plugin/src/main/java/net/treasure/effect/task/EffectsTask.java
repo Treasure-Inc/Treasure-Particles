@@ -1,9 +1,8 @@
 package net.treasure.effect.task;
 
 import lombok.AllArgsConstructor;
-import net.treasure.core.player.PlayerManager;
 import net.treasure.util.TimeKeeper;
-import org.bukkit.Bukkit;
+import net.treasure.core.player.PlayerManager;
 
 @AllArgsConstructor
 public class EffectsTask implements Runnable {
@@ -17,10 +16,9 @@ public class EffectsTask implements Runnable {
         while (iterator.hasNext()) {
             var set = iterator.next();
 
-            var uuid = set.getKey();
             var data = set.getValue();
 
-            var player = Bukkit.getPlayer(uuid);
+            var player = data.getPlayer();
             if (player == null) {
                 iterator.remove();
                 continue;

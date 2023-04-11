@@ -1,0 +1,165 @@
+# Do not change!
+version: "1.5.0"
+# GUI options
+animation: # GUI animations
+  enabled: true
+  interval: 2 # in ticks
+  color-cycle-speed: 0.85 # in decimal
+sounds: # GUI sounds (SOUND VOLUME PITCH) (Leave it blank if you don't want it to play sound)
+  next-page: "minecraft:item.book.page_turn 1 1"
+  previous-page: "minecraft:item.book.page_turn 1 1"
+  reset: ""
+  select-effect: "minecraft:block.note_block.pling 1 2"
+  random-effect: "minecraft:block.note_block.pling 1 2"
+  select-color: "minecraft:block.note_block.pling 1 2"
+  random-color: "minecraft:block.note_block.pling 1 2"
+current-style: "default-gui"
+styles:
+  default-gui:
+    type: DEFAULT
+    size: 54
+    effects:
+      layout:
+        - "BBBBBBBBB"
+        - "BEEEEEEEB"
+        - "BEEEEEEEB"
+        - "BEEEEEEEB"
+        - "BEEEEEEEB"
+        - "PBBrCRBBN"
+      elements:
+        borders:
+          key: 'B'
+          item:
+            material: BLACK_STAINED_GLASS_PANE
+        default-icon:
+          key: 'E'
+          item:
+            material: LEATHER_BOOTS
+        next-page:
+          key: 'N'
+          default: "borders"
+          item:
+            material: ENDER_PEARL
+        previous-page:
+          key: 'P'
+          default: "borders"
+          item:
+            material: ENDER_EYE
+        random-effect:
+          key: 'r'
+          item:
+            material: YELLOW_STAINED_GLASS_PANE
+        reset:
+          key: 'R'
+          item:
+            material: RED_STAINED_GLASS_PANE
+        close:
+          key: 'C'
+          item:
+            material: BARRIER
+    colors:
+      layout:
+        - "BBBBBBBBB"
+        - "BCCCCCCCB"
+        - "BCCCCCCCB"
+        - "BCCCCCCCB"
+        - "BCCCCCCCB"
+        - "PBBBbBBBN"
+      elements:
+        borders:
+          key: 'B'
+          item:
+            material: BLACK_STAINED_GLASS_PANE
+        color-icon:
+          key: 'C'
+          item:
+            material: LEATHER_HORSE_ARMOR
+        next-page:
+          key: 'N'
+          item:
+            material: ENDER_PEARL
+        previous-page:
+          key: 'P'
+          item:
+            material: ENDER_EYE
+        random-color:
+          key: "R"
+          item:
+            material: YELLOW_STAINED_GLASS_PANE
+        back:
+          key: "b"
+          item:
+            material: STRUCTURE_VOID
+  elytra-shaped-gui:
+    type: DEFAULT
+    size: 54
+    effects:
+      layout:
+        - "BBEEEEEBB"
+        - "BEEEBEEEB"
+        - "BEEBOBEEB"
+        - "BEEBOBEEB"
+        - "BEEBOBEEB"
+        - "PBBrCRBBN"
+      elements:
+        borders:
+          key: 'B'
+          item:
+            material: BLACK_STAINED_GLASS_PANE
+        default-icon:
+          key: 'E'
+          item:
+            material: LEATHER_BOOTS
+        next-page:
+          key: 'N'
+          item:
+            material: ENDER_PEARL
+        previous-page:
+          key: 'P'
+          item:
+            material: ENDER_EYE
+        random-effect:
+          key: 'r'
+          item:
+            material: YELLOW_STAINED_GLASS_PANE
+        reset:
+          key: 'R'
+          item:
+            material: RED_STAINED_GLASS_PANE
+        close:
+          key: 'C'
+          item:
+            material: BARRIER
+    colors:
+      layout:
+        - "BBBBBBBBB"
+        - "BCCCCCCCB"
+        - "BCCCCCCCB"
+        - "BCCCCCCCB"
+        - "BCCCCCCCB"
+        - "PBBBbBBBN"
+      elements:
+        borders:
+          key: 'B'
+          item:
+            material: BLACK_STAINED_GLASS_PANE
+        color-icon:
+          key: 'C'
+          item:
+            material: LEATHER_HORSE_ARMOR
+        next-page:
+          key: 'N'
+          item:
+            material: ENDER_PEARL
+        previous-page:
+          key: 'P'
+          item:
+            material: ENDER_EYE
+        random-color:
+          key: "R"
+          item:
+            material: YELLOW_STAINED_GLASS_PANE
+        back:
+          key: "b"
+          item:
+            material: STRUCTURE_VOID
