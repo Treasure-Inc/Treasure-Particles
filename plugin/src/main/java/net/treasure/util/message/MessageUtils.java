@@ -18,6 +18,7 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.locale.Translations;
 import org.bukkit.command.CommandSender;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +31,8 @@ public class MessageUtils {
                     .resolvers(
                             Placeholder.parsed("prefix", Translations.PREFIX),
                             TagResolver.resolver("discord", (args, context) -> Tag.styling(ClickEvent.openUrl("https://dc.treas.store/"))),
-                            TagResolver.resolver("spigot", (args, context) -> Tag.styling(ClickEvent.openUrl("https://www.spigotmc.org/resources/99860/"))),
-                            TagResolver.resolver("github", (args, context) -> Tag.styling(ClickEvent.openUrl("https://github.com/Treasure-Inc/Treasure-Elytra/"))),
-                            TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://github.com/Treasure-Inc/Treasure-Elytra/wiki/")))
+                            TagResolver.resolver("download", (args, context) -> Tag.styling(ClickEvent.openUrl("https://builtbybit.com/resources/26794/"))),
+                            TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://treasurestore.gitbook.io/treasure-elytra")))
 
                     ).build()
             ).build();
@@ -55,6 +55,10 @@ public class MessageUtils {
 
     public static void sendParsed(CommandSender sender, String message) {
         adventure.sender(sender).sendMessage(miniMessage.deserialize(message));
+    }
+
+    public static void sendParsed(CommandSender sender, String message, Object... arguments) {
+        adventure.sender(sender).sendMessage(miniMessage.deserialize(MessageFormat.format(message, arguments)));
     }
 
     public static void openBook(CommandSender sender, List<String> messages) {
@@ -93,7 +97,7 @@ public class MessageUtils {
         return miniMessage.deserialize(message);
     }
 
-    public static String parseLegacy(String message) {
-        return serializer.serialize(miniMessage.deserialize(message));
+    public static String parseLegacy(String message, Object... arguments) {
+        return serializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)));
     }
 }
