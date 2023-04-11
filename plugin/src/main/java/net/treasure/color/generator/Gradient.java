@@ -1,6 +1,6 @@
-package net.treasure.util.color;
+package net.treasure.color.generator;
 
-import java.awt.*;
+import org.bukkit.Color;
 
 public class Gradient {
 
@@ -47,7 +47,7 @@ public class Gradient {
     }
 
     private Color interpolate(final Color color1, final Color color2, final float factor) {
-        return new Color(
+        return Color.fromRGB(
                 Math.round(color1.getRed() + factor * (color2.getRed() - color1.getRed())),
                 Math.round(color1.getGreen() + factor * (color2.getGreen() - color1.getGreen())),
                 Math.round(color1.getBlue() + factor * (color2.getBlue() - color1.getBlue()))
@@ -55,7 +55,7 @@ public class Gradient {
     }
 
     public static Color hex2Rgb(String colorStr) {
-        return new Color(
+        return Color.fromRGB(
                 Integer.valueOf(colorStr.substring(1, 3), 16),
                 Integer.valueOf(colorStr.substring(3, 5), 16),
                 Integer.valueOf(colorStr.substring(5, 7), 16));
