@@ -21,7 +21,7 @@ public class ComponentLogger {
 
     public static void error(Effect effect, String type, String line, String... messages) {
         if (colored) {
-            MessageUtils.logParsed("<yellow>[TrElytra] <red><effect><yellow><type> <line>",
+            MessageUtils.logParsed("<yellow>[TrElytra+] <red><effect><yellow><type> <line>",
                     Placeholder.unparsed("effect", effect.getPrefix()),
                     Placeholder.unparsed("type", type),
                     Placeholder.unparsed("line", line)
@@ -44,7 +44,7 @@ public class ComponentLogger {
         }
 
         line = "<yellow>" + line.substring(0, start) + "<gold><u>" + line.substring(start, end) + "</u></gold>" + line.substring(end);
-        MessageUtils.logParsed("<yellow>[TrElytra] <red><effect><yellow><type> <line>",
+        MessageUtils.logParsed("<yellow>[TrElytra+] <red><effect><yellow><type> <line>",
                 Placeholder.unparsed("effect", effect.getPrefix()),
                 Placeholder.unparsed("type", type),
                 Placeholder.parsed("line", line)
