@@ -35,7 +35,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Getter
     private static TreasurePlugin instance;
-    public static final String VERSION = "1.4.1";
+    public static final String VERSION = "1.5.0"; // config.yml
 
     // Data Holders
     private Translations translations;
@@ -58,10 +58,11 @@ public class TreasurePlugin extends JavaPlugin {
     private boolean debugModeEnabled;
     private boolean autoUpdateEnabled = true;
     private boolean notificationsEnabled;
-    @Accessors(fluent = true)
-    private int guiTask = -5, guiInterval = 2;
-    @Accessors(fluent = true)
-    private float guiColorCycleSpeed = 0.85f;
+
+    @Override
+    public void onLoad() {
+        debugModeEnabled = new File(getDataFolder(), "dev").exists();
+    }
 
     @Override
     public void onEnable() {

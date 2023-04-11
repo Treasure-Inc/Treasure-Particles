@@ -41,6 +41,7 @@ public class EffectManager implements DataHolder {
 
     public static final String VERSION = "1.4.0";
     public static boolean EFFECTS_VISIBILITY_PERMISSION = false;
+    public static boolean ALWAYS_CHECK_PERMISSION = true;
 
     final ConfigurationGenerator generator;
 
@@ -94,7 +95,8 @@ public class EffectManager implements DataHolder {
             if (!presets.initialize()) return false;
             var config = generator.generate();
             if (config == null) return false;
-            EFFECTS_VISIBILITY_PERMISSION = config.getBoolean("permissions.effects_visibility_permission", false);
+            EFFECTS_VISIBILITY_PERMISSION = config.getBoolean("permissions.effects-visibility-permission", false);
+            ALWAYS_CHECK_PERMISSION = config.getBoolean("always-check-effect-permission", true);
         } catch (Exception e) {
             TreasurePlugin.logger().log(Level.WARNING, "Couldn't load/create effects.yml", e);
             return false;

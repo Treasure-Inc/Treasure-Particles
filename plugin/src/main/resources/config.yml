@@ -1,0 +1,50 @@
+# Do not change!
+version: "1.5.0"
+
+# Translations locale (default=EN)
+locale: EN
+
+# Toggle notifications (default=true)
+# Players can disable notifications for themselves even if 'notifications' is enabled
+# If you set 'notifications' to false, it will be disabled for all players
+notifications: true
+
+# Toggle auto-update configurations (default=true)
+# Disable this setting if you don't want your configurations to update automatically
+# If you set 'auto-update-configurations' to true, outdated files will automatically back up and be replaced with newer versions of it
+auto-update-configurations: true
+
+# Toggle effect permission check (default=true)
+# If this option is enabled, players will be checked when the following events occur whether they have permission when they're using the TrElytra effects
+# In other words, if this option is disabled, players will only be checked when they're selecting an effect in GUI or selecting an effect with the "/tre select" command
+# Event list:
+# -player joining server
+# -player starting to glide
+# -selecting effect for other players (admin command)
+# -reloading plugin
+# Disable this setting if you want to select an effect for players from the console and let them use the effect even if they don't have enough permission
+always-check-effect-permission: true
+
+# Toggle colored error logs (console)
+# If this option is enabled, faulty parts will be underlined and highlighted in a different color
+colored-error-logs: true
+
+permissions:
+  # General
+  menu: "trelytra.menu" # Base command permission
+  admin: "trelytra.admin" # Admin commands permission
+
+  # Effects Visibility
+  # You can show TrElytra effects for the players who have permission, just set the "effects-visibility-permission" to true
+  # If this option is enabled, give the "can-see-effects" permission to players
+  effects-visibility-permission: false
+  can-see-effects: "trelytra.can_see_effects"
+
+  # Effects Permissions
+  # Only some effects have permission by default
+  # Please check the effects.yml file if you want to add permissions to the effects
+  # You can read the wiki page for detailed information: https://github.com/Treasure-Inc/Treasure-Elytra/wiki/Basic-Usage#permission
+  rainbow-effects: "trelytra.rainbow" # Permission for rainbow effects group
+  tail-effects: "trelytra.tail" # Permission for tail effects group
+  sonic: "trelytra.sonic" # Permission for sonic effect
+  christmas: "trelytra.effects.christmas" # Permission for Christmas effects group
