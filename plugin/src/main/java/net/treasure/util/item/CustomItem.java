@@ -1,5 +1,6 @@
 package net.treasure.util.item;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -126,6 +127,14 @@ public class CustomItem {
             lam.setColor(color);
             this.i.setItemMeta(lam);
         }
+        return this;
+    }
+
+    public CustomItem emptyName() {
+        var meta = this.i.getItemMeta();
+        if (meta == null) return this;
+        meta.setDisplayName(ChatColor.WHITE.toString());
+        this.i.setItemMeta(meta);
         return this;
     }
 
