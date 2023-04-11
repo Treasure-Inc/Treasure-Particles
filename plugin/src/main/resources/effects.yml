@@ -1,84 +1,83 @@
 # Do not change!
-version: "1.4.0"
+version: "1.5.0"
 effects:
   rainbow-circle:
-    displayName: "%rainbow-circle"
-    armorColor: "rainbow"
+    display-name: "%rainbow-circle%"
+    armor-color: "rainbow"
     permission: "%rainbow-effects"
-    variables: [ 'r', 'x', 'y' ]
-    enableCaching: true
+    variables: [ 'radius=1', 'particles=32' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
-        times: 32
         scripts:
-          - var r=2*{PI}*{i}/32
-          - var x=cos({r})
-          - var y=sin({r})
-          - particle [effect=redstone,direction=true,pos={x={x};y={y}},amount=10,origin=head*-1.25,color={name=rainbow;speed=0.75;revertWhenDone=false}]
+          - circle [effect=redstone,tick-data=true,radius={radius},particles={particles},amount=10,origin=head*-1.25,color={name=rainbow;speed=0.75}]
   rainbow-circle-transition:
-    displayName: "%rainbow-circle-transition"
-    armorColor: "rainbow"
+    display-name: "%rainbow-circle-transition%"
+    armor-color: "rainbow"
     permission: "%rainbow-effects"
-    variables: [ 'r', 'x', 'y' ]
-    enableCaching: true
+    variables: [ 'radius=1', 'particles=32' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
-        times: 32
         scripts:
-          - var r=2*{PI}*{i}/32
-          - var x=cos({r})
-          - var y=sin({r})
-          - particle [effect=DUST_COLOR_TRANSITION,direction=true,pos={x={x};y={y}},amount=10,origin=head*-1.25,color={name=rainbow;speed=0.75;revertWhenDone=false}]
+          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},amount=10,origin=head*-1.25,color={name=rainbow;duo=FFFFFF;speed=0.75}]
   rainbow-circle-acceleration:
-    displayName: "%rainbow-circle-acceleration"
-    armorColor: "rainbow"
+    display-name: "%rainbow-circle-acceleration%"
+    armor-color: "rainbow"
     permission: "%rainbow-effects"
-    variables: [ 'r', 'x', 'y' ]
-    enableCaching: true
+    variables: [ 'radius=1', 'particles=32' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
-        times: 32
         scripts:
-          - var r=2*{PI}*{i}/32
-          - var x=cos({r})
-          - var y=sin({r})
-          - particle [effect=DUST_COLOR_TRANSITION,direction=true,pos={x={x};y={y}},size={val={velocityLength};min=0.8;max=3},amount=10,origin=head*-1.25,color={name=rainbow;speed=0.75;revertWhenDone=false}]
+          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},size={val={velocityLength};min=0.8;max=3},amount=10,origin=head*-1.25,color={name=rainbow;duo=FFFFFF;speed=0.75}]
+  rainbow-circle-radius:
+    display-name: "%rainbow-circle-radius%"
+    armor-color: "rainbow"
+    permission: "%rainbow-effects"
+    variables: [ 'radius=0.25', 'reverse=0', 'speed=0.05' ]
+    interval: 1
+    on-tick:
+      do:
+        scripts:
+          - circle [effect=redstone,tick-data=true,radius={radius},particles=32,amount=10,origin=head*-1.25,color={name=rainbow;speed=0.75}]
+          - "conditional ({CTM} - {LBM} > 3000) ? var speed=0.05 : var speed=0.15"
+          - "conditional (reverse==0) ? var radius+={speed} : var radius-={speed}"
+          - "conditional (reverse==1 && radius<0.25) ? var reverse=0 : none"
+          - "conditional (reverse==0 && radius>1.25) ? var reverse=1 : none"
   rainbow-random:
-    displayName: "%rainbow-random"
-    armorColor: "rainbow"
+    display-name: "%rainbow-random%"
+    armor-color: "rainbow"
     permission: "%rainbow-effects"
     variables: [ 'r', 'x', 'y' ]
     interval: 1
-    enableCaching: true
-    onTick:
+    enable-caching: true
+    on-tick:
       do:
         times: 32
         scripts:
           - var r=2*{PI}*{i}/32
           - var x=cos({r})/2
           - var y=sin({r})/2
-          - particle [effect=redstone,direction=true,pos={x={x};y={y}},offset={x={x};y={y}},amount=5,origin=head*-1.25,color={name=rainbow;speed=0.75;revertWhenDone=false}]
+          - particle [effect=redstone,direction=true,pos={x={x};y={y}},offset={x={x};y={y}},amount=5,origin=head*-1.25,color={name=rainbow;speed=0.75;revert=false}]
   rainbow-line:
-    displayName: "%rainbow-line"
-    armorColor: "rainbow"
+    display-name: "%rainbow-line%"
+    armor-color: "rainbow"
     permission: "%rainbow-effects"
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 8
         scripts:
-          - particle [effect=redstone,size=10,origin=head,color={name=rainbow;speed=0.1;revertWhenDone=false}]
+          - particle [effect=redstone,size=10,origin=head,color={name=rainbow;speed=0.1;revert=false}]
   rainbow-flag:
-    displayName: "%rainbow-flag"
-    armorColor: "rainbow"
+    display-name: "%rainbow-flag%"
+    armor-color: "rainbow"
     permission: "%rainbow-effects"
     variables: [ 'r', 'x' ]
-    enableCaching: true
+    enable-caching: true
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 16
         scripts:
@@ -86,25 +85,25 @@ effects:
           - var x=cos({r})
           - particle [effect=redstone,direction=true,pos={x={x};y=-0.5},amount=10,origin=head*-1.25,color={name=rainbow;speed=0.075}]
   rainbow-spiral:
-    displayName: "%rainbow-spiral"
-    armorColor: "rainbow"
+    display-name: "%rainbow-spiral%"
+    armor-color: "rainbow"
     permission: "%rainbow-effects"
     variables: [ 'x','z','step' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=redstone,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={name=rainbow;revertWhenDone=true;speed=0.5}]
+          - particle [effect=redstone,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={name=rainbow;revert=true;speed=0.5}]
       doPost:
         scripts:
           - var step=({step} + 1) % 120
   spiral:
-    displayName: "%spiral"
-    armorColor: "gradient-spiral"
+    display-name: "%spiral%"
+    armor-color: "gradient-spiral"
     variables: [ 'stepX', 'stepY=-60', 'x', 'y', 'z' ]
-    onTick:
+    on-tick:
       do:
         times: 12
         scripts:
@@ -112,32 +111,32 @@ effects:
           - var x=-(cos((({stepX}+{stepY}) / 90) * {PI} * 2))
           - var y={stepY}/180
           - var z=-(sin((({stepX}+{stepY}) / 90) * {PI} * 2))
-          - particle [effect=redstone,amount=5,pos={x={x};z={y};y={z}},direction=true,origin=head,color={name=gradient-spiral;revertWhenDone=true;speed=0.05}]
+          - particle [effect=redstone,amount=5,pos={x={x};z={y};y={z}},direction=true,origin=head,color={name=gradient-spiral;revert=true;speed=0.05}]
       step:
         scripts:
           - var stepY=-60
           - var stepX+=1
   rainbow-note:
-    displayName: "%rainbow-note"
+    display-name: "%rainbow-note%"
     permission: "%rainbow-effects"
-    armorColor: "rainbow"
-    onTick:
+    armor-color: "rainbow"
+    on-tick:
       do:
         scripts:
-          - particle [effect=note,color={name=rainbow;speed=0.5;note=true},origin=feet]
+          - particle [effect=note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=feet]
   random-note:
-    displayName: "%random-note"
-    armorColor: "#36d15f"
-    onTick:
+    display-name: "%random-note%"
+    armor-color: "#36d15f"
+    on-tick:
       do:
         scripts:
-          - particle [effect=note,color={name=random-note;note=true;size=24},origin=feet]
+          - particle [effect=note,color={name=random-note;note=true;size=24},amount=0,origin=feet]
   helix-rainbow:
-    displayName: "%helix-rainbow"
-    armorColor: "rainbow"
+    display-name: "%helix-rainbow%"
+    armor-color: "rainbow"
     variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 8
         scripts:
@@ -147,18 +146,18 @@ effects:
           - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
           - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
           - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
-          - "particle [effect=redstone,pos={x={y};y={x};z={z}},amount=10,origin=head,color={name=rainbow;speed=0.025;revertWhenDone=true}]"
+          - "particle [effect=redstone,pos={x={y};y={x};z={z}},amount=10,origin=head,color={name=rainbow;speed=0.025;revert=true}]"
       doPost:
         scripts:
           - "conditional (stepX>=80) ? var stepX=0 : var stepX+=1"
           - "conditional (reverse==1) ? preset quadhelix-reverse : none"
           - "conditional (reverse==0) ? preset quadhelix-normal : none"
   helix:
-    displayName: "%helix"
-    armorColor: "gradient-white-to-gray"
+    display-name: "%helix%"
+    armor-color: "gradient-white-to-gray"
     variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 8
         scripts:
@@ -175,11 +174,12 @@ effects:
           - "conditional (reverse==1) ? preset quadhelix-reverse : none"
           - "conditional (reverse==0) ? preset quadhelix-normal : none"
   triple-line:
-    displayName: "%triple-line"
-    armorColor: "gradient-red-to-blue"
+    display-name: "%triple-line%"
+    armor-color: "gradient-red-to-blue"
     variables: [ 'r', 'x1', 'y1', 'z1', 'x2', 'y2', 'z2' ]
     interval: 1
-    onTick:
+    enable-caching: true
+    on-tick:
       do:
         scripts:
           - var r+={PI}/60
@@ -189,47 +189,42 @@ effects:
           - var y2={y1}*2
           - var x2={x1}*-1
           - var z2={z1}*-1
-          - particle [effect=redstone,pos={y={y2}},amount=10,origin=head*2,color={name=gradient-red-to-blue;revertWhenDone=true;speed=1}]
-          - particle [effect=redstone,pos={x={x1};y={y1};z={z1}},amount=10,origin=head*2,color={name=gradient-red-to-blue;revertWhenDone=true;speed=1}]
-          - particle [effect=redstone,pos={x={x2};y={y1};z={z2}},amount=10,origin=head*2,color={name=gradient-red-to-blue;revertWhenDone=true;speed=1}]
+          - particle [effect=redstone,pos={y={y2}},amount=10,origin=head*2,color={name=gradient-red-to-blue;revert=true;speed=1}]
+          - particle [effect=redstone,pos={x={x1};y={y1};z={z1}},amount=10,origin=head*2,color={name=gradient-red-to-blue;revert=true;speed=1}]
+          - particle [effect=redstone,pos={x={x2};y={y1};z={z2}},amount=10,origin=head*2,color={name=gradient-red-to-blue;revert=true;speed=1}]
   orbit:
-    displayName: "%orbit"
-    armorColor: "gradient-red-yellow-blue"
+    display-name: "%orbit%"
+    armor-color: "gradient-red-yellow-blue"
     variables: [ 'x', 'z', 'step' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 3
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-          - particle [effect=redstone,amount=10,direction=true,pos={x={x};y={z}},origin=feet,color={name=gradient-red-yellow-blue;revertWhenDone=true;speed=0.75}]
+          - particle [effect=redstone,amount=10,direction=true,pos={x={x};y={z}},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.75}]
       doPost:
         scripts:
           - var step=({step} + 1) % 120
   parkour:
-    displayName: "%parkour"
-    variables: [ 'r', 'x', 'z' ]
-    armorColor: "#FFFFFF"
-    enableCaching: true
+    display-name: "%parkour%"
+    variables: [ 'radius=1', 'particles=48' ]
+    armor-color: "#FFFFFF"
     interval: 60
-    onTick:
+    on-tick:
       do:
-        times: 48
         scripts:
-          - var r={i}*{PI}/24
-          - var x=cos({r})
-          - var z=sin({r})
-          - particle [effect=end_rod,direction=true,pos={x={x};y={z}},amount=0,origin=head*15]
+          - circle [effect=end_rod,amount=0,origin=head*15,radius={radius},particles={particles}]
       doPost:
         scripts:
-          - sound [name=entity.arrow.hit_player,clientSide=true,volume=0.1,pitch=1]
+          - sound [name=entity.arrow.hit_player,client=true,volume=0.1,pitch=1]
   planner:
-    displayName: "%planner"
-    armorColor: "#32a852"
+    display-name: "%planner%"
+    armor-color: "#32a852"
     variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 3
         scripts:
@@ -243,12 +238,12 @@ effects:
         scripts:
           - var step=({step} + {PI} / 20) % 40
   beam:
-    displayName: "%beam"
-    armorColor: "#ffd86b"
+    display-name: "%beam%"
+    armor-color: "#ffd86b"
     variables: [ 'angle','x','z' ]
-    enableCaching: true
+    enable-caching: true
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 16
         scripts:
@@ -257,11 +252,11 @@ effects:
           - var z=sin({angle})
           - particle [effect=electric_spark,pos={x={x};y={z}},direction=true,origin=feet,amount=0]
   rain:
-    displayName: "%rain"
+    display-name: "%rain%"
     variables: [ 'r', 'x', 'z' ]
-    armorColor: "#345eeb"
+    armor-color: "#345eeb"
     interval: 3
-    onTick:
+    on-tick:
       do:
         times: 24
         scripts:
@@ -270,11 +265,13 @@ effects:
           - var z=sin({r})*{RANDOM}*2.5
           - particle [effect=drip_water,direction=true,pos={x={x};y={z}},amount=0,origin=head*2]
   snow:
-    displayName: "%snow"
-    armorColor: "#FFFFFF"
+    display-name: "%snow%"
+    armor-color: "#FFFFFF"
+    description:
+      - "%exclusive-version% <gold>1.17"
     variables: [ 'r', 'x', 'z', 'radius=4' ]
     interval: 3
-    onTick:
+    on-tick:
       do:
         times: 24
         scripts:
@@ -283,14 +280,14 @@ effects:
           - var z=sin({r})*{RANDOM}*{radius}
           - particle [effect=snowflake,direction=true,pos={x={x};y={z}},amount=0,origin=head*2]
   rocket:
-    displayName: "%rocket"
+    display-name: "%rocket%"
     variables: [ 'x', 'y' ]
-    armorColor: "rocket"
+    armor-color: "rocket"
     description:
       - "%featured-behavior%"
       - "%elytra-boost%"
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 24
         scripts:
@@ -298,51 +295,51 @@ effects:
           - var y={RANDOM}-0.5
           - "conditional ({CTM} - {LBM} > 2000) ? particle [effect=redstone,direction=true,pos={x={x};y={y}},amount=1,origin=head*-2.5,color={name=rocket}] : particle [effect=redstone,size=3,direction=true,pos={x={x};y={y}},amount=0,origin=head*-2.5,color={name=rocket}]"
   red-tail:
-    displayName: "%red-tail"
+    display-name: "%red-tail%"
     permission: "%tail-effects"
-    armorColor: "#a83252"
-    onTick:
+    armor-color: "#a83252"
+    on-tick:
       do:
         scripts:
           - particle [effect=block_marker,block={material=fire_coral},origin=feet]
   yellow-tail:
-    displayName: "%yellow-tail"
+    display-name: "%yellow-tail%"
     permission: "%tail-effects"
-    armorColor: "#d1b536"
-    onTick:
+    armor-color: "#d1b536"
+    on-tick:
       do:
         scripts:
           - particle [effect=block_marker,block={material=horn_coral},origin=feet]
   pink-tail:
-    displayName: "%pink-tail"
+    display-name: "%pink-tail%"
     permission: "%tail-effects"
-    armorColor: "#f59fda"
-    onTick:
+    armor-color: "#f59fda"
+    on-tick:
       do:
         scripts:
           - particle [effect=block_marker,block={material=brain_coral},origin=feet]
   purple-tail:
-    displayName: "%purple-tail"
+    display-name: "%purple-tail%"
     permission: "%tail-effects"
-    armorColor: "#7134eb"
-    onTick:
+    armor-color: "#7134eb"
+    on-tick:
       do:
         scripts:
           - particle [effect=block_marker,block={material=bubble_coral},origin=feet]
   blue-tail:
-    displayName: "%blue-tail"
+    display-name: "%blue-tail%"
     permission: "%tail-effects"
-    armorColor: "#2658ad"
-    onTick:
+    armor-color: "#2658ad"
+    on-tick:
       do:
         scripts:
           - particle [effect=block_marker,block={material=tube_coral},origin=feet]
   rainbow-tail:
-    displayName: "%rainbow-tail"
+    display-name: "%rainbow-tail%"
     permission: "%tail-effects"
-    armorColor: "rainbow"
+    armor-color: "rainbow"
     variables: [ 'step' ]
-    onTick:
+    on-tick:
       do:
         scripts:
           - "conditional (step==8) ? var step=0 : var step+=1 ~5"
@@ -356,12 +353,12 @@ effects:
           - "conditional (step==7) ? particle [effect=block_marker,block={material=magenta_stained_glass_pane},origin=feet] : none"
           - "conditional (step==8) ? particle [effect=block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
   pulse:
-    displayName: "%pulse"
-    armorColor: "gradient-red-to-gold"
+    display-name: "%pulse%"
+    armor-color: "gradient-red-to-gold"
     variables: [ 'x', 'y', 'angle', 'xAng', 'yAng', 'radius=0.5' ]
     interval: 15
-    enableCaching: true
-    onTick:
+    enable-caching: true
+    on-tick:
       do:
         times: 50
         scripts:
@@ -372,12 +369,12 @@ effects:
           - var yAng=sin({angle})
           - particle [effect=flame,direction=true,pos={x={x};y={y}},amount=0,offset={x={xAng};y={yAng}},speed=0.1,origin=head]
   pulse-reverse:
-    displayName: "%pulse-reverse"
-    armorColor: "gradient-dark-aqua-to-black"
+    display-name: "%pulse-reverse%"
+    armor-color: "gradient-dark-aqua-to-black"
     variables: [ 'x', 'y', 'angle', 'xAng', 'yAng', 'radius=0.5' ]
     interval: 10
-    enableCaching: true
-    onTick:
+    enable-caching: true
+    on-tick:
       do:
         times: 50
         scripts:
@@ -388,12 +385,12 @@ effects:
           - var yAng=sin({angle})
           - particle [effect=nautilus,direction=true,pos={x={x};y={y}},amount=0,offset={x={xAng};y={yAng}},speed=1,origin=head]
   soul:
-    displayName: "%soul"
-    armorColor: "gradient-aqua-to-brown"
+    display-name: "%soul%"
+    armor-color: "gradient-aqua-to-brown"
     variables: [ 'r', 'x', 'y', 'angle', 'xAng', 'yAng' ]
-    enableCaching: true
+    enable-caching: true
     interval: 2
-    onTick:
+    on-tick:
       do:
         times: 32
         scripts:
@@ -405,21 +402,21 @@ effects:
           - var yAng=sin({angle})/10
           - particle [effect=soul,direction=true,pos={x={x};y={y}},offset={x={xAng};y={yAng}},speed=0.25,amount=0,origin=head*-1.25]
   plane:
-    displayName: "%plane"
-    armorColor: "#b58500"
-    onTick:
+    display-name: "%plane%"
+    armor-color: "#b58500"
+    on-tick:
       do:
         scripts:
           - particle [effect=wax_on,direction=true,pos={x=1},origin=head]
           - particle [effect=wax_on,direction=true,pos={x=-1},origin=head]
           - particle [effect=wax_off,direction=true,origin=head]
   heart:
-    displayName: "%heart"
+    display-name: "%heart%"
     permission: "%heart"
-    armorColor: "heart"
+    armor-color: "heart"
     interval: 15
     variables: [ 'x=-2', 'y1', 'y2' ]
-    onTick:
+    on-tick:
       effect:
         times: 19
         scripts:
@@ -434,18 +431,18 @@ effects:
           - particle [effect=heart,direction=true,origin=feet,pos={y=-2.25}]
           - var x=-2
   sonic:
-    displayName: "%sonic"
+    display-name: "%sonic%"
     permission: "%sonic"
-    armorColor: "#65f5fc"
+    armor-color: "#65f5fc"
     description:
       - "%exclusive-version% <gold>1.19"
     interval: 3
-    onTick:
+    on-tick:
       effect:
         scripts:
           - particle [effect=sonic_boom,origin=head]
   christmas-1:
-    displayName: "%christmas-line"
+    display-name: "%christmas-line%"
     permission: "%christmas"
     icon:
       material: "GREEN_CANDLE"
@@ -454,13 +451,13 @@ effects:
       - "%christmas%"
     variables: [ ]
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 3
         scripts:
-          - particle [effect=redstone,size=10,origin=head,color={name=christmas;speed=1.75;revertWhenDone=false}]
+          - particle [effect=redstone,size=10,origin=head,color={name=christmas;speed=1.75;revert=false}]
   christmas-2:
-    displayName: "%christmas-circle"
+    display-name: "%christmas-circle%"
     permission: "%christmas"
     icon:
       material: "RED_CANDLE"
@@ -468,13 +465,13 @@ effects:
       - "%seasonal-effect%"
       - "%christmas%"
     variables: [ 'r', 'x', 'y' ]
-    enableCaching: true
+    enable-caching: true
     interval: 1
-    onTick:
+    on-tick:
       do:
         times: 32
         scripts:
           - var r=2*{PI}*{i}/32
           - var x=cos({r})
           - var y=sin({r})
-          - particle [effect=redstone,size=3,direction=true,pos={x={x};y={y}},amount=0,origin=head*-1.25,color={name=christmas;speed=1.75;revertWhenDone=true}]
+          - particle [effect=redstone,size=3,direction=true,pos={x={x};y={y}},amount=0,origin=head*-1.25,color={name=christmas;speed=1.75;revert=true}]
