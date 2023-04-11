@@ -3,7 +3,9 @@ package net.treasure.core.player;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
+import net.treasure.color.ColorScheme;
 import net.treasure.core.TreasurePlugin;
+import net.treasure.effect.EffectManager;
 import net.treasure.effect.data.EffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,9 +13,12 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class PlayerManager {
 
@@ -33,9 +38,11 @@ public class PlayerManager {
     public void initializePlayer(Player player, Consumer<EffectData> callback) {
         Bukkit.getScheduler().runTaskAsynchronously(TreasurePlugin.getInstance(), () -> {
             var inst = TreasurePlugin.getInstance();
+            var effectManager = inst.getEffectManager();
+            var colorManager = inst.getColorManager();
             var database = inst.getDatabase();
 
-            EffectData data = new EffectData();
+            var data = new EffectData(player);
             this.data.put(player.getUniqueId(), data);
 
             PlayerData playerData = null;
@@ -61,9 +68,18 @@ public class PlayerManager {
             }
 
             if (playerData == null) return;
-            var effect = inst.getEffectManager().get(playerData.effectName);
-            if (effect != null && effect.canUse(player))
-                data.setCurrentEffect(player, effect);
+            var effect = effectManager.get(playerData.effectName);
+            if (effect != null && (!EffectManager.ALWAYS_CHECK_PERMISSION || effect.canUse(player)))
+                data.setCurrentEffect(effect);
+
+            for (var entry : playerData.colorPreferences.entrySet()) {
+                var effectName = entry.getKey();
+                if (!effectManager.has(effectName)) continue;
+                var colorScheme = colorManager.getColorScheme(entry.getValue());
+                if (colorScheme == null) continue;
+                data.getColorPreferences().put(effectName, colorScheme);
+            }
+
             data.setNotificationsEnabled(playerData.notificationsEnabled);
             data.setEffectsEnabled(playerData.effectsEnabled);
 
@@ -87,12 +103,21 @@ public class PlayerManager {
 
     public void save(Player player, EffectData data) {
         if (data == null) return;
-        var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, data.isEffectsEnabled(), data.isNotificationsEnabled());
+        Map<String, String> colorPreferences = data.getColorPreferences().entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().getKey()
+                ));
+        var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, colorPreferences, data.isEffectsEnabled(), data.isNotificationsEnabled());
         TreasurePlugin.getInstance().getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
     }
 
     public void reload() {
         var inst = TreasurePlugin.getInstance();
+        var effectManager = inst.getEffectManager();
+        var colorManager = inst.getColorManager();
+
         for (var iterator = data.entrySet().iterator(); iterator.hasNext(); ) {
             var set = iterator.next();
             var data = set.getValue();
@@ -101,14 +126,26 @@ public class PlayerManager {
                 iterator.remove();
                 continue;
             }
+
+            Map<String, ColorScheme> colorPreferences = new HashMap<>();
+            for (var entry : data.getColorPreferences().entrySet()) {
+                var effectName = entry.getKey();
+                if (!effectManager.has(effectName)) continue;
+                if (entry.getValue() == null) continue;
+                var colorScheme = colorManager.getColorScheme(entry.getValue().getKey());
+                if (colorScheme == null) continue;
+                colorPreferences.put(effectName, colorScheme);
+            }
+            data.setColorPreferences(colorPreferences);
+
             if (data.getCurrentEffect() == null) {
                 data.setEnabled(false);
                 continue;
             }
-            var effect = inst.getEffectManager().get(data.getCurrentEffect().getKey());
-            data.setCurrentEffect(player, null);
-            if (effect != null && effect.canUse(player))
-                data.setCurrentEffect(player, effect);
+            var effect = effectManager.get(data.getCurrentEffect().getKey());
+            data.setCurrentEffect(null);
+            if (effect != null && (!EffectManager.ALWAYS_CHECK_PERMISSION || effect.canUse(player)))
+                data.setCurrentEffect(effect);
             else
                 data.setEnabled(false);
             if (!inst.isDebugModeEnabled())

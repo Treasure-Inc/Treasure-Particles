@@ -3,6 +3,7 @@ package net.treasure.effect.data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.treasure.color.ColorScheme;
 import net.treasure.common.Permissions;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
@@ -12,8 +13,10 @@ import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -25,8 +28,12 @@ public class EffectData {
     @Setter
     private boolean enabled = false, effectsEnabled = true, notificationsEnabled, debugModeEnabled;
 
-    private final Set<Pair<String, Double>> variables;
+    @Setter
+    private Map<String, ColorScheme> colorPreferences = new HashMap<>();
 
+    // Fields for current effect
+    private Effect currentEffect;
+    private final Set<Pair<String, Double>> variables;
     @Setter
     private LinkedHashMap<String, TickHandler> tickHandlers;
 
@@ -39,20 +46,30 @@ public class EffectData {
         this.tickHandlers = new LinkedHashMap<>();
     }
 
-    public void setCurrentEffect(Player player, Effect currentEffect) {
+    public void setCurrentEffect(Effect currentEffect) {
         var debugModeEnabled = TreasurePlugin.getInstance().isDebugModeEnabled();
         this.currentEffect = currentEffect;
         this.variables.clear();
         this.tickHandlers.clear();
-        this.debugModeEnabled = player.hasPermission(Permissions.DEBUG) && debugModeEnabled;
+        this.debugModeEnabled = player.hasPermission(Permissions.ADMIN) && debugModeEnabled;
 
-        if (this.currentEffect != null) {
-            this.currentEffect.initialize(player, this, debugModeEnabled);
+        if (currentEffect != null) {
+            if (currentEffect.getColorGroup() != null && getColorPreference(currentEffect) == null)
+                setColorPreference(currentEffect, currentEffect.getColorGroup().getAvailableOptions().get(0).colorScheme());
+            currentEffect.initialize(player, this, debugModeEnabled);
         } else if (debugModeEnabled)
             TreasurePlugin.logger().info("Reset " + player.getName() + "'s effect data");
     }
 
-    public Pair<String, Double> getVariable(Player player, String variable) {
+    public void setColorPreference(Effect effect, ColorScheme scheme) {
+        colorPreferences.put(effect.getKey(), scheme);
+    }
+
+    public ColorScheme getColorPreference(Effect effect) {
+        return colorPreferences.get(effect.getKey());
+    }
+
+    public Pair<String, Double> getVariable(String variable) {
         if (variable == null)
             return null;
         for (var pair : variables)
