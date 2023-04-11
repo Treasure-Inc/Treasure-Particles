@@ -4,15 +4,14 @@ import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
 import net.treasure.effect.script.conditional.reader.ConditionReader;
-import net.treasure.util.MathUtil;
+import net.treasure.util.math.MathUtils;
 import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
-import net.treasure.util.color.Rainbow;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +20,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 public class TestFeatures {
+
+    @Test
+    public void testFormat() {
+        System.out.println(MessageFormat.format("{0} is a", "a"));
+    }
 
     @Test
     public void testLoop() {
@@ -46,7 +50,7 @@ public class TestFeatures {
 //        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
 //        var parent = reader.read(null,"((p==1 && q==1) || (r==0 && s==0))");
         var parent = reader.read(null, null, "({p}/10==15)");
-        System.out.println("Test Result: " + parent.test(null, new EffectData(variables)));
+        System.out.println("Test Result: " + parent.test(null, new EffectData(null, variables)));
         System.out.println("-----RESULTS " + parent.inner.size());
         var gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(gson.toJson(parent));
@@ -97,16 +101,16 @@ public class TestFeatures {
     public void testMath() {
         System.out.println(2 * Math.PI / 16);
         System.out.println("Math.atan2: " + (Math.atan2(3, 4)));
-        System.out.println("MathUtil.eval: " + MathUtil.eval("atan(3,4)"));
-        System.out.println("Math.cos: " + MathUtil.cos(0 + (Math.PI * 2 * ((double) 1 / 3))));
-        System.out.println("MathUtil.eval: " + MathUtil.eval("cos(0 + (" + Math.PI + " * 2 * (1 / 3)))"));
+        System.out.println("MathUtil.eval: " + MathUtils.eval("atan(3,4)"));
+        System.out.println("Math.cos: " + MathUtils.cos(0 + (Math.PI * 2 * ((double) 1 / 3))));
+        System.out.println("MathUtil.eval: " + MathUtils.eval("cos(0 + (" + Math.PI + " * 2 * (1 / 3)))"));
     }
 
     @Test
     public void testReplace() {
         final Set<Pair<String, Double>> variables = new HashSet<>();
         variables.add(new Pair<>("phase", 150.0547789798));
-        EffectData data = new EffectData(variables);
+        EffectData data = new EffectData(null, variables);
         String eval = replaceVariables(data, "actionbar {%,.2f:phase}");
         System.out.println("Result: " + eval);
     }
@@ -132,7 +136,7 @@ public class TestFeatures {
                         return null;
                     }
                     var result = variable.toString();
-                    var p = data.getVariable(null, result);
+                    var p = data.getVariable(result);
                     double value;
                     if (p == null) {
                         Double preset = switch (result) {
@@ -192,20 +196,5 @@ public class TestFeatures {
         String s = "variable i=0 ~20";
         System.out.println(s.lastIndexOf("~"));
         System.out.println(s.substring(0, s.lastIndexOf("~")));
-    }
-
-    @Test
-    public void testRGB() {
-        System.out.println(Color.RED.getRGB());
-        System.out.println(org.bukkit.Color.RED.asRGB());
-    }
-
-    @Test
-    public void testColor() {
-        Rainbow rainbow = new Rainbow();
-        Color[] colors = rainbow.colors(15);
-        for (Color color : colors) {
-            System.out.println(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
-        }
     }
 }
