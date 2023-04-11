@@ -2,4 +2,4 @@
 /target/
 /.idea/
 /*/target/
-TrElytra.iml
+*.iml
