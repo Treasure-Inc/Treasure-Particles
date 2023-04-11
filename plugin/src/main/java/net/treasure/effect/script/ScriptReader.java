@@ -22,9 +22,14 @@ public abstract class ScriptReader<C extends ReaderContext<?>, T> {
     }
 
     public void addValidArgument(UnsafeConsumer<C> consumer, String... aliases) {
-        if (aliases == null || aliases.length == 0) return;
+        if (aliases == null) return;
         for (var key : aliases)
             validArguments.put(key, consumer);
+    }
+
+    public void removeArguments(String... arguments) {
+        for (var argument : arguments)
+            validArguments.remove(argument);
     }
 
     public boolean isValidArgument(String key) {
