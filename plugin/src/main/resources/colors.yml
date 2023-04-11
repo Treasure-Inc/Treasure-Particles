@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.4.0"
+version: "1.5.0"
 rainbow-colors-size: 25
 colors:
   gradient-red-to-blue:
@@ -14,11 +14,15 @@ colors:
   gradient-red-to-gold:
     values: [ "#d13636", "#d16536" ]
     size: 20
+  gradient-aqua-to-blue:
+    values: [ '#4CE0D2', '#136F63' ]
+    size: 20
   gradient-aqua-to-brown:
     values: [ "#2e1c1a", "#4254f5" ]
     size: 20
   gradient-dark-aqua-to-black:
     values: [ "#3449eb", "#10174f", "#111530" ]
+    size: 10
   gradient-spiral:
     values: [ "#F72585", "#B5179E", "#7209B7", "#560BAD", "#480CA8", "#3A0CA3", "#3F37C9", "#4361EE", "#4895EF", "#4CC9F0" ]
     size: 50
@@ -28,6 +32,12 @@ colors:
   rocket:
     values: [ '#5bf5c7', '#42ff75', "#0eb33b", "#0eb381" ]
     size: 10
+  complementary1-1:
+    values: [ '#8A1BE4', '#E01F5A','#DC8B23' ]
+    size: 50
+  complementary1-2:
+    values: [ '#75E41B','#1FE0A5', '#2374DC' ]
+    size: 50
   christmas:
     values: [ '#ef233c', '#d5f2e3', '#73ba9b', '#003e1f', '#d90429', '#823a14' ]
     size: 30
