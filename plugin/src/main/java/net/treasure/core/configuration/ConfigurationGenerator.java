@@ -9,7 +9,8 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
 public class ConfigurationGenerator {
@@ -52,23 +53,11 @@ public class ConfigurationGenerator {
         return null;
     }
 
-    public void save() {
-        if (configuration == null) {
-            plugin.getLogger().warning("Couldn't save " + fileName + " because 'configuration' is null");
-            return;
-        }
-        try {
-            configuration.save(new File(plugin.getDataFolder(), directory));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void reset() {
         var dataFolder = plugin.getDataFolder();
         var file = new File(dataFolder, directory);
         try {
-            Files.copy(file, new File(dataFolder, "old_" + fileName + "_" + UUID.randomUUID() + ".yml"));
+            Files.copy(file, new File(dataFolder, "old_" + fileName + "_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + ".yml"));
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Couldn't copy old file: " + fileName + ".yml", e);
         }
