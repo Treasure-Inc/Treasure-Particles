@@ -20,7 +20,8 @@ import net.treasure.effect.script.conditional.reader.ConditionalScriptReader;
 import net.treasure.effect.script.message.ActionBar;
 import net.treasure.effect.script.message.ChatMessage;
 import net.treasure.effect.script.message.reader.TitleReader;
-import net.treasure.effect.script.particle.reader.DotParticleReader;
+import net.treasure.effect.script.particle.reader.circle.CircleParticleReader;
+import net.treasure.effect.script.particle.reader.dot.DotParticleReader;
 import net.treasure.effect.script.preset.reader.PresetReader;
 import net.treasure.effect.script.sound.reader.SoundReader;
 import net.treasure.effect.script.variable.reader.VariableReader;
@@ -73,7 +74,8 @@ public class EffectManager implements DataHolder {
 
         // Register readers
         registerReader("variable", new VariableReader(), "var");
-        registerReader("particle", new DotParticleReader());
+        registerReader("particle", new DotParticleReader(), "dot");
+        registerReader("circle", new CircleParticleReader());
         registerReader("preset", new PresetReader());
         registerReader("conditional", new ConditionalScriptReader());
         registerReader("sound", new SoundReader());
