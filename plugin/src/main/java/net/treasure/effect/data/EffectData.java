@@ -20,7 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class EffectData {
 
-    private Effect currentEffect;
+    private final Player player;
 
     @Setter
     private boolean enabled = false, effectsEnabled = true, notificationsEnabled, debugModeEnabled;
@@ -33,7 +33,8 @@ public class EffectData {
     @Setter
     private long lastBoostMillis;
 
-    public EffectData() {
+    public EffectData(Player player) {
+        this.player = player;
         this.variables = new HashSet<>();
         this.tickHandlers = new LinkedHashMap<>();
     }
@@ -75,7 +76,7 @@ public class EffectData {
         return value == null ? null : new Pair<>(variable, value);
     }
 
-    public String replaceVariables(Player player, String line) {
+    public String replaceVariables(String line) {
         StringBuilder builder = new StringBuilder();
 
         var array = line.toCharArray();
@@ -93,13 +94,13 @@ public class EffectData {
                     if (startPos == -1) return null;
 
                     var result = variable.toString();
-                    var p = getVariable(player, result);
+                    var p = getVariable(result);
                     double value;
                     if (p == null) {
                         Double preset = switch (result) {
-                            case "tick", "TICK" -> (double) TimeKeeper.getTimeElapsed();
-                            case "pi", "PI" -> Math.PI;
-                            case "random", "RANDOM" -> Math.random();
+                            case "TICK" -> (double) TimeKeeper.getTimeElapsed();
+                            case "PI" -> Math.PI;
+                            case "RANDOM" -> Math.random();
                             case "currentTimeMillis", "CTM" -> (double) System.currentTimeMillis();
                             default -> null;
                         };

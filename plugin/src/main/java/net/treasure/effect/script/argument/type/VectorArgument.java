@@ -44,7 +44,7 @@ public class VectorArgument implements ScriptArgument<Vector> {
             try {
                 x = Double.parseDouble(this.x);
             } catch (Exception e) {
-                x = Double.parseDouble(data.replaceVariables(player, this.x));
+                x = Double.parseDouble(data.replaceVariables(this.x));
             }
         }
 
@@ -52,7 +52,7 @@ public class VectorArgument implements ScriptArgument<Vector> {
             try {
                 y = Double.parseDouble(this.y);
             } catch (Exception e) {
-                y = Double.parseDouble(data.replaceVariables(player, this.y));
+                y = Double.parseDouble(data.replaceVariables(this.y));
             }
         }
 
@@ -60,7 +60,7 @@ public class VectorArgument implements ScriptArgument<Vector> {
             try {
                 z = Double.parseDouble(this.z);
             } catch (Exception e) {
-                z = Double.parseDouble(data.replaceVariables(player, this.z));
+                z = Double.parseDouble(data.replaceVariables(this.z));
             }
         }
 

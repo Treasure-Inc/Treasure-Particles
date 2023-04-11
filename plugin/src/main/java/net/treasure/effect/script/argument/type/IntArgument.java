@@ -26,7 +26,7 @@ public class IntArgument implements ScriptArgument<Integer> {
     public Integer get(Player player, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Integer i) return i;
-        else if (value instanceof String s) return Integer.parseInt(data.replaceVariables(player, s));
+        else if (value instanceof String s) return (int) Double.parseDouble(data.replaceVariables(s));
         else return null;
     }
 

@@ -42,7 +42,7 @@ public class FloatArgument implements ScriptArgument<Float> {
     public Float get(Player player, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Float f) return f;
-        else if (value instanceof String s) return Float.parseFloat(data.replaceVariables(player, s));
+        else if (value instanceof String s) return Float.parseFloat(data.replaceVariables(s));
         else return null;
     }
 

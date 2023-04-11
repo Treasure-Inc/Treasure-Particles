@@ -1,6 +1,7 @@
 package net.treasure.effect.listener;
 
 import lombok.AllArgsConstructor;
+import net.treasure.effect.EffectManager;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.player.PlayerManager;
 import org.bukkit.entity.Player;
@@ -27,8 +28,8 @@ public class GlideListener implements Listener {
             return;
         }
 
-        if (data.getCurrentEffect() != null && !data.getCurrentEffect().canUse(player))
-            data.setCurrentEffect(player, null);
+        if (data.getCurrentEffect() != null && EffectManager.ALWAYS_CHECK_PERMISSION && !data.getCurrentEffect().canUse(player))
+            data.setCurrentEffect(null);
         data.setEnabled(event.isGliding());
     }
 }

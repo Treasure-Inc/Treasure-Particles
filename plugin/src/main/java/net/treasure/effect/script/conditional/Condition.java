@@ -3,7 +3,7 @@ package net.treasure.effect.script.conditional;
 import lombok.Getter;
 import lombok.ToString;
 import net.treasure.effect.data.EffectData;
-import net.treasure.util.MathUtil;
+import net.treasure.util.math.MathUtils;
 import org.bukkit.entity.Player;
 
 @Getter
@@ -32,8 +32,8 @@ public class Condition implements Predicate {
             return defaultValue;
         double current;
         if (hasEquation) {
-            current = MathUtil.eval(data.replaceVariables(player, variable));
-        } else current = data.getVariable(player, variable).getValue();
+            current = MathUtils.eval(data.replaceVariables(variable));
+        } else current = data.getVariable(variable).getValue();
         return switch (operator) {
             case EQUAL -> current == value;
             case NOT_EQUAL -> current != value;

@@ -3,31 +3,34 @@ package net.treasure.effect.script.variable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import net.treasure.util.Pair;
+import net.treasure.util.math.MathUtils;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
-import net.treasure.util.MathUtil;
-import net.treasure.util.Pair;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
 
 @Builder
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class Variable extends Script {
 
     public static final String I = "i";
     public static final String TIMES = "TIMES";
 
+    @Setter
+    private int index;
     private String variable;
     private Operator operator;
     private String eval;
 
     @Override
     public TickResult tick(Player player, EffectData data, TickHandler handler, int times) {
-        var pair = data.getVariable(player, variable);
+        var pair = data.getVariable(variable);
         if (pair == null) return TickResult.NORMAL;
         var effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
@@ -36,7 +39,7 @@ public class Variable extends Script {
         }
         double val;
         try {
-            val = MathUtil.eval(data.replaceVariables(player, eval));
+            val = MathUtils.eval(data.replaceVariables(eval));
         } catch (Exception e) {
             e.printStackTrace();
             return TickResult.NORMAL;
@@ -61,8 +64,8 @@ public class Variable extends Script {
         if (pair == null) return 0;
         double val;
         try {
-            var data = new EffectData(variables);
-            val = MathUtil.eval(data.replaceVariables(null, eval));
+            var data = new EffectData(null, variables);
+            val = MathUtils.eval(data.replaceVariables(eval));
         } catch (Exception e) {
             TreasurePlugin.logger().warning("Invalid evaluation: " + eval);
             return 0;
@@ -79,7 +82,7 @@ public class Variable extends Script {
 
     @Override
     public Variable clone() {
-        return new Variable(variable, operator, eval);
+        return new Variable(index, variable, operator, eval);
     }
 
     public enum Operator {
@@ -91,6 +94,6 @@ public class Variable extends Script {
     }
 
     public static String replace(String variable) {
-        return variable.replaceAll("\\{|}","");
+        return variable.replaceAll("\\{|}", "");
     }
 }
