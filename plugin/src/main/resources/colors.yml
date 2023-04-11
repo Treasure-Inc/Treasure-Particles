@@ -41,3 +41,11 @@ colors:
   christmas:
     values: [ '#ef233c', '#d5f2e3', '#73ba9b', '#003e1f', '#d90429', '#823a14' ]
     size: 30
+groups:
+  gradients:
+    gradient-red-to-blue: "none"
+    gradient-red-yellow-blue: "none"
+    gradient-red-to-gold: "none"
+    gradient-aqua-to-blue: "none"
+    gradient-aqua-to-brown: "none"
+    gradient-dark-aqua-to-black: "none"
