@@ -98,4 +98,11 @@ public class Database {
             TreasurePlugin.logger().log(Level.WARNING, "Failed to close ResultSet ", e);
         }
     }
+
+    public void close() {
+        try {
+            connection.close();
+        } catch (Exception ignored) {
+        }
+    }
 }
