@@ -9,10 +9,10 @@ public class Permissions implements DataHolder {
 
     public static String BASE,
             ADMIN,
-            CHANGELOG,
-            NOTIFICATION,
-            CAN_SEE_EFFECTS,
-            DEBUG;
+            CAN_SEE_EFFECTS;
+
+    public static final String COMMAND_BASE = "%menu",
+            COMMAND_ADMIN = "%admin";
 
     @Override
     public boolean checkVersion() {
@@ -25,11 +25,8 @@ public class Permissions implements DataHolder {
         var config = inst.getConfig();
         var replacements = inst.getCommandManager().getCommandReplacements();
 
-        replacements.addReplacement("basecmd", BASE = config.getString("permissions.menu", NAMESPACE + ".menu"));
-        replacements.addReplacement("admincmd", ADMIN = config.getString("permissions.admin", NAMESPACE + ".admin"));
-        replacements.addReplacement("changelog", CHANGELOG = config.getString("permissions.changelog", NAMESPACE + ".changelog"));
-        replacements.addReplacement("notification", NOTIFICATION = config.getString("permissions.notification", NAMESPACE + ".notification"));
-        replacements.addReplacement("debug", DEBUG = config.getString("permissions.debug", NAMESPACE + ".debug"));
+        replacements.addReplacement(COMMAND_BASE, BASE = config.getString("permissions.menu", NAMESPACE + ".menu"));
+        replacements.addReplacement(COMMAND_ADMIN, ADMIN = config.getString("permissions.admin", NAMESPACE + ".admin"));
 
         CAN_SEE_EFFECTS = config.getString("permissions.can_see_effects", NAMESPACE + ".can_see_effects");
         return true;
@@ -38,5 +35,9 @@ public class Permissions implements DataHolder {
     @Override
     public void reload() {
         initialize();
+    }
+
+    public String replace(String key) {
+        return key != null && key.startsWith("%") ? TreasurePlugin.getInstance().getConfig().getString("permissions." + key.substring(1), key) : key;
     }
 }
