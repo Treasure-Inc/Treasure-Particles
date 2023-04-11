@@ -1,4 +1,4 @@
-# Treasure-Elytra
+# TreasureElytra
 
 The most intelligent elytra particles plugin
 
