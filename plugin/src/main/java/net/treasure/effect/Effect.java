@@ -1,6 +1,7 @@
 package net.treasure.effect;
 
 import lombok.Getter;
+import net.treasure.color.group.ColorGroup;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
@@ -32,13 +33,15 @@ public class Effect {
     private final int interval;
 
     private final LinkedHashMap<String, TickHandler> lines;
-    private final HashMap<String, double[][]> cache;
+    private HashMap<String, double[][]> cache;
 
     private final Set<Pair<String, Double>> variables;
 
     private final boolean enableCaching;
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers) {
+    private final ColorGroup colorGroup;
+
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers, ColorGroup colorGroup) {
         this.key = key;
         this.displayName = displayName;
         this.description = description;
@@ -47,10 +50,10 @@ public class Effect {
         this.permission = permission;
         this.interval = interval;
         this.enableCaching = enableCaching;
+        this.colorGroup = colorGroup;
 
         this.variables = new HashSet<>();
         this.lines = new LinkedHashMap<>();
-        this.cache = new HashMap<>();
 
         for (var variable : variables) {
             if (hasVariable(variable)) {
@@ -72,8 +75,10 @@ public class Effect {
         addVariable(Variable.I);
         addVariable(Variable.TIMES);
 
-        if (enableCaching)
+        if (enableCaching) {
+            cache = new HashMap<>();
             preTick();
+        }
     }
 
     public boolean canUse(Player player) {
@@ -89,14 +94,15 @@ public class Effect {
     }
 
     public void preTick() {
-        var data = new EffectData(variables);
+        var data = new EffectData(null, variables);
 
-        int index = 0;
         for (var entry : lines.entrySet()) {
+            int index = 0;
             var tickHandler = entry.getValue();
             for (var script : tickHandler.lines) {
-                if (script instanceof Variable) {
-                    script.setIndex(index);
+                if (script instanceof Variable var) {
+                    var.setIndex(index);
+                    index++;
                 } else if (script instanceof ConditionalScript conditionalScript) {
                     List<ConditionalScript> check = new ArrayList<>();
                     check.add(conditionalScript);
@@ -104,33 +110,36 @@ public class Effect {
                         var latest = check.remove(0);
                         if (latest.getFirstExpression() instanceof Variable variable) {
                             variable.setIndex(index);
-                            index += 1;
+                            index++;
                         } else if (latest.getFirstExpression() instanceof ConditionalScript cs)
                             check.add(cs);
 
                         if (latest.getSecondExpression() instanceof Variable variable) {
                             variable.setIndex(index);
-                            index += 1;
+                            index++;
                         } else if (latest.getSecondExpression() instanceof ConditionalScript cs)
                             check.add(cs);
                     }
-                } else {
-                    continue;
                 }
-                index++;
             }
-            cache.put(entry.getKey(), new double[tickHandler.times][index + 1]);
+            if (index > 0)
+                cache.put(entry.getKey(), new double[tickHandler.times][index]);
+        }
+        if (cache.isEmpty()) {
+            TreasurePlugin.logger().warning(getPrefix() + "There is nothing to cache for this effect, you can disable the caching");
+            cache = null;
+            return;
         }
 
         // Get variable 'i'
-        var ip = data.getVariable(null, Variable.I);
+        var ip = data.getVariable(Variable.I);
         if (ip == null) {
             TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.I == null)");
             return;
         }
 
         // Get variable 'times'
-        var tp = data.getVariable(null, Variable.TIMES);
+        var tp = data.getVariable(Variable.TIMES);
         if (tp == null) {
             TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.TIMES == null)");
             return;
@@ -154,8 +163,8 @@ public class Effect {
         if (!TimeKeeper.isElapsed(interval)) return;
         TickHandler last = null;
         try {
-            var ip = data.getVariable(player, Variable.I);
-            var tp = data.getVariable(player, Variable.TIMES);
+            var ip = data.getVariable(Variable.I);
+            var tp = data.getVariable(Variable.TIMES);
             if (ip == null || tp == null) {
                 TreasurePlugin.logger().warning(getPrefix() + "Couldn't tick effect (Variable.I || Variable.TIMES == null)");
                 return;
@@ -209,9 +218,7 @@ public class Effect {
     public boolean checkPredefinedVariable(String var) {
         return switch (var) {
             case Variable.I, Variable.TIMES,
-                    "pi", "PI",
-                    "tick", "TICK",
-                    "random", "RANDOM",
+                    "PI", "TICK", "RANDOM",
                     "currentTimeMillis", "CTM",
                     "lastBoostMillis", "LBM",
                     "playerYaw", "playerPitch", "playerX", "playerY", "playerZ",

@@ -7,11 +7,10 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.treasure.color.ColorManager;
 import net.treasure.common.Permissions;
 import net.treasure.core.command.MainCommand;
+import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.database.Database;
-import net.treasure.core.gui.EffectsGUI;
-import net.treasure.core.gui.listener.GUIListener;
-import net.treasure.core.gui.task.GUIUpdater;
+import net.treasure.core.gui.GUIManager;
 import net.treasure.core.integration.Expansions;
 import net.treasure.core.listener.JoinQuitListener;
 import net.treasure.core.player.PlayerManager;
@@ -26,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -41,7 +41,7 @@ public class TreasurePlugin extends JavaPlugin {
     private EffectManager effectManager;
     private ColorManager colorManager;
     private Permissions permissions;
-    private EffectsGUI gui;
+    private GUIManager guiManager;
     private List<DataHolder> dataHolders;
 
     private Database database;
@@ -67,9 +67,11 @@ public class TreasurePlugin extends JavaPlugin {
         var current = System.currentTimeMillis();
 
         instance = this;
-
         dataHolders = new ArrayList<>();
-        debugModeEnabled = new File(getDataFolder(), "dev").exists();
+
+        // Adventure & ACF
+        commandManager = new BukkitCommandManager(this);
+        adventure = BukkitAudiences.create(this);
 
         // Main Config
         saveDefaultConfig();
@@ -84,12 +86,6 @@ public class TreasurePlugin extends JavaPlugin {
 
         // Initialize player manager
         playerManager = new PlayerManager();
-
-        // Command stuffs
-        commandManager = new BukkitCommandManager(this);
-
-        // Adventure
-        adventure = BukkitAudiences.create(this);
 
         // Translations
         translations = new Translations();
@@ -112,82 +108,70 @@ public class TreasurePlugin extends JavaPlugin {
         }
         dataHolders.add(effectManager);
 
-        // Effects GUI
-        gui = new EffectsGUI();
-        gui.initialize();
-        dataHolders.add(gui);
-
         // Permissions
         permissions = new Permissions();
         permissions.initialize();
         dataHolders.add(permissions);
 
-        var config = getConfig();
+        // Commands & Listeners
+        initializeCommands();
+        initializeListeners();
 
-        // Load colors & effects
-        colorManager.loadColors();
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> effectManager.loadEffects());
+        // GUI Manager
+        guiManager = new GUIManager(this);
+        dataHolders.add(guiManager);
 
-        // Main command with completions
-        commandManager.registerCommand(new MainCommand(this));
-        var completions = commandManager.getCommandCompletions();
-        completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).toList());
+        // Load translations > GUI > colors > effects
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            translations.loadTranslations();
+            guiManager.initialize();
+
+            colorManager.loadColors();
+            effectManager.loadEffects();
+        });
 
         // Initialize players
         for (var player : Bukkit.getOnlinePlayers())
             playerManager.initializePlayer(player);
 
-        // Listeners & Tasks
-        var pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new JoinQuitListener(this), this);
-        pluginManager.registerEvents(new GUIListener(), this);
-        if (config.getBoolean("gui.animation.enabled", true)) {
-            guiInterval = config.getInt("gui.animation.interval", guiInterval);
-            guiColorCycleSpeed = (float) config.getDouble("gui.animation.color-cycle-speed", guiColorCycleSpeed);
-            guiTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, guiInterval).getTaskId();
-        }
-
-        // Update Checker
-        updateChecker = new UpdateChecker(this);
-        updateChecker.check();
-
         // bStats
-        var metrics = new Metrics(this, 14508);
-        metrics.addCustomChart(new SimplePie("locale", () -> Translations.LOCALE));
-
-        metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
-        metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
-
-        metrics.addCustomChart(new SimplePie("debug_mode_enabled", () -> String.valueOf(debugModeEnabled)));
-        metrics.addCustomChart(new SimplePie("auto_update_enabled", () -> String.valueOf(autoUpdateEnabled)));
-
-        metrics.addCustomChart(new SimplePie("gui_animation_enabled", () -> String.valueOf(guiTask != -5)));
-        metrics.addCustomChart(new SimplePie("gui_animation_interval", () -> String.valueOf(guiInterval)));
-        metrics.addCustomChart(new SimplePie("gui_animation_speed", () -> String.valueOf(guiColorCycleSpeed)));
+        initializeMetrics();
 
         // PlaceholderAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
             new Expansions(playerManager).register();
 
-        getLogger().info("Enabled TreasureElytra (" + (System.currentTimeMillis() - current) + "ms)");
+        getLogger().info("Enabled TreasureElytra+ (" + (System.currentTimeMillis() - current) + "ms)");
     }
 
     @Override
     public void onDisable() {
+        this.database.close();
         if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
         }
     }
 
+    public void disable() {
+        getLogger().warning("Couldn't initialize TreasureElytra+");
+        getPluginLoader().disablePlugin(this);
+    }
+
     public void reload() {
-        getLogger().info("Reloading TreasureElytra");
+        getLogger().info("Reloading TreasureElytra+");
 
         // config.yml
         saveDefaultConfig();
         reloadConfig();
         configure();
         getLogger().info("Reloaded config!");
+
+        // Debug Mode
+        final var tempDebugMode = debugModeEnabled;
+        this.debugModeEnabled = new File(getDataFolder(), "dev").exists();
+        if (tempDebugMode != debugModeEnabled)
+            getLogger().info("> Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
 
         // Data Holders
         dataHolders.forEach(DataHolder::reload);
@@ -197,47 +181,60 @@ public class TreasurePlugin extends JavaPlugin {
         playerManager.reload();
         getLogger().info("Reloaded player manager!");
 
-        // Debug Mode
-        final var tempDebugMode = debugModeEnabled;
-        this.debugModeEnabled = new File(getDataFolder(), "dev").exists();
-        if (tempDebugMode != debugModeEnabled)
-            getLogger().info("> Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
-
-        // Config Stuffs
-        var config = getConfig();
-
-        // GUI Animations
-        if (guiTask != -5 && !config.getBoolean("gui.animation", true)) {
-            Bukkit.getScheduler().cancelTask(guiTask);
-            this.guiTask = -5;
-            getLogger().info("> Disabled gui animations");
-        } else if (guiTask == -5 && config.getBoolean("gui.animation", true)) {
-            this.guiTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GUIUpdater(), 0, guiInterval).getTaskId();
-            getLogger().info("> Enabled gui animations");
-        }
-
-        this.guiInterval = config.getInt("gui.animation.interval", guiInterval);
-        this.guiColorCycleSpeed = (float) config.getDouble("gui.animation.color-cycle-speed", guiColorCycleSpeed);
-
         // Command Permissions
         permissions.reload();
         getLogger().info("Reloaded permissions!");
 
-        getLogger().info("Reloaded TreasureElytra!");
-    }
-
-    public void disable() {
-        getLogger().warning("Couldn't initialize TreasureElytra!");
-        getPluginLoader().disablePlugin(this);
+        getLogger().info("Reloaded TreasureElytra+");
     }
 
     public void configure() {
         var config = getConfig();
-        if (!VERSION.equals(config.getString("version")))
-            saveResource("config.yml", true);
+        if (!VERSION.equals(config.getString("version"))) {
+            if (autoUpdateEnabled) {
+                var generator = new ConfigurationGenerator("config.yml");
+                generator.generate();
+                generator.reset();
+                reloadConfig();
+            } else
+                getLogger().warning("New version of config.yml available (v" + VERSION + ")");
+        }
+
         this.notificationsEnabled = config.getBoolean("notifications", true);
         this.autoUpdateEnabled = config.getBoolean("auto-update-configurations", true);
         ComponentLogger.setColored(config.getBoolean("colored-error-logs", true));
+    }
+
+    private void initializeCommands() {
+        // Main command with completions
+        commandManager.registerCommand(new MainCommand(this));
+        var completions = commandManager.getCommandCompletions();
+        completions.registerAsyncCompletion("effects", context -> effectManager.getEffects().stream().map(Effect::getKey).toList());
+        completions.registerAsyncCompletion("groupColors", context -> {
+            var key = context.getContextValue(String.class, 1);
+            var effect = effectManager.get(key);
+            return effect == null || effect.getColorGroup() == null ? Collections.emptyList() : effect.getColorGroup().getAvailableOptions().stream().map(option -> option.colorScheme().getKey()).toList();
+        });
+    }
+
+    private void initializeListeners() {
+        var pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new JoinQuitListener(this), this);
+    }
+
+    private void initializeMetrics() {
+        var metrics = new Metrics(this, 14508);
+        metrics.addCustomChart(new SimplePie("locale", () -> Translations.LOCALE));
+
+        metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
+        metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
+
+        metrics.addCustomChart(new SimplePie("debug_mode_enabled", () -> String.valueOf(debugModeEnabled)));
+        metrics.addCustomChart(new SimplePie("auto_update_enabled", () -> String.valueOf(autoUpdateEnabled)));
+
+        metrics.addCustomChart(new SimplePie("gui_animation_enabled", () -> String.valueOf(guiManager.getTaskId() != -5)));
+        metrics.addCustomChart(new SimplePie("gui_animation_interval", () -> String.valueOf(guiManager.getInterval())));
+        metrics.addCustomChart(new SimplePie("gui_animation_speed", () -> String.valueOf(guiManager.getColorCycleSpeed())));
     }
 
     public static Logger logger() {

@@ -6,6 +6,7 @@ import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.gui.config.GUIElements;
+import net.treasure.core.gui.type.effects.EffectsGUI;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.listener.ElytraBoostListener;
 import net.treasure.effect.listener.GlideListener;
@@ -39,7 +40,7 @@ import java.util.logging.Level;
 @Getter
 public class EffectManager implements DataHolder {
 
-    public static final String VERSION = "1.4.0";
+    public static final String VERSION = "1.5.0";
     public static boolean EFFECTS_VISIBILITY_PERMISSION = false;
     public static boolean ALWAYS_CHECK_PERMISSION = true;
 
@@ -118,7 +119,11 @@ public class EffectManager implements DataHolder {
     }
 
     public Effect get(String key) {
-        return effects.stream().filter(color -> color.getKey().equalsIgnoreCase(key)).findFirst().orElse(null);
+        return effects.stream().filter(color -> color.getKey().equals(key)).findFirst().orElse(null);
+    }
+
+    public boolean has(String key) {
+        return effects.stream().anyMatch(color -> color.getKey().equals(key));
     }
 
     public void loadEffects() {
@@ -146,25 +151,23 @@ public class EffectManager implements DataHolder {
             return;
         }
 
-        var messages = inst.getTranslations();
-        var mainConfig = inst.getConfig();
+        var translations = inst.getTranslations();
+        var permissions = inst.getPermissions();
 
         for (String key : section.getKeys(false)) {
             try {
                 String path = key + ".";
 
                 // Display Name
-                String displayName = section.getString(path + "displayName", key);
-                if (displayName != null && displayName.startsWith("%"))
-                    displayName = messages.get("effects." + displayName.substring(1), displayName);
+                String displayName = section.getString(path + "display-name", key);
+                displayName = translations.translate("effects", displayName);
 
                 // Permission
                 String permission = section.getString(path + "permission");
-                if (permission != null && permission.startsWith("%"))
-                    permission = mainConfig.getString("permissions." + permission.substring(1), permission);
+                permission = permissions.replace(permission);
 
                 // Tick Handlers
-                var handlerSection = section.getConfigurationSection(path + "onTick");
+                var handlerSection = section.getConfigurationSection(path + "on-tick");
                 if (handlerSection == null) {
                     inst.getLogger().warning("Effect must have onTick section: " + key);
                     continue;
@@ -179,14 +182,14 @@ public class EffectManager implements DataHolder {
                 }
 
                 // Icon
-                var icon = GUIElements.getItemStack(config, "effects." + path + "icon", GUIElements.DEFAULT_ICON);
+                var icon = GUIElements.getItemStack(config, "effects." + path + "icon", EffectsGUI.DEFAULT_ICON.item());
 
                 // Description
                 List<String> description;
                 if (section.contains(path + "description")) {
                     description = new ArrayList<>();
                     for (var s : section.getStringList(path + "description")) {
-                        var translated = MessageUtils.parseLegacy(messages.translate(s));
+                        var translated = MessageUtils.parseLegacy(translations.translate("descriptions", s));
                         description.addAll(List.of(translated.split("%nl%")));
                     }
                 } else {
@@ -198,12 +201,13 @@ public class EffectManager implements DataHolder {
                         displayName,
                         description != null ? description.toArray(String[]::new) : null,
                         icon,
-                        section.getString(path + "armorColor"),
+                        section.getString(path + "armor-color"),
                         permission,
                         section.getStringList(path + "variables"),
                         section.getInt(path + "interval", 1),
-                        section.getBoolean(path + "enableCaching", false),
-                        tickHandlers
+                        section.getBoolean(path + "enable-caching", false),
+                        tickHandlers,
+                        inst.getColorManager().getColorGroup(section.getString(path + "color-group"))
                 );
 
                 effects.add(effect);
