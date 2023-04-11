@@ -1,5 +1,6 @@
 package net.treasure.util;
 
+import net.treasure.util.math.MathUtils;
 import org.bukkit.util.Vector;
 
 public class Vectors {
@@ -7,8 +8,8 @@ public class Vectors {
     public static Vector rotateAroundAxisX(Vector v, double angle) {
         angle = Math.toRadians(angle);
         double y, z, cos, sin;
-        cos = MathUtil.cos(angle);
-        sin = MathUtil.sin(angle);
+        cos = MathUtils.cos(angle);
+        sin = MathUtils.sin(angle);
         y = v.getY() * cos - v.getZ() * sin;
         z = v.getY() * sin + v.getZ() * cos;
         return v.setY(y).setZ(z);
@@ -18,8 +19,8 @@ public class Vectors {
         angle = -angle;
         angle = Math.toRadians(angle);
         double x, z, cos, sin;
-        cos = MathUtil.cos(angle);
-        sin = MathUtil.sin(angle);
+        cos = MathUtils.cos(angle);
+        sin = MathUtils.sin(angle);
         x = v.getX() * cos + v.getZ() * sin;
         z = v.getX() * -sin + v.getZ() * cos;
         return v.setX(x).setZ(z);

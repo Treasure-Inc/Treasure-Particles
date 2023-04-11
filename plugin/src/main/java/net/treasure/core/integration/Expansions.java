@@ -2,9 +2,9 @@ package net.treasure.core.integration;
 
 import lombok.AllArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.treasure.locale.Translations;
 import net.treasure.common.Keys;
 import net.treasure.core.player.PlayerManager;
-import net.treasure.locale.Translations;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

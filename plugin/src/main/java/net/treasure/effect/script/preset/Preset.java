@@ -1,9 +1,9 @@
 package net.treasure.effect.script.preset;
 
 import lombok.AllArgsConstructor;
-import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
+import net.treasure.effect.TickHandler;
 import org.bukkit.entity.Player;
 
 import java.util.List;

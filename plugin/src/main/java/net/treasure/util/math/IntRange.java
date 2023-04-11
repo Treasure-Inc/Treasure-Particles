@@ -1,4 +1,4 @@
-package net.treasure.util;
+package net.treasure.util.math;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
