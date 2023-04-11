@@ -18,7 +18,7 @@ public class PresetReader extends ScriptReader<ReaderContext<?>, Script> {
         var inst = TreasurePlugin.getInstance();
         var lines = inst.getEffectManager().getPresets().get(line);
         if (lines == null || lines.isEmpty())
-            return null;
+            throw new ReaderException("Couldn't find any preset by name '" + line + "'");
         if (lines.size() == 1)
             return inst.getEffectManager().readLine(effect, lines.get(0));
         else {
