@@ -1,7 +1,0 @@
-name: TrElytra
-author: ItsZypec
-main: net.treasure.core.TreasurePlugin
-version: ${project.version}
-api-version: 1.16
-website: https://github.com/Treasure-Inc/Treasure-Elytra
-softdepend: [PlaceholderAPI]
