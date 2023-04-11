@@ -1,12 +1,13 @@
-package net.treasure.util;
+package net.treasure.util.math;
 
 import lombok.SneakyThrows;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import java.util.Random;
 
-public class MathUtil {
+public class MathUtils {
 
     private static final int SIN_BITS, SIN_MASK, SIN_COUNT;
     private static final double radFull, radToIndex;
@@ -155,5 +156,9 @@ public class MathUtil {
                 return x;
             }
         }.parse();
+    }
+
+    public static int generateRandomInteger(int minimum, int maximum) {
+        return minimum + (int) (new Random().nextDouble() * ((maximum - minimum) + 1));
     }
 }
