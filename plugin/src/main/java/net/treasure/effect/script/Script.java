@@ -2,16 +2,16 @@ package net.treasure.effect.script;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.util.TimeKeeper;
+import net.treasure.effect.TickHandler;
 import org.bukkit.entity.Player;
 
 @Getter
 @Setter
 public abstract class Script implements Cloneable {
 
-    protected int interval = -1, index;
+    protected int interval = -1;
     protected String tickHandlerKey = null;
 
     public abstract TickResult tick(Player player, EffectData data, TickHandler handler, int times);
