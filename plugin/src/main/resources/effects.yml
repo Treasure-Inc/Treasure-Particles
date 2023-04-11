@@ -1,6 +1,16 @@
 # Do not change!
 version: "1.5.0"
 effects:
+  gradient-circle:
+    display-name: "Gradient Circle"
+    armor-color: "gradient"
+    color-group: "gradients"
+    variables: [ 'radius=1', 'particles=32' ]
+    interval: 1
+    on-tick:
+      do:
+        scripts:
+          - circle [effect=redstone,tick-data=true,radius={radius},particles={particles},amount=10,origin=head*-1.25,color={dynamic=true;revert=true;speed=0.25}]
   rainbow-circle:
     display-name: "%rainbow-circle%"
     armor-color: "rainbow"
@@ -368,6 +378,22 @@ effects:
           - var xAng=cos({angle})
           - var yAng=sin({angle})
           - particle [effect=flame,direction=true,pos={x={x};y={y}},amount=0,offset={x={xAng};y={yAng}},speed=0.1,origin=head]
+  pulse-soul:
+    display-name: "%pulse-soul%"
+    armor-color: "gradient-aqua-to-blue"
+    variables: [ 'x', 'y', 'angle', 'xAng', 'yAng', 'radius=0.5' ]
+    interval: 15
+    enable-caching: true
+    on-tick:
+      do:
+        times: 50
+        scripts:
+          - var x=cos({PI} * {i} / 25) * {radius}
+          - var y=sin({PI} * {i} / 25) * {radius}
+          - var angle=atan({y},{x})
+          - var xAng=cos({angle})
+          - var yAng=sin({angle})
+          - particle [effect=soul_fire_flame,direction=true,pos={x={x};y={y}},amount=0,offset={x={xAng};y={yAng}},speed=0.1,origin=head]
   pulse-reverse:
     display-name: "%pulse-reverse%"
     armor-color: "gradient-dark-aqua-to-black"
@@ -430,6 +456,15 @@ effects:
           - particle [effect=heart,direction=true,origin=feet]
           - particle [effect=heart,direction=true,origin=feet,pos={y=-2.25}]
           - var x=-2
+  complementary:
+    display-name: "%complementary%"
+    armor-color: "complementary1-1"
+    interval: 8
+    variables: [ 'radius=1', 'particles=32' ]
+    on-tick:
+      do:
+        scripts:
+          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5;revert=true}]
   sonic:
     display-name: "%sonic%"
     permission: "%sonic"
