@@ -8,8 +8,8 @@ public class RGBColorData extends ColorData {
 
     final ColorScheme color;
 
-    public RGBColorData(ColorScheme color, float speed, boolean revertWhenDone) {
-        super(speed, revertWhenDone);
+    public RGBColorData(ColorScheme color, float speed, boolean revertWhenDone, boolean stopCycle) {
+        super(speed, revertWhenDone, stopCycle);
         this.color = color;
         this.max = color.getColors().size();
     }
