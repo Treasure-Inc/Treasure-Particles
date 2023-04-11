@@ -21,6 +21,13 @@ public class BooleanArgument implements ScriptArgument<Boolean> {
             return new BooleanArgument(arg).validate(context);
     }
 
+    public static boolean read(String arg) throws ReaderException {
+        if (arg.equals("true") || arg.equals("false"))
+            return Boolean.parseBoolean(arg);
+        else
+            throw new ReaderException("Valid values for Static Boolean argument: true, false");
+    }
+
     @Override
     public Boolean get(Player player, EffectData data) {
         if (value == null) return null;
