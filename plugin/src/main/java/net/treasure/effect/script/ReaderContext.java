@@ -13,7 +13,7 @@ import net.treasure.effect.Effect;
 public class ReaderContext<S extends Script> {
     private final Effect effect;
     private final String type, line;
-    private final S script;
+    protected final S script;
     private String key;
     private String value;
     private int start;
