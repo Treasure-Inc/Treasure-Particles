@@ -1,14 +1,14 @@
 package net.treasure.color;
 
-import net.treasure.util.color.Gradient;
+import net.treasure.color.generator.Gradient;
+import org.bukkit.Color;
 
-import java.awt.*;
 import java.util.Arrays;
 
 public class GradientColorScheme extends ColorScheme {
 
-    public GradientColorScheme(String key, int size, Color... colors) {
-        super(key);
+    public GradientColorScheme(String key, String displayName, int size, Color... colors) {
+        super(key, displayName);
         this.getColors().addAll(Arrays.asList(new Gradient(colors).colors(size)));
     }
 }
