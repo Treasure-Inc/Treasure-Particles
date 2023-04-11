@@ -24,11 +24,8 @@ public class JoinQuitListener implements Listener {
                 plugin.getPlayerManager().remove(player);
                 return;
             }
-            if (player.hasPermission(Permissions.ADMIN) && plugin.isNotificationsEnabled() && data.isNotificationsEnabled()) {
+            if (player.hasPermission(Permissions.ADMIN) && plugin.isNotificationsEnabled() && data.isNotificationsEnabled())
                 MessageUtils.sendParsed(player, Translations.NOTIFICATION);
-                if (plugin.getUpdateChecker().isUpdateAvailable())
-                    MessageUtils.sendParsed(player, "<prefix> <green>New version of TreasureElytra available!");
-            }
         });
     }
 

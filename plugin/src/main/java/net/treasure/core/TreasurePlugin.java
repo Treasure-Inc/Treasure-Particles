@@ -18,7 +18,6 @@ import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
 import net.treasure.locale.Translations;
-import net.treasure.util.UpdateChecker;
 import net.treasure.util.logging.ComponentLogger;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -47,7 +46,6 @@ public class TreasurePlugin extends JavaPlugin {
 
     private Database database;
     private PlayerManager playerManager;
-    private UpdateChecker updateChecker;
 
     // ACF
     private BukkitCommandManager commandManager;
