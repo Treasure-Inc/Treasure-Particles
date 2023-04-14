@@ -14,10 +14,12 @@ import net.treasure.core.gui.type.color.listener.ColorsGUIListener;
 import net.treasure.core.gui.type.effects.EffectsGUI;
 import net.treasure.core.gui.type.effects.listener.EffectsGUIListener;
 import net.treasure.locale.Translations;
+import net.treasure.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 public class GUIManager implements DataHolder {
@@ -94,22 +96,12 @@ public class GUIManager implements DataHolder {
     public GUIStyle getCurrentStyle() {
         var id = config.getString("current-style");
         if (id == null) return null;
-        GUIStyle.Type type;
-        try {
-            type = GUIStyle.Type.valueOf(config.getString("styles." + id + ".type"));
-        } catch (Exception e) {
-            TreasurePlugin.logger().warning("Unknown GUI style type: " + id);
-            return null;
-        }
         var title = config.getString("styles." + id + ".title", Translations.GUI_TITLE);
-        var effectsLayout = config.getStringList("styles." + id + ".effects.layout").toArray(String[]::new);
-        var colorsLayout = config.getStringList("styles." + id + ".colors.layout").toArray(String[]::new);
         return new GUIStyle(
-                type,
                 id,
                 title,
-                config.getInt("style." + id + ".size", 54),
-                Map.of(GUI.EFFECTS, effectsLayout, GUI.COLORS, colorsLayout)
+                config.getInt("styles." + id + ".size", 54),
+                Stream.of(GUI.values()).map(gui -> new Pair<>(gui, config.getStringList("styles." + id + "." + gui.id() + ".layout").toArray(String[]::new))).collect(Collectors.toMap(Pair::getKey, Pair::getValue))
         );
     }
 }
