@@ -1,7 +1,7 @@
 package net.treasure.effect;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import net.treasure.effect.script.Script;
 
@@ -9,9 +9,9 @@ import java.util.List;
 
 @Getter
 @Accessors(fluent = true)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TickHandler {
-    String name;
-    int times;
+    final String key;
+    final int times;
     List<Script> lines;
 }

@@ -48,7 +48,7 @@ public class CircleParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, TickHandler handler, int times) {
+    public TickResult tick(Player player, EffectData data, int times) {
         var context = tick(player, data);
         if (context == null) return TickResult.NORMAL;
 

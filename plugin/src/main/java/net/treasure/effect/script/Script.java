@@ -2,9 +2,9 @@ package net.treasure.effect.script;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.util.TimeKeeper;
-import net.treasure.effect.TickHandler;
 import org.bukkit.entity.Player;
 
 @Getter
@@ -12,20 +12,20 @@ import org.bukkit.entity.Player;
 public abstract class Script implements Cloneable {
 
     protected int interval = -1;
-    protected String tickHandlerKey = null;
+    protected TickHandler tickHandler;
 
-    public abstract TickResult tick(Player player, EffectData data, TickHandler handler, int times);
+    public abstract TickResult tick(Player player, EffectData data, int times);
 
-    public TickResult doTick(Player player, EffectData data, TickHandler handler, int times) {
+    public TickResult doTick(Player player, EffectData data, int times) {
         if (interval > 0 && !TimeKeeper.isElapsed(interval))
             return TickResult.NORMAL;
-        return tick(player, data, handler, times);
+        return tick(player, data, times);
     }
 
     public Script cloneScript() {
         var script = clone();
         script.interval = interval;
-        script.tickHandlerKey = tickHandlerKey;
+        script.tickHandler = tickHandler;
         return script;
     }
 

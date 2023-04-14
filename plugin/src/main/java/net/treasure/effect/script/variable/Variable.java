@@ -29,7 +29,7 @@ public class Variable extends Script {
     private String eval;
 
     @Override
-    public TickResult tick(Player player, EffectData data, TickHandler handler, int times) {
+    public TickResult tick(Player player, EffectData data, int times) {
         var pair = data.getVariable(variable);
         if (pair == null) return TickResult.NORMAL;
         var effect = data.getCurrentEffect();

@@ -106,7 +106,7 @@ public class ParticleSpawner extends Script {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, TickHandler handler, int times) {
+    public TickResult tick(Player player, EffectData data, int times) {
         return null;
     }
 
