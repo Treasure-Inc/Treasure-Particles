@@ -40,7 +40,7 @@ public class RangeArgument extends FloatArgument {
                 Float.parseFloat(arg);
                 return new RangeArgument(arg);
             } catch (Exception e) {
-                if (context.effect().hasVariable(Variable.replace(arg)))
+                if (context.effect().isValidVariable(Variable.replace(arg)))
                     return new RangeArgument(arg);
                 else
                     throw new ReaderException("Valid values for Float argument: decimals, {variable}");

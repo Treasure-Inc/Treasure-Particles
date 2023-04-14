@@ -37,7 +37,7 @@ public class IntArgument implements ScriptArgument<Integer> {
             Integer.parseInt(arg);
             return this;
         } catch (Exception e) {
-            if (context.effect().hasVariable(Variable.replace(arg)))
+            if (context.effect().isValidVariable(Variable.replace(arg)))
                 return this;
             else
                 throw new ReaderException("Valid values for Integer argument: integers, {variable}");

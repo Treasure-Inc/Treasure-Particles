@@ -41,7 +41,7 @@ public class BooleanArgument implements ScriptArgument<Boolean> {
     @Override
     public BooleanArgument validate(ReaderContext<?> context) throws ReaderException {
         var arg = context.value();
-        if (arg.equals("true") || arg.equals("false") || context.effect().hasVariable(Variable.replace(arg)))
+        if (arg.equals("true") || arg.equals("false") || context.effect().isValidVariable(Variable.replace(arg)))
             return this;
         else
             throw new ReaderException("Valid values for Boolean argument: true, false, {variable}");
