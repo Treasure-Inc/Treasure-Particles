@@ -94,28 +94,27 @@ public class Effect {
     }
 
     public void preTick() {
-        var data = new EffectData(null, variables);
+        var data = new EffectData(variables);
 
-        for (var entry : lines.entrySet()) {
+        for (var tickHandler : lines) {
             int index = 0;
-            var tickHandler = entry.getValue();
             for (var script : tickHandler.lines) {
-                if (script instanceof Variable var) {
-                    var.setIndex(index);
+                if (script instanceof Cached cached) {
+                    cached.setIndex(index);
                     index++;
                 } else if (script instanceof ConditionalScript conditionalScript) {
                     List<ConditionalScript> check = new ArrayList<>();
                     check.add(conditionalScript);
                     while (!check.isEmpty()) {
                         var latest = check.remove(0);
-                        if (latest.getFirstExpression() instanceof Variable variable) {
-                            variable.setIndex(index);
+                        if (latest.getFirstExpression() instanceof Cached cached) {
+                            cached.setIndex(index);
                             index++;
                         } else if (latest.getFirstExpression() instanceof ConditionalScript cs)
                             check.add(cs);
 
-                        if (latest.getSecondExpression() instanceof Variable variable) {
-                            variable.setIndex(index);
+                        if (latest.getSecondExpression() instanceof Cached cached) {
+                            cached.setIndex(index);
                             index++;
                         } else if (latest.getSecondExpression() instanceof ConditionalScript cs)
                             check.add(cs);
@@ -123,7 +122,7 @@ public class Effect {
                 }
             }
             if (index > 0)
-                cache.put(entry.getKey(), new double[tickHandler.times][index]);
+                cache.put(tickHandler.key, new double[tickHandler.times][index]);
         }
         if (cache.isEmpty()) {
             TreasurePlugin.logger().warning(getPrefix() + "There is nothing to cache for this effect, you can disable the caching");
@@ -145,14 +144,13 @@ public class Effect {
             return;
         }
 
-        for (var entry : lines.entrySet()) {
-            var tickHandler = entry.getValue();
+        for (var tickHandler : lines) {
             tp.setValue((double) tickHandler.times);
             for (int i = 0; i < tickHandler.times; i++) {
                 ip.setValue((double) i);
                 for (var script : tickHandler.lines) {
-                    if (script instanceof Variable variable) {
-                        cache.get(entry.getKey())[i][variable.getIndex()] = variable.preTick(variables);
+                    if (script instanceof Cached cached) {
+                        cached.preTick(this, i);
                     }
                 }
             }
