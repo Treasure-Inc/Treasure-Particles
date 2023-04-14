@@ -1,10 +1,15 @@
 package net.treasure.common.particles;
 
 import lombok.Getter;
+import net.treasure.common.ReflectionUtils;
 import org.bukkit.Particle;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.DoubleFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static net.treasure.common.particles.ParticleEffect.Property.CAN_BE_COLORED;
 import static net.treasure.common.particles.ParticleEffect.Property.DIRECTIONAL;
@@ -70,18 +75,6 @@ public enum ParticleEffect {
      * <li>Extra:<ul>
      * <li>  The velocity of this particle can be set. The amount has to be 0</li>
      * <li> This particle needs a block texture in order to work.</li></ul></li>
-     * </ul>
-     */
-    BLOCK_DUST(version -> version < 8 ? "NONE" : (version < 13 ? "BLOCK_DUST" : "falling_dust"), DIRECTIONAL, REQUIRES_BLOCK),
-    /**
-     * In vanilla, this particle is randomly displayed by magma
-     * blocks and soul sand underwater.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Bubble with blue outline.</li>
-     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
     BUBBLE_COLUMN_UP(version -> version < 13 ? "NONE" : "bubble_column_up", DIRECTIONAL),
@@ -1121,6 +1114,18 @@ public enum ParticleEffect {
      */
     WHITE_ASH(version -> version < 16 ? "NONE" : "white_ash");
 
+    public static final List<ParticleEffect> VALUES = List.of(values());
+    public static final Map<String, ParticleEffect> MINECRAFT_KEYS;
+
+    static {
+        //noinspection ConstantConditions
+        MINECRAFT_KEYS = Collections.unmodifiableMap(
+                VALUES.stream()
+                        .filter(effect -> !"NONE".equals(effect.getFieldName()))
+                        .collect(Collectors.toMap(ParticleEffect::getFieldName, Function.identity()))
+        );
+    }
+
     final DoubleFunction<String> fieldNameMapper;
     final List<Property> properties;
     Particle particle;
@@ -1132,6 +1137,10 @@ public enum ParticleEffect {
 
     public boolean hasProperty(Property property) {
         return property != null && properties.contains(property);
+    }
+
+    public String getFieldName() {
+        return fieldNameMapper.apply(ReflectionUtils.MINECRAFT_VERSION);
     }
 
     public Particle bukkit() {
