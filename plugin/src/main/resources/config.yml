@@ -4,10 +4,10 @@ version: "1.5.0"
 # Translations locale (default=EN)
 locale: EN
 
-# Toggle notifications (default=true)
+# Toggle notifications (default=false)
 # Players can disable notifications for themselves even if 'notifications' is enabled
-# If you set 'notifications' to false, it will be disabled for all players
-notifications: true
+# If you set 'notifications' to false, it will always be disabled for all players
+notifications: false
 
 # Toggle auto-update configurations (default=true)
 # Disable this setting if you don't want your configurations to update automatically
