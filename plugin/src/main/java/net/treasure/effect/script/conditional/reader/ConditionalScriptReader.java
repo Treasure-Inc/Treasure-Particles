@@ -1,12 +1,12 @@
 package net.treasure.effect.script.conditional.reader;
 
-import net.treasure.effect.script.conditional.ConditionalScript;
 import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.ReaderContext;
 import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.conditional.ConditionalScript;
 
 import java.util.regex.Matcher;
 
@@ -51,6 +51,7 @@ public class ConditionalScriptReader extends ScriptReader<ReaderContext<?>, Cond
                 throw new ReaderException();
             }
         }
+        error(effect, type, line, "Incorrect conditional script usage");
         return null;
     }
 }

@@ -73,7 +73,7 @@ public class VectorArgument implements ScriptArgument<Vector> {
             try {
                 Double.parseDouble(x);
             } catch (Exception e) {
-                if (!context.effect().hasVariable(Variable.replace(x)))
+                if (!context.effect().isValidVariable(Variable.replace(x)))
                     throw new ReaderException("Valid values for Vector argument: decimals, {variable}");
             }
         }
@@ -82,7 +82,7 @@ public class VectorArgument implements ScriptArgument<Vector> {
             try {
                 Double.parseDouble(y);
             } catch (Exception e) {
-                if (!context.effect().hasVariable(Variable.replace(y)))
+                if (!context.effect().isValidVariable(Variable.replace(y)))
                     throw new ReaderException("Valid values for Vector argument: decimals, {variable}");
             }
         }
@@ -91,7 +91,7 @@ public class VectorArgument implements ScriptArgument<Vector> {
             try {
                 Double.parseDouble(z);
             } catch (Exception e) {
-                if (!context.effect().hasVariable(Variable.replace(z)))
+                if (!context.effect().isValidVariable(Variable.replace(z)))
                     throw new ReaderException("Valid values for Vector argument: decimals, {variable}");
             }
         }

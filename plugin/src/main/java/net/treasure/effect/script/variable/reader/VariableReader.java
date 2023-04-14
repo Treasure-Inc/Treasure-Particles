@@ -11,39 +11,33 @@ public class VariableReader extends ScriptReader<ReaderContext<?>, Variable> {
 
     @Override
     public Variable read(Effect effect, String type, String line) throws ReaderException {
-        var evalMatcher = Patterns.EVAL.matcher(line);
+        var matcher = Patterns.EVAL.matcher(line);
 
-        if (evalMatcher.matches()) {
-            var variable = evalMatcher.group(1);
-            int start = evalMatcher.start(), end = evalMatcher.end();
+        if (matcher.matches()) {
+            int start = matcher.start(), end = matcher.end();
 
+            var variable = matcher.group(1);
             if (!effect.hasVariable(variable)) {
-                error(effect, type, line, start, end, (effect.checkPredefinedVariable(variable) ? "Unknown variable" : "You cannot edit pre-defined variables") + " (" + variable + ")");
+                error(effect, type, line, start, end, (effect.checkPredefinedVariable(variable) ? "Unknown variable" : "You cannot edit pre-defined variables") + ": " + variable);
                 return null;
             }
 
-            var operator = evalMatcher.group(2);
-            var eval = evalMatcher.group(3);
-
-            start = evalMatcher.start();
-            end = evalMatcher.end();
-
-            var builder = Variable.builder();
-            builder.variable(variable);
-            builder.eval(eval);
-            switch (operator) {
-                case "" -> builder.operator(Variable.Operator.EQUAL);
-                case "+" -> builder.operator(Variable.Operator.ADD);
-                case "-" -> builder.operator(Variable.Operator.SUBTRACT);
-                case "*" -> builder.operator(Variable.Operator.MULTIPLY);
-                case "/" -> builder.operator(Variable.Operator.DIVIDE);
-                default -> {
-                    error(effect, type, line, start, end, "Invalid operator (" + operator + ")");
-                    return null;
-                }
+            var o = matcher.group(2);
+            var operator = switch (o) {
+                case "" -> Variable.Operator.EQUAL;
+                case "+" -> Variable.Operator.ADD;
+                case "-" -> Variable.Operator.SUBTRACT;
+                case "*" -> Variable.Operator.MULTIPLY;
+                case "/" -> Variable.Operator.DIVIDE;
+                default -> null;
+            };
+            if (operator == null) {
+                error(effect, type, line, start, end, "Invalid operator (" + o + ")");
+                return null;
             }
-            return builder.build();
+            return new Variable(variable, operator, matcher.group(3));
         }
+        error(effect, type, line, "Incorrect variable script usage");
         return null;
     }
 }
