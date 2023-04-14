@@ -10,7 +10,7 @@ import net.treasure.color.data.RandomNoteColorData;
 import net.treasure.color.data.duo.DuoImpl;
 import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.common.particles.ParticleEffect;
-import net.treasure.effect.TickHandler;
+import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.type.FloatArgument;
@@ -33,6 +33,7 @@ public class ParticleSpawner extends Script {
     protected ParticleEffect particle;
     protected ParticleOrigin origin;
     protected VectorArgument position;
+    protected VectorArgument offset;
     protected ColorData colorData;
     protected Object particleData;
     protected IntArgument amount;
@@ -59,6 +60,20 @@ public class ParticleSpawner extends Script {
 
         if (speed != null)
             builder.speed(speed.get(player, data));
+
+        var offset = this.offset != null ? this.offset.get(player, data) : null;
+        if (directional && offset != null) {
+            offset = Vectors.rotateAroundAxisX(offset, player.getEyeLocation().getPitch());
+            offset = Vectors.rotateAroundAxisY(offset, player.getEyeLocation().getYaw());
+            offset = offset.add(player.getLocation().getDirection().add(offset));
+        }
+
+        if (offset != null)
+            builder.offset(offset);
+
+        var playerManager = TreasurePlugin.getInstance().getPlayerManager();
+        builder.viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects(viewer));
+
         return new ParticleContext(builder, origin);
     }
 

@@ -9,8 +9,6 @@ import net.treasure.color.data.RandomNoteColorData;
 import net.treasure.color.data.duo.DuoImpl;
 import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.common.particles.ParticleEffect;
-import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.type.BooleanArgument;
@@ -38,11 +36,12 @@ public class CircleParticle extends ParticleSpawner {
     RangeArgument radius = new RangeArgument(1f);
     BooleanArgument tickData = new BooleanArgument(false);
 
-    public CircleParticle(ParticleEffect particle, ParticleOrigin origin, VectorArgument position,
+    public CircleParticle(ParticleEffect particle, ParticleOrigin origin,
+                          VectorArgument position, VectorArgument offset,
                           ColorData colorData, Object particleData,
                           IntArgument particles, RangeArgument radius,
                           IntArgument amount, FloatArgument multiplier, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(particle, origin, position, colorData, particleData, amount, multiplier, speed, size, directional);
+        super(particle, origin, position, offset, colorData, particleData, amount, multiplier, speed, size, directional);
         this.particles = particles;
         this.radius = radius;
     }
@@ -58,15 +57,11 @@ public class CircleParticle extends ParticleSpawner {
         var particles = this.particles.get(player, data);
         var radius = this.radius.get(player, data);
         var tickData = this.tickData.get(player, data);
-
-        var playerManager = TreasurePlugin.getInstance().getPlayerManager();
+        var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
 
         var particleData = particleData(player, data);
 
         List<ParticleBuilder> builders = new ArrayList<>();
-
-        var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
-
         for (int i = 0; i < particles; i++) {
             var r = 2 * Math.PI * i / particles;
             var x = MathUtils.cos(r) * radius;
@@ -76,8 +71,7 @@ public class CircleParticle extends ParticleSpawner {
 
             var copy = builder.copy();
             copy.location(location)
-                    .data(particleData)
-                    .viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects(viewer));
+                    .data(particleData);
 
             if (particle == ParticleEffect.NOTE && colorData != null && colorData.isNote())
                 copy.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
@@ -118,6 +112,6 @@ public class CircleParticle extends ParticleSpawner {
 
     @Override
     public Script clone() {
-        return new CircleParticle(particle, origin, position, colorData, particleData, particles, radius, amount, multiplier, speed, size, directional);
+        return new CircleParticle(particle, origin, position, offset, colorData, particleData, particles, radius, amount, multiplier, speed, size, directional);
     }
 }

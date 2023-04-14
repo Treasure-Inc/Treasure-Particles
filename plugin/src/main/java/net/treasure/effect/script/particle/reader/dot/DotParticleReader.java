@@ -1,7 +1,6 @@
 package net.treasure.effect.script.particle.reader.dot;
 
 import net.treasure.effect.Effect;
-import net.treasure.effect.script.argument.type.VectorArgument;
 import net.treasure.effect.script.particle.reader.ParticleReader;
 import net.treasure.effect.script.particle.style.DotParticle;
 
@@ -9,8 +8,6 @@ public class DotParticleReader extends ParticleReader<DotParticle> {
 
     public DotParticleReader() {
         super();
-
-        addValidArgument(c -> c.script().offset(VectorArgument.read(c)), "offset");
     }
 
     @Override

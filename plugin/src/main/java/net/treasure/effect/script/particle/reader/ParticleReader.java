@@ -28,7 +28,23 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
     public ParticleReader() {
         addValidArgument(c -> {
-            var particle = StaticArgument.asEnum(c, ParticleEffect.class);
+            var args = Patterns.COLON.split(c.value());
+            if (args.length > 2) {
+                error(c, "Incorrect particle effect input: " + c.value());
+                return;
+            }
+            if (args.length == 2 && !args[0].equals("minecraft")) {
+                error(c, "Incorrect particle effect input: " + c.value());
+                return;
+            }
+
+            ParticleEffect particle;
+            if (args.length == 2) {
+                particle = ParticleEffect.MINECRAFT_KEYS.get(args[1]);
+            } else {
+                particle = StaticArgument.asEnum(c, ParticleEffect.class);
+            }
+
             if (particle == null || particle.bukkit() == null) {
                 if (c.value().equalsIgnoreCase("vibration")) {
                     error(c, "Vibration effect is not supported");
@@ -37,8 +53,9 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
                 error(c, "Unknown particle effect: " + c.value());
                 return;
             }
+
             c.script().particle(particle);
-        }, "effect");
+        }, "effect", "particle");
 
         addValidArgument(c -> {
             var args = Patterns.ASTERISK.split(c.value());
@@ -57,6 +74,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         }, "origin");
 
         addValidArgument(c -> c.script().position(VectorArgument.read(c)), "pos", "position");
+
+        addValidArgument(c -> c.script().offset(VectorArgument.read(c)), "offset");
 
         addValidArgument(c -> {
             var particle = c.script().particle();

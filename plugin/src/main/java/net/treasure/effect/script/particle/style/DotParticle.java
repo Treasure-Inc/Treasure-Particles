@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.color.data.ColorData;
 import net.treasure.common.particles.ParticleEffect;
-import net.treasure.effect.TickHandler;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.argument.type.FloatArgument;
 import net.treasure.effect.script.argument.type.IntArgument;
@@ -14,7 +13,6 @@ import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
 import net.treasure.effect.script.particle.ParticleOrigin;
 import net.treasure.effect.script.particle.ParticleSpawner;
-import net.treasure.util.Vectors;
 import net.treasure.util.particles.Particles;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -25,14 +23,11 @@ import org.bukkit.util.Vector;
 @NoArgsConstructor
 public class DotParticle extends ParticleSpawner {
 
-    VectorArgument offset;
-
     public DotParticle(ParticleEffect effect, ParticleOrigin origin,
                        VectorArgument position, VectorArgument offset,
                        ColorData colorData, Object particleData,
                        IntArgument amount, FloatArgument multiplier, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(effect, origin, position, colorData, particleData, amount, multiplier, speed, size, directional);
-        this.offset = offset;
+        super(effect, origin, position, offset, colorData, particleData, amount, multiplier, speed, size, directional);
     }
 
     @Override
@@ -45,16 +40,6 @@ public class DotParticle extends ParticleSpawner {
 
         var vector = position == null ? new Vector(0, 0, 0) : position.get(player, data);
         builder.location(rotate(player, origin, vector));
-
-        var offset = this.offset != null ? this.offset.get(player, data) : null;
-        if (directional && offset != null) {
-            offset = Vectors.rotateAroundAxisX(offset, player.getEyeLocation().getPitch());
-            offset = Vectors.rotateAroundAxisY(offset, player.getEyeLocation().getYaw());
-            offset = offset.add(player.getLocation().getDirection().add(offset));
-        }
-
-        if (offset != null)
-            builder.offset(offset);
 
         updateParticleData(player, data, builder);
 
