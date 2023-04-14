@@ -16,7 +16,6 @@ sounds: # GUI sounds (SOUND VOLUME PITCH) (Leave it blank if you don't want it t
 current-style: "default-gui"
 styles:
   default-gui:
-    type: DEFAULT
     size: 54
     effects:
       layout:
@@ -37,12 +36,10 @@ styles:
             material: LEATHER_BOOTS
         next-page:
           key: 'N'
-          default: "borders"
           item:
             material: ENDER_PEARL
         previous-page:
           key: 'P'
-          default: "borders"
           item:
             material: ENDER_EYE
         random-effect:
@@ -91,7 +88,6 @@ styles:
           item:
             material: STRUCTURE_VOID
   elytra-shaped-gui:
-    type: DEFAULT
     size: 54
     effects:
       layout:
