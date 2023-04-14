@@ -35,7 +35,7 @@ import java.util.List;
 public class CircleParticle extends ParticleSpawner {
 
     IntArgument particles = new IntArgument(32);
-    RangeArgument radius = new RangeArgument(1);
+    RangeArgument radius = new RangeArgument(1f);
     BooleanArgument tickData = new BooleanArgument(false);
 
     public CircleParticle(ParticleEffect particle, ParticleOrigin origin, VectorArgument position,
@@ -79,7 +79,7 @@ public class CircleParticle extends ParticleSpawner {
                     .data(particleData)
                     .viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects(viewer));
 
-            if (particle.equals(ParticleEffect.NOTE) && colorData.isNote())
+            if (particle == ParticleEffect.NOTE && colorData != null && colorData.isNote())
                 copy.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
 
             builders.add(copy);
@@ -95,7 +95,7 @@ public class CircleParticle extends ParticleSpawner {
     public Object particleData(Player player, EffectData data) {
         if (particleData != null) return particleData();
 
-        if (colorData == null) {
+        if (colorData == null || particle == ParticleEffect.NOTE) {
             particleData = Particles.NMS.getParticleParam(particle);
             return particleData;
         }
