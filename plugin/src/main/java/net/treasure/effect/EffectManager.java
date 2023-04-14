@@ -82,7 +82,7 @@ public class EffectManager implements DataHolder {
         registerReader("circle", new CircleParticleReader());
         registerReader("preset", new PresetReader());
         registerReader("conditional", new ConditionalScriptReader());
-        registerReader("sound", new SoundReader());
+        registerReader("play-sound", new SoundReader(), "sound");
         registerReader("chat", new BasicScriptReader<>(ChatMessage::new));
         registerReader("actionbar", new BasicScriptReader<>(ActionBar::new));
         registerReader("title", new TitleReader());
