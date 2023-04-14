@@ -1,32 +1,30 @@
 package net.treasure.effect.script.variable;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.treasure.util.Pair;
-import net.treasure.util.math.MathUtils;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.effect.TickHandler;
+import net.treasure.effect.Effect;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.script.Cached;
 import net.treasure.effect.script.Script;
+import net.treasure.util.math.MathUtils;
 import org.bukkit.entity.Player;
 
-import java.util.Set;
-
-@Builder
 @Getter
 @AllArgsConstructor
-public class Variable extends Script {
+@RequiredArgsConstructor
+public class Variable extends Script implements Cached {
 
     public static final String I = "i";
     public static final String TIMES = "TIMES";
 
     @Setter
-    private int index;
-    private String variable;
-    private Operator operator;
-    private String eval;
+    protected int index;
+    protected final String variable;
+    protected final Operator operator;
+    protected final String eval;
 
     @Override
     public TickResult tick(Player player, EffectData data, int times) {
@@ -34,14 +32,14 @@ public class Variable extends Script {
         if (pair == null) return TickResult.NORMAL;
         var effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
-            pair.setValue(effect.getCache().get(tickHandlerKey)[times][index]);
+            pair.setValue(effect.getCache().get(tickHandler.key())[times][index]);
             return TickResult.NORMAL;
         }
         double val;
         try {
             val = MathUtils.eval(data.replaceVariables(eval));
         } catch (Exception e) {
-            e.printStackTrace();
+            TreasurePlugin.logger().warning("Invalid evaluation: " + eval);
             return TickResult.NORMAL;
         }
         switch (operator) {
@@ -54,30 +52,26 @@ public class Variable extends Script {
         return TickResult.NORMAL;
     }
 
-    public double preTick(Set<Pair<String, Double>> variables) {
-        Pair<String, Double> pair = null;
-        for (var var : variables)
-            if (var.getKey().equals(variable)) {
-                pair = var;
-                break;
-            }
-        if (pair == null) return 0;
+    public void preTick(Effect effect, int times) {
+        var data = new EffectData(effect.getVariables());
+        var pair = data.getVariable(variable);
+        if (pair == null) return;
+
         double val;
         try {
-            var data = new EffectData(null, variables);
             val = MathUtils.eval(data.replaceVariables(eval));
         } catch (Exception e) {
             TreasurePlugin.logger().warning("Invalid evaluation: " + eval);
-            return 0;
+            return;
         }
-        switch (operator) {
-            case EQUAL -> pair.setValue(val);
-            case ADD -> pair.setValue(pair.getValue() + val);
-            case SUBTRACT -> pair.setValue(pair.getValue() - val);
-            case MULTIPLY -> pair.setValue(pair.getValue() * val);
-            case DIVIDE -> pair.setValue(pair.getValue() / val);
-        }
-        return pair.getValue();
+
+        effect.getCache().get(tickHandler.key())[times][index] = switch (operator) {
+            case EQUAL -> val;
+            case ADD -> pair.getValue() + val;
+            case SUBTRACT -> pair.getValue() - val;
+            case MULTIPLY -> pair.getValue() * val;
+            case DIVIDE -> pair.getValue() / val;
+        };
     }
 
     @Override
