@@ -25,6 +25,7 @@ import net.treasure.effect.script.particle.reader.circle.CircleParticleReader;
 import net.treasure.effect.script.particle.reader.dot.DotParticleReader;
 import net.treasure.effect.script.preset.reader.PresetReader;
 import net.treasure.effect.script.sound.reader.SoundReader;
+import net.treasure.effect.script.variable.cycle.VariableCycleReader;
 import net.treasure.effect.script.variable.reader.VariableReader;
 import net.treasure.effect.task.EffectsTask;
 import net.treasure.util.Pair;
@@ -76,6 +77,7 @@ public class EffectManager implements DataHolder {
 
         // Register readers
         registerReader("variable", new VariableReader(), "var");
+        registerReader("variable-cycle", new VariableCycleReader(), "varc");
         registerReader("particle", new DotParticleReader(), "dot");
         registerReader("circle", new CircleParticleReader());
         registerReader("preset", new PresetReader());
