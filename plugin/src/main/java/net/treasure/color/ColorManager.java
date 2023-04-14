@@ -4,6 +4,8 @@ import lombok.Getter;
 import net.treasure.color.generator.Gradient;
 import net.treasure.color.generator.Rainbow;
 import net.treasure.color.group.ColorGroup;
+import net.treasure.color.scheme.ColorScheme;
+import net.treasure.color.scheme.GradientColorScheme;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
@@ -141,7 +143,7 @@ public class ColorManager implements DataHolder {
 
     public boolean checkColorSchemeName(String name) {
         return switch (name) {
-            case "rainbow" -> false;
+            case "rainbow", "random-note" -> false;
             default -> true;
         };
     }

@@ -1,4 +1,4 @@
-package net.treasure.color;
+package net.treasure.color.scheme;
 
 import lombok.Getter;
 import org.bukkit.Color;

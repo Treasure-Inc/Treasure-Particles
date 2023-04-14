@@ -3,7 +3,7 @@ package net.treasure.color.group;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.treasure.color.ColorScheme;
+import net.treasure.color.scheme.ColorScheme;
 import org.bukkit.entity.Player;
 
 import java.util.List;

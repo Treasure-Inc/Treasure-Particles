@@ -1,6 +1,6 @@
 package net.treasure.color.data;
 
-import net.treasure.color.ColorScheme;
+import net.treasure.color.scheme.ColorScheme;
 import net.treasure.effect.data.EffectData;
 import org.bukkit.Color;
 
