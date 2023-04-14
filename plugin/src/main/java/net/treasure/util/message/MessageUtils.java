@@ -30,9 +30,9 @@ public class MessageUtils {
                     .resolver(TagResolver.standard())
                     .resolvers(
                             Placeholder.parsed("prefix", Translations.PREFIX),
-                            TagResolver.resolver("discord", (args, context) -> Tag.styling(ClickEvent.openUrl("https://dc.treas.store/"))),
+                            TagResolver.resolver("discord", (args, context) -> Tag.styling(ClickEvent.openUrl("https://discord.com/invite/qQbePCtSjh/"))),
                             TagResolver.resolver("download", (args, context) -> Tag.styling(ClickEvent.openUrl("https://builtbybit.com/resources/26794/"))),
-                            TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://treasurestore.gitbook.io/treasure-elytra")))
+                            TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://treasurestore.gitbook.io/treasure-elytra/")))
 
                     ).build()
             ).build();
