@@ -4,7 +4,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
-import net.treasure.effect.script.ReaderContext;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.util.message.MessageUtils;
 
 import java.util.logging.Logger;
@@ -21,7 +21,7 @@ public class ComponentLogger {
 
     public static void error(Effect effect, String type, String line, String... messages) {
         if (colored) {
-            MessageUtils.logParsed("<yellow>[TrElytra+] <red><effect><yellow><type> <line>",
+            MessageUtils.logParsed("<yellow>[TrElytraPlus] <red><effect><yellow><type> <line>",
                     Placeholder.unparsed("effect", effect.getPrefix()),
                     Placeholder.unparsed("type", type),
                     Placeholder.unparsed("line", line)
@@ -44,7 +44,7 @@ public class ComponentLogger {
         }
 
         line = "<yellow>" + line.substring(0, start) + "<gold><u>" + line.substring(start, end) + "</u></gold>" + line.substring(end);
-        MessageUtils.logParsed("<yellow>[TrElytra+] <red><effect><yellow><type> <line>",
+        MessageUtils.logParsed("<yellow>[TrElytraPlus] <red><effect><yellow><type> <line>",
                 Placeholder.unparsed("effect", effect.getPrefix()),
                 Placeholder.unparsed("type", type),
                 Placeholder.parsed("line", line)

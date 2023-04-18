@@ -5,26 +5,17 @@ import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
 import net.treasure.effect.script.conditional.reader.ConditionReader;
 import net.treasure.util.math.MathUtils;
-import net.treasure.util.Pair;
-import net.treasure.util.TimeKeeper;
+import net.treasure.util.tuples.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.MessageFormat;
 import java.text.ParseException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.regex.Matcher;
 
 public class TestFeatures {
-
-    @Test
-    public void testFormat() {
-        System.out.println(MessageFormat.format("{0} is a", "a"));
-    }
 
     @Test
     public void testLoop() {
@@ -43,14 +34,14 @@ public class TestFeatures {
 
     @Test
     public void testReader() {
-        final Set<Pair<String, Double>> variables = new HashSet<>();
+        final List<Pair<String, Double>> variables = new ArrayList<>();
         variables.add(new Pair<>("p", 150d));
 
         var reader = new ConditionReader(null);
 //        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
 //        var parent = reader.read(null,"((p==1 && q==1) || (r==0 && s==0))");
         var parent = reader.read(null, null, "({p}/10==15)");
-        System.out.println("Test Result: " + parent.test(null, new EffectData(null, variables)));
+        System.out.println("Test Result: " + parent.test(null, new EffectData(variables)));
         System.out.println("-----RESULTS " + parent.inner.size());
         var gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(gson.toJson(parent));
@@ -108,87 +99,38 @@ public class TestFeatures {
 
     @Test
     public void testReplace() {
-        final Set<Pair<String, Double>> variables = new HashSet<>();
+        final List<Pair<String, Double>> variables = new ArrayList<>();
         variables.add(new Pair<>("phase", 150.0547789798));
-        EffectData data = new EffectData(null, variables);
-        String eval = replaceVariables(data, "actionbar {%,.2f:phase}");
-        System.out.println("Result: " + eval);
-    }
-
-    public String replaceVariables(EffectData data, String line) {
-        StringBuilder builder = new StringBuilder();
-
-        var array = line.toCharArray();
-        int startPos = -1;
-        StringBuilder variable = new StringBuilder();
-        StringBuilder format = new StringBuilder();
-        for (int pos = 0; pos < array.length; pos++) {
-            var c = array[pos];
-            switch (c) {
-                case '{' -> {
-                    if (startPos != -1) {
-                        return null;
-                    }
-                    startPos = pos;
-                }
-                case '}' -> {
-                    if (startPos == -1) {
-                        return null;
-                    }
-                    var result = variable.toString();
-                    var p = data.getVariable(result);
-                    double value;
-                    if (p == null) {
-                        Double preset = switch (result) {
-                            case "TICK" -> (double) TimeKeeper.getTimeElapsed();
-                            case "PI" -> Math.PI;
-                            case "RANDOM" -> Math.random();
-                            default -> null;
-                        };
-                        if (preset == null) break;
-                        value = preset;
-                    } else
-                        value = p.getValue();
-
-                    if (!format.isEmpty())
-                        builder.append(String.format(format.toString(), value));
-                    else
-                        builder.append(value);
-
-                    startPos = -1;
-                    variable = new StringBuilder();
-                    format = new StringBuilder();
-                }
-                case ':' -> {
-                    if (startPos != -1) {
-                        format = variable;
-                        variable = new StringBuilder();
-                    } else
-                        builder.append(c);
-                }
-                default -> {
-                    if (startPos != -1)
-                        variable.append(c);
-                    else
-                        builder.append(c);
-                }
-            }
-        }
-        return builder.toString();
+        EffectData data = new EffectData(variables);
+        System.out.println("Result: " + data.replaceVariables("actionbar {#.##:phase}"));
     }
 
     @Test
     public void testPatterns() {
-        Matcher matcher = Patterns.SCRIPT.matcher("particle [effect=end_rod,amount=0,offset={x={xAng};y=0;z={zAng}},direction=true,speed=0.375]");
+        var matcher = Patterns.SCRIPT.matcher("[effect=sweep_attack,amount=0,speed=1,offset={x={size};y=10},pos={y=0.5},origin=feet,color=#FFFFFF]");
         while (matcher.find()) {
-            System.out.println("start: " + matcher.start());
-            System.out.println("end: " + matcher.end());
-            System.out.println(matcher.group("type") + " --> " + matcher.group("value"));
+            var value = matcher.group("value");
+            System.out.println(matcher.group("type") + " --> " + value);
+            var inner = Patterns.INNER_SCRIPT.matcher(value);
+            System.out.println("{");
+            while (inner.find()) {
+                System.out.println(inner.group("type") + " --> " + inner.group("value"));
+            }
+            System.out.println("}");
         }
-        String offset = "{x={xAng};y=0;z={zAng}}";
-        matcher = Patterns.INNER_SCRIPT.matcher(offset);
-        while (matcher.find())
-            System.out.println(matcher.group("type") + " --> " + matcher.group("value"));
+    }
+
+    @Test
+    public void testMatcher() {
+        var matcher = Patterns.EVAL.matcher("asd*=123");
+        if (matcher.matches()) {
+            var variable = matcher.group(1);
+            System.out.println(variable + " [" + matcher.start() + matcher.end() + "]");
+            var operator = matcher.group(2);
+            System.out.println(operator + " [" + matcher.start() + matcher.end() + "]");
+            var value = matcher.group(1);
+            System.out.println(value + " [" + matcher.start() + matcher.end() + "]");
+        }
     }
 
     @Test

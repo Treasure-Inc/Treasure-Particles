@@ -1,51 +1,86 @@
 # Do not change!
 version: "1.5.0"
 rainbow-colors-size: 25
-colors:
-  gradient-red-to-blue:
+schemes:
+  # Gradient Color Schemes
+  gradient-red-blue:
+    name: "%gradient%<gray>: %red-blue%"
     values: [ "#FC5C7D", "#6A82FB" ]
-    size: 50
-  gradient-red-yellow-blue:
-    values: [ "#6699CC", "#FFF275", "#FF8C42", "#FF3C38", "#A23E48" ]
-    size: 100
-  gradient-white-to-gray:
-    values: [ "#FFFFFF", "#89918b" ]
     size: 20
-  gradient-red-to-gold:
+  gradient-red-yellow-blue:
+    name: "%gradient%<gray>: %red-yellow-blue%"
+    values: [ "#6699CC", "#FFF275", "#FF8C42", "#FF3C38", "#A23E48" ]
+    size: 20
+  gradient-red-gold:
+    name: "%gradient%<gray>: %red-gold%"
     values: [ "#d13636", "#d16536" ]
     size: 20
-  gradient-aqua-to-blue:
-    values: [ '#4CE0D2', '#136F63' ]
+  gradient-aqua-blue:
+    name: "%gradient%<gray>: %aqua-blue%"
+    values: [ "#4CE0D2", "#136F63" ]
     size: 20
-  gradient-aqua-to-brown:
+  gradient-aqua-brown:
+    name: "%gradient%<gray>: %aqua-brown%"
     values: [ "#2e1c1a", "#4254f5" ]
     size: 20
-  gradient-dark-aqua-to-black:
+  gradient-dark-aqua-black:
+    name: "%gradient%<gray>: %dark-aqua-black%"
     values: [ "#3449eb", "#10174f", "#111530" ]
     size: 10
+  gradient-white-gray:
+    values: [ "#FFFFFF", "#89918b" ]
+    size: 20
   gradient-spiral:
     values: [ "#F72585", "#B5179E", "#7209B7", "#560BAD", "#480CA8", "#3A0CA3", "#3F37C9", "#4361EE", "#4895EF", "#4CC9F0" ]
     size: 50
+  # Dark Colors
+  dark-1:
+    name: "%dark-colors% <gray>[1]"
+    values: [ "#3A015C", "#4F0147", "#35012C", "#290025", "#11001C" ]
+    size: 20
+  dark-2:
+    name: "%dark-colors% <gray>[2]"
+    values: [ "#191528", "#3C162F", "#5C162E", "#7C162E", "#110E1B" ]
+    size: 20
+  dark-3:
+    name: "%dark-colors% <gray>[3]"
+    values: [ "#0D060F", "#1E2824", "#5D3C18", "#766B65", "#230000" ]
+    size: 20
+  dark-4:
+    name: "%dark-colors% <gray>[4]"
+    values: [ "#45040C", "#720714", "#000000", "#12562A", "#063A21" ]
+    size: 20
+  dark-5:
+    name: "%dark-colors%: <gray>[5]"
+    values: [ "#523822", "#41250C", "#2D1805", "#261405", "#190E03" ]
+    size: 20
+  # Special
   heart:
-    values: [ '#f54242', '#fc9090' ]
+    values: [ "#f54242", "#fc9090" ]
     size: 7
   rocket:
-    values: [ '#5bf5c7', '#42ff75', "#0eb33b", "#0eb381" ]
+    values: [ "#5bf5c7", "#42ff75", "#0eb33b", "#0eb381" ]
     size: 10
   complementary1-1:
-    values: [ '#8A1BE4', '#E01F5A','#DC8B23' ]
+    values: [ "#8A1BE4", "#E01F5A","#DC8B23" ]
     size: 50
   complementary1-2:
-    values: [ '#75E41B','#1FE0A5', '#2374DC' ]
+    values: [ "#75E41B","#1FE0A5", "#2374DC" ]
     size: 50
+  # Christmas
   christmas:
-    values: [ '#ef233c', '#d5f2e3', '#73ba9b', '#003e1f', '#d90429', '#823a14' ]
+    values: [ "#ef233c", "#d5f2e3", "#73ba9b", "#003e1f", "#d90429", "#823a14" ]
     size: 30
 groups:
   gradients:
-    gradient-red-to-blue: "none"
+    gradient-red-blue: "none"
     gradient-red-yellow-blue: "none"
-    gradient-red-to-gold: "none"
-    gradient-aqua-to-blue: "none"
-    gradient-aqua-to-brown: "none"
-    gradient-dark-aqua-to-black: "none"
+    gradient-red-gold: "none"
+    gradient-aqua-blue: "none"
+    gradient-aqua-brown: "none"
+    gradient-dark-aqua-black: "none"
+    dark-1: "none"
+    dark-2: "none"
+    dark-3: "none"
+    dark-4: "none"
+    dark-5: "none"

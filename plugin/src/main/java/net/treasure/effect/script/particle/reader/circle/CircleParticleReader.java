@@ -1,9 +1,9 @@
 package net.treasure.effect.script.particle.reader.circle;
 
 import net.treasure.effect.Effect;
-import net.treasure.effect.script.argument.type.BooleanArgument;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
+import net.treasure.effect.script.argument.type.StaticArgument;
 import net.treasure.effect.script.particle.reader.ParticleReader;
 import net.treasure.effect.script.particle.style.CircleParticle;
 
@@ -14,7 +14,7 @@ public class CircleParticleReader extends ParticleReader<CircleParticle> {
 
         removeArguments("direction", "directional");
 
-        addValidArgument(c -> c.script().tickData(BooleanArgument.read(c)), "tick-data", "tick");
+        addValidArgument(c -> c.script().tickData(StaticArgument.asBoolean(c)), "tick-data", "tick");
         addValidArgument(c -> c.script().particles(IntArgument.read(c)), "particles");
         addValidArgument(c -> c.script().radius(RangeArgument.read(c)), "radius");
     }

@@ -44,11 +44,7 @@ public class GUIElements {
     public static ItemStack getItemStack(FileConfiguration config, String path, ItemStack defaultValue) {
         try {
             var section = config.getConfigurationSection(path);
-            if (section == null) {
-                if (manager.getStyle().getType() == GUIStyle.Type.CUSTOM)
-                    return new ItemStack(Material.AIR);
-                return defaultValue;
-            }
+            if (section == null) return defaultValue;
             //noinspection ConstantConditions
             var material = Material.getMaterial(section.getString("material", "AIR").toUpperCase(Locale.ENGLISH));
             var customModelData = section.getInt("custom-model-data", 0);

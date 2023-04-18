@@ -8,10 +8,9 @@ import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.util.math.IntRange;
 import org.bukkit.Color;
-
-import java.util.regex.Matcher;
 
 @Getter
 public class ColorData {
@@ -75,8 +74,20 @@ public class ColorData {
         return next(data);
     }
 
+    public static ColorData fromString(ReaderContext<?> context) throws ReaderException {
+        return fromString(context.value());
+    }
+
     public static ColorData fromString(String input) throws ReaderException {
-        Matcher colorMatcher = Patterns.INNER_SCRIPT.matcher(input);
+        if (input.startsWith("#")) {
+            try {
+                return new SingleColorData(input);
+            } catch (Exception e) {
+                throw new ReaderException("Invalid hex input");
+            }
+        }
+
+        var colorMatcher = Patterns.INNER_SCRIPT.matcher(input);
         String colorName = "";
         String duoName = null;
         boolean revertWhenDone = false, stopCycle = false, note = false, dynamic = false;
@@ -136,7 +147,7 @@ public class ColorData {
                 var duoScheme = TreasurePlugin.getInstance().getColorManager().getColorScheme(duoName);
                 if (duoScheme == null) {
                     try {
-                        var singleColor = new SingleColorData("#" + duoName).next(null);
+                        var singleColor = new SingleColorData(duoName).next(null);
                         return new DuoColorData(colorScheme, singleColor, colorSpeed, revertWhenDone, stopCycle);
                     } catch (Exception e) {
                         throw new ReaderException("Unexpected duo color scheme name value: " + duoName);

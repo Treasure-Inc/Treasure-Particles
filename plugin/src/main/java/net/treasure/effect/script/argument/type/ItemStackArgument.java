@@ -1,7 +1,7 @@
 package net.treasure.effect.script.argument.type;
 
 import net.treasure.common.Patterns;
-import net.treasure.effect.script.ReaderContext;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.util.logging.ComponentLogger;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

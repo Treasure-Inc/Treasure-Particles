@@ -3,7 +3,7 @@ package net.treasure.effect.script.argument.type;
 import net.treasure.common.Patterns;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.variable.Variable;
 import net.treasure.util.logging.ComponentLogger;
 import org.bukkit.entity.Player;

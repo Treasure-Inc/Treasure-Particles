@@ -3,13 +3,12 @@ package net.treasure.effect.script.conditional.reader;
 import lombok.AllArgsConstructor;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
 import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
+import net.treasure.effect.script.reader.DefaultReader;
 
 @AllArgsConstructor
-public class ConditionReader extends ScriptReader<ReaderContext<?>, ConditionGroup> {
+public class ConditionReader extends DefaultReader<ConditionGroup> {
 
     TreasurePlugin plugin;
 

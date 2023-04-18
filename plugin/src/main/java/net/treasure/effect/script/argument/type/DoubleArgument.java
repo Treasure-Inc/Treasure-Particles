@@ -3,15 +3,15 @@ package net.treasure.effect.script.argument.type;
 import lombok.AllArgsConstructor;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
 import net.treasure.effect.script.argument.ScriptArgument;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.variable.Variable;
 import org.bukkit.entity.Player;
 
 @AllArgsConstructor
 public class DoubleArgument implements ScriptArgument<Double> {
 
-    Object value;
+    public Object value;
 
     public static DoubleArgument read(String arg) {
         try {

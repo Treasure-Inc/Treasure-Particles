@@ -75,7 +75,7 @@ public class ColorManager implements DataHolder {
             }
         }
 
-        var section = config.getConfigurationSection("colors");
+        var section = config.getConfigurationSection("schemes");
         if (section == null)
             return;
 
@@ -135,6 +135,7 @@ public class ColorManager implements DataHolder {
                                 var permission = permissions.replace(String.valueOf(e.getValue()));
                                 return new ColorGroup.Option(getColorScheme(e.getKey()), permission.equals("none") ? null : permission);
                             })
+                            .filter(o -> o.colorScheme() != null)
                             .toList()
             );
             groups.add(group);

@@ -1,11 +1,11 @@
 package net.treasure.effect.script.argument.type;
 
 import lombok.AllArgsConstructor;
-import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.variable.Variable;
 import net.treasure.effect.data.EffectData;
-import net.treasure.effect.script.ReaderContext;
+import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.argument.ScriptArgument;
+import net.treasure.effect.script.variable.Variable;
 import org.bukkit.entity.Player;
 
 @AllArgsConstructor
@@ -19,13 +19,6 @@ public class BooleanArgument implements ScriptArgument<Boolean> {
             return new BooleanArgument(Boolean.parseBoolean(arg)).validate(context);
         else
             return new BooleanArgument(arg).validate(context);
-    }
-
-    public static boolean read(String arg) throws ReaderException {
-        if (arg.equals("true") || arg.equals("false"))
-            return Boolean.parseBoolean(arg);
-        else
-            throw new ReaderException("Valid values for Static Boolean argument: true, false");
     }
 
     @Override

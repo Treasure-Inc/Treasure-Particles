@@ -3,11 +3,11 @@ package net.treasure.effect.script.variable.reader;
 import net.treasure.common.Patterns;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 import net.treasure.effect.script.variable.Variable;
 
-public class VariableReader extends ScriptReader<ReaderContext<?>, Variable> {
+public class VariableReader extends ScriptReader<ReaderContext<Variable>, Variable> {
 
     @Override
     public Variable read(Effect effect, String type, String line) throws ReaderException {

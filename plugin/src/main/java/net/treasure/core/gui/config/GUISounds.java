@@ -2,7 +2,7 @@ package net.treasure.core.gui.config;
 
 import net.treasure.common.Patterns;
 import net.treasure.core.gui.GUIManager;
-import net.treasure.util.Pair;
+import net.treasure.util.tuples.Pair;
 
 public class GUISounds {
 

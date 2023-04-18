@@ -2,7 +2,7 @@ package net.treasure.color.data.duo;
 
 import net.treasure.color.scheme.ColorScheme;
 import net.treasure.color.data.ColorData;
-import net.treasure.util.Pair;
+import net.treasure.util.tuples.Pair;
 import org.bukkit.Color;
 
 public class DuoColorData extends ColorData implements DuoImpl {

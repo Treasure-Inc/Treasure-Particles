@@ -10,9 +10,6 @@ import net.treasure.color.data.duo.DuoImpl;
 import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.common.particles.ParticleEffect;
 import net.treasure.effect.data.EffectData;
-import net.treasure.effect.script.Script;
-import net.treasure.effect.script.argument.type.BooleanArgument;
-import net.treasure.effect.script.argument.type.FloatArgument;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
@@ -20,6 +17,8 @@ import net.treasure.effect.script.particle.ParticleOrigin;
 import net.treasure.effect.script.particle.ParticleSpawner;
 import net.treasure.util.math.MathUtils;
 import net.treasure.util.particles.Particles;
+import net.treasure.util.tuples.Triplet;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -34,30 +33,44 @@ public class CircleParticle extends ParticleSpawner {
 
     IntArgument particles = new IntArgument(32);
     RangeArgument radius = new RangeArgument(1f);
-    BooleanArgument tickData = new BooleanArgument(false);
+    boolean tickData = false;
 
     public CircleParticle(ParticleEffect particle, ParticleOrigin origin,
-                          VectorArgument position, VectorArgument offset,
+                          IntArgument particles, RangeArgument radius, boolean tickData,
+                          VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                           ColorData colorData, Object particleData,
-                          IntArgument particles, RangeArgument radius,
-                          IntArgument amount, FloatArgument multiplier, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(particle, origin, position, offset, colorData, particleData, amount, multiplier, speed, size, directional);
+                          IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        this.tickData = tickData;
         this.particles = particles;
         this.radius = radius;
     }
 
     @Override
     public TickResult tick(Player player, EffectData data, int times) {
+        sendParticles(player, data);
+        return TickResult.NORMAL;
+    }
+
+    public Triplet<ParticleBuilder, Location, Vector> sendParticles(Player player, EffectData data) {
         var context = tick(player, data);
-        if (context == null) return TickResult.NORMAL;
-
-        var builder = context.builder();
         var origin = context.origin();
+        var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
 
+        var direction = player.getLocation().getDirection();
+        float pitch = player.getEyeLocation().getPitch(), yaw = player.getEyeLocation().getYaw();
+
+        sendParticles(player, data, context.builder(), origin, direction, pitch, yaw, vector);
+
+        var clone = origin.clone();
+        clone.setPitch(pitch);
+        clone.setYaw(yaw);
+        return new Triplet<>(context.builder(), clone.add(vector), direction);
+    }
+
+    public void sendParticles(Player player, EffectData data, ParticleBuilder builder, Location origin, Vector direction, float pitch, float yaw, Vector vector) {
         var particles = this.particles.get(player, data);
         var radius = this.radius.get(player, data);
-        var tickData = this.tickData.get(player, data);
-        var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
 
         var particleData = particleData(player, data);
 
@@ -67,14 +80,16 @@ public class CircleParticle extends ParticleSpawner {
             var x = MathUtils.cos(r) * radius;
             var y = MathUtils.sin(r) * radius;
 
-            var location = rotate(player, origin.clone(), new Vector(x, y, 0).add(vector));
+            var location = rotate(origin.clone(), direction.clone(), pitch, yaw, new Vector(x, y, 0).add(vector));
 
-            var copy = builder.copy();
-            copy.location(location)
+            var copy = builder.copy()
+                    .location(location)
                     .data(particleData);
 
             if (particle == ParticleEffect.NOTE && colorData != null && colorData.isNote())
                 copy.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
+            else if (particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR) && colorData != null)
+                copy.offsetColor(colorData.next(data));
 
             builders.add(copy);
 
@@ -83,13 +98,12 @@ public class CircleParticle extends ParticleSpawner {
         }
 
         Particles.send(builders);
-        return TickResult.NORMAL;
     }
 
     public Object particleData(Player player, EffectData data) {
         if (particleData != null) return particleData();
 
-        if (colorData == null || particle == ParticleEffect.NOTE) {
+        if (colorData == null || particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR)) {
             particleData = Particles.NMS.getParticleParam(particle);
             return particleData;
         }
@@ -104,14 +118,12 @@ public class CircleParticle extends ParticleSpawner {
                     return Particles.NMS.getColorTransitionData(colorData.next(data), colorData.tempNext(data), size);
             else
                 return Particles.NMS.getDustData(colorData.next(data), size);
-        } else if (particle.hasProperty(ParticleEffect.Property.CAN_BE_COLORED))
-            return Particles.NMS.getColorData(colorData.next(data));
-
+        }
         return null;
     }
 
     @Override
-    public Script clone() {
-        return new CircleParticle(particle, origin, position, offset, colorData, particleData, particles, radius, amount, multiplier, speed, size, directional);
+    public CircleParticle clone() {
+        return new CircleParticle(particle, origin, particles, radius, tickData, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
     }
 }

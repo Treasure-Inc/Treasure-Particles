@@ -2,7 +2,7 @@ package net.treasure.effect.script.argument.type;
 
 import lombok.AllArgsConstructor;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.util.logging.ComponentLogger;
 
 import java.util.Locale;
@@ -56,6 +56,17 @@ public class StaticArgument<T> {
         } catch (Exception e) {
             throw new ReaderException("Valid values for Static Float argument: decimals");
         }
+    }
+
+    public static boolean asBoolean(ReaderContext<?> context) throws ReaderException {
+        return asBoolean(context.value());
+    }
+
+    public static boolean asBoolean(String arg) throws ReaderException {
+        if (arg.equals("true") || arg.equals("false"))
+            return Boolean.parseBoolean(arg);
+        else
+            throw new ReaderException("Valid values for Static Boolean argument: true, false");
     }
 
     public T get(String value) {

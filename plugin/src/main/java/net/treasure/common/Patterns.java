@@ -12,8 +12,8 @@ public final class Patterns {
     public static final Pattern ASTERISK = Pattern.compile("\\*");
 
     // SCRIPTS
-    public static final Pattern SCRIPT = Pattern.compile("(?:\\[|(?<=,))(?<type>[\\w-]+)(=)(?<value>[a-zA-Z0-9{}=*.;_-]+)(?:(?=,)|])");
-    public static final Pattern INNER_SCRIPT = Pattern.compile("(?:\\{|(?<=;))(?<type>\\w+)(=)(?<value>[a-zA-Z\\d{}_.-]+)(?:(?=;)|})");
+    public static final Pattern SCRIPT = Pattern.compile("(?!^\\[)(?<type>[^=,]+)=(?<value>[^\0]+?)(?=,[^,]+=|]$)");
+    public static final Pattern INNER_SCRIPT = Pattern.compile("(?!^\\{)(?<type>[^=;]+)=(?<value>[^\0]+?)(?=;[^;]+=|}$)");
     // VARIABLE SCRIPT
     public static final Pattern VARIABLE = Pattern.compile("(?<name>[a-zA-Z\\d]+)(=)(?<default>[\\d.-]+)");
     public static final Pattern EVAL = Pattern.compile("^([a-zA-Z\\d]+)(\\X?)=(.+)$");

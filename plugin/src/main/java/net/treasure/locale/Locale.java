@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Getter
 public enum Locale {
-    SPANISH("es"),
-    GERMAN("de"),
     ENGLISH("en"),
     TURKISH("tr");
     final String key;

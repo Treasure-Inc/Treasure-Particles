@@ -44,7 +44,8 @@ permissions:
   # Only some effects have permission by default
   # Please check the effects.yml file if you want to add permissions to the effects
   # You can read the wiki page for detailed information: https://treasurestore.gitbook.io/treasure-elytra/effects/basic-usage#permission
-  rainbow-effects: "trelytra.rainbow" # Permission for rainbow effects group
-  tail-effects: "trelytra.tail" # Permission for tail effects group
+  rainbow-effects: "trelytra.rainbow" # Permission for rainbow-colored effects
+  tail-effects: "trelytra.tail" # Permission for tail effects
   sonic: "trelytra.sonic" # Permission for sonic effect
-  christmas: "trelytra.effects.christmas" # Permission for Christmas effects group
+  christmas: "trelytra.effects.christmas" # Permission for Christmas effects
+  parkour: "trelytra.effects.parkour" # Permission for parkour effects

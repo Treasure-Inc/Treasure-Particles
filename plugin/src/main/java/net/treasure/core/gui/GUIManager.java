@@ -14,7 +14,7 @@ import net.treasure.core.gui.type.color.listener.ColorsGUIListener;
 import net.treasure.core.gui.type.effects.EffectsGUI;
 import net.treasure.core.gui.type.effects.listener.EffectsGUIListener;
 import net.treasure.locale.Translations;
-import net.treasure.util.Pair;
+import net.treasure.util.tuples.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 

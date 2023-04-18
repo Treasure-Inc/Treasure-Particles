@@ -3,7 +3,7 @@ package net.treasure.core.player;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
-import net.treasure.color.ColorScheme;
+import net.treasure.color.scheme.ColorScheme;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.EffectManager;
 import net.treasure.effect.data.EffectData;

@@ -11,7 +11,6 @@ import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.listener.ElytraBoostListener;
 import net.treasure.effect.listener.GlideListener;
 import net.treasure.effect.script.Script;
-import net.treasure.effect.script.ScriptReader;
 import net.treasure.effect.script.basic.BreakHandlerScript;
 import net.treasure.effect.script.basic.BreakScript;
 import net.treasure.effect.script.basic.EmptyScript;
@@ -21,14 +20,16 @@ import net.treasure.effect.script.conditional.reader.ConditionalScriptReader;
 import net.treasure.effect.script.message.ActionBar;
 import net.treasure.effect.script.message.ChatMessage;
 import net.treasure.effect.script.message.reader.TitleReader;
+import net.treasure.effect.script.parkour.reader.ParkourReader;
 import net.treasure.effect.script.particle.reader.circle.CircleParticleReader;
 import net.treasure.effect.script.particle.reader.dot.DotParticleReader;
 import net.treasure.effect.script.preset.reader.PresetReader;
+import net.treasure.effect.script.reader.DefaultReader;
 import net.treasure.effect.script.sound.reader.SoundReader;
 import net.treasure.effect.script.variable.cycle.VariableCycleReader;
 import net.treasure.effect.script.variable.reader.VariableReader;
 import net.treasure.effect.task.EffectsTask;
-import net.treasure.util.Pair;
+import net.treasure.util.tuples.Pair;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.Bukkit;
 
@@ -49,7 +50,7 @@ public class EffectManager implements DataHolder {
 
     final List<Effect> effects;
     final Presets presets;
-    final HashMap<String, ScriptReader<?, ?>> readers;
+    final HashMap<String, DefaultReader<?>> readers;
 
     public EffectManager() {
         this.generator = new ConfigurationGenerator("effects.yml");
@@ -77,9 +78,10 @@ public class EffectManager implements DataHolder {
 
         // Register readers
         registerReader("variable", new VariableReader(), "var");
-        registerReader("variable-cycle", new VariableCycleReader(), "varc");
+        registerReader("variable-cycle", new VariableCycleReader(), "var-c");
         registerReader("particle", new DotParticleReader(), "dot");
         registerReader("circle", new CircleParticleReader());
+        registerReader("parkour", new ParkourReader());
         registerReader("preset", new PresetReader());
         registerReader("conditional", new ConditionalScriptReader());
         registerReader("play-sound", new SoundReader(), "sound");
@@ -132,8 +134,7 @@ public class EffectManager implements DataHolder {
         var current = System.currentTimeMillis();
         var inst = TreasurePlugin.getInstance();
         var config = generator.getConfiguration();
-        if (config == null)
-            return;
+        if (config == null) return;
 
         if (!checkVersion()) {
             if (!TreasurePlugin.getInstance().isAutoUpdateEnabled()) {
@@ -171,7 +172,7 @@ public class EffectManager implements DataHolder {
                 // Tick Handlers
                 var handlerSection = section.getConfigurationSection(path + "on-tick");
                 if (handlerSection == null) {
-                    inst.getLogger().warning("Effect must have onTick section: " + key);
+                    inst.getLogger().warning("Effect must have on-tick section: " + key);
                     continue;
                 }
 
@@ -220,7 +221,7 @@ public class EffectManager implements DataHolder {
         inst.getLogger().info("Loaded " + effects.size() + " effects (" + (System.currentTimeMillis() - current) + "ms)");
     }
 
-    public void registerReader(String key, ScriptReader<?, ?> reader, String... aliases) {
+    public void registerReader(String key, DefaultReader<?> reader, String... aliases) {
         this.readers.put(key, reader);
         for (var alias : aliases)
             this.readers.put(alias, reader);

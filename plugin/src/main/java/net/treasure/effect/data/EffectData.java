@@ -3,62 +3,65 @@ package net.treasure.effect.data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.treasure.color.ColorScheme;
+import net.treasure.color.scheme.ColorScheme;
 import net.treasure.common.Permissions;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
 import net.treasure.effect.TickHandler;
-import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
+import net.treasure.util.tuples.Pair;
 import org.bukkit.entity.Player;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
+@Setter
 @Getter
 @RequiredArgsConstructor
 public class EffectData {
 
     private final Player player;
 
-    @Setter
     private boolean enabled = false, effectsEnabled = true, notificationsEnabled, debugModeEnabled;
 
-    @Setter
     private Map<String, ColorScheme> colorPreferences = new HashMap<>();
 
     // Fields for current effect
     private Effect currentEffect;
-    private final Set<Pair<String, Double>> variables;
-    @Setter
-    private LinkedHashMap<String, TickHandler> tickHandlers;
+    private List<Pair<String, Double>> variables;
+    private List<TickHandler> tickHandlers;
 
-    @Setter
     private long lastBoostMillis;
 
-    public EffectData(Player player) {
-        this.player = player;
-        this.variables = new HashSet<>();
-        this.tickHandlers = new LinkedHashMap<>();
+    public EffectData(List<Pair<String, Double>> variables) {
+        this.player = null;
+        this.variables = variables;
     }
 
     public void setCurrentEffect(Effect currentEffect) {
+        if (player == null) return;
+
         var debugModeEnabled = TreasurePlugin.getInstance().isDebugModeEnabled();
         this.currentEffect = currentEffect;
-        this.variables.clear();
-        this.tickHandlers.clear();
         this.debugModeEnabled = player.hasPermission(Permissions.ADMIN) && debugModeEnabled;
 
-        if (currentEffect != null) {
-            if (currentEffect.getColorGroup() != null && getColorPreference(currentEffect) == null)
-                setColorPreference(currentEffect, currentEffect.getColorGroup().getAvailableOptions().get(0).colorScheme());
-            currentEffect.initialize(player, this, debugModeEnabled);
-        } else if (debugModeEnabled)
-            TreasurePlugin.logger().info("Reset " + player.getName() + "'s effect data");
+        if (currentEffect == null) {
+            this.variables = null;
+            this.tickHandlers = null;
+
+            if (debugModeEnabled)
+                TreasurePlugin.logger().info("Reset " + player.getName() + "'s effect data");
+            return;
+        }
+
+        if (currentEffect.getColorGroup() != null && getColorPreference(currentEffect) == null)
+            setColorPreference(currentEffect, currentEffect.getColorGroup().getAvailableOptions().get(0).colorScheme());
+        currentEffect.initialize(player, this, debugModeEnabled);
     }
 
     public void setColorPreference(Effect effect, ColorScheme scheme) {
@@ -127,7 +130,7 @@ public class EffectData {
                         value = p.getValue();
 
                     if (!format.isEmpty())
-                        builder.append(String.format(format.toString(), value));
+                        builder.append(new DecimalFormat(format.toString(), new DecimalFormatSymbols(Locale.ENGLISH)).format(value));
                     else
                         builder.append(value);
 

@@ -13,7 +13,6 @@ import net.treasure.common.particles.ParticleEffect;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.script.Script;
-import net.treasure.effect.script.argument.type.FloatArgument;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
@@ -32,12 +31,14 @@ public class ParticleSpawner extends Script {
 
     protected ParticleEffect particle;
     protected ParticleOrigin origin;
+
     protected VectorArgument position;
     protected VectorArgument offset;
+    protected VectorArgument multiplier;
+
     protected ColorData colorData;
     protected Object particleData;
     protected IntArgument amount;
-    protected FloatArgument multiplier;
     protected RangeArgument speed, size;
     protected boolean directional = false;
 
@@ -99,24 +100,23 @@ public class ParticleSpawner extends Script {
                     builder.data(Particles.NMS.getColorTransitionData(colorData.next(data), colorData.tempNext(data), size));
             else
                 builder.data(Particles.NMS.getDustData(colorData.next(data), size));
-        } else if (particle.hasProperty(ParticleEffect.Property.CAN_BE_COLORED)) {
+        } else if (particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR)) {
             if (particle.equals(ParticleEffect.NOTE) && colorData.isNote()) {
                 builder.data(Particles.NMS.getParticleParam(particle));
                 builder.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
             } else
-                builder.data(Particles.NMS.getColorData(colorData.next(data)));
+                builder.offsetColor(colorData.next(data));
         }
     }
 
-    public Location rotate(Player player, Location origin, Vector vector) {
+    public Location rotate(Location origin, Vector direction, float pitch, float yaw, Vector vector) {
         if (directional) {
-            vector = Vectors.rotateAroundAxisX(vector, player.getEyeLocation().getPitch());
-            vector = Vectors.rotateAroundAxisY(vector, player.getEyeLocation().getYaw());
-            origin = origin.add(player.getLocation().getDirection().add(vector));
+            vector = Vectors.rotateAroundAxisX(vector, pitch);
+            vector = Vectors.rotateAroundAxisY(vector, yaw);
+            origin.add(direction.add(vector));
         } else {
-            origin = origin.add(vector);
+            origin.add(vector);
         }
-
         return origin;
     }
 

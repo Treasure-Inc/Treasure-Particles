@@ -62,8 +62,12 @@ public class ColorsGUI {
         holder.setInventory(inventory);
         holder.setPage(page);
 
-        // Style
-        style.getType().getDecoration().accept(style, inventory);
+        // Borders
+        if (BORDERS.isEnabled())
+            for (int slot : BORDERS.slots())
+                inventory.setItem(slot, new CustomItem(BORDERS.item())
+                        .emptyName()
+                        .build());
 
         // Colors
         var colors = effect.getColorGroup().getAvailableOptions();

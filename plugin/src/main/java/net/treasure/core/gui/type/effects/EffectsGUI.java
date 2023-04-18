@@ -69,8 +69,12 @@ public class EffectsGUI {
         holder.setInventory(inventory);
         holder.setPage(page);
 
-        // Style
-        style.getType().getDecoration().accept(style, inventory);
+        // Borders
+        if (BORDERS.isEnabled())
+            for (int slot : BORDERS.slots())
+                inventory.setItem(slot, new CustomItem(BORDERS.item())
+                        .emptyName()
+                        .build());
 
         // Effects
         var effects = effectManager.getEffects().stream().filter(effect -> effect.canUse(player)).toList();
@@ -106,7 +110,11 @@ public class EffectsGUI {
                             .addLore(MessageUtils.parseLegacy(Translations.GUI_RESET_EFFECT_CURRENT, data.getCurrentEffect().getDisplayName()))
                             .addData(Keys.BUTTON_TYPE, ElementType.RESET.name())
                             .build());
-        }
+        } else if (RESET.isEnabled() && BORDERS.isEnabled())
+            for (int slot : RESET.slots())
+                inventory.setItem(slot, new CustomItem(BORDERS.item())
+                        .emptyName()
+                        .build());
 
         // Random effect button
         if (!effects.isEmpty()) {
@@ -116,7 +124,11 @@ public class EffectsGUI {
                             .setDisplayName(MessageUtils.parseLegacy(Translations.GUI_RANDOM_EFFECT))
                             .addData(Keys.BUTTON_TYPE, ElementType.RANDOM_EFFECT.name())
                             .build());
-        }
+        } else if (RANDOM_EFFECT.isEnabled() && BORDERS.isEnabled())
+            for (int slot : RANDOM_EFFECT.slots())
+                inventory.setItem(slot, new CustomItem(BORDERS.item())
+                        .emptyName()
+                        .build());
 
         var effectSlots = DEFAULT_ICON.slots();
         var maxEffects = effectSlots.length;
@@ -135,6 +147,7 @@ public class EffectsGUI {
                         .emptyName()
                         .build());
 
+        var colorCycleSpeed = manager.getColorCycleSpeed();
         HashMap<Integer, RGBColorData> animatedSlots = null;
 
         int index = 0;
@@ -145,13 +158,14 @@ public class EffectsGUI {
 
             var effect = effects.get(i);
             Color color = null;
+            var colorGroup = effect.getColorGroup();
 
             if (effect.getArmorColor() != null) {
                 if (animatedSlots == null) animatedSlots = new HashMap<>();
 
-                var tempColor = colorManager.getColorScheme(effect.getArmorColor());
-                if (tempColor != null) {
-                    var colorData = new RGBColorData(tempColor, manager.getColorCycleSpeed(), true, false);
+                var scheme = colorManager.getColorScheme(effect.getArmorColor());
+                if (scheme != null) {
+                    var colorData = new RGBColorData(scheme, colorCycleSpeed, true, false);
                     animatedSlots.put(where, colorData);
                     color = colorData.next(null);
                 } else {
@@ -159,8 +173,14 @@ public class EffectsGUI {
                         int hex = Integer.decode(effect.getArmorColor());
                         color = Color.fromRGB((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
                     } catch (Exception ignored) {
+                        TreasurePlugin.logger().warning(effect.getPrefix() + "Unknown armor color value: " + effect.getArmorColor());
                     }
                 }
+            } else if (colorGroup != null) {
+                var preference = data.getColorPreference(effect);
+                var scheme = preference == null ? colorGroup.getAvailableOptions().get(0).colorScheme() : preference;
+                var colorData = new RGBColorData(scheme, colorCycleSpeed, true, false);
+                color = colorData.next(null);
             }
 
             inventory.setItem(where, new CustomItem(effect.getIcon())
@@ -168,7 +188,7 @@ public class EffectsGUI {
                     .addLore(effect.getDescription())
                     .addLore(effect.getDescription() != null ? ChatColor.AQUA.toString() : null)
                     .addLore(MessageUtils.parseLegacy(effect.equals(data.getCurrentEffect()) ? Translations.GUI_EFFECT_SELECTED : Translations.GUI_SELECT_EFFECT))
-                    .addLore(effect.getColorGroup() != null ? MessageUtils.parseLegacy(Translations.COLOR_SELECTION_AVAILABLE) : null)
+                    .addLore(colorGroup != null ? MessageUtils.parseLegacy(Translations.COLOR_SELECTION_AVAILABLE) : null)
                     .changeArmorColor(color)
                     .addData(Keys.EFFECT, effect.getKey())
                     .glow(effect.equals(data.getCurrentEffect()))

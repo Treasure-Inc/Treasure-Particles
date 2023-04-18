@@ -6,21 +6,20 @@ import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.script.Cached;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.conditional.ConditionalScript;
 import net.treasure.effect.script.variable.Variable;
-import net.treasure.util.Pair;
 import net.treasure.util.TimeKeeper;
 import net.treasure.util.message.MessageUtils;
+import net.treasure.util.tuples.Pair;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 
 @Getter
@@ -32,10 +31,9 @@ public class Effect {
 
     private final int interval;
 
-    private final LinkedHashMap<String, TickHandler> lines;
+    private final List<TickHandler> tickHandlers;
+    private final List<Pair<String, Double>> variables;
     private HashMap<String, double[][]> cache;
-
-    private final Set<Pair<String, Double>> variables;
 
     private final boolean enableCaching;
 
@@ -52,8 +50,8 @@ public class Effect {
         this.enableCaching = enableCaching;
         this.colorGroup = colorGroup;
 
-        this.variables = new HashSet<>();
-        this.lines = new LinkedHashMap<>();
+        this.variables = new ArrayList<>();
+        this.tickHandlers = new ArrayList<>();
 
         for (var variable : variables) {
             if (hasVariable(variable)) {
@@ -67,9 +65,10 @@ public class Effect {
         }
 
         for (var entry : tickHandlers.entrySet()) {
-            var tickHandlerKey = entry.getKey();
             var pair = entry.getValue();
-            lines.put(tickHandlerKey, new TickHandler(tickHandlerKey, pair.getKey(), readScripts(tickHandlerKey, pair.getValue())));
+            var handler = new TickHandler(entry.getKey(), pair.getKey());
+            handler.lines = readScripts(handler, pair.getValue());
+            this.tickHandlers.add(handler);
         }
 
         addVariable(Variable.I);
@@ -88,15 +87,22 @@ public class Effect {
     public void initialize(Player player, EffectData data, boolean debugModeEnabled) {
         if (debugModeEnabled)
             TreasurePlugin.logger().info(getPrefix() + "Initializing effect for player: " + player.getName());
-        for (var pair : variables)
-            data.getVariables().add(new Pair<>(pair.getKey(), pair.getValue()));
-        data.setTickHandlers(new LinkedHashMap<>(lines));
+
+        List<Pair<String, Double>> variables = new ArrayList<>();
+        for (var pair : this.variables)
+            variables.add(pair.clone());
+        data.setVariables(variables);
+
+        List<TickHandler> tickHandlers = new ArrayList<>();
+        for (var tickHandler : this.tickHandlers)
+            tickHandlers.add(tickHandler.clone());
+        data.setTickHandlers(tickHandlers);
     }
 
     public void preTick() {
-        var data = new EffectData(variables);
+        var data = new EffectData(new ArrayList<>(variables));
 
-        for (var tickHandler : lines) {
+        for (var tickHandler : tickHandlers) {
             int index = 0;
             for (var script : tickHandler.lines) {
                 if (script instanceof Cached cached) {
@@ -144,13 +150,13 @@ public class Effect {
             return;
         }
 
-        for (var tickHandler : lines) {
+        for (var tickHandler : tickHandlers) {
             tp.setValue((double) tickHandler.times);
             for (int i = 0; i < tickHandler.times; i++) {
                 ip.setValue((double) i);
                 for (var script : tickHandler.lines) {
                     if (script instanceof Cached cached) {
-                        cached.preTick(this, i);
+                        cached.preTick(this, data, i);
                     }
                 }
             }
@@ -167,15 +173,14 @@ public class Effect {
                 TreasurePlugin.logger().warning(getPrefix() + "Couldn't tick effect (Variable.I || Variable.TIMES == null)");
                 return;
             }
-            for (var entry : data.getTickHandlers().entrySet()) {
-                var tickHandler = entry.getValue();
+            for (var tickHandler : data.getTickHandlers()) {
                 last = tickHandler;
                 tp.setValue((double) tickHandler.times);
                 for (int i = 0; i < tickHandler.times; i++) {
                     ip.setValue((double) i);
                     boolean breakHandler = false;
                     for (var script : tickHandler.lines) {
-                        var result = script.doTick(player, data, tickHandler, i);
+                        var result = script.doTick(player, data, i);
                         if (result == Script.TickResult.BREAK)
                             break;
                         else if (result == Script.TickResult.BREAK_HANDLER)
@@ -188,7 +193,7 @@ public class Effect {
                 }
             }
         } catch (Exception e) {
-            TreasurePlugin.logger().log(Level.WARNING, getPrefix() + (last != null ? "Tick Handler: " + last.name : "Unexpected error."), e);
+            TreasurePlugin.logger().log(Level.WARNING, getPrefix() + (last != null ? "Tick Handler: " + last.key : "Unexpected error."), e);
         }
     }
 
@@ -213,6 +218,13 @@ public class Effect {
         return false;
     }
 
+    public boolean isValidVariable(String var) {
+        for (var pair : variables)
+            if (pair.getKey().equals(var))
+                return true;
+        return !checkPredefinedVariable(var);
+    }
+
     public boolean checkPredefinedVariable(String var) {
         return switch (var) {
             case Variable.I, Variable.TIMES,
@@ -225,7 +237,7 @@ public class Effect {
         };
     }
 
-    public List<Script> readScripts(String tickHandlerKey, List<String> lines) {
+    public List<Script> readScripts(TickHandler tickHandler, List<String> lines) {
         List<Script> scripts = new ArrayList<>();
         var effectManager = TreasurePlugin.getInstance().getEffectManager();
         var logger = TreasurePlugin.logger();
@@ -233,7 +245,7 @@ public class Effect {
             try {
                 var script = effectManager.readLine(this, line);
                 if (script != null) {
-                    script.setTickHandlerKey(tickHandlerKey);
+                    script.setTickHandler(tickHandler);
                     scripts.add(script);
                 } else
                     logger.log(Level.WARNING, getPrefix() + "Couldn't read line: " + line);

@@ -3,6 +3,8 @@ package net.treasure.effect;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
+import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.script.Script;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
@@ -43,5 +45,12 @@ public class Presets implements DataHolder {
             return configuration.getStringList(key);
         var script = configuration.getString(key);
         return script == null ? null : List.of(script);
+    }
+
+    public Script read(Effect effect, String key) throws ReaderException {
+        if (configuration.isList(key)) return null;
+        var script = configuration.getString(key);
+        if (script == null) return null;
+        return TreasurePlugin.getInstance().getEffectManager().readLine(effect, script);
     }
 }

@@ -4,13 +4,13 @@ import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
 import net.treasure.effect.script.conditional.ConditionalScript;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 
 import java.util.regex.Matcher;
 
-public class ConditionalScriptReader extends ScriptReader<ReaderContext<?>, ConditionalScript> {
+public class ConditionalScriptReader extends ScriptReader<ReaderContext<ConditionalScript>, ConditionalScript> {
 
     @Override
     public ConditionalScript read(Effect effect, String type, String line) throws ReaderException {

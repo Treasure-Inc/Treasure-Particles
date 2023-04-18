@@ -7,7 +7,6 @@ import lombok.experimental.Accessors;
 import net.treasure.color.data.ColorData;
 import net.treasure.common.particles.ParticleEffect;
 import net.treasure.effect.data.EffectData;
-import net.treasure.effect.script.argument.type.FloatArgument;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
@@ -24,10 +23,10 @@ import org.bukkit.util.Vector;
 public class DotParticle extends ParticleSpawner {
 
     public DotParticle(ParticleEffect effect, ParticleOrigin origin,
-                       VectorArgument position, VectorArgument offset,
+                       VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                        ColorData colorData, Object particleData,
-                       IntArgument amount, FloatArgument multiplier, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(effect, origin, position, offset, colorData, particleData, amount, multiplier, speed, size, directional);
+                       IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
+        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class DotParticle extends ParticleSpawner {
         var origin = context.origin();
 
         var vector = position == null ? new Vector(0, 0, 0) : position.get(player, data);
-        builder.location(rotate(player, origin, vector));
+        builder.location(rotate(origin, player.getLocation().getDirection(), player.getEyeLocation().getPitch(), player.getEyeLocation().getYaw(), vector));
 
         updateParticleData(player, data, builder);
 
@@ -49,6 +48,6 @@ public class DotParticle extends ParticleSpawner {
 
     @Override
     public DotParticle clone() {
-        return new DotParticle(particle, origin, position, offset, colorData, particleData, amount, multiplier, speed, size, directional);
+        return new DotParticle(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
     }
 }

@@ -1,8 +1,8 @@
 package net.treasure.effect.script.variable.cycle;
 
 import net.treasure.effect.Effect;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 import net.treasure.effect.script.argument.type.DoubleArgument;
 import net.treasure.effect.script.argument.type.StaticArgument;
 
@@ -23,6 +23,8 @@ public class VariableCycleReader extends ScriptReader<VariableCycleReader.Contex
         addValidArgument(c -> c.script().step = DoubleArgument.read(c), "step");
         addValidArgument(c -> c.script().min = DoubleArgument.read(c), "min");
         addValidArgument(c -> c.script().max = DoubleArgument.read(c), "max");
+
+        addValidArgument(c -> c.script().revertWhenDone = StaticArgument.asBoolean(c), "revert");
     }
 
     @Override

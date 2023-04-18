@@ -2,8 +2,8 @@ package net.treasure.effect.script.sound.reader;
 
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 import net.treasure.effect.script.argument.type.StaticArgument;
 import net.treasure.effect.script.sound.PlaySound;
 import org.bukkit.SoundCategory;

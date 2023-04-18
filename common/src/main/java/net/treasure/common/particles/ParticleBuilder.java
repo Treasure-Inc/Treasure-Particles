@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,7 +13,6 @@ import org.bukkit.util.Vector;
 
 import java.util.function.Predicate;
 
-// PaperMC ParticleBuilder Impl
 @Getter
 @Setter
 @Accessors(fluent = true, chain = true)
@@ -63,6 +63,14 @@ public class ParticleBuilder {
 
     public float speed() {
         return extra;
+    }
+
+    public ParticleBuilder offsetColor(Color color) {
+        this.amount = 0;
+        this.offsetX = color.getRed() / 255f;
+        this.offsetY = color.getGreen() / 255f;
+        this.offsetZ = color.getBlue() / 255f;
+        return this;
     }
 
     public ParticleBuilder noteColor(int color) {

@@ -9,7 +9,7 @@ import net.treasure.core.gui.config.ElementType;
 import net.treasure.core.gui.config.GUISounds;
 import net.treasure.core.gui.task.GUITask;
 import net.treasure.locale.Translations;
-import net.treasure.util.Pair;
+import net.treasure.util.tuples.Pair;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

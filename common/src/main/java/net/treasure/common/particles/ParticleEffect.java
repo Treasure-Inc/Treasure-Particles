@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import static net.treasure.common.particles.ParticleEffect.Property.CAN_BE_COLORED;
 import static net.treasure.common.particles.ParticleEffect.Property.DIRECTIONAL;
 import static net.treasure.common.particles.ParticleEffect.Property.DUST;
+import static net.treasure.common.particles.ParticleEffect.Property.OFFSET_COLOR;
 import static net.treasure.common.particles.ParticleEffect.Property.REQUIRES_BLOCK;
 import static net.treasure.common.particles.ParticleEffect.Property.REQUIRES_ITEM;
 import static net.treasure.common.particles.ParticleEffect.Property.REQUIRES_WATER;
@@ -624,7 +625,7 @@ public enum ParticleEffect {
      * <li>Extra: the offsetX parameter represents which note should be displayed. The amount has to be 0 or the color won't work.</li>
      * </ul>
      */
-    NOTE(version -> version < 8 ? "NONE" : (version < 13 ? "NOTE" : "note"), CAN_BE_COLORED),
+    NOTE(version -> version < 8 ? "NONE" : (version < 13 ? "NOTE" : "note"), OFFSET_COLOR, CAN_BE_COLORED),
     /**
      * In vanilla, this particle is randomly displayed by nether
      * portal, endermen, ender chests, dragon eggs, endermites and end
@@ -804,17 +805,6 @@ public enum ParticleEffect {
      */
     SNOWFLAKE(version -> version < 17 ? "NONE" : "snowflake", DIRECTIONAL),
     /**
-     * This particle is unused and is merged into "poof" in 1.13.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Tiny white cloud.</li>
-     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
-     * </ul>
-     */
-    SNOW_SHOVEL(version -> version < 8 ? "NONE" : (version < 13 ? "SNOW_SHOVEL" : "poof"), DIRECTIONAL),
-    /**
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -882,7 +872,7 @@ public enum ParticleEffect {
      * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
      * </ul>
      */
-    SPELL_MOB(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_MOB" : "entity_effect"), CAN_BE_COLORED),
+    SPELL_MOB(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_MOB" : "entity_effect"), OFFSET_COLOR, CAN_BE_COLORED),
     /**
      * In vanilla, this particle is displayed when an entity has
      * an active potion effect from a nearby beacon.
@@ -894,7 +884,7 @@ public enum ParticleEffect {
      * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
      * </ul>
      */
-    SPELL_MOB_AMBIENT(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_MOB_AMBIENT" : "ambient_entity_effect"), CAN_BE_COLORED),
+    SPELL_MOB_AMBIENT(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_MOB_AMBIENT" : "ambient_entity_effect"), OFFSET_COLOR, CAN_BE_COLORED),
     /**
      * In vanilla, this particle is displayed randomly by witches.
      * <p>
@@ -1155,6 +1145,7 @@ public enum ParticleEffect {
     public enum Property {
         DIRECTIONAL,
         CAN_BE_COLORED,
+        OFFSET_COLOR,
         REQUIRES_BLOCK,
         REQUIRES_ITEM,
         REQUIRES_WATER,

@@ -52,8 +52,7 @@ public class Variable extends Script implements Cached {
         return TickResult.NORMAL;
     }
 
-    public void preTick(Effect effect, int times) {
-        var data = new EffectData(effect.getVariables());
+    public void preTick(Effect effect, EffectData data, int times) {
         var pair = data.getVariable(variable);
         if (pair == null) return;
 
@@ -65,13 +64,14 @@ public class Variable extends Script implements Cached {
             return;
         }
 
-        effect.getCache().get(tickHandler.key())[times][index] = switch (operator) {
+        pair.setValue(switch (operator) {
             case EQUAL -> val;
             case ADD -> pair.getValue() + val;
             case SUBTRACT -> pair.getValue() - val;
             case MULTIPLY -> pair.getValue() * val;
             case DIVIDE -> pair.getValue() / val;
-        };
+        });
+        effect.getCache().get(tickHandler.key())[times][index] = pair.getValue();
     }
 
     @Override

@@ -2,11 +2,11 @@ package net.treasure.effect.script.message.reader;
 
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
 import net.treasure.effect.script.message.Title;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 
-public class TitleReader extends ScriptReader<ReaderContext<?>, Title> {
+public class TitleReader extends ScriptReader<ReaderContext<Title>, Title> {
 
     @Override
     public Title read(Effect effect, String scriptType, String line) {

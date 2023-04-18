@@ -3,13 +3,14 @@ package net.treasure.effect.script.basic.reader;
 import lombok.AllArgsConstructor;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
+import net.treasure.effect.script.Script;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 
 import java.util.function.Function;
 
 @AllArgsConstructor
-public class BasicScriptReader<T> extends ScriptReader<ReaderContext<?>, T> {
+public class BasicScriptReader<T extends Script> extends ScriptReader<ReaderContext<T>, T> {
     final Function<String, T> callable;
 
     @Override

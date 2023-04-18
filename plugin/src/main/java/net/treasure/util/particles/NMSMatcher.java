@@ -15,7 +15,7 @@ public class NMSMatcher {
                 .split("\\.")[3]
                 .substring(1);
         try {
-            var builderClass = Class.forName("net.treasure.v" + serverVersion + ".NMSHandler");
+            var builderClass = Class.forName("net.treasure.version.v" + serverVersion + ".NMSHandler");
             var constructor = builderClass.getConstructor();
             return (NMSHandler) constructor.newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |

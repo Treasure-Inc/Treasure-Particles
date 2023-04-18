@@ -1,15 +1,12 @@
 package net.treasure.effect.script.particle.reader;
 
 import net.treasure.color.data.ColorData;
-import net.treasure.color.data.SingleColorData;
+import net.treasure.color.data.duo.DuoImpl;
 import net.treasure.common.Patterns;
 import net.treasure.common.particles.ParticleEffect;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
-import net.treasure.effect.script.ScriptReader;
-import net.treasure.effect.script.argument.type.BooleanArgument;
-import net.treasure.effect.script.argument.type.FloatArgument;
+import net.treasure.effect.script.argument.type.DoubleArgument;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.ItemStackArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
@@ -17,6 +14,8 @@ import net.treasure.effect.script.argument.type.StaticArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
 import net.treasure.effect.script.particle.ParticleOrigin;
 import net.treasure.effect.script.particle.ParticleSpawner;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 import net.treasure.util.particles.Particles;
 import org.bukkit.Bukkit;
 
@@ -65,8 +64,13 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
             if (args.length == 2) {
                 try {
-                    var multiplier = FloatArgument.read(c, args[1]);
-                    c.script().multiplier(multiplier);
+                    try {
+                        var multiplier = VectorArgument.read(c, args[1]);
+                        c.script().multiplier(multiplier);
+                    } catch (Exception e) {
+                        var multiplier = DoubleArgument.read(c, args[1]);
+                        c.script().multiplier(new VectorArgument(multiplier.value, multiplier.value, multiplier.value));
+                    }
                 } catch (Exception e) {
                     error(c, "Invalid origin multiplier usage: " + c.value(), e.getMessage());
                 }
@@ -83,19 +87,10 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
                 error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.name());
                 return;
             }
-            try {
-                c.script().colorData(ColorData.fromString(c.value()));
-            } catch (ReaderException e) {
-                try {
-                    c.script().colorData(new SingleColorData("#" + c.value()));
-                    return;
-                } catch (Exception ignored) {
-                }
-                error(c, e.getMessage());
-            }
+            c.script().colorData(ColorData.fromString(c));
         }, "color", "color-scheme");
 
-        addValidArgument(c -> c.script().directional(BooleanArgument.read(c.value())), "direction", "directional");
+        addValidArgument(c -> c.script().directional(StaticArgument.asBoolean(c)), "direction", "directional");
 
         addValidArgument(c -> c.script().amount(IntArgument.read(c)), "amount");
 
@@ -165,7 +160,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
     @Override
     public boolean validate(Context<T> context) throws ReaderException {
-        if (context.script().particle() == null) {
+        var particle = context.script().particle();
+        if (particle == null) {
             error(context.effect(), context.type(), context.line(), "You must define an 'effect' value");
             return false;
         }
@@ -174,6 +170,18 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
             error(context.effect(), context.type(), context.line(), "You must define an 'origin' value (" + Stream.of(ParticleOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
             return false;
         }
+
+        var colorData = context.script().colorData();
+        if (particle.hasProperty(ParticleEffect.Property.DUST) && colorData == null) {
+            error(context.effect(), context.type(), context.line(), "You must define a 'color' value");
+            return false;
+        }
+
+        if (particle != ParticleEffect.DUST_COLOR_TRANSITION && colorData instanceof DuoImpl) {
+            error(context.effect(), context.type(), context.line(), "You can only use duo color scheme with 'dust_color_transition' particle");
+            return false;
+        }
+
         return true;
     }
 

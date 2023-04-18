@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import net.treasure.common.Patterns;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.ReaderContext;
 import net.treasure.effect.script.argument.ScriptArgument;
-import net.treasure.effect.script.variable.Variable;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.util.logging.ComponentLogger;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -15,16 +14,20 @@ import org.bukkit.util.Vector;
 public class VectorArgument implements ScriptArgument<Vector> {
 
     public static VectorArgument read(ReaderContext<?> context) throws ReaderException {
-        String x = null, y = null, z = null;
-        var offsetMatcher = Patterns.INNER_SCRIPT.matcher(context.value());
+        return read(context, context.value());
+    }
+
+    public static VectorArgument read(ReaderContext<?> context, String arg) throws ReaderException {
+        Object x = null, y = null, z = null;
+        var offsetMatcher = Patterns.INNER_SCRIPT.matcher(arg);
         while (offsetMatcher.find()) {
             String type = offsetMatcher.group("type");
             String value = offsetMatcher.group("value");
             try {
                 switch (type) {
-                    case "x" -> x = value;
-                    case "y" -> y = value;
-                    case "z" -> z = value;
+                    case "x" -> x = DoubleArgument.read(value).value;
+                    case "y" -> y = DoubleArgument.read(value).value;
+                    case "z" -> z = DoubleArgument.read(value).value;
                     default -> ComponentLogger.error(context, "Unexpected vector argument: " + type);
                 }
             } catch (Exception ignored) {
@@ -34,68 +37,34 @@ public class VectorArgument implements ScriptArgument<Vector> {
         return new VectorArgument(x, y, z).validate(context);
     }
 
-    String x, y, z;
+    Object x, y, z;
 
     @Override
     public Vector get(Player player, EffectData data) {
         double x = 0, y = 0, z = 0;
 
-        if (this.x != null) {
-            try {
-                x = Double.parseDouble(this.x);
-            } catch (Exception e) {
-                x = Double.parseDouble(data.replaceVariables(this.x));
-            }
-        }
+        if (this.x instanceof Double d)
+            x = d;
+        else if (this.x instanceof String s)
+            x = Double.parseDouble(data.replaceVariables(s));
 
-        if (this.y != null) {
-            try {
-                y = Double.parseDouble(this.y);
-            } catch (Exception e) {
-                y = Double.parseDouble(data.replaceVariables(this.y));
-            }
-        }
+        if (this.y instanceof Double d)
+            y = d;
+        else if (this.y instanceof String s)
+            y = Double.parseDouble(data.replaceVariables(s));
 
-        if (this.z != null) {
-            try {
-                z = Double.parseDouble(this.z);
-            } catch (Exception e) {
-                z = Double.parseDouble(data.replaceVariables(this.z));
-            }
-        }
+        if (this.z instanceof Double d)
+            z = d;
+        else if (this.z instanceof String s)
+            z = Double.parseDouble(data.replaceVariables(s));
 
         return new Vector(x, y, z);
     }
 
     @Override
     public VectorArgument validate(ReaderContext<?> context) throws ReaderException {
-        if (x != null) {
-            try {
-                Double.parseDouble(x);
-            } catch (Exception e) {
-                if (!context.effect().isValidVariable(Variable.replace(x)))
-                    throw new ReaderException("Valid values for Vector argument: decimals, {variable}");
-            }
-        }
-
-        if (y != null) {
-            try {
-                Double.parseDouble(y);
-            } catch (Exception e) {
-                if (!context.effect().isValidVariable(Variable.replace(y)))
-                    throw new ReaderException("Valid values for Vector argument: decimals, {variable}");
-            }
-        }
-
-        if (z != null) {
-            try {
-                Double.parseDouble(z);
-            } catch (Exception e) {
-                if (!context.effect().isValidVariable(Variable.replace(z)))
-                    throw new ReaderException("Valid values for Vector argument: decimals, {variable}");
-            }
-        }
-
+        if (x == null && y == null && z == null)
+            throw new ReaderException("Incorrect vector argument usage");
         return this;
     }
 }

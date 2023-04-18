@@ -19,3 +19,22 @@ swap-x-z:
 elytra-boost-1s: "conditional ({CTM} - {LBM} > 1000) ? return : none"
 elytra-boost-3s: "conditional ({CTM} - {LBM} > 3000) ? return : none"
 elytra-boost-5s: "conditional ({CTM} - {LBM} > 5000) ? return : none"
+# Parkour
+parkour-circle-easy: "circle [effect=redstone,tick=true,amount=10,origin=head*17.5,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-circle-normal: "circle [effect=redstone,amount=10,origin=head*20,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-circle-hard: "circle [effect=redstone,amount=5,origin=head*20,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-success: "play-sound [name=entity.villager.yes,client=true]"
+parkour-fail: "play-sound [name=minecraft:entity.villager.no,client=true]"
+parkour-spawned: "play-sound [name=entity.arrow.hit_player,client=true]"
+# Parkour (Fast)
+parkour-fast: "circle [effect=redstone,amount=10,origin=head*{x={m};y=10;z={m}},pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-fast-streak:
+  - "play-sound [name=entity.arrow.hit_player,client=true]"
+  - "var streak+=1"
+  - "actionbar <light_purple><b>STREAK: {#:streak}"
+parkour-fast-fail:
+  - "play-sound [name=minecraft:entity.villager.no,client=true]"
+  - "conditional (streak>0) ? chat <prefix> Last streak: <light_purple>{#:streak} : none"
+  - "var streak=0"
+# Debug
+debug-velocity: "actionbar <red>x={velocityX} <gold>y={velocityY} <yellow>z={velocityZ} <green>length={velocityLength}"

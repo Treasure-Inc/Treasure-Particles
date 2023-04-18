@@ -14,6 +14,11 @@ public class DynamicColorData extends ColorData {
     public Color next(EffectData data) {
         var colors = data.getColorPreferences().get(data.getCurrentEffect().getKey()).getColors();
         max = colors.size();
-        return colors.get(index());
+        var index = index();
+        if (index > max) {
+            currentIndex = 0;
+            index = 0;
+        }
+        return colors.get(index);
     }
 }

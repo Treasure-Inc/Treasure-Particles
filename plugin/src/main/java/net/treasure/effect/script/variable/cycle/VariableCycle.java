@@ -20,6 +20,7 @@ public class VariableCycle extends Script {
     String variable;
     Operator operator = Operator.ADD;
     DoubleArgument step, min, max;
+    boolean revertWhenDone = true;
 
     boolean forward = true;
 
@@ -35,9 +36,9 @@ public class VariableCycle extends Script {
         var max = this.max.get(player, data);
 
         current += forward ? (step) : (-step);
-        if (forward ? current >= max : current < min) {
-            current = forward ? max : min;
-            forward = !forward;
+        if (forward ? current >= max : current <= min) {
+            current = revertWhenDone ? (forward ? max : min) : min;
+            forward = revertWhenDone != forward;
         }
 
         pair.setValue(current);
@@ -46,7 +47,7 @@ public class VariableCycle extends Script {
 
     @Override
     public Script clone() {
-        return new VariableCycle(variable, operator, step, min, max, true);
+        return new VariableCycle(variable, operator, step, min, max, revertWhenDone, true);
     }
 
     public enum Operator {
