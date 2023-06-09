@@ -5,14 +5,12 @@ import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
 import net.treasure.color.scheme.ColorScheme;
 import net.treasure.core.TreasurePlugin;
+import net.treasure.core.database.DatabaseManager;
 import net.treasure.effect.EffectManager;
 import net.treasure.effect.data.EffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -45,27 +43,15 @@ public class PlayerManager {
             var data = new EffectData(player);
             this.data.put(player.getUniqueId(), data);
 
-            PlayerData playerData = null;
-
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-
-            try {
-                var connection = database.getConnection();
-                ps = connection.prepareStatement("SELECT data FROM data WHERE uuid=?");
-                ps.setString(1, player.getUniqueId().toString());
-                rs = ps.executeQuery();
-                if (rs.next())
-                    playerData = gson.fromJson(rs.getString("data"), PlayerData.class);
-                else
-                    playerData = new PlayerData();
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            } catch (JsonSyntaxException exception) {
-                database.update("DELETE FROM data WHERE uuid=?", player.getUniqueId().toString());
-            } finally {
-                database.close(ps, rs);
-            }
+            PlayerData playerData = inst.getDatabase().get("SELECT `data` FROM `" + DatabaseManager.TABLE + "` WHERE `uuid`=?", rs -> {
+                try {
+                    if (rs.next())
+                        return gson.fromJson(rs.getString("data"), PlayerData.class);
+                } catch (JsonSyntaxException e) {
+                    database.update("DELETE FROM `" + DatabaseManager.TABLE + "` WHERE `uuid`=?", player.getUniqueId().toString());
+                }
+                return new PlayerData();
+            }, player.getUniqueId().toString());
 
             if (playerData == null) return;
             var effect = effectManager.get(playerData.effectName);
@@ -110,7 +96,7 @@ public class PlayerManager {
                         e -> e.getValue().getKey()
                 ));
         var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, colorPreferences, data.isEffectsEnabled(), data.isNotificationsEnabled());
-        TreasurePlugin.getInstance().getDatabase().update("REPLACE INTO data (uuid, data) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
+        TreasurePlugin.getInstance().getDatabase().update("REPLACE INTO `" + DatabaseManager.TABLE + "` (`uuid`, `data`) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
     }
 
     public void reload() {

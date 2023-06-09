@@ -1,7 +1,7 @@
 # Bu değeri değiştirmeyin!
-version: "1.5.0"
+version: "1.5.1"
 # Çeviriler
-prefix: "<gradient:#EF476F:#FFD166><b>TrElytra<#fac3c6>+</#fac3c6> <dark_gray>|<reset>"
+prefix: "<b><gradient:#EF476F:#FFD166>TrElytra<#fac3c6>+</#fac3c6></b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
 enabled: "<green>Açık"
 disabled: "<red>Kapalı"

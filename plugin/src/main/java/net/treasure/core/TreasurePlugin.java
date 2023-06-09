@@ -10,6 +10,7 @@ import net.treasure.core.command.MainCommand;
 import net.treasure.core.configuration.ConfigurationGenerator;
 import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.database.Database;
+import net.treasure.core.database.DatabaseManager;
 import net.treasure.core.gui.GUIManager;
 import net.treasure.core.integration.Expansions;
 import net.treasure.core.listener.JoinQuitListener;
@@ -34,7 +35,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Getter
     private static TreasurePlugin instance;
-    public static final String VERSION = "1.5.0"; // config.yml
+    public static final String VERSION = "1.5.1"; // config.yml
 
     // Data Holders
     private Translations translations;
@@ -44,7 +45,7 @@ public class TreasurePlugin extends JavaPlugin {
     private GUIManager guiManager;
     private List<DataHolder> dataHolders;
 
-    private Database database;
+    private DatabaseManager databaseManager;
     private PlayerManager playerManager;
 
     // ACF
@@ -78,8 +79,8 @@ public class TreasurePlugin extends JavaPlugin {
         configure();
 
         // Database
-        database = new Database();
-        if (!database.connect()) {
+        databaseManager = new DatabaseManager();
+        if (!databaseManager.initialize(this)) {
             disable();
             return;
         }
@@ -146,7 +147,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.database.close();
+        this.databaseManager.close();
         if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
@@ -180,10 +181,6 @@ public class TreasurePlugin extends JavaPlugin {
         // Player Manager
         playerManager.reload();
         getLogger().info("Reloaded player manager!");
-
-        // Command Permissions
-        permissions.reload();
-        getLogger().info("Reloaded permissions!");
 
         getLogger().info("Reloaded TreasureElytra+");
     }
@@ -243,5 +240,9 @@ public class TreasurePlugin extends JavaPlugin {
 
     public String getVersion() {
         return VERSION;
+    }
+
+    public Database getDatabase() {
+        return databaseManager.instance();
     }
 }

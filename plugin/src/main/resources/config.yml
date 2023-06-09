@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.5.0"
+version: "1.5.1"
 
 # Translations locale (default=EN)
 locale: EN
@@ -28,6 +28,17 @@ always-check-effect-permission: true
 # Toggle colored error logs (console)
 # If this option is enabled, faulty parts will be underlined and highlighted in a different color
 colored-error-logs: true
+
+# Database Settings
+database:
+  type: "sqlite"
+  table: "trelytra_data"
+  # For MySQL
+  address: "localhost"
+  port: "3306"
+  name: "database-name"
+  user: "user-name"
+  password: "password"
 
 permissions:
   # General

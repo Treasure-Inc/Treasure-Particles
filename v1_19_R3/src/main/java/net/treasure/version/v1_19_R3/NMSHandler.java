@@ -23,7 +23,7 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
 
     @Override
     public void sendParticle(ParticleBuilder builder) {
-        var filter = builder.filter();
+        var filter = builder.viewers();
 
         var location = builder.location();
         var packet = new PacketPlayOutWorldParticles(
@@ -39,7 +39,7 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
                 builder.amount());
 
         for (var player : Bukkit.getOnlinePlayers()) {
-            if (!filter.test(player)) continue;
+            if (filter != null && !filter.test(player)) continue;
 
             ((CraftPlayer) player).getHandle().b.a(packet);
         }
@@ -51,7 +51,7 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
         Predicate<Player> filter = null;
 
         for (var builder : builders) {
-            filter = builder.filter();
+            filter = builder.viewers();
 
             var location = builder.location();
             var packet = new PacketPlayOutWorldParticles(
@@ -68,11 +68,12 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
 
             packets.add(packet);
         }
+        var bundle = new ClientboundBundlePacket(packets);
 
         for (var player : Bukkit.getOnlinePlayers()) {
             if (filter != null && !filter.test(player)) continue;
 
-            ((CraftPlayer) player).getHandle().b.a(new ClientboundBundlePacket(packets));
+            ((CraftPlayer) player).getHandle().b.a(bundle);
         }
     }
 

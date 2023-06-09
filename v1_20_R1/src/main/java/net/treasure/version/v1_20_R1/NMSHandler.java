@@ -1,17 +1,18 @@
-package net.treasure.version.v1_16_R2;
+package net.treasure.version.v1_20_R1;
 
-import net.minecraft.server.v1_16_R2.Packet;
-import net.minecraft.server.v1_16_R2.PacketListenerPlayOut;
-import net.minecraft.server.v1_16_R2.PacketPlayOutWorldParticles;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
+import net.minecraft.network.protocol.game.PacketListenerPlayOut;
+import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
 import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.common.particles.ParticleEffect;
-import net.treasure.version.v1_16_R2.data.color.NMSDustTransitionData;
-import net.treasure.version.v1_16_R2.data.NMSGenericData;
-import net.treasure.version.v1_16_R2.data.color.NMSDustData;
+import net.treasure.version.v1_20_R1.data.NMSGenericData;
+import net.treasure.version.v1_20_R1.data.color.NMSDustData;
+import net.treasure.version.v1_20_R1.data.color.NMSDustTransitionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.craftbukkit.v1_16_R2.CraftParticle;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.CraftParticle;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -38,9 +39,9 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
                 builder.amount());
 
         for (var player : Bukkit.getOnlinePlayers()) {
-            if (!filter.test(player)) continue;
+            if (filter != null && !filter.test(player)) continue;
 
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+            ((CraftPlayer) player).getHandle().c.a(packet);
         }
     }
 
@@ -67,12 +68,12 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
 
             packets.add(packet);
         }
+        var bundle = new ClientboundBundlePacket(packets);
 
         for (var player : Bukkit.getOnlinePlayers()) {
             if (filter != null && !filter.test(player)) continue;
-            var p = ((CraftPlayer) player).getHandle().playerConnection;
-            for (var packet : packets)
-                p.sendPacket(packet);
+
+            ((CraftPlayer) player).getHandle().c.a(bundle);
         }
     }
 

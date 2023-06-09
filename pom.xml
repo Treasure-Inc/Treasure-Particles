@@ -6,11 +6,12 @@
 
     <groupId>net.treasure</groupId>
     <artifactId>TreasureElytraPlus</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
     <packaging>pom</packaging>
     <modules>
         <module>common</module>
         <module>plugin</module>
+        <module>v1_20_R1</module>
         <module>v1_19_R3</module>
         <module>v1_19_R2</module>
         <module>v1_19_R1</module>

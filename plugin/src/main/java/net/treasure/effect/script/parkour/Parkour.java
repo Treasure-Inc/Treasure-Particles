@@ -57,11 +57,10 @@ public class Parkour extends Script {
         if (lastSpawned == -5) {
             var interval = this.interval.get(player, data);
             if (!TimeKeeper.isElapsed(interval)) return TickResult.NORMAL;
-            style.colorData(standby);
             lastSpawned = System.currentTimeMillis();
-            var triplet = style.sendParticles(player, data);
+            style.colorData(standby);
+            var triplet = style.sendParticles(player, data, p -> p.equals(player));
             builder = triplet.a();
-            builder.viewers(p -> p.equals(player));
             lastLocation = triplet.b();
             lastDirection = triplet.c();
             lastYaw = lastLocation.getYaw();

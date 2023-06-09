@@ -156,7 +156,7 @@ public class EffectData {
         return builder.toString();
     }
 
-    public boolean canSeeEffects(Player player) {
+    public boolean canSeeEffects() {
         return effectsEnabled && (!EffectManager.EFFECTS_VISIBILITY_PERMISSION || player.hasPermission(Permissions.CAN_SEE_EFFECTS));
     }
 }

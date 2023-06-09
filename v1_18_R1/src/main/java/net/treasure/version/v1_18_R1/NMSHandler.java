@@ -22,7 +22,7 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
 
     @Override
     public void sendParticle(ParticleBuilder builder) {
-        var filter = builder.filter();
+        var filter = builder.viewers();
 
         var location = builder.location();
         var packet = new PacketPlayOutWorldParticles(
@@ -50,7 +50,7 @@ public class NMSHandler extends net.treasure.common.NMSHandler {
         Predicate<Player> filter = null;
 
         for (var builder : builders) {
-            filter = builder.filter();
+            filter = builder.viewers();
 
             var location = builder.location();
             var packet = new PacketPlayOutWorldParticles(

@@ -57,7 +57,7 @@ public class ConfigurationGenerator {
         var dataFolder = plugin.getDataFolder();
         var file = new File(dataFolder, directory);
         try {
-            Files.copy(file, new File(dataFolder, "old_" + fileName + "_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + ".yml"));
+            Files.copy(file, new File(dataFolder, "old_" + fileName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".yml"));
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Couldn't copy old file: " + fileName + ".yml", e);
         }

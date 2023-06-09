@@ -1,108 +1,67 @@
 package net.treasure.core.database;
 
-import net.treasure.core.TreasurePlugin;
+import net.treasure.core.database.unsafe.UnsafeQuery;
+import net.treasure.core.database.unsafe.UnsafeRunnable;
+import org.intellij.lang.annotations.Language;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
-public class Database {
+public abstract class Database {
 
-    Connection connection;
+    public abstract boolean connect();
 
-    public boolean connect() {
-        connection = getConnection();
-        if (connection == null)
-            return false;
+    public abstract Connection getConnection() throws SQLException;
 
-        load();
-        return true;
-    }
+    public abstract void closeComponents(Connection connection, PreparedStatement statement, ResultSet rs);
 
-    public Connection getConnection() {
-        if (connection != null) {
-            try {
-                if (!connection.isClosed())
-                    return connection;
-            } catch (SQLException ignored) {
-            }
-        }
+    public abstract void close();
 
-        File dataFolder = new File(TreasurePlugin.getInstance().getDataFolder(), "database.db");
-        boolean exists = dataFolder.exists();
-        if (!exists) {
-            try {
-                exists = dataFolder.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-                TreasurePlugin.logger().log(Level.SEVERE, "File write error: database.db", e);
-                return null;
-            }
-        }
-        if (!exists)
-            return null;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" + dataFolder);
-            return connection;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            TreasurePlugin.logger().log(Level.SEVERE, "SQLite exception on initialize", ex);
-        }
-        return null;
-    }
-
-    public void load() {
-        update("CREATE TABLE IF NOT EXISTS data (`uuid` varchar(100) NOT NULL, `data` BLOB NOT NULL, PRIMARY KEY(`uuid`))");
-    }
-
-    public void update(String query, Object... objects) {
-        execute(query, getConnection(), objects);
-    }
-
-    private void execute(String query, Connection connection, Object... objects) {
+    public void update(@Language("SQL") String query, Object... objects) {
+        Connection connection = null;
         PreparedStatement ps = null;
         try {
+            connection = getConnection();
             ps = connection.prepareStatement(query);
-            if (objects.length > 0) {
-                int i = 1;
-                for (Object object : objects) {
-                    ps.setObject(i++, object);
-                }
-            }
+            if (objects.length > 0)
+                for (int i = 0, length = objects.length; i < length; i++)
+                    ps.setObject(i + 1, objects[i]);
+
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            close(ps, null);
+            closeComponents(connection, ps, null);
         }
     }
 
-    public void close(PreparedStatement ps, ResultSet rs) {
-        try {
-            if (ps != null)
-                ps.close();
-        } catch (SQLException e) {
-            TreasurePlugin.logger().log(Level.WARNING, "Failed to close PreparedStatement", e);
-        }
-        try {
-            if (rs != null)
-                rs.close();
-        } catch (SQLException e) {
-            TreasurePlugin.logger().log(Level.WARNING, "Failed to close ResultSet ", e);
-        }
+    public void query(@Language("SQL") String query, UnsafeRunnable unsafe, Object... objects) {
+        get(query, rs -> {
+            unsafe.accept(rs);
+            return null;
+        }, objects);
     }
 
-    public void close() {
+    public <T> T get(@Language("SQL") String query, UnsafeQuery<T> unsafe, Object... objects) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
-            connection.close();
-        } catch (Exception ignored) {
+            connection = getConnection();
+            ps = connection.prepareStatement(query);
+            if (objects.length > 0)
+                for (int i = 0, length = objects.length; i < length; i++)
+                    ps.setObject(i + 1, objects[i]);
+
+            rs = ps.executeQuery();
+            return unsafe.accept(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeComponents(connection, ps, rs);
         }
+        return null;
     }
 }

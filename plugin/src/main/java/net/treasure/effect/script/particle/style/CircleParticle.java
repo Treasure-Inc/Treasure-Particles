@@ -24,6 +24,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Getter
 @Setter
@@ -48,24 +49,28 @@ public class CircleParticle extends ParticleSpawner {
 
     @Override
     public TickResult tick(Player player, EffectData data, int times) {
-        sendParticles(player, data);
+        sendParticles(player, data, null);
         return TickResult.NORMAL;
     }
 
-    public Triplet<ParticleBuilder, Location, Vector> sendParticles(Player player, EffectData data) {
+    public Triplet<ParticleBuilder, Location, Vector> sendParticles(Player player, EffectData data, Predicate<Player> viewers) {
         var context = tick(player, data);
         var origin = context.origin();
+        var builder = context.builder();
         var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
 
         var direction = player.getLocation().getDirection();
         float pitch = player.getEyeLocation().getPitch(), yaw = player.getEyeLocation().getYaw();
 
-        sendParticles(player, data, context.builder(), origin, direction, pitch, yaw, vector);
-
         var clone = origin.clone();
         clone.setPitch(pitch);
         clone.setYaw(yaw);
-        return new Triplet<>(context.builder(), clone.add(vector), direction);
+
+        if (viewers != null)
+            builder.viewers(viewers);
+
+        sendParticles(player, data, builder, origin, direction, pitch, yaw, vector);
+        return new Triplet<>(builder, clone.add(vector), direction);
     }
 
     public void sendParticles(Player player, EffectData data, ParticleBuilder builder, Location origin, Vector direction, float pitch, float yaw, Vector vector) {

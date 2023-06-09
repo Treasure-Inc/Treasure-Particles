@@ -73,7 +73,7 @@ public class ParticleSpawner extends Script {
             builder.offset(offset);
 
         var playerManager = TreasurePlugin.getInstance().getPlayerManager();
-        builder.viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects(viewer));
+        builder.viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects());
 
         return new ParticleContext(builder, origin);
     }

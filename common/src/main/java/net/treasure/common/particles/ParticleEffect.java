@@ -67,19 +67,6 @@ public enum ParticleEffect {
      */
     BLOCK_CRACK(version -> version < 8 ? "NONE" : (version < 13 ? "BLOCK_CRACK" : "block"), REQUIRES_BLOCK),
     /**
-     * In vanilla, this particle is displayed when an entity hits the ground
-     * after falling. It's also displayed when an armor-stand is broken.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Little piece of a texture.</li>
-     * <li>Extra:<ul>
-     * <li>  The velocity of this particle can be set. The amount has to be 0</li>
-     * <li> This particle needs a block texture in order to work.</li></ul></li>
-     * </ul>
-     */
-    BUBBLE_COLUMN_UP(version -> version < 13 ? "NONE" : "bubble_column_up", DIRECTIONAL),
-    /**
      * In vanilla, this particle is displayed by barrier blocks when a player
      * holds a barrier item in the main- or off-hand or by the light block.
      * <p>
@@ -92,6 +79,19 @@ public enum ParticleEffect {
      * </ul>
      */
     BLOCK_MARKER(version -> version < 18 ? "NONE" : "block_marker", REQUIRES_BLOCK),
+    /**
+     * In vanilla, this particle is displayed when an entity hits the ground
+     * after falling. It's also displayed when an armor-stand is broken.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Little piece of a texture.</li>
+     * <li>Extra:<ul>
+     * <li>  The velocity of this particle can be set. The amount has to be 0</li>
+     * <li> This particle needs a block texture in order to work.</li></ul></li>
+     * </ul>
+     */
+    BUBBLE_COLUMN_UP(version -> version < 13 ? "NONE" : "bubble_column_up", DIRECTIONAL),
     /**
      * In vanilla, this particle is displayed at the top of
      * bubble columns.
@@ -127,6 +127,10 @@ public enum ParticleEffect {
      * </ul>
      */
     CAMPFIRE_SIGNAL_SMOKE(version -> version < 14 ? "NONE" : "campfire_signal_smoke", DIRECTIONAL),
+    /**
+     * Falling petals from the cherry leaves.
+     */
+    CHERRY_LEAVES(version -> version < 20 ? "NONE" : "cherry_leaves"),
     /**
      * In vanilla, this particle is displayed when an entity dies.
      * <p>
@@ -229,27 +233,6 @@ public enum ParticleEffect {
      */
     DRAGON_BREATH(version -> version < 9 ? "NONE" : (version < 13 ? "DRAGON_BREATH" : "dragon_breath"), DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed randomly when a
-     * lava block is above a block.
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Orange drop.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    DRIP_LAVA(version -> version < 8 ? "NONE" : (version < 13 ? "DRIP_LAVA" : "dripping_lava")),
-    /**
-     * In vanilla, this particle is displayed randomly when a
-     * water block is above a block.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Blue drop.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    DRIP_WATER(version -> version < 8 ? "NONE" : (version < 13 ? "DRIP_WATER" : "dripping_water")),
-    /**
      * In vanilla, this particle is shown dripping from the
      * tip of pointed dripstones.
      * <p>
@@ -295,6 +278,27 @@ public enum ParticleEffect {
      * </ul>
      */
     DRIPPING_OBSIDIAN_TEAR(version -> version < 16 ? "NONE" : "dripping_obsidian_tear"),
+    /**
+     * In vanilla, this particle is displayed randomly when a
+     * lava block is above a block.
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Orange drop.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    DRIP_LAVA(version -> version < 8 ? "NONE" : (version < 13 ? "DRIP_LAVA" : "dripping_lava")),
+    /**
+     * In vanilla, this particle is displayed randomly when a
+     * water block is above a block.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Blue drop.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    DRIP_WATER(version -> version < 8 ? "NONE" : (version < 13 ? "DRIP_WATER" : "dripping_water")),
     /**
      * In vanilla, this particle is displayed when a sculk sensor is triggered.
      * <p>

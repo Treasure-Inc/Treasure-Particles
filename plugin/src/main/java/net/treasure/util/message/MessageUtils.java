@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -29,7 +28,7 @@ public class MessageUtils {
             .tags(TagResolver.builder()
                     .resolver(TagResolver.standard())
                     .resolvers(
-                            Placeholder.parsed("prefix", Translations.PREFIX),
+                            TagResolver.resolver("prefix", (args, context) -> Tag.inserting(parse(Translations.PREFIX))),
                             TagResolver.resolver("discord", (args, context) -> Tag.styling(ClickEvent.openUrl("https://discord.com/invite/qQbePCtSjh/"))),
                             TagResolver.resolver("download", (args, context) -> Tag.styling(ClickEvent.openUrl("https://builtbybit.com/resources/26794/"))),
                             TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://treasurestore.gitbook.io/treasure-elytra/")))

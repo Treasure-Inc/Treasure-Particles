@@ -6,7 +6,7 @@
     <parent>
         <groupId>net.treasure</groupId>
         <artifactId>TreasureElytraPlus</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1</version>
     </parent>
 
     <artifactId>plugin</artifactId>
@@ -47,23 +47,27 @@
                     <relocations>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>net.treasure.acf.commands</shadedPattern>
+                            <shadedPattern>net.treasure.shaded.acf.commands</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>net.treasure.acf.locales</shadedPattern>
+                            <shadedPattern>net.treasure.shaded.acf.locales</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>net.kyori.adventure</pattern>
-                            <shadedPattern>net.treasure.adventure</shadedPattern>
+                            <shadedPattern>net.treasure.shaded.adventure</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>net.kyori.examination</pattern>
-                            <shadedPattern>net.treasure.adventure.examination</shadedPattern>
+                            <shadedPattern>net.treasure.shaded.examination</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>net.treasure.bstats</shadedPattern>
+                            <shadedPattern>net.treasure.shaded.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer</pattern>
+                            <shadedPattern>net.treasure.shaded.hikaricp</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -96,8 +100,14 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <version>1.20-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.treasure</groupId>
+            <artifactId>v1_20_R1</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
@@ -163,7 +173,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.13.1</version>
+            <version>4.14.0</version>
         </dependency>
 
         <dependency>
@@ -175,7 +185,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <version>4.13.1</version>
+            <version>4.14.0</version>
         </dependency>
 
         <dependency>
@@ -190,6 +200,12 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.11.1</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.0.1</version>
         </dependency>
     </dependencies>
 
