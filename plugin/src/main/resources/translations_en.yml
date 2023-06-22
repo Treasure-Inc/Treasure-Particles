@@ -1,13 +1,13 @@
 # Do not change!
-version: "1.5.1"
+version: "1.6.0"
 # Translations
-prefix: "<b><gradient:#EF476F:#FFD166>TrElytra<#fac3c6>+</#fac3c6></b> <dark_gray><b>|</b></dark_gray>"
+prefix: "<b><gradient:#EF476F:#FFD166>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
 enabled: "<green>Enabled"
 disabled: "<red>Disabled"
 # GUI
 gui:
-  title: "        <gradient:#EF476F:#FFD166><b>Treasure Elytra<#fac3c6>+</#fac3c6>"
+  title: "      <gradient:#EF476F:#FFD166><b>Treasure Particles"
   effect-selected: "<green>Selected!"
   select-effect: "<#87FF65>❤ Click to use this effect!"
   reset-effect: "<yellow>Reset Effect"

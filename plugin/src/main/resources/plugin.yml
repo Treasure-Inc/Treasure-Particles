@@ -1,4 +1,4 @@
-name: TrElytraPlus
+name: TrParticles
 author: ItsZypec
 main: net.treasure.core.TreasurePlugin
 version: ${project.version}
