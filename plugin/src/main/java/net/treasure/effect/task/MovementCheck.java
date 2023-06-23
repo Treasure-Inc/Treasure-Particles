@@ -2,7 +2,6 @@ package net.treasure.effect.task;
 
 import lombok.AllArgsConstructor;
 import net.treasure.core.player.PlayerManager;
-import net.treasure.util.TimeKeeper;
 import org.bukkit.util.Vector;
 
 @AllArgsConstructor
@@ -12,14 +11,13 @@ public class MovementCheck implements Runnable {
 
     @Override
     public void run() {
-        TimeKeeper.increaseTime();
         var iterator = playerManager.getData().entrySet().iterator();
         while (iterator.hasNext()) {
             var set = iterator.next();
 
             var data = set.getValue();
 
-            var player = data.getPlayer();
+            var player = data.player;
             if (player == null) {
                 iterator.remove();
                 continue;

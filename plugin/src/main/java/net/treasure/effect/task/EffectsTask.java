@@ -19,7 +19,7 @@ public class EffectsTask implements Runnable {
 
             var data = set.getValue();
 
-            var player = data.getPlayer();
+            var player = data.player;
             if (player == null) {
                 iterator.remove();
                 continue;
