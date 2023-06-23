@@ -208,15 +208,18 @@ public class TreasurePlugin extends JavaPlugin {
     }
 
     private void initializeMetrics() {
-        var metrics = new Metrics(this, 14508);
+        var metrics = new Metrics(this, 18854);
         metrics.addCustomChart(new SimplePie("locale", () -> Translations.LOCALE));
+        metrics.addCustomChart(new SimplePie("database_type", () -> DatabaseManager.TYPE));
 
-        metrics.addCustomChart(new SimplePie("effects_size", () -> String.valueOf(effectManager.getEffects().size())));
-        metrics.addCustomChart(new SimplePie("colors_size", () -> String.valueOf(colorManager.getColors().size())));
+        metrics.addCustomChart(new DrilldownPie("effects_size", () -> Map.of(String.valueOf(effectManager.getEffects().size()), Map.of(EffectManager.VERSION, 1))));
+        metrics.addCustomChart(new DrilldownPie("color_schemes_size", () -> Map.of(String.valueOf(colorManager.getColors().size()), Map.of(ColorManager.VERSION, 1))));
+        metrics.addCustomChart(new DrilldownPie("color_groups_size", () -> Map.of(String.valueOf(colorManager.getGroups().size()), Map.of(ColorManager.VERSION, 1))));
 
-        metrics.addCustomChart(new SimplePie("debug_mode_enabled", () -> String.valueOf(debugModeEnabled)));
+        metrics.addCustomChart(new SimplePie("notifications_enabled", () -> String.valueOf(notificationsEnabled)));
         metrics.addCustomChart(new SimplePie("auto_update_enabled", () -> String.valueOf(autoUpdateEnabled)));
 
+        metrics.addCustomChart(new SimplePie("gui_current_style", () -> guiManager.getCurrentStyle().getId()));
         metrics.addCustomChart(new SimplePie("gui_animation_enabled", () -> String.valueOf(guiManager.getTaskId() != -5)));
         metrics.addCustomChart(new SimplePie("gui_animation_interval", () -> String.valueOf(guiManager.getInterval())));
         metrics.addCustomChart(new SimplePie("gui_animation_speed", () -> String.valueOf(guiManager.getColorCycleSpeed())));
