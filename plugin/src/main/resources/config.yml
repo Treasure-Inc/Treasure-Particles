@@ -42,21 +42,21 @@ database:
 
 permissions:
   # General
-  menu: "trelytra.menu" # Base command permission
-  admin: "trelytra.admin" # Admin commands permission
+  base: "trparticles.base" # Base command permission
+  admin: "trparticles.admin" # Admin commands permission
 
   # Effects Visibility
   # You can show TrElytra effects for the players who have permission, just set the "effects-visibility-permission" to true
   # If this option is enabled, give the "can-see-effects" permission to players
   effects-visibility-permission: false
-  can-see-effects: "trelytra.can_see_effects"
+  can-see-effects: "trparticles.can_see_effects"
 
   # Effects Permissions
   # Only some effects have permission by default
   # Please check the effects.yml file if you want to add permissions to the effects
   # You can read the wiki page for detailed information: https://treasurestore.gitbook.io/treasure-elytra/effects/basic-usage#permission
-  rainbow-effects: "trelytra.rainbow" # Permission for rainbow-colored effects
-  tail-effects: "trelytra.tail" # Permission for tail effects
-  sonic: "trelytra.sonic" # Permission for sonic effect
-  christmas: "trelytra.effects.christmas" # Permission for Christmas effects
-  parkour: "trelytra.effects.parkour" # Permission for parkour effects
+  rainbow-effects: "trparticles.effects.rainbow" # Permission for rainbow-colored effects
+  tail-effects: "trparticles.effects.tail" # Permission for tail effects
+  sonic: "trparticles.effects.sonic" # Permission for sonic effect
+  christmas: "trparticles.effects.christmas" # Permission for Christmas effects
+  parkour: "trparticles.effects.parkour" # Permission for parkour effects
