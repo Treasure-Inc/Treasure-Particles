@@ -45,11 +45,11 @@ public class EffectsGUIListener implements Listener {
             switch (ElementType.valueOf(buttonType)) {
                 case NEXT_PAGE -> {
                     sound = GUISounds.NEXT_PAGE;
-                    EffectsGUI.open(player, holder.getPage() + 1);
+                    EffectsGUI.open(player, holder.getFilter(), holder.getPage() + 1);
                 }
                 case PREVIOUS_PAGE -> {
                     sound = GUISounds.PREVIOUS_PAGE;
-                    EffectsGUI.open(player, holder.getPage() - 1);
+                    EffectsGUI.open(player, holder.getFilter(), holder.getPage() - 1);
                 }
                 case RANDOM_EFFECT -> {
                     var effects = effectManager.getEffects().stream().filter(effect -> effect.canUse(player)).toList();
@@ -65,7 +65,19 @@ public class EffectsGUIListener implements Listener {
                 case RESET -> {
                     sound = GUISounds.RESET;
                     data.setCurrentEffect(null);
-                    EffectsGUI.open(player, holder.getPage());
+                    EffectsGUI.open(player, holder.getFilter(), holder.getPage());
+                }
+                case CLOSE -> player.closeInventory();
+                case FILTER -> {
+                    sound = GUISounds.FILTER;
+
+                    var filter = holder.getFilter();
+                    var values = HandlerEvent.values();
+
+                    var ordinal = filter == null ? (event.isRightClick() ? values.length - 1 : 0) : filter.ordinal() + (event.isRightClick() ? -1 : 1);
+                    var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];
+
+                    EffectsGUI.open(player, newFilter, holder.getPage());
                 }
             }
             if (sound != null)

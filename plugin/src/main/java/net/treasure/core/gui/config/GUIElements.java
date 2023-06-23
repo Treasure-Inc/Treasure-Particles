@@ -56,8 +56,6 @@ public class GUIElements {
                     .glow(glow)
                     .build();
         } catch (Exception e) {
-            if (TreasurePlugin.getInstance().isDebugModeEnabled())
-                e.printStackTrace();
             return defaultValue;
         }
     }

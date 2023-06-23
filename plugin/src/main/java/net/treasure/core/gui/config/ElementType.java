@@ -14,9 +14,10 @@ public enum ElementType {
     NEXT_PAGE("next-page"),
     // EFFECTS
     DEFAULT_ICON("default-icon"),
+    RANDOM_EFFECT("random-effect"),
     RESET("reset"),
     CLOSE("close"),
-    RANDOM_EFFECT("random-effect"),
+    FILTER("filter"),
     // COLORS
     COLOR_ICON("color-icon"),
     RANDOM_COLOR("random-color"),

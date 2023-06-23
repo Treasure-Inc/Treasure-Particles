@@ -66,7 +66,7 @@ public class ColorsGUIListener implements Listener {
                         player.closeInventory();
                     }
                 }
-                case BACK -> EffectsGUI.open(player, 0);
+                case BACK -> EffectsGUI.open(player, null, 0);
             }
             if (sound != null)
                 player.playSound(player.getLocation(), sound.getKey(), sound.getValue()[0], sound.getValue()[1]);
@@ -88,7 +88,7 @@ public class ColorsGUIListener implements Listener {
 
                 data.setColorPreference(effect, colorScheme);
                 MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, colorScheme.getDisplayName(), effect.getDisplayName());
-                EffectsGUI.open(player, 0);
+                EffectsGUI.open(player, null, 0);
             } else {
                 sound = GUISounds.SELECT_EFFECT;
 

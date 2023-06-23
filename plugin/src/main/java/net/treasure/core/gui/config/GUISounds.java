@@ -9,6 +9,7 @@ public class GUISounds {
     public static Pair<String, float[]> NEXT_PAGE = new Pair<>("minecraft:item.book.page_turn", new float[]{1, 1});
     public static Pair<String, float[]> PREVIOUS_PAGE = new Pair<>("minecraft:item.book.page_turn", new float[]{1, 1});
     public static Pair<String, float[]> RESET = new Pair<>("", new float[]{1, 1});
+    public static Pair<String, float[]> FILTER = new Pair<>("", new float[]{1, 1});
     public static Pair<String, float[]> SELECT_EFFECT = new Pair<>("minecraft:block.note_block.pling", new float[]{1, 2});
     public static Pair<String, float[]> RANDOM_EFFECT = new Pair<>("minecraft:block.note_block.pling", new float[]{1, 2});
     // Colors GUI
@@ -23,6 +24,7 @@ public class GUISounds {
         NEXT_PAGE = getSound("next-page", NEXT_PAGE);
         PREVIOUS_PAGE = getSound("previous-page", PREVIOUS_PAGE);
         RESET = getSound("reset", RESET);
+        FILTER = getSound("filter", FILTER);
         SELECT_EFFECT = getSound("select-effect", SELECT_EFFECT);
         RANDOM_EFFECT = getSound("random-effect", RANDOM_EFFECT);
         // Colors GUI

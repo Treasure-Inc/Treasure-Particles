@@ -50,7 +50,7 @@ public class MainCommand extends BaseCommand {
         int maxPage = (effectManager.getEffects().size() / 28) + 1;
         if (page >= maxPage)
             page = maxPage - 1;
-        EffectsGUI.open(player, page);
+        EffectsGUI.open(player, null, page);
     }
 
     @Subcommand("toggle")

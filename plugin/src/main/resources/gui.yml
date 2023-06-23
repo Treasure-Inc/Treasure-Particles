@@ -9,6 +9,7 @@ sounds: # GUI sounds (SOUND VOLUME PITCH) (Leave it blank if you don't want it t
   next-page: "minecraft:item.book.page_turn 1 1"
   previous-page: "minecraft:item.book.page_turn 1 1"
   reset: ""
+  filter: ""
   select-effect: "minecraft:block.note_block.pling 1 2"
   random-effect: "minecraft:block.note_block.pling 1 2"
   select-color: "minecraft:block.note_block.pling 1 2"
@@ -24,7 +25,7 @@ styles:
         - "BEEEEEEEB"
         - "BEEEEEEEB"
         - "BEEEEEEEB"
-        - "PBBrCRBBN"
+        - "PBBrFRBBN"
       elements:
         borders:
           key: 'B'
@@ -54,6 +55,10 @@ styles:
           key: 'C'
           item:
             material: BARRIER
+        filter:
+          key: 'F'
+          item:
+            material: HOPPER
     colors:
       layout:
         - "BBBBBBBBB"
@@ -96,7 +101,7 @@ styles:
         - "BEEBOBEEB"
         - "BEEBOBEEB"
         - "BEEBOBEEB"
-        - "PBBrCRBBN"
+        - "PBBrFRBBN"
       elements:
         borders:
           key: 'B'
@@ -126,6 +131,10 @@ styles:
           key: 'C'
           item:
             material: BARRIER
+        filter:
+          key: 'F'
+          item:
+            material: HOPPER
     colors:
       layout:
         - "BBBBBBBBB"

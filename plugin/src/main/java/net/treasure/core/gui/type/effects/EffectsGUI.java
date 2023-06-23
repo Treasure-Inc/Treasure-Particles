@@ -10,6 +10,7 @@ import net.treasure.core.gui.config.GUIElements;
 import net.treasure.core.gui.task.GUITask;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.EffectManager;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.locale.Translations;
 import net.treasure.util.item.CustomItem;
 import net.treasure.util.message.MessageUtils;
@@ -21,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static net.treasure.core.gui.type.GUI.EFFECTS;
@@ -31,40 +33,47 @@ public class EffectsGUI {
     private static EffectManager effectManager;
     private static PlayerManager playerManager;
     private static ColorManager colorManager;
+    private static Translations translations;
 
     public static GUIElements.Info BORDERS;
-    public static GUIElements.Info DEFAULT_ICON;
     public static GUIElements.Info NEXT_PAGE;
     public static GUIElements.Info PREVIOUS_PAGE;
+    public static GUIElements.Info DEFAULT_ICON;
     public static GUIElements.Info RANDOM_EFFECT;
-    public static GUIElements.Info CLOSE;
     public static GUIElements.Info RESET;
+    public static GUIElements.Info CLOSE;
+    public static GUIElements.Info FILTER;
 
     public static void configure(GUIManager manager) {
         EffectsGUI.manager = manager;
-        effectManager = TreasurePlugin.getInstance().getEffectManager();
-        playerManager = TreasurePlugin.getInstance().getPlayerManager();
-        colorManager = TreasurePlugin.getInstance().getColorManager();
+
+        var inst = TreasurePlugin.getInstance();
+        effectManager = inst.getEffectManager();
+        playerManager = inst.getPlayerManager();
+        colorManager = inst.getColorManager();
+        translations = inst.getTranslations();
     }
 
     public static void setItems() {
         BORDERS = GUIElements.info(EFFECTS, ElementType.BORDERS, 'B', new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        DEFAULT_ICON = GUIElements.info(EFFECTS, ElementType.DEFAULT_ICON, 'E', new ItemStack(Material.LEATHER_BOOTS));
-
         NEXT_PAGE = GUIElements.info(EFFECTS, ElementType.NEXT_PAGE, 'N', new ItemStack(Material.ENDER_PEARL));
         PREVIOUS_PAGE = GUIElements.info(EFFECTS, ElementType.PREVIOUS_PAGE, 'N', new ItemStack(Material.ENDER_EYE));
+
+        DEFAULT_ICON = GUIElements.info(EFFECTS, ElementType.DEFAULT_ICON, 'E', new ItemStack(Material.LEATHER_BOOTS));
         RANDOM_EFFECT = GUIElements.info(EFFECTS, ElementType.RANDOM_EFFECT, 'r', new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
+
         RESET = GUIElements.info(EFFECTS, ElementType.RESET, 'R', new ItemStack(Material.RED_STAINED_GLASS_PANE));
         CLOSE = GUIElements.info(EFFECTS, ElementType.CLOSE, 'C', new ItemStack(Material.BARRIER));
+        FILTER = GUIElements.info(EFFECTS, ElementType.FILTER, 'F', new ItemStack(Material.HOPPER));
     }
 
-    public static void open(Player player, int page) {
+    public static void open(Player player, HandlerEvent filter, int page) {
         // Variables
         var data = playerManager.getEffectData(player);
         var style = manager.getStyle();
 
         // Create inventory
-        var holder = new EffectsGUIHolder();
+        var holder = new EffectsGUIHolder(filter);
         var inventory = Bukkit.createInventory(holder, style.getSize(), MessageUtils.parseLegacy(manager.getStyle().getTitle()));
         holder.setInventory(inventory);
         holder.setPage(page);
@@ -77,14 +86,15 @@ public class EffectsGUI {
                         .build());
 
         // Effects
-        var effects = effectManager.getEffects().stream().filter(effect -> effect.canUse(player)).toList();
+        var effects = effectManager.getEffects().stream().filter(effect -> (filter == null || effect.getEvents().contains(filter)) && effect.canUse(player)).toList();
 
-        // Close button
-        if (CLOSE.isEnabled())
-            for (int slot : CLOSE.slots())
-                inventory.setItem(slot, new CustomItem(CLOSE.item())
-                        .setDisplayName(MessageUtils.parseLegacy(Translations.GUI_CLOSE))
-                        .addData(Keys.BUTTON_TYPE, ElementType.CLOSE.name())
+        // Filter button
+        if (FILTER.isEnabled())
+            for (int slot : FILTER.slots())
+                inventory.setItem(slot, new CustomItem(FILTER.item())
+                        .setDisplayName(MessageUtils.parseLegacy(Translations.GUI_FILTER))
+                        .setLore(Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.parseLegacy("<dark_gray> • <" + (event.equals(filter) ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList())
+                        .addData(Keys.BUTTON_TYPE, ElementType.FILTER.name())
                         .build());
 
         // Previous page button
