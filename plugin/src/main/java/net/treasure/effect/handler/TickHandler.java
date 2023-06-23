@@ -32,7 +32,7 @@ public class TickHandler {
     }
 
     public boolean execute(EffectData data, HandlerEvent event) {
-        if (maxExecuted <= 0) return this.event == event;
+        if (maxExecuted <= 0) return this.event == null || this.event == event;
 
         if (executed >= maxExecuted) {
             if (this.event != event) {
@@ -44,7 +44,7 @@ public class TickHandler {
             return false;
         }
 
-        if (this.event != event) return false;
+        if (this.event != null && this.event != event) return false;
         executed++;
         return true;
     }
