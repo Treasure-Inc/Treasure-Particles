@@ -187,7 +187,7 @@ public class TreasurePlugin extends JavaPlugin {
                 getLogger().warning("New version of config.yml available (v" + VERSION + ")");
         }
 
-        this.notificationsEnabled = config.getBoolean("notifications", true);
+        this.notificationsEnabled = config.getBoolean("notifications", false);
         this.autoUpdateEnabled = config.getBoolean("auto-update-configurations", true);
         ComponentLogger.setColored(config.getBoolean("colored-error-logs", true));
     }
