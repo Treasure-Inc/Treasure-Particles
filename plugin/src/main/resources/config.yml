@@ -19,7 +19,6 @@ auto-update-configurations: true
 # In other words, if this option is disabled, players will only be checked when they're selecting an effect in GUI or selecting an effect with the "/tre select" command
 # Event list:
 # -player joining server
-# -player starting to glide
 # -selecting effect for other players (admin command)
 # -reloading plugin
 # Disable this setting if you want to select an effect for players from the console and let them use the effect even if they don't have enough permission
@@ -32,7 +31,7 @@ colored-error-logs: true
 # Database Settings
 database:
   type: "sqlite"
-  table: "trelytra_data"
+  table: "trparticles_data"
   # For MySQL
   address: "localhost"
   port: "3306"
