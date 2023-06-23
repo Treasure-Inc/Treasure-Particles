@@ -62,7 +62,7 @@ public class EffectManager implements DataHolder {
 
         // Register listeners
         var pm = Bukkit.getPluginManager();
-        pm.registerEvents(new GlideListener(inst.getPlayerManager()), inst);
+        pm.registerEvents(new HandlerEventsListener(inst.getPlayerManager()), inst);
         try {
             Class.forName("com.destroystokyo.paper.event.player.PlayerElytraBoostEvent");
             pm.registerEvents(new ElytraBoostListener(inst.getPlayerManager()), inst);
@@ -70,8 +70,9 @@ public class EffectManager implements DataHolder {
         } catch (Exception ignored) {
         }
 
-        // Run effects task
+        // Run tasks
         Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new EffectsTask(inst.getPlayerManager()), 0, 1);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new MovementCheck(inst.getPlayerManager()), 0, 5);
 
         // Register readers
         registerReader("variable", new VariableReader(), "var");
@@ -173,12 +174,31 @@ public class EffectManager implements DataHolder {
                     continue;
                 }
 
-                LinkedHashMap<String, Pair<Integer, List<String>>> tickHandlers = new LinkedHashMap<>();
-                for (var tickHandlerKey : handlerSection.getKeys(false)) {
-                    tickHandlers.put(tickHandlerKey, new Pair<>(
-                            handlerSection.getInt(tickHandlerKey + ".times", 1),
-                            handlerSection.getStringList(tickHandlerKey + ".scripts")
-                    ));
+                LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers = new LinkedHashMap<>();
+                for (var tickHandlerKey : onTickSection.getKeys(false)) {
+                    var tickHandlerSection = onTickSection.getConfigurationSection(tickHandlerKey);
+                    if (tickHandlerSection == null) continue;
+                    var event = tickHandlerSection.getString("event");
+                    if (event == null) {
+                        inst.getLogger().warning("[" + key + "] Tick handler must have event: " + tickHandlerKey);
+                        continue;
+                    }
+                    try {
+                        tickHandlers.put(tickHandlerKey, new Pair<>(
+                                new TickHandler(
+                                        tickHandlerKey,
+                                        tickHandlerSection.getInt("times", 1),
+                                        tickHandlerSection.getInt("max-executed", 0),
+                                        tickHandlerSection.getBoolean("reset-event", true),
+                                        event.equalsIgnoreCase("none") ? null : HandlerEvent.valueOf(event.toUpperCase(Locale.ENGLISH))
+                                ),
+                                tickHandlerSection.getStringList("scripts")
+                        ));
+                    } catch (IllegalArgumentException e) {
+                        inst.getLogger().warning("[" + key + "] Unknown event type: " + tickHandlerKey + ", " + event);
+                    } catch (Exception e) {
+                        inst.getLogger().warning("[" + key + "] Couldn't read tick handler options: " + tickHandlerKey);
+                    }
                 }
 
                 // Icon

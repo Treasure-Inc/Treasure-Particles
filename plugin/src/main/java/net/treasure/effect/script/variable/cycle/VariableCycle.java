@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.type.DoubleArgument;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class VariableCycle extends Script {
     boolean forward = true;
 
     @Override
-    public TickResult tick(Player player, EffectData data, int times) {
+    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
         var pair = data.getVariable(variable);
         if (pair == null) return TickResult.NORMAL;
 

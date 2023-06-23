@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import net.treasure.color.data.ColorData;
 import net.treasure.common.particles.ParticleEffect;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
@@ -30,8 +31,8 @@ public class DotParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, int times) {
-        var context = tick(player, data);
+    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+        var context = tick(player, data, event);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder();

@@ -10,6 +10,7 @@ import net.treasure.color.data.duo.DuoImpl;
 import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.common.particles.ParticleEffect;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
@@ -21,6 +22,7 @@ import net.treasure.util.tuples.Triplet;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,19 +44,21 @@ public class CircleParticle extends ParticleSpawner {
                           ColorData colorData, Object particleData,
                           IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
         super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
-        this.tickData = tickData;
         this.particles = particles;
         this.radius = radius;
+        this.tickData = tickData;
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, int times) {
-        sendParticles(player, data, null);
+    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+        sendParticles(player, data, event, null);
         return TickResult.NORMAL;
     }
 
-    public Triplet<ParticleBuilder, Location, Vector> sendParticles(Player player, EffectData data, Predicate<Player> viewers) {
-        var context = tick(player, data);
+    @Nullable
+    public Triplet<ParticleBuilder, Location, Vector> sendParticles(Player player, EffectData data, HandlerEvent event, Predicate<Player> viewers) {
+        var context = tick(player, data, event);
+        if (context == null) return null;
         var origin = context.origin();
         var builder = context.builder();
         var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);

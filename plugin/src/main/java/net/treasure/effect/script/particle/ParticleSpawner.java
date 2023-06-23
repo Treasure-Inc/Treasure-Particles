@@ -12,15 +12,17 @@ import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.common.particles.ParticleEffect;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
-import net.treasure.util.Vectors;
+import net.treasure.util.math.Vectors;
 import net.treasure.util.particles.Particles;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 @Setter
@@ -42,13 +44,17 @@ public class ParticleSpawner extends Script {
     protected RangeArgument speed, size;
     protected boolean directional = false;
 
-    public ParticleContext tick(Player player, EffectData data) {
-        Location origin;
-
-        origin = switch (this.origin) {
-            case HEAD -> player.getEyeLocation();
-            case FEET -> player.getLocation();
-            case WORLD -> new Location(player.getWorld(), 0, 0, 0);
+    @Nullable
+    public ParticleContext tick(Player player, EffectData data, HandlerEvent event) {
+        var entity = switch (event) {
+            case ELYTRA, STANDING, MOVING, TAKE_DAMAGE -> player;
+            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE -> data.getTargetEntity();
+        };
+        if (entity == null) return null;
+        var origin = switch (this.origin) {
+            case HEAD -> entity instanceof Player p ? p.getEyeLocation() : entity.getLocation();
+            case FEET -> entity.getLocation();
+            case WORLD -> new Location(entity.getWorld(), 0, 0, 0);
         };
 
         if (multiplier != null)
@@ -121,7 +127,7 @@ public class ParticleSpawner extends Script {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, int times) {
+    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
         return null;
     }
 

@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EffectData {
 
-    private final Player player;
+    public final Player player;
 
     private boolean effectsEnabled = true, notificationsEnabled;
 
@@ -36,7 +36,18 @@ public class EffectData {
     private List<Pair<String, Double>> variables;
     private List<TickHandler> tickHandlers;
 
+    // Handler Event
+    private HandlerEvent currentEvent;
+
+    private Vector lastVector;
+    private int notMovingInterval;
+    private boolean moving;
+
+    // Last time elytra boosted with firework
     private long lastBoostMillis;
+
+    // Target entity
+    private Entity targetEntity;
 
     public EffectData(List<Pair<String, Double>> variables) {
         this.player = null;
@@ -46,7 +57,8 @@ public class EffectData {
     public void setCurrentEffect(Effect currentEffect) {
         if (player == null) return;
 
-        var debugModeEnabled = TreasurePlugin.getInstance().isDebugModeEnabled();
+        this.resetEvent();
+
         this.currentEffect = currentEffect;
 
         if (currentEffect == null) {
@@ -154,6 +166,29 @@ public class EffectData {
     }
 
     public boolean canSeeEffects() {
-        return effectsEnabled && (!EffectManager.EFFECTS_VISIBILITY_PERMISSION || player.hasPermission(Permissions.CAN_SEE_EFFECTS));
+        return player != null && effectsEnabled && (!EffectManager.EFFECTS_VISIBILITY_PERMISSION || player.hasPermission(Permissions.CAN_SEE_EFFECTS));
+    }
+
+    // Moving
+    public void increaseInterval() {
+        this.notMovingInterval += 5;
+        if (this.notMovingInterval > 40)
+            this.moving = false;
+    }
+
+    public void resetInterval() {
+        this.notMovingInterval = 0;
+        this.moving = true;
+    }
+
+    // Handler Event
+    public void setCurrentEvent(HandlerEvent currentEvent) {
+        this.currentEvent = currentEvent;
+        this.targetEntity = null;
+    }
+
+    public void resetEvent() {
+        this.currentEvent = null;
+        this.targetEntity = null;
     }
 }

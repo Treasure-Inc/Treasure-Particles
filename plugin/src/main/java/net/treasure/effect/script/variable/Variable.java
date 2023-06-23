@@ -7,6 +7,7 @@ import lombok.Setter;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.Cached;
 import net.treasure.effect.script.Script;
 import net.treasure.util.math.MathUtils;
@@ -27,12 +28,12 @@ public class Variable extends Script implements Cached {
     protected final String eval;
 
     @Override
-    public TickResult tick(Player player, EffectData data, int times) {
+    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
         var pair = data.getVariable(variable);
         if (pair == null) return TickResult.NORMAL;
         var effect = data.getCurrentEffect();
         if (effect.isEnableCaching()) {
-            pair.setValue(effect.getCache().get(tickHandler.key())[times][index]);
+            pair.setValue(effect.getCache().get(tickHandler.key)[times][index]);
             return TickResult.NORMAL;
         }
         double val;
@@ -71,7 +72,7 @@ public class Variable extends Script implements Cached {
             case MULTIPLY -> pair.getValue() * val;
             case DIVIDE -> pair.getValue() / val;
         });
-        effect.getCache().get(tickHandler.key())[times][index] = pair.getValue();
+        effect.getCache().get(tickHandler.key)[times][index] = pair.getValue();
     }
 
     @Override
@@ -88,6 +89,6 @@ public class Variable extends Script implements Cached {
     }
 
     public static String replace(String variable) {
-        return variable.replaceAll("\\{|}", "");
+        return variable.replaceAll("[{}]", "");
     }
 }

@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import net.treasure.color.data.ColorData;
 import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.particle.style.CircleParticle;
@@ -53,20 +54,21 @@ public class Parkour extends Script {
     long lastSpawned = -5;
 
     @Override
-    public TickResult tick(Player player, EffectData data, int times) {
+    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
         if (lastSpawned == -5) {
             var interval = this.interval.get(player, data);
             if (!TimeKeeper.isElapsed(interval)) return TickResult.NORMAL;
             lastSpawned = System.currentTimeMillis();
             style.colorData(standby);
-            var triplet = style.sendParticles(player, data, p -> p.equals(player));
+            var triplet = style.sendParticles(player, data, event, p -> p.equals(player));
+            if (triplet == null) return TickResult.NORMAL;
             builder = triplet.a();
             lastLocation = triplet.b();
             lastDirection = triplet.c();
             lastYaw = lastLocation.getYaw();
             lastPitch = lastLocation.getPitch();
             if (whenSpawned != null)
-                whenSpawned.tick(player, data, times);
+                whenSpawned.tick(player, data, event, times);
             return TickResult.NORMAL;
         }
 
@@ -79,7 +81,7 @@ public class Parkour extends Script {
             if (!completed && timeLeft > -5000L) {
                 if (!scriptExecuted && whenFailed != null) {
                     scriptExecuted = true;
-                    whenFailed.tick(player, data, times);
+                    whenFailed.tick(player, data, event, times);
                 }
                 style.colorData(fail);
                 style.sendParticles(player, data, builder, lastLocation, lastDirection, lastPitch, lastYaw, ZERO);
@@ -93,7 +95,7 @@ public class Parkour extends Script {
         if (!completed && isOnCircle(player, lastLocation, radius)) {
             style.colorData(success);
             if (!completed && whenSucceeded != null) {
-                whenSucceeded.tick(player, data, times);
+                whenSucceeded.tick(player, data, event, times);
                 if (immediate) {
                     style.sendParticles(player, data, builder, lastLocation, lastDirection, lastPitch, lastYaw, ZERO);
                     reset();
