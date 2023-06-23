@@ -22,7 +22,7 @@ public class GUITask implements Runnable {
                 iterator.remove();
                 continue;
             }
-            if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof GUIHolder holder)) {
+            if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof GUIHolder holder) || holder.getAnimatedSlots() == null) {
                 iterator.remove();
                 continue;
             }
