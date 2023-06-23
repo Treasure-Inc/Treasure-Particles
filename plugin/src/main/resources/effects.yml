@@ -266,9 +266,12 @@ effects:
           - particle [effect=redstone,size=10,origin=head,color={dynamic=true;speed=0.1;revert=true}]
       moving:
         event: MOVING
-        times: 3
         scripts:
           - particle [effect=redstone,size=3,origin=feet,color={dynamic=true;speed=0.1;revert=true}]
+      projectile:
+        event: PROJECTILE
+        scripts:
+          - particle [effect=redstone,size=5,origin=feet,color={dynamic=true;speed=0.1;revert=true}]
   gradient-spiral:
     display-name: "%gradient-spiral%"
     color-group: "gradients"
@@ -727,8 +730,11 @@ effects:
         scripts:
           - particle [effect=redstone,size=10,origin=head,color={name=christmas;speed=1.75;revert=false}]
       moving:
-        times: 3
         event: MOVING
+        scripts:
+          - particle [effect=redstone,size=3,origin=feet,color={name=christmas;speed=1.75;revert=false}]
+      projectile:
+        event: PROJECTILE
         scripts:
           - particle [effect=redstone,size=5,origin=feet,color={name=christmas;speed=1.75;revert=false}]
   christmas-2:
