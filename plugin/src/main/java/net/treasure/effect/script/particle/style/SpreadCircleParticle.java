@@ -95,7 +95,7 @@ public class SpreadCircleParticle extends CircleParticle {
                 if (directional) {
                     tempOffset = Vectors.rotateAroundAxisX(tempOffset, pitch);
                     tempOffset = Vectors.rotateAroundAxisY(tempOffset, yaw);
-                    tempOffset = tempOffset.add(direction.add(tempOffset));
+                    tempOffset = tempOffset.add(direction.clone().add(tempOffset));
                 }
                 copy.offset(tempOffset);
             } else if (spread != null) {
@@ -104,7 +104,7 @@ public class SpreadCircleParticle extends CircleParticle {
                 if (directional) {
                     tempOffset = Vectors.rotateAroundAxisX(tempOffset, pitch);
                     tempOffset = Vectors.rotateAroundAxisY(tempOffset, yaw);
-                    tempOffset = tempOffset.add(direction.add(tempOffset));
+                    tempOffset = tempOffset.add(direction.clone().add(tempOffset));
                 }
                 copy.offset(tempOffset);
             }
