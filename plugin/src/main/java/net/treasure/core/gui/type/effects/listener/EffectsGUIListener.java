@@ -75,7 +75,7 @@ public class EffectsGUIListener implements Listener {
                     var ordinal = filter == null ? (event.isRightClick() ? values.length - 1 : 0) : filter.ordinal() + (event.isRightClick() ? -1 : 1);
                     var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];
 
-                    EffectsGUI.open(player, newFilter, holder.getPage());
+                    EffectsGUI.open(player, newFilter, 0);
                 }
             }
             if (sound != null)
