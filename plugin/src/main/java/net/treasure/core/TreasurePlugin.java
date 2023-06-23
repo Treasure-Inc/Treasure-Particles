@@ -20,14 +20,16 @@ import net.treasure.effect.EffectManager;
 import net.treasure.locale.Translations;
 import net.treasure.util.logging.ComponentLogger;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 @Getter
@@ -59,7 +61,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        var current = System.currentTimeMillis();
+        var start = System.nanoTime();
 
         instance = this;
         dataHolders = new ArrayList<>();
