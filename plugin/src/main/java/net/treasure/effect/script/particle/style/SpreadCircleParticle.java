@@ -10,13 +10,14 @@ import net.treasure.common.particles.ParticleBuilder;
 import net.treasure.common.particles.ParticleEffect;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.argument.type.IntArgument;
 import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
 import net.treasure.effect.script.particle.ParticleContext;
 import net.treasure.effect.script.particle.ParticleOrigin;
-import net.treasure.util.Vectors;
 import net.treasure.util.math.MathUtils;
+import net.treasure.util.math.Vectors;
 import net.treasure.util.particles.Particles;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -32,20 +33,23 @@ import java.util.List;
 public class SpreadCircleParticle extends CircleParticle {
 
     RangeArgument spread = null;
+    boolean vertical = true;
 
     public SpreadCircleParticle(ParticleEffect particle, ParticleOrigin origin,
-                                RangeArgument spread,
+                                RangeArgument spread, boolean vertical,
                                 IntArgument particles, RangeArgument radius, boolean tickData,
                                 VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                                 ColorData colorData, Object particleData,
                                 IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
         super(particle, origin, particles, radius, tickData, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
         this.spread = spread;
+        this.vertical = vertical;
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, int times) {
-        var context = tick(player, data);
+    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+        var context = tick(player, data, event);
+        if (context == null) return TickResult.NORMAL;
         var origin = context.origin();
         var builder = context.builder();
         var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
@@ -70,7 +74,7 @@ public class SpreadCircleParticle extends CircleParticle {
             var x = MathUtils.cos(r) * radius;
             var y = MathUtils.sin(r) * radius;
 
-            var location = rotate(origin.clone(), direction.clone(), pitch, yaw, new Vector(x, y, 0).add(vector));
+            var location = rotate(origin.clone(), direction.clone(), pitch, yaw, (vertical ? new Vector(x, y, 0) : new Vector(y, 0, x)).add(vector));
 
             var copy = builder.copy()
                     .location(location)
@@ -86,18 +90,22 @@ public class SpreadCircleParticle extends CircleParticle {
                 var tempOffset = offset.clone();
                 if (spread != null) {
                     var angle = Math.atan2(y, x);
-                    tempOffset.add(new Vector(MathUtils.cos(angle) / spread, MathUtils.sin(angle) / spread, 0));
+                    tempOffset.add(vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.sin(angle) * spread, 0, MathUtils.cos(angle) * spread));
                 }
-                tempOffset = Vectors.rotateAroundAxisX(tempOffset, pitch);
-                tempOffset = Vectors.rotateAroundAxisY(tempOffset, yaw);
-                tempOffset = tempOffset.add(direction.add(tempOffset));
+                if (directional) {
+                    tempOffset = Vectors.rotateAroundAxisX(tempOffset, pitch);
+                    tempOffset = Vectors.rotateAroundAxisY(tempOffset, yaw);
+                    tempOffset = tempOffset.add(direction.add(tempOffset));
+                }
                 copy.offset(tempOffset);
             } else if (spread != null) {
                 var angle = Math.atan2(y, x);
-                var tempOffset = new Vector(MathUtils.cos(angle) / spread, MathUtils.sin(angle) / spread, 0);
-                tempOffset = Vectors.rotateAroundAxisX(tempOffset, pitch);
-                tempOffset = Vectors.rotateAroundAxisY(tempOffset, yaw);
-                tempOffset = tempOffset.add(direction.add(tempOffset));
+                var tempOffset = vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.sin(angle) * spread, 0, MathUtils.cos(angle) * spread);
+                if (directional) {
+                    tempOffset = Vectors.rotateAroundAxisX(tempOffset, pitch);
+                    tempOffset = Vectors.rotateAroundAxisY(tempOffset, yaw);
+                    tempOffset = tempOffset.add(direction.add(tempOffset));
+                }
                 copy.offset(tempOffset);
             }
 
@@ -112,13 +120,16 @@ public class SpreadCircleParticle extends CircleParticle {
     }
 
     @Override
-    public ParticleContext tick(Player player, EffectData data) {
-        Location origin;
-
-        origin = switch (this.origin) {
-            case HEAD -> player.getEyeLocation();
-            case FEET -> player.getLocation();
-            case WORLD -> new Location(player.getWorld(), 0, 0, 0);
+    public ParticleContext tick(Player player, EffectData data, HandlerEvent event) {
+        var entity = switch (event) {
+            case ELYTRA, STANDING, MOVING, TAKE_DAMAGE -> player;
+            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE -> data.getTargetEntity();
+        };
+        if (entity == null) return null;
+        var origin = switch (this.origin) {
+            case HEAD -> entity instanceof Player p ? p.getEyeLocation() : entity.getLocation();
+            case FEET -> entity.getLocation();
+            case WORLD -> new Location(entity.getWorld(), 0, 0, 0);
         };
 
         if (multiplier != null)
@@ -140,6 +151,6 @@ public class SpreadCircleParticle extends CircleParticle {
 
     @Override
     public SpreadCircleParticle clone() {
-        return new SpreadCircleParticle(particle, origin, spread, particles, radius, tickData, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        return new SpreadCircleParticle(particle, origin, spread, vertical, particles, radius, tickData, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
     }
 }
