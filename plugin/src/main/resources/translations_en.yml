@@ -17,6 +17,7 @@ gui:
   random-effect: "<#87FF65>❤ Select Random Effect"
   close: "<red>Close"
   back: "<red>Back"
+  filter: "<gold>Supported Events"
   color-selection-available: "<gray>[Right-Click] You can change the colors of this effect."
   colors-gui:
     title: "Pick a color scheme"
@@ -42,7 +43,7 @@ commands:
   unknown-color-scheme: "<prefix> <red>Unknown color scheme."
   color-scheme-selected: "<prefix> <green>Selected color scheme {0}<green> for the {1}<green> effect."
   notifications-toggle: "<prefix> <gray>Notifications: {0}"
-  reloading: "<prefix> <yellow>Reloading TreasureElytra+"
+  reloading: "<prefix> <yellow>Reloading TreasureParticles"
   reloaded: "<prefix> <green>Reloaded!"
   args:
     must-be-a-number: "<prefix> <red>{0} must be a number."
@@ -52,6 +53,17 @@ commands:
     no-player-found-offline: "<prefix> <red>No player matching {0} could be found."
     arg-page: "page"
     arg-effect: "effect"
+# Event Names
+events:
+  elytra: "Elytra"
+  moving: "Moving"
+  standing: "Standing"
+  projectile: "Shooting"
+  mob-kill: "Killing Mob"
+  mob-damage: "Damaging Mob"
+  player-kill: "Killing Player"
+  player-damage: "Damaging Player"
+  take-damage: "Taking Damage"
 # Effect Names
 effects:
   rainbow-circle: "<rainbow>Rainbow Circle"
@@ -69,6 +81,10 @@ effects:
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Gradient / Circle"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Gradient / Line"
   gradient-spiral: "<gradient:#E3DFFF:#937666><b>Gradient / Spiral"
+  blood: "<#a8324a>Blood"
+  tear: "<#c2979e>Tear"
+  cherry-death: "<#ffa3e3>Cherry Death"
+  dust-death: "<#756370>Dust Death"
   triple-line: "<gradient:red:blue>Triple Line"
   orbit: "<gradient:#FF8C42:#FF3C38>Orbit"
   parkour-easy: "<white><b>Parkour <green>EASY"
@@ -92,6 +108,7 @@ effects:
   pulse-reverse: "<dark_aqua>Reverse Pulse"
   pulse-soul: "<#4254f5>Soul Pulse"
   soul: "<#4254f5>Soul"
+  sculk-soul: "<#1b2975>Sculk Soul"
   plane: "<#b58500>Plane"
   heart: "<#f54242>Heart"
   sonic: "<#65f5fc>Sonic"

@@ -17,6 +17,7 @@ gui:
   random-effect: "<#87FF65>❤ Rastgele Efekt Seç"
   close: "<red>Kapat"
   back: "<red>Geri Dön"
+  event-filter: "<gold>Çalışma Türü"
   color-selection-available: "<gray>[Sağ-Tıkla] Bu efektin renklerini değiştirebilirsiniz."
   colors-gui:
     title: "Bir renk şeması seçiniz"
@@ -42,7 +43,7 @@ commands:
   unknown-color-scheme: "<prefix> <red>Bilinmeyen renk şeması."
   color-scheme-selected: "<prefix> <green>{1}<green> efekti için {0}<green> renk şeması seçildi."
   notifications-toggle: "<prefix> <gray>Bildirimler: {0}"
-  reloading: "<prefix> <yellow>TreasureElytra+ yenileniyor"
+  reloading: "<prefix> <yellow>TreasureParticles yenileniyor"
   reloaded: "<prefix> <green>Başarıyla yenilendi!"
   args:
     must-be-a-number: "<prefix> <red>{0} bir sayı değil, lütfen bir sayı giriniz."
@@ -52,6 +53,17 @@ commands:
     no-player-found-offline: "<prefix> <red>Sunucuda {0} ismiyle eşleşen aktif bir oyuncu bulunamadı."
     arg-page: "sayfa"
     arg-effect: "efekt"
+# Event İsimleri
+events:
+  elytra: "Elitra"
+  moving: "Hareket Etme"
+  standing: "Hareketsiz Durma"
+  projectile: "Atış"
+  mob-kill: "Yaratık Öldürme"
+  mob-damage: "Yaratığa Hasar Verme"
+  player-kill: "Oyuncu Öldürme"
+  player-damage: "Oyuncuya Hasar Verme"
+  take-damage: "Hasar Alma"
 # Efekt İsimleri
 effects:
   rainbow-circle: "<rainbow>Rengarenk Daire"
@@ -69,6 +81,10 @@ effects:
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Degrade / Daire"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Degrade / Çizgi"
   gradient-spiral: "<gradient:#E3DFFF:#937666><b>Degrade / Spiral"
+  blood: "<#a8324a>Kan"
+  tear: "<#c2979e>Gözyaşı"
+  cherry-death: "<#ffa3e3>Yapraklı Ölüm"
+  dust-death: "<#756370>Tozlu Ölüm"
   triple-line: "<gradient:red:blue>Üçlü Çizgi"
   orbit: "<gradient:#FF8C42:#FF3C38>Yörünge"
   parkour-easy: "<b>Parkur <green>KOLAY"
@@ -92,6 +108,7 @@ effects:
   pulse-reverse: "<dark_aqua>Ters Nabız"
   pulse-soul: "<#4254f5>Ruh Nabzı"
   soul: "<#4254f5>Ruh"
+  sculk-soul: "<#1b2975>Sculk Ruhu"
   plane: "<#b58500>Uçak"
   heart: "<#f54242>Kalp"
   sonic: "<#65f5fc>Sonik"
