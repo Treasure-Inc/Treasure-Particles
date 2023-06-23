@@ -27,7 +27,7 @@ public class EffectData {
 
     private final Player player;
 
-    private boolean enabled = false, effectsEnabled = true, notificationsEnabled, debugModeEnabled;
+    private boolean effectsEnabled = true, notificationsEnabled;
 
     private Map<String, ColorScheme> colorPreferences = new HashMap<>();
 
@@ -48,14 +48,11 @@ public class EffectData {
 
         var debugModeEnabled = TreasurePlugin.getInstance().isDebugModeEnabled();
         this.currentEffect = currentEffect;
-        this.debugModeEnabled = player.hasPermission(Permissions.ADMIN) && debugModeEnabled;
 
         if (currentEffect == null) {
             this.variables = null;
             this.tickHandlers = null;
 
-            if (debugModeEnabled)
-                TreasurePlugin.logger().info("Reset " + player.getName() + "'s effect data");
             return;
         }
 

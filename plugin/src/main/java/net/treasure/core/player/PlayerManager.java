@@ -124,18 +124,12 @@ public class PlayerManager {
             }
             data.setColorPreferences(colorPreferences);
 
-            if (data.getCurrentEffect() == null) {
-                data.setEnabled(false);
-                continue;
-            }
+            if (data.getCurrentEffect() == null) continue;
+
             var effect = effectManager.get(data.getCurrentEffect().getKey());
             data.setCurrentEffect(null);
             if (effect != null && (!EffectManager.ALWAYS_CHECK_PERMISSION || effect.canUse(player)))
                 data.setCurrentEffect(effect);
-            else
-                data.setEnabled(false);
-            if (!inst.isDebugModeEnabled())
-                data.setDebugModeEnabled(false);
         }
     }
 }

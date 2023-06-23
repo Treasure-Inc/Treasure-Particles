@@ -205,24 +205,6 @@ public class MainCommand extends BaseCommand {
     }
 
     @Private
-    @CommandPermission(Permissions.COMMAND_ADMIN)
-    @Subcommand("debug")
-    public void debugToggle(Player player) {
-        var data = playerManager.getEffectData(player);
-        data.setDebugModeEnabled(!data.isDebugModeEnabled());
-        MessageUtils.sendParsed(player, "<prefix> <gray>Debug Mode: {0}", data.isDebugModeEnabled() ? Translations.ENABLED : Translations.DISABLED);
-    }
-
-    @Private
-    @Subcommand("debug effect")
-    @CommandPermission(Permissions.COMMAND_ADMIN)
-    public void debugEffect(Player player) {
-        var data = playerManager.getEffectData(player);
-        data.setEnabled(!data.isEnabled());
-        MessageUtils.sendParsed(player, "<prefix> <gray>Effect: {0}", data.isEnabled() ? Translations.ENABLED : Translations.DISABLED);
-    }
-
-    @Private
     @Subcommand("debug info")
     @CommandPermission(Permissions.COMMAND_ADMIN)
     public void debugInfo(CommandSender sender) {

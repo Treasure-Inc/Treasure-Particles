@@ -54,14 +54,8 @@ public class TreasurePlugin extends JavaPlugin {
     @Accessors(fluent = true)
     private BukkitAudiences adventure;
 
-    private boolean debugModeEnabled;
     private boolean autoUpdateEnabled = true;
     private boolean notificationsEnabled;
-
-    @Override
-    public void onLoad() {
-        debugModeEnabled = new File(getDataFolder(), "dev").exists();
-    }
 
     @Override
     public void onEnable() {
@@ -167,12 +161,6 @@ public class TreasurePlugin extends JavaPlugin {
         reloadConfig();
         configure();
         getLogger().info("Reloaded config!");
-
-        // Debug Mode
-        final var tempDebugMode = debugModeEnabled;
-        this.debugModeEnabled = new File(getDataFolder(), "dev").exists();
-        if (tempDebugMode != debugModeEnabled)
-            getLogger().info("> Debug mode " + (debugModeEnabled ? "enabled!" : "disabled!"));
 
         // Data Holders
         dataHolders.forEach(DataHolder::reload);

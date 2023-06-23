@@ -84,10 +84,7 @@ public class Effect {
         return permission == null || player.hasPermission(permission);
     }
 
-    public void initialize(Player player, EffectData data, boolean debugModeEnabled) {
-        if (debugModeEnabled)
-            TreasurePlugin.logger().info(getPrefix() + "Initializing effect for player: " + player.getName());
-
+    public void initialize(Player player, EffectData data) {
         List<Pair<String, Double>> variables = new ArrayList<>();
         for (var pair : this.variables)
             variables.add(pair.clone());

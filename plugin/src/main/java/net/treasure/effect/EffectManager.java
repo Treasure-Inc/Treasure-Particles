@@ -66,11 +66,8 @@ public class EffectManager implements DataHolder {
         try {
             Class.forName("com.destroystokyo.paper.event.player.PlayerElytraBoostEvent");
             pm.registerEvents(new ElytraBoostListener(inst.getPlayerManager()), inst);
-            if (inst.isDebugModeEnabled())
-                inst.getLogger().info("Registered PlayerElytraBoostEvent listener");
+            inst.getLogger().info("Registered Paper events");
         } catch (Exception ignored) {
-            if (inst.isDebugModeEnabled())
-                inst.getLogger().warning("Couldn't register PlayerElytraBoostEvent listener (Paper 1.17+)");
         }
 
         // Run effects task
