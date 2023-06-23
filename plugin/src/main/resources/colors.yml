@@ -61,6 +61,15 @@ schemes:
   rocket:
     values: [ "#5bf5c7", "#42ff75", "#0eb33b", "#0eb381" ]
     size: 10
+  tear:
+    values: [ "#f2d7d5", "#faf3f2", "#cfc9c8" ]
+    size: 10
+  cherry-death:
+    values: [ "#f28fc9", "#ffa3e3", "#de6abb" ]
+    size: 10
+  dust-death:
+    values: [ "#3b2b34", "#665860", "#6b6769" ]
+    size: 10
   complementary1-1:
     values: [ "#8A1BE4", "#E01F5A","#DC8B23" ]
     size: 50
