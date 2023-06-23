@@ -6,7 +6,7 @@
 
     <groupId>net.treasure</groupId>
     <artifactId>TreasureParticles</artifactId>
-    <version>1.6.0</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>common</module>
