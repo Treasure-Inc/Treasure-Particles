@@ -346,14 +346,14 @@ effects:
     on-tick:
       take-damage:
         event: TAKE_DAMAGE
-        max-executed: 3
+        max-executed: 1
         scripts:
-          - particle [effect=minecraft:block,block={material=redstone_block},origin=feet,pos={x={RANDOM};y={RANDOM};z={RANDOM}}]
+          - particle [effect=minecraft:block,block={material=redstone_block},origin=feet,pos={y=0.75},offset={x={RANDOM};z={RANDOM}},amount=7] ~3
       damage:
         event: MOB_DAMAGE
-        max-executed: 3
+        max-executed: 1
         scripts:
-          - particle [effect=minecraft:block,block={material=redstone_block},origin=feet,pos={x={RANDOM};y={RANDOM};z={RANDOM}}]
+          - particle [effect=minecraft:block,block={material=redstone_block},origin=feet,pos={y=0.75},offset={x={RANDOM};z={RANDOM}},amount=7] ~3
   tear:
     display-name: "%tear%"
     armor-color: "tear"
@@ -370,10 +370,10 @@ effects:
           - var random={RANDOM}
       mob-kill:
         event: MOB_KILL
-        max-executed: 22
+        max-executed: 21
         scripts:
           - var t+=1
-          - "conditional (t<12) ? return : none"
+          - "conditional (t<11) ? return : none"
           - var y+=0.1
           - "conditional (random<0.33) ? preset obsidian-tear : none"
           - "conditional (random<0.66) ? preset landing-honey : none"
@@ -441,8 +441,19 @@ effects:
         event: NONE
         scripts:
           - var step=({step} + 1) % 120
+  complementary:
+    display-name: "%complementary%"
+    armor-color: "complementary1-1"
+    interval: 8
+    variables: [ 'radius=1', 'particles=32' ]
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5;revert=true}]
   sweeping:
     display-name: "%sweeping%"
+    armor-color: "#ffffff"
     variables: [ 'size=1' ]
     interval: 1
     on-tick:
@@ -451,11 +462,6 @@ effects:
         scripts:
           - var-c [variable=size,step=0.25,min=3,max=10]
           - dot [effect=sweep_attack,amount=0,speed=1,offset={x={size}},pos={y=0.5},origin=feet]
-      damage:
-        event: MOB_DAMAGE
-        max-executed: 3
-        scripts:
-          - dot [effect=sweep_attack,amount=0,speed=1,offset={x=5},pos={y=1},origin=feet]
   planner:
     display-name: "%planner%"
     armor-color: "#32a852"
@@ -607,12 +613,12 @@ effects:
   pulse:
     display-name: "%pulse%"
     armor-color: "gradient-red-gold"
-    interval: 5
+    interval: 15
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - spread [effect=flame,radius=0.75,spread=12,amount=0,speed=0.25,origin=feet]
+          - spread [effect=flame,radius=0.5,spread=1,amount=0,speed=0.05,origin=feet]
       mob-kill:
         event: MOB_KILL
         max-executed: 1
@@ -621,12 +627,12 @@ effects:
   pulse-soul:
     display-name: "%pulse-soul%"
     armor-color: "gradient-aqua-blue"
-    interval: 5
+    interval: 15
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - spread [effect=soul_fire_flame,radius=0.75,spread=12,amount=0,speed=0.25,origin=feet]
+          - spread [effect=soul_fire_flame,radius=0.5,spread=1,amount=0,speed=0.05,origin=feet]
       mob-kill:
         event: MOB_KILL
         max-executed: 1
@@ -635,12 +641,12 @@ effects:
   pulse-reverse:
     display-name: "%pulse-reverse%"
     armor-color: "gradient-dark-aqua-black"
-    interval: 10
+    interval: 15
     on-tick:
       do:
         event: ELYTRA
         scripts:
-          - spread [effect=nautilus,radius=0.5,spread=0.1,amount=0,speed=1,origin=feet,pos={y=-1}]
+          - spread [effect=nautilus,spread=0.25,amount=0,speed=1,origin=feet]
   soul:
     display-name: "%soul%"
     armor-color: "gradient-aqua-brown"
@@ -649,16 +655,16 @@ effects:
       do:
         event: ELYTRA
         scripts:
-          - spread [effect=soul,spread=0.1,speed=0.25,amount=0,origin=head*-1.25]
+          - spread [effect=soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
   sculk_soul:
     display-name: "%sculk-soul%"
-    armor-color: "gradient-aqua-brown"
+    armor-color: "dark-3"
     interval: 2
     on-tick:
       do:
         event: ELYTRA
         scripts:
-          - spread [effect=sculk_soul,spread=0.1,speed=0.25,amount=0,origin=head*-1.25]
+          - spread [effect=sculk_soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
   plane:
     display-name: "%plane%"
     armor-color: "#b58500"
@@ -691,16 +697,6 @@ effects:
           - particle [effect=heart,direction=true,origin=feet]
           - particle [effect=heart,direction=true,origin=feet,pos={y=-2.25}]
           - var x=-2
-  complementary:
-    display-name: "%complementary%"
-    armor-color: "complementary1-1"
-    interval: 8
-    variables: [ 'radius=1', 'particles=32' ]
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5;revert=true}]
   sonic:
     display-name: "%sonic%"
     permission: "%sonic"
@@ -709,8 +705,12 @@ effects:
       - "%exclusive-version% <gold>1.19"
     interval: 3
     on-tick:
-      effect:
+      elytra:
         event: ELYTRA
+        scripts:
+          - particle [effect=sonic_boom,origin=head]
+      projectile:
+        event: PROJECTILE
         scripts:
           - particle [effect=sonic_boom,origin=head]
   christmas-1:
