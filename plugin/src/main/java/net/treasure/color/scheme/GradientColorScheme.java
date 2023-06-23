@@ -1,7 +1,6 @@
 package net.treasure.color.scheme;
 
 import net.treasure.color.generator.Gradient;
-import net.treasure.color.scheme.ColorScheme;
 import org.bukkit.Color;
 
 import java.util.Arrays;

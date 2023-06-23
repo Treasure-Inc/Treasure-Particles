@@ -39,6 +39,7 @@ public class Translations implements DataHolder {
             GUI_RANDOM_EFFECT,
             GUI_CLOSE,
             GUI_BACK,
+            GUI_FILTER,
             COLOR_SELECTION_AVAILABLE,
             COLORS_GUI_TITLE,
             COLORS_GUI_SCHEME_SELECTED,
@@ -156,6 +157,7 @@ public class Translations implements DataHolder {
         GUI_RANDOM_EFFECT = config.getString("gui.random-effect", "<#87FF65>❤ Select Random Effect");
         GUI_CLOSE = config.getString("gui.close", "<red>Close");
         GUI_BACK = config.getString("gui.back", "<red>Back");
+        GUI_FILTER = config.getString("gui.filter", "<gold>Supported Events");
         COLOR_SELECTION_AVAILABLE = config.getString("gui.color-selection-available", "<gray>[Right-Click] You can change the colors of this effect.");
         COLORS_GUI_TITLE = config.getString("gui.colors-gui.title", "Pick a color scheme");
         COLORS_GUI_SCHEME_SELECTED = config.getString("gui.colors-gui.color-scheme-selected", "<green>Selected!");

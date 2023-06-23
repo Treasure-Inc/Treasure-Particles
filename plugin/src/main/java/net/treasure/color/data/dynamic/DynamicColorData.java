@@ -12,7 +12,7 @@ public class DynamicColorData extends ColorData {
 
     @Override
     public Color next(EffectData data) {
-        var colors = data.getColorPreferences().get(data.getCurrentEffect().getKey()).getColors();
+        var colors = data.getColorPreference().getColors();
         max = colors.size();
         var index = index();
         if (index > max) {

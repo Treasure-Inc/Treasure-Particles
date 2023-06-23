@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.treasure.color.scheme.ColorScheme;
 import net.treasure.common.Permissions;
-import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
-import net.treasure.effect.TickHandler;
+import net.treasure.effect.handler.HandlerEvent;
+import net.treasure.effect.handler.TickHandler;
 import net.treasure.util.TimeKeeper;
 import net.treasure.util.tuples.Pair;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -54,6 +56,10 @@ public class EffectData {
         this.variables = variables;
     }
 
+    public boolean isEnabled() {
+        return currentEffect != null;
+    }
+
     public void setCurrentEffect(Effect currentEffect) {
         if (player == null) return;
 
@@ -70,7 +76,7 @@ public class EffectData {
 
         if (currentEffect.getColorGroup() != null && getColorPreference(currentEffect) == null)
             setColorPreference(currentEffect, currentEffect.getColorGroup().getAvailableOptions().get(0).colorScheme());
-        currentEffect.initialize(player, this, debugModeEnabled);
+        currentEffect.initialize(player, this);
     }
 
     public void setColorPreference(Effect effect, ColorScheme scheme) {
@@ -81,25 +87,33 @@ public class EffectData {
         return colorPreferences.get(effect.getKey());
     }
 
+    public ColorScheme getColorPreference() {
+        return currentEffect == null ? null : colorPreferences.get(currentEffect.getKey());
+    }
+
     public Pair<String, Double> getVariable(String variable) {
         if (variable == null)
             return null;
         for (var pair : variables)
             if (pair.getKey().equals(variable))
                 return pair;
-        if (player == null)
-            return null;
         var value = switch (variable) {
-            case "playerYaw" -> (double) player.getLocation().getYaw();
-            case "playerPitch" -> (double) player.getLocation().getPitch();
-            case "playerX" -> player.getLocation().getX();
-            case "playerY" -> player.getLocation().getY();
-            case "playerZ" -> player.getLocation().getZ();
-            case "velocityX" -> player.getVelocity().getX();
-            case "velocityY" -> player.getVelocity().getY();
-            case "velocityZ" -> player.getVelocity().getZ();
-            case "velocityLength" -> player.getVelocity().lengthSquared();
+            case "isMoving" -> moving ? 1D : 0D;
+            case "isStanding" -> !moving ? 1D : 0D;
+            case "playerYaw" -> player == null ? 0 : (double) player.getLocation().getYaw();
+            case "playerPitch" -> player == null ? 0 : (double) player.getLocation().getPitch();
+            case "playerX" -> player == null ? 0 : player.getLocation().getX();
+            case "playerY" -> player == null ? 0 : player.getLocation().getY();
+            case "playerZ" -> player == null ? 0 : player.getLocation().getZ();
+            case "velocityX" -> player == null ? 0 : player.getVelocity().getX();
+            case "velocityY" -> player == null ? 0 : player.getVelocity().getY();
+            case "velocityZ" -> player == null ? 0 : player.getVelocity().getZ();
+            case "velocityLength" -> player == null ? 0 : player.getVelocity().lengthSquared();
+            case "currentTimeMillis", "CTM" -> (double) System.currentTimeMillis();
             case "lastBoostMillis", "LBM" -> (double) lastBoostMillis;
+            case "RANDOM" -> Math.random();
+            case "TICK" -> (double) TimeKeeper.getTimeElapsed();
+            case "PI" -> Math.PI;
             default -> null;
         };
         return value == null ? null : new Pair<>(variable, value);
@@ -124,19 +138,8 @@ public class EffectData {
 
                     var result = variable.toString();
                     var p = getVariable(result);
-                    double value;
-                    if (p == null) {
-                        Double preset = switch (result) {
-                            case "TICK" -> (double) TimeKeeper.getTimeElapsed();
-                            case "PI" -> Math.PI;
-                            case "RANDOM" -> Math.random();
-                            case "currentTimeMillis", "CTM" -> (double) System.currentTimeMillis();
-                            default -> null;
-                        };
-                        if (preset == null) break;
-                        value = preset;
-                    } else
-                        value = p.getValue();
+                    if (p == null) break;
+                    var value = p.getValue();
 
                     if (!format.isEmpty())
                         builder.append(new DecimalFormat(format.toString(), new DecimalFormatSymbols(Locale.ENGLISH)).format(value));

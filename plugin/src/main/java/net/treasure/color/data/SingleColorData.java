@@ -1,8 +1,11 @@
 package net.treasure.color.data;
 
+import lombok.Getter;
+import net.treasure.color.generator.Gradient;
 import net.treasure.effect.data.EffectData;
 import org.bukkit.Color;
 
+@Getter
 public class SingleColorData extends ColorData {
 
     Color color;
@@ -16,8 +19,7 @@ public class SingleColorData extends ColorData {
     public SingleColorData(String hex) {
         super(0, false);
         this.max = 1;
-        int i = Integer.decode(hex);
-        this.color = Color.fromRGB((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF);
+        this.color = Gradient.hex2Rgb(hex);
     }
 
     @Override

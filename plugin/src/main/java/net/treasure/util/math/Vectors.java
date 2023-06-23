@@ -1,6 +1,5 @@
-package net.treasure.util;
+package net.treasure.util.math;
 
-import net.treasure.util.math.MathUtils;
 import org.bukkit.util.Vector;
 
 public class Vectors {

@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 public class DatabaseManager {
 
-    public static String TABLE;
+    public static String TYPE, TABLE;
 
     @Getter
     @Accessors(fluent = true)

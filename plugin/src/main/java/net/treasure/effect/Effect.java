@@ -6,6 +6,8 @@ import net.treasure.common.Patterns;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.handler.HandlerEvent;
+import net.treasure.effect.handler.TickHandler;
 import net.treasure.effect.script.Cached;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.conditional.ConditionalScript;
@@ -141,14 +143,14 @@ public class Effect {
         // Get variable 'i'
         var ip = data.getVariable(Variable.I);
         if (ip == null) {
-            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.I == null)");
+            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Null variable: i)");
             return;
         }
 
         // Get variable 'times'
         var tp = data.getVariable(Variable.TIMES);
         if (tp == null) {
-            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Variable.TIMES == null)");
+            TreasurePlugin.logger().warning(getPrefix() + "Couldn't pre-tick effect (Null variable: TIMES)");
             return;
         }
 

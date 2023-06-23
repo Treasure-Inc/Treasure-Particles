@@ -54,10 +54,10 @@ public class Gradient {
         );
     }
 
-    public static Color hex2Rgb(String colorStr) {
+    public static Color hex2Rgb(String hex) {
         return Color.fromRGB(
-                Integer.valueOf(colorStr.substring(1, 3), 16),
-                Integer.valueOf(colorStr.substring(3, 5), 16),
-                Integer.valueOf(colorStr.substring(5, 7), 16));
+                Integer.valueOf(hex.substring(1, 3), 16),
+                Integer.valueOf(hex.substring(3, 5), 16),
+                Integer.valueOf(hex.substring(5, 7), 16));
     }
 }

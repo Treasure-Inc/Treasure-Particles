@@ -8,8 +8,10 @@ import net.treasure.core.configuration.DataHolder;
 import net.treasure.core.gui.config.GUIElements;
 import net.treasure.core.gui.type.effects.EffectsGUI;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.handler.HandlerEvent;
+import net.treasure.effect.handler.TickHandler;
 import net.treasure.effect.listener.ElytraBoostListener;
-import net.treasure.effect.listener.GlideListener;
+import net.treasure.effect.listener.HandlerEventsListener;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.basic.BreakHandlerScript;
 import net.treasure.effect.script.basic.BreakScript;
@@ -22,6 +24,7 @@ import net.treasure.effect.script.message.ChatMessage;
 import net.treasure.effect.script.message.reader.TitleReader;
 import net.treasure.effect.script.parkour.reader.ParkourReader;
 import net.treasure.effect.script.particle.reader.circle.CircleParticleReader;
+import net.treasure.effect.script.particle.reader.circle.SpreadCircleParticleReader;
 import net.treasure.effect.script.particle.reader.dot.DotParticleReader;
 import net.treasure.effect.script.preset.reader.PresetReader;
 import net.treasure.effect.script.reader.DefaultReader;
@@ -29,14 +32,17 @@ import net.treasure.effect.script.sound.reader.SoundReader;
 import net.treasure.effect.script.variable.cycle.VariableCycleReader;
 import net.treasure.effect.script.variable.reader.VariableReader;
 import net.treasure.effect.task.EffectsTask;
-import net.treasure.util.tuples.Pair;
+import net.treasure.effect.task.MovementCheck;
 import net.treasure.util.message.MessageUtils;
+import net.treasure.util.tuples.Pair;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 @Getter
@@ -74,22 +80,28 @@ public class EffectManager implements DataHolder {
         Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new EffectsTask(inst.getPlayerManager()), 0, 1);
         Bukkit.getScheduler().runTaskTimerAsynchronously(inst, new MovementCheck(inst.getPlayerManager()), 0, 5);
 
-        // Register readers
-        registerReader("variable", new VariableReader(), "var");
-        registerReader("variable-cycle", new VariableCycleReader(), "var-c");
-        registerReader("particle", new DotParticleReader(), "dot");
-        registerReader("circle", new CircleParticleReader());
-        registerReader("parkour", new ParkourReader());
-        registerReader("preset", new PresetReader());
-        registerReader("conditional", new ConditionalScriptReader());
-        registerReader("play-sound", new SoundReader(), "sound");
-        registerReader("chat", new BasicScriptReader<>(ChatMessage::new));
-        registerReader("actionbar", new BasicScriptReader<>(ActionBar::new));
-        registerReader("title", new TitleReader());
-        registerReader("none", new BasicScriptReader<>(s -> new EmptyScript()));
-        registerReader("return", new BasicScriptReader<>(s -> new ReturnScript()));
-        registerReader("break", new BasicScriptReader<>(s -> new BreakScript()));
-        registerReader("break-handler", new BasicScriptReader<>(s -> new BreakHandlerScript()));
+        // Variables
+        registerReader(new VariableReader(), "variable", "var");
+        registerReader(new VariableCycleReader(), "variable-cycle", "var-c");
+        // Particles
+        registerReader(new DotParticleReader(), "particle", "dot");
+        registerReader(new CircleParticleReader(), "circle");
+        registerReader(new SpreadCircleParticleReader(), "spread");
+        registerReader(new ParkourReader(), "parkour");
+        // Messages
+        registerReader(new BasicScriptReader<>(ChatMessage::new), "chat");
+        registerReader(new BasicScriptReader<>(ActionBar::new), "actionbar");
+        registerReader(new TitleReader(), "title");
+        // Sound
+        registerReader(new SoundReader(), "play-sound", "sound");
+        // Others
+        registerReader(new PresetReader(), "preset");
+        registerReader(new ConditionalScriptReader(), "conditional");
+
+        registerReader(new BasicScriptReader<>(s -> new EmptyScript()), "none");
+        registerReader(new BasicScriptReader<>(s -> new ReturnScript()), "return");
+        registerReader(new BasicScriptReader<>(s -> new BreakScript()), "break");
+        registerReader(new BasicScriptReader<>(s -> new BreakHandlerScript()), "break-handler");
     }
 
     @Override
@@ -129,7 +141,7 @@ public class EffectManager implements DataHolder {
     }
 
     public void loadEffects() {
-        var current = System.currentTimeMillis();
+        var start = System.nanoTime();
         var inst = TreasurePlugin.getInstance();
         var config = generator.getConfiguration();
         if (config == null) return;
@@ -157,20 +169,21 @@ public class EffectManager implements DataHolder {
 
         for (String key : section.getKeys(false)) {
             try {
-                String path = key + ".";
+                var path = section.getConfigurationSection(key);
+                if (path == null) continue;
 
                 // Display Name
-                String displayName = section.getString(path + "display-name", key);
+                String displayName = path.getString("display-name", key);
                 displayName = translations.translate("effects", displayName);
 
                 // Permission
-                String permission = section.getString(path + "permission");
+                String permission = path.getString("permission");
                 permission = permissions.replace(permission);
 
                 // Tick Handlers
-                var handlerSection = section.getConfigurationSection(path + "on-tick");
-                if (handlerSection == null) {
-                    inst.getLogger().warning("Effect must have on-tick section: " + key);
+                var onTickSection = path.getConfigurationSection("on-tick");
+                if (onTickSection == null) {
+                    inst.getLogger().warning("[" + key + "] Effect must have on-tick section");
                     continue;
                 }
 
@@ -202,13 +215,13 @@ public class EffectManager implements DataHolder {
                 }
 
                 // Icon
-                var icon = GUIElements.getItemStack(config, "effects." + path + "icon", EffectsGUI.DEFAULT_ICON.item());
+                var icon = GUIElements.getItemStack(config, "effects." + key + ".icon", EffectsGUI.DEFAULT_ICON.item());
 
                 // Description
                 List<String> description;
-                if (section.contains(path + "description")) {
+                if (path.contains("description")) {
                     description = new ArrayList<>();
-                    for (var s : section.getStringList(path + "description")) {
+                    for (var s : path.getStringList("description")) {
                         var translated = MessageUtils.parseLegacy(translations.translate("descriptions", s));
                         description.addAll(List.of(translated.split("%nl%")));
                     }
@@ -221,13 +234,13 @@ public class EffectManager implements DataHolder {
                         displayName,
                         description != null ? description.toArray(String[]::new) : null,
                         icon,
-                        section.getString(path + "armor-color"),
+                        path.getString("armor-color"),
                         permission,
-                        section.getStringList(path + "variables"),
-                        section.getInt(path + "interval", 1),
-                        section.getBoolean(path + "enable-caching", false),
+                        path.getStringList("variables"),
+                        path.getInt("interval", 1),
+                        path.getBoolean("enable-caching", false),
                         tickHandlers,
-                        inst.getColorManager().getColorGroup(section.getString(path + "color-group"))
+                        inst.getColorManager().getColorGroup(path.getString("color-group"))
                 );
 
                 effects.add(effect);
@@ -235,11 +248,10 @@ public class EffectManager implements DataHolder {
                 inst.getLogger().log(Level.WARNING, "Couldn't load effect: " + key, e);
             }
         }
-        inst.getLogger().info("Loaded " + effects.size() + " effects (" + (System.currentTimeMillis() - current) + "ms)");
+        inst.getLogger().info("Loaded " + effects.size() + " effects (" + TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS) + "ms)");
     }
 
-    public void registerReader(String key, DefaultReader<?> reader, String... aliases) {
-        this.readers.put(key, reader);
+    public void registerReader(DefaultReader<?> reader, String... aliases) {
         for (var alias : aliases)
             this.readers.put(alias, reader);
     }
@@ -266,7 +278,7 @@ public class EffectManager implements DataHolder {
             line = args[0];
         }
 
-        var args = Patterns.SPACE.split(line, 2);
+        var args = Patterns.SPACE.split(line.trim(), 2);
         String type;
         try {
             type = args[0];
