@@ -207,12 +207,11 @@ public class EffectsGUI {
             index += 1;
         }
 
+        player.openInventory(inventory);
+
         if (animatedSlots != null) {
             holder.setAnimatedSlots(animatedSlots);
-            GUITask.getPlayers().add(player.getUniqueId());
-        } else
-            GUITask.getPlayers().remove(player.getUniqueId());
-
-        player.openInventory(inventory);
+            GUITask.getPlayers().add(player);
+        }
     }
 }

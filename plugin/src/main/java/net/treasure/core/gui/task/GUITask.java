@@ -2,25 +2,23 @@ package net.treasure.core.gui.task;
 
 import lombok.Getter;
 import net.treasure.core.gui.GUIHolder;
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GUITask implements Runnable {
 
     @Getter
-    private static final List<UUID> players = new ArrayList<>();
+    private static final Set<Player> players = new HashSet<>();
 
     @Override
     public void run() {
         var iterator = players.iterator();
         while (iterator.hasNext()) {
-            var uuid = iterator.next();
-            var player = Bukkit.getPlayer(uuid);
-            if (player == null) {
+            var player = iterator.next();
+            if (player == null || !player.isOnline()) {
                 iterator.remove();
                 continue;
             }

@@ -136,9 +136,9 @@ public class ColorsGUI {
             index += 1;
         }
 
-        holder.setAnimatedSlots(animatedSlots);
-        GUITask.getPlayers().add(player.getUniqueId());
-
         player.openInventory(inventory);
+
+        holder.setAnimatedSlots(animatedSlots);
+        GUITask.getPlayers().add(player);
     }
 }

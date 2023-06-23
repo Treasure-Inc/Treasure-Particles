@@ -3,7 +3,6 @@ package net.treasure.core.gui.config;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import net.treasure.core.TreasurePlugin;
 import net.treasure.core.gui.GUIManager;
 import net.treasure.core.gui.type.GUI;
 import net.treasure.util.item.CustomItem;

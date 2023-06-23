@@ -4,18 +4,16 @@ import net.treasure.common.Keys;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.gui.config.ElementType;
 import net.treasure.core.gui.config.GUISounds;
-import net.treasure.core.gui.task.GUITask;
 import net.treasure.core.gui.type.color.ColorsGUI;
 import net.treasure.core.gui.type.color.ColorsGUIHolder;
 import net.treasure.core.gui.type.effects.EffectsGUI;
 import net.treasure.locale.Translations;
-import net.treasure.util.tuples.Pair;
 import net.treasure.util.message.MessageUtils;
+import net.treasure.util.tuples.Pair;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Random;
@@ -100,11 +98,5 @@ public class ColorsGUIListener implements Listener {
 
             player.playSound(player.getLocation(), sound.getKey(), sound.getValue()[0], sound.getValue()[1]);
         }
-    }
-
-    @EventHandler
-    public void on(InventoryCloseEvent event) {
-        if (event.getView().getTopInventory().getHolder() instanceof ColorsGUIHolder)
-            GUITask.getPlayers().remove(event.getPlayer().getUniqueId());
     }
 }
