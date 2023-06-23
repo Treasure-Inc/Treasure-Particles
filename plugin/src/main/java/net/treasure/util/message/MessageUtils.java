@@ -66,7 +66,7 @@ public class MessageUtils {
         for (String message : messages)
             components.add(miniMessage.deserialize(message));
         audience.openBook(Book.book(
-                Component.text("TreasureElytra"),
+                Component.text("TreasureParticles"),
                 Component.text("ItsZypec"),
                 components
         ));

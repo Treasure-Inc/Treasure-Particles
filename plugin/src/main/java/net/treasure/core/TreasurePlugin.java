@@ -136,7 +136,7 @@ public class TreasurePlugin extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
             new Expansions(playerManager).register();
 
-        getLogger().info("Enabled TreasureElytra+ (" + (System.currentTimeMillis() - current) + "ms)");
+        getLogger().info("Enabled TreasureParticles (" + TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS) + "ms)");
     }
 
     @Override
@@ -149,12 +149,12 @@ public class TreasurePlugin extends JavaPlugin {
     }
 
     public void disable() {
-        getLogger().warning("Couldn't initialize TreasureElytra+");
+        getLogger().warning("Couldn't initialize TreasureParticles");
         getPluginLoader().disablePlugin(this);
     }
 
     public void reload() {
-        getLogger().info("Reloading TreasureElytra+");
+        getLogger().info("Reloading TreasureParticles");
 
         // config.yml
         saveDefaultConfig();
@@ -170,7 +170,7 @@ public class TreasurePlugin extends JavaPlugin {
         playerManager.reload();
         getLogger().info("Reloaded player manager!");
 
-        getLogger().info("Reloaded TreasureElytra+");
+        getLogger().info("Reloaded TreasureParticles");
     }
 
     public void configure() {

@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
-@CommandAlias("tre|treplus|trelytra|trelytraplus|treasureelytra|treasureelytraplus")
+@CommandAlias("trp|trparticles|treasureparticles")
 public class MainCommand extends BaseCommand {
 
     final TreasurePlugin plugin;
@@ -210,7 +210,7 @@ public class MainCommand extends BaseCommand {
     public void debugInfo(CommandSender sender) {
         MessageUtils.sendParsed(sender, "<prefix> <gray>Effects Size: <red>" + effectManager.getEffects().size());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Menu Viewers Size: <yellow>" + GUITask.getPlayers().size());
-        MessageUtils.sendParsed(sender, "<prefix> <gray>Players Using Elytra Effect: <yellow>" + playerManager.getData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Players Using Effect: <yellow>" + playerManager.getData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Color Cycle Speed: <gold>" + plugin.getGuiManager().getColorCycleSpeed());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Animation Interval: <gold>" + plugin.getGuiManager().getInterval());
     }

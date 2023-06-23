@@ -55,7 +55,8 @@ public class DatabaseManager {
             return false;
         }
 
-        TABLE = config.getString("database.table", "trelytra_data");
+        TYPE = type;
+        TABLE = config.getString("database.table", "trparticles_data");
 
         instance.update("CREATE TABLE IF NOT EXISTS `" + TABLE + "` (`uuid` varchar(100) NOT NULL, `data` BLOB NOT NULL, PRIMARY KEY(`uuid`))");
         return true;

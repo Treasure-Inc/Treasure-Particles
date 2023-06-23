@@ -22,7 +22,7 @@ public class NMSMatcher {
                  InvocationTargetException exception) {
             throw new IllegalStateException("Failed to instantiate NMS Handler for version " + serverVersion, exception);
         } catch (ClassNotFoundException exception) {
-            throw new IllegalStateException("TreasureElytra+ does not support server version " + serverVersion, exception);
+            throw new IllegalStateException("TreasureParticles does not support server version " + serverVersion, exception);
         }
     }
 }

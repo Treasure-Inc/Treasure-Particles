@@ -15,7 +15,7 @@ notifications: false
 auto-update-configurations: true
 
 # Toggle effect permission check (default=true)
-# If this option is enabled, players will be checked when the following events occur whether they have permission when they're using the TrElytra effects
+# If this option is enabled, players will be checked when the following events occur whether they have permission when they're using the TrParticles effects
 # In other words, if this option is disabled, players will only be checked when they're selecting an effect in GUI or selecting an effect with the "/tre select" command
 # Event list:
 # -player joining server
@@ -45,7 +45,7 @@ permissions:
   admin: "trparticles.admin" # Admin commands permission
 
   # Effects Visibility
-  # You can show TrElytra effects for the players who have permission, just set the "effects-visibility-permission" to true
+  # You can show TrParticles effects for the players who have permission, just set the "effects-visibility-permission" to true
   # If this option is enabled, give the "can-see-effects" permission to players
   effects-visibility-permission: false
   can-see-effects: "trparticles.can_see_effects"

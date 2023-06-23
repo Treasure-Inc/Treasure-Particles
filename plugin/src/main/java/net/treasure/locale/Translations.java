@@ -140,13 +140,13 @@ public class Translations implements DataHolder {
         var inst = TreasurePlugin.getInstance();
 
         // General
-        PREFIX = config.getString("prefix", "<gradient:#EF476F:#FFD166><b>TrElytra<#fac3c6>+</#fac3c6> <dark_gray>| <reset>");
+        PREFIX = config.getString("prefix", "<b><gradient:#EF476F:#FFD166>TrParticles</b> <dark_gray><b>|</b></dark_gray>");
         NOTIFICATION = config.getString("notification", "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><spigot>GitHub</spigot></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>");
         ENABLED = config.getString("enabled", "<green>Enabled");
         DISABLED = config.getString("disabled", "<red>Disabled");
 
         // GUI
-        GUI_TITLE = config.getString("gui.title", "        <gradient:#EF476F:#FFD166><b>Treasure Elytra");
+        GUI_TITLE = config.getString("gui.title", "      <gradient:#EF476F:#FFD166><b>Treasure Particles");
         GUI_EFFECT_SELECTED = config.getString("gui.effect-selected", "<green>Selected!");
         GUI_SELECT_EFFECT = config.getString("gui.select-effect", "<#87FF65>❤ Click to use this effect!");
         GUI_RESET_EFFECT = config.getString("gui.reset-effect", "<yellow>Reset Effect");
@@ -180,7 +180,7 @@ public class Translations implements DataHolder {
         UNKNOWN_COLOR_SCHEME = config.getString("commands.unknown-color-scheme", "<prefix> <red>Unknown color scheme.");
         COLOR_SCHEME_SELECTED = config.getString("commands.color-scheme-selected", "<prefix> <green>Selected color scheme {0} for the {1} effect.");
         NOTIFICATIONS_TOGGLE = config.getString("commands.notifications-toggle", "<prefix> <gray>Notifications: {0}");
-        RELOADING = config.getString("commands.reloading", "<prefix> <yellow>Reloading TreasureElytra+");
+        RELOADING = config.getString("commands.reloading", "<prefix> <yellow>Reloading TreasureParticles");
         RELOADED = config.getString("commands.reloaded", "<prefix> <green>Reloaded!");
         // Args
         ARGS_MUST_BE_A_NUMBER = config.getString("commands.args.must-be-a-number", "<prefix> <red>{0} must be a number.");

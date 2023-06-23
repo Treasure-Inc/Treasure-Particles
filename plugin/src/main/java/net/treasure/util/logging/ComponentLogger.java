@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 public class ComponentLogger {
 
+    static final String PREFIX = "TrParticles";
     static Logger logger = TreasurePlugin.logger();
     @Setter
     static boolean colored = true;
@@ -21,7 +22,8 @@ public class ComponentLogger {
 
     public static void error(Effect effect, String type, String line, String... messages) {
         if (colored) {
-            MessageUtils.logParsed("<yellow>[TrElytraPlus] <red><effect><yellow><type> <line>",
+            MessageUtils.logParsed("<yellow>[<prefix>] <red><effect><yellow><type> <line>",
+                    Placeholder.unparsed("prefix", PREFIX),
                     Placeholder.unparsed("effect", effect.getPrefix()),
                     Placeholder.unparsed("type", type),
                     Placeholder.unparsed("line", line)
@@ -44,7 +46,8 @@ public class ComponentLogger {
         }
 
         line = "<yellow>" + line.substring(0, start) + "<gold><u>" + line.substring(start, end) + "</u></gold>" + line.substring(end);
-        MessageUtils.logParsed("<yellow>[TrElytraPlus] <red><effect><yellow><type> <line>",
+        MessageUtils.logParsed("<yellow>[<prefix>] <red><effect><yellow><type> <line>",
+                Placeholder.unparsed("prefix", PREFIX),
                 Placeholder.unparsed("effect", effect.getPrefix()),
                 Placeholder.unparsed("type", type),
                 Placeholder.parsed("line", line)
