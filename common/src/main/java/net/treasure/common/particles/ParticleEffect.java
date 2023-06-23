@@ -460,6 +460,16 @@ public enum ParticleEffect {
      */
     FALLING_SPORE_BLOSSOM(version -> version < 17 ? "NONE" : "falling_spore_blossom"),
     /**
+     * Falling water
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Blue drop.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    FALLING_WATER(version -> version < 17 ? "NONE" : "falling_water"),
+    /**
      * In vanilla, this particle is displayed when a firework is
      * launched.
      * <p>
