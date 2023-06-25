@@ -26,6 +26,7 @@ public class HandlerEventsListener implements Listener {
     public void on(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
             var data = playerManager.getEffectData(player);
+            if (data == null) return;
             var effect = data.getCurrentEffect();
             if (effect == null) return;
             if (!effect.getEvents().contains(HandlerEvent.TAKE_DAMAGE)) return;
@@ -37,6 +38,7 @@ public class HandlerEventsListener implements Listener {
     public void on(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player player) {
             var data = playerManager.getEffectData(player);
+            if (data == null) return;
             var effect = data.getCurrentEffect();
             if (effect == null) return;
             var type = event.getEntity() instanceof Player ? HandlerEvent.PLAYER_DAMAGE : HandlerEvent.MOB_DAMAGE;
@@ -51,6 +53,7 @@ public class HandlerEventsListener implements Listener {
         var killer = event.getEntity().getKiller();
         if (killer != null) {
             var data = playerManager.getEffectData(killer);
+            if (data == null) return;
             var effect = data.getCurrentEffect();
             if (effect == null) return;
             var type = event.getEntity() instanceof Player ? HandlerEvent.PLAYER_KILL : HandlerEvent.MOB_KILL;
@@ -65,6 +68,7 @@ public class HandlerEventsListener implements Listener {
         if (event.getEntity().getShooter() instanceof Player player) {
             if (player.isGliding() && event.getEntity() instanceof Firework) return;
             var data = playerManager.getEffectData(player);
+            if (data == null) return;
             var effect = data.getCurrentEffect();
             if (effect == null) return;
             if (!effect.getEvents().contains(HandlerEvent.PROJECTILE)) return;
