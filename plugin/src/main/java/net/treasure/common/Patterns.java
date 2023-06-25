@@ -12,7 +12,7 @@ public final class Patterns {
     public static final Pattern ASTERISK = Pattern.compile("\\*");
 
     // SCRIPTS
-    public static final Pattern SCRIPT = Pattern.compile("(?!^\\[)(?<type>[^=,]+)=(?<value>[^\0]+?)(?=,[^,]+=|]$)");
+    public static final Pattern SCRIPT = Pattern.compile("(?!^\\[)(?<type>[^=,]+)=(?<value>\".+?\"|[^\0]+?)(?=,[^,]+=|]$)");
     public static final Pattern INNER_SCRIPT = Pattern.compile("(?!^\\{)(?<type>[^=;]+)=(?<value>[^\0]+?)(?=;[^;]+=|}$)");
     // VARIABLE SCRIPT
     public static final Pattern VARIABLE = Pattern.compile("(?<name>[a-zA-Z\\d]+)(=)(?<default>[\\d.-]+)");
