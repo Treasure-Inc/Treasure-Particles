@@ -9,10 +9,9 @@ import net.treasure.core.gui.config.GUISounds;
 import net.treasure.core.gui.config.GUIStyle;
 import net.treasure.core.gui.task.GUITask;
 import net.treasure.core.gui.type.GUI;
+import net.treasure.core.gui.type.admin.AdminGUI;
 import net.treasure.core.gui.type.color.ColorsGUI;
-import net.treasure.core.gui.type.color.listener.ColorsGUIListener;
 import net.treasure.core.gui.type.effects.EffectsGUI;
-import net.treasure.core.gui.type.effects.listener.EffectsGUIListener;
 import net.treasure.locale.Translations;
 import net.treasure.util.tuples.Pair;
 import org.bukkit.Bukkit;
@@ -44,6 +43,7 @@ public class GUIManager implements DataHolder {
 
         EffectsGUI.configure(this);
         ColorsGUI.configure(this);
+        AdminGUI.configure(this);
     }
 
     @Override

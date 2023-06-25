@@ -15,6 +15,7 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import net.treasure.common.Permissions;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.core.gui.task.GUITask;
+import net.treasure.core.gui.type.admin.AdminGUI;
 import net.treasure.core.gui.type.effects.EffectsGUI;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
@@ -160,6 +161,12 @@ public class MainCommand extends BaseCommand {
 
         playerManager.getEffectData(player).setColorPreference(effect, colorScheme);
         MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, colorScheme.getDisplayName(), effect.getDisplayName());
+    }
+
+    @Subcommand("admin")
+    @CommandPermission(Permissions.COMMAND_ADMIN)
+    public void admin(Player player) {
+        AdminGUI.open(player, null, null, 0);
     }
 
     @Subcommand("reload|rl")
