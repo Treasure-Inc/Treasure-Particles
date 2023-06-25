@@ -26,6 +26,7 @@ import net.treasure.effect.script.parkour.reader.ParkourReader;
 import net.treasure.effect.script.particle.reader.circle.CircleParticleReader;
 import net.treasure.effect.script.particle.reader.circle.SpreadCircleParticleReader;
 import net.treasure.effect.script.particle.reader.dot.DotParticleReader;
+import net.treasure.effect.script.particle.reader.text.TextParticleReader;
 import net.treasure.effect.script.preset.reader.PresetReader;
 import net.treasure.effect.script.reader.DefaultReader;
 import net.treasure.effect.script.sound.reader.SoundReader;
@@ -88,6 +89,7 @@ public class EffectManager implements DataHolder {
         registerReader(new CircleParticleReader(), "circle");
         registerReader(new SpreadCircleParticleReader(), "spread");
         registerReader(new ParkourReader(), "parkour");
+        registerReader(new TextParticleReader(), "text");
         // Messages
         registerReader(new BasicScriptReader<>(ChatMessage::new), "chat");
         registerReader(new BasicScriptReader<>(ActionBar::new), "actionbar");
