@@ -34,6 +34,18 @@ public class StaticArgument<T> {
         return null;
     }
 
+    public static String asString(ReaderContext<?> context) throws ReaderException {
+        return asString(context.value());
+    }
+
+    public static String asString(String value) throws ReaderException {
+        try {
+            return value.substring(1, value.length() - 1);
+        } catch (Exception e) {
+            throw new ReaderException("Valid values for Static String argument: \"text\"");
+        }
+    }
+
     public static int asInt(ReaderContext<?> context) throws ReaderException {
         return asInt(context.value());
     }
