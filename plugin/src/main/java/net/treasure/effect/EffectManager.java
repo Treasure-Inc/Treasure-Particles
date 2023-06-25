@@ -135,11 +135,11 @@ public class EffectManager implements DataHolder {
     }
 
     public Effect get(String key) {
-        return effects.stream().filter(color -> color.getKey().equals(key)).findFirst().orElse(null);
+        return effects.stream().filter(effect -> effect.getKey().equals(key)).findFirst().orElse(null);
     }
 
     public boolean has(String key) {
-        return effects.stream().anyMatch(color -> color.getKey().equals(key));
+        return effects.stream().anyMatch(effect -> effect.getKey().equals(key));
     }
 
     public void loadEffects() {
@@ -169,18 +169,16 @@ public class EffectManager implements DataHolder {
         var translations = inst.getTranslations();
         var permissions = inst.getPermissions();
 
-        for (String key : section.getKeys(false)) {
+        for (var key : section.getKeys(false)) {
             try {
                 var path = section.getConfigurationSection(key);
                 if (path == null) continue;
 
                 // Display Name
-                String displayName = path.getString("display-name", key);
-                displayName = translations.translate("effects", displayName);
+                var displayName = translations.translate("effects", path.getString("display-name", key));
 
                 // Permission
-                String permission = path.getString("permission");
-                permission = permissions.replace(permission);
+                var permission = permissions.replace(path.getString("permission"));
 
                 // Tick Handlers
                 var onTickSection = path.getConfigurationSection("on-tick");

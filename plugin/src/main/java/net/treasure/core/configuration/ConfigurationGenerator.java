@@ -39,8 +39,7 @@ public class ConfigurationGenerator {
         this.plugin = plugin;
         var file = new File(plugin.getDataFolder(), directory);
         try {
-            boolean exists = file.exists();
-            if (!exists)
+            if (!file.exists())
                 saveResource(false);
             if (!file.exists()) {
                 this.configuration = null;
@@ -56,10 +55,12 @@ public class ConfigurationGenerator {
     public void reset() {
         var dataFolder = plugin.getDataFolder();
         var file = new File(dataFolder, directory);
-        try {
-            Files.copy(file, new File(dataFolder, "old_" + fileName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".yml"));
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't copy old file: " + fileName + ".yml", e);
+        if (file.exists()) {
+            try {
+                Files.copy(file, new File(dataFolder, "old_" + fileName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".yml"));
+            } catch (Exception e) {
+                plugin.getLogger().log(Level.SEVERE, "Couldn't copy old file: " + fileName + ".yml", e);
+            }
         }
 
         saveResource(true);

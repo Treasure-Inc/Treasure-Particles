@@ -119,13 +119,13 @@ public class TreasurePlugin extends JavaPlugin {
         dataHolders.add(guiManager);
 
         // Load translations > GUI > colors > effects
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
             translations.loadTranslations();
             guiManager.initialize();
 
             colorManager.loadColors();
             effectManager.loadEffects();
-        });
+        }, 5);
 
         // Initialize players
         for (var player : Bukkit.getOnlinePlayers())
@@ -180,9 +180,9 @@ public class TreasurePlugin extends JavaPlugin {
         if (!VERSION.equals(config.getString("version"))) {
             if (autoUpdateEnabled) {
                 var generator = new ConfigurationGenerator("config.yml");
-                generator.generate();
                 generator.reset();
                 reloadConfig();
+                getLogger().warning("Generated new config.yml (v" + VERSION + ")");
             } else
                 getLogger().warning("New version of config.yml available (v" + VERSION + ")");
         }

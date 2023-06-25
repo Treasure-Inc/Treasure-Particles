@@ -69,7 +69,7 @@ public class AdminGUI {
                         .build());
 
         // Effects
-        var effects = effectManager.getEffects().stream().filter(effect -> filterEvent == null || effect.getEvents().contains(filterEvent)).toList();
+        var effects = effectManager.getEffects().stream().filter(effect -> (filterEvent == null || effect.getEvents().contains(filterEvent)) && ((filterCategory == null || filterCategory == FilterCategory.SUPPORTED_EVENTS) || (filterCategory == FilterCategory.HAS_PERMISSION && effect.getPermission() != null) || (filterCategory == FilterCategory.NO_PERMISSION && effect.getPermission() == null))).toList();
 
         // Filter button
         for (int slot : FILTER.slots())
