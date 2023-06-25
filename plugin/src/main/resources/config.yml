@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.0.0"
+version: "1.0.1"
 
 # Translations locale (default=EN)
 locale: EN
@@ -55,7 +55,9 @@ permissions:
   # Please check the effects.yml file if you want to add permissions to the effects
   # You can read the wiki page for detailed information: https://treasurestore.gitbook.io/treasure-elytra/effects/basic-usage#permission
   rainbow-effects: "trparticles.effects.rainbow" # Permission for rainbow-colored effects
-  tail-effects: "trparticles.effects.tail" # Permission for tail effects
-  sonic: "trparticles.effects.sonic" # Permission for sonic effect
-  christmas: "trparticles.effects.christmas" # Permission for Christmas effects
+  gradient-effects: "trparticles.effects.gradient" # Permission for gradient
   parkour: "trparticles.effects.parkour" # Permission for parkour effects
+  weather: "trparticles.effects.weather" # Permission for snow/rain effects
+  tail-effects: "trparticles.effects.tail" # Permission for tail effects
+  text-effects: "trparticles.effects.text" # Permission for text effects
+  christmas: "trparticles.effects.christmas" # Permission for Christmas effects

@@ -37,7 +37,7 @@ public class TreasurePlugin extends JavaPlugin {
 
     @Getter
     private static TreasurePlugin instance;
-    public static final String VERSION = "1.0.0"; // config.yml
+    public static final String VERSION = "1.0.1"; // config.yml
 
     // Data Holders
     private Translations translations;
@@ -115,7 +115,7 @@ public class TreasurePlugin extends JavaPlugin {
         initializeListeners();
 
         // GUI Manager
-        guiManager = new GUIManager(this);
+        guiManager = new GUIManager();
         dataHolders.add(guiManager);
 
         // Load translations > GUI > colors > effects

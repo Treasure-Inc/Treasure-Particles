@@ -50,7 +50,7 @@ public class CustomItem {
         if (meta == null) return this;
         if (meta.getLore() != null) {
             List<String> old = meta.getLore();
-            old.addAll(Arrays.stream(args).filter(Objects::nonNull).collect(Collectors.toList()));
+            old.addAll(Arrays.stream(args).filter(Objects::nonNull).toList());
             meta.setLore(old);
         } else
             meta.setLore(Arrays.stream(args).filter(Objects::nonNull).collect(Collectors.toList()));

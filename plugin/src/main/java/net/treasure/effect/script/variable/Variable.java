@@ -32,7 +32,7 @@ public class Variable extends Script implements Cached {
         var pair = data.getVariable(variable);
         if (pair == null) return TickResult.NORMAL;
         var effect = data.getCurrentEffect();
-        if (effect.isEnableCaching()) {
+        if (effect.isCachingEnabled()) {
             pair.setValue(effect.getCache().get(tickHandler.key)[times][index]);
             return TickResult.NORMAL;
         }

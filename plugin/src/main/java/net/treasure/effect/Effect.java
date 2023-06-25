@@ -35,14 +35,14 @@ public class Effect {
     private final List<TickHandler> tickHandlers;
     private final List<Pair<String, Double>> variables;
 
-    private final boolean enableCaching;
+    private final boolean cachingEnabled;
     private HashMap<String, double[][]> cache;
 
     private final ColorGroup colorGroup;
 
     private final List<HandlerEvent> events;
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean enableCaching, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup) {
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup) {
         this.key = key;
         this.displayName = displayName;
         this.description = description;
@@ -50,7 +50,7 @@ public class Effect {
         this.armorColor = armorColor;
         this.permission = permission;
         this.interval = interval;
-        this.enableCaching = enableCaching;
+        this.cachingEnabled = cachingEnabled;
         this.colorGroup = colorGroup;
 
         this.variables = new ArrayList<>();
@@ -81,7 +81,7 @@ public class Effect {
         addVariable(Variable.I);
         addVariable(Variable.TIMES);
 
-        if (enableCaching) {
+        if (cachingEnabled) {
             cache = new HashMap<>();
             preTick();
         }

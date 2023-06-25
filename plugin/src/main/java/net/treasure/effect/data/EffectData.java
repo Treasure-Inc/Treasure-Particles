@@ -175,7 +175,7 @@ public class EffectData {
     // Moving
     public void increaseInterval() {
         this.notMovingInterval += 5;
-        if (this.notMovingInterval > 40)
+        if (this.notMovingInterval > 30)
             this.moving = false;
     }
 
