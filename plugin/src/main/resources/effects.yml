@@ -654,6 +654,16 @@ effects:
           - particle [effect=heart,direction=true,origin=feet]
           - particle [effect=heart,direction=true,origin=feet,pos={y=-2.25}]
           - var x=-2
+  love-you:
+    display-name: "%love-you%"
+    permission: "%text-effects"
+    armor-color: "heart"
+    interval: 40
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - text [effect=heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=false]
   sonic:
     display-name: "%sonic%"
     armor-color: "#65f5fc"
@@ -769,3 +779,33 @@ effects:
         event: ELYTRA
         scripts:
           - circle [effect=redstone,tick=true,size=3,amount=0,origin=head*-1.25,color={name=christmas;speed=1.75;revert=true}]
+  christmas-spiral:
+    display-name: "%christmas-spiral%"
+    permission: "%christmas"
+    icon:
+      material: "WHITE_CANDLE"
+    variables: [ 'x', 'y', 'z', 'step' ]
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - particle [effect=redstone,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={name=christmas;revert=true;speed=1.75}]
+      moving:
+        event: MOVING
+        scripts:
+          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - particle [effect=redstone,size=2,pos={x={x};z={z}},origin=head,color={name=christmas;revert=true;speed=1.75}]
+      standing:
+        event: STANDING
+        scripts:
+          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - var y={z}-0.25
+          - particle [effect=redstone,size=2,pos={x={x};z={z};y={y}},origin=head,color={name=christmas;revert=true;speed=1.75}]
+      step:
+        event: NONE
+        scripts:
+          - var step=({step} + 1 + {isMoving}) % 120
