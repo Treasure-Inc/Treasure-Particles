@@ -70,16 +70,19 @@ public class ParticleSpawner extends Script {
 
         var offset = this.offset != null ? this.offset.get(player, data) : null;
         if (directional && offset != null) {
-            offset = Vectors.rotateAroundAxisX(offset, player.getEyeLocation().getPitch());
-            offset = Vectors.rotateAroundAxisY(offset, player.getEyeLocation().getYaw());
-            offset = offset.add(player.getLocation().getDirection().add(offset));
+            offset = Vectors.rotateAroundAxisX(offset, origin.getPitch());
+            offset = Vectors.rotateAroundAxisY(offset, origin.getYaw());
+            offset = offset.add(origin.getDirection().add(offset));
         }
 
         if (offset != null)
             builder.offset(offset);
 
         var playerManager = TreasurePlugin.getInstance().getPlayerManager();
-        builder.viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects());
+        builder.viewers(viewer -> {
+            var d = playerManager.getEffectData(viewer);
+            return d != null && d.canSeeEffects();
+        });
 
         return new ParticleContext(builder, origin);
     }
@@ -113,6 +116,28 @@ public class ParticleSpawner extends Script {
             } else
                 builder.offsetColor(colorData.next(data));
         }
+    }
+
+    public Object particleData(Player player, EffectData data) {
+        if (particleData != null) return particleData();
+
+        if (colorData == null || particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR)) {
+            particleData = Particles.NMS.getParticleParam(particle);
+            return particleData;
+        }
+
+        if (particle.hasProperty(ParticleEffect.Property.DUST)) {
+            var size = this.size != null ? this.size.get(player, data) : 1;
+            if (particle.equals(ParticleEffect.DUST_COLOR_TRANSITION))
+                if (colorData instanceof DuoImpl duo) {
+                    var pair = duo.nextDuo();
+                    return Particles.NMS.getColorTransitionData(pair.getKey(), pair.getValue(), size);
+                } else
+                    return Particles.NMS.getColorTransitionData(colorData.next(data), colorData.tempNext(data), size);
+            else
+                return Particles.NMS.getDustData(colorData.next(data), size);
+        }
+        return null;
     }
 
     public Location rotate(Location origin, Vector direction, float pitch, float yaw, Vector vector) {

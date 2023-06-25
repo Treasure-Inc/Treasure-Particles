@@ -33,17 +33,15 @@ import java.util.List;
 public class SpreadCircleParticle extends CircleParticle {
 
     RangeArgument spread = null;
-    boolean vertical = true;
 
     public SpreadCircleParticle(ParticleEffect particle, ParticleOrigin origin,
-                                RangeArgument spread, boolean vertical,
-                                IntArgument particles, RangeArgument radius, boolean tickData,
+                                RangeArgument spread,
+                                IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
                                 VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                                 ColorData colorData, Object particleData,
                                 IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(particle, origin, particles, radius, tickData, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        super(particle, origin, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
         this.spread = spread;
-        this.vertical = vertical;
     }
 
     @Override
@@ -70,7 +68,7 @@ public class SpreadCircleParticle extends CircleParticle {
         List<ParticleBuilder> builders = new ArrayList<>();
         for (int i = 0; i < particles; i++) {
             if (interval != 0 && i % interval != 0) continue;
-            var r = 2 * Math.PI * i / particles;
+            var r = MathUtils.PI2 * i / particles;
             var x = MathUtils.cos(r) * radius;
             var y = MathUtils.sin(r) * radius;
 
@@ -89,7 +87,7 @@ public class SpreadCircleParticle extends CircleParticle {
             if (offset != null) {
                 var tempOffset = offset.clone();
                 if (spread != null) {
-                    var angle = Math.atan2(y, x);
+                    var angle = MathUtils.atan2(y, x);
                     tempOffset.add(vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.sin(angle) * spread, 0, MathUtils.cos(angle) * spread));
                 }
                 if (directional) {
@@ -99,7 +97,7 @@ public class SpreadCircleParticle extends CircleParticle {
                 }
                 copy.offset(tempOffset);
             } else if (spread != null) {
-                var angle = Math.atan2(y, x);
+                var angle = MathUtils.atan2(y, x);
                 var tempOffset = vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.sin(angle) * spread, 0, MathUtils.cos(angle) * spread);
                 if (directional) {
                     tempOffset = Vectors.rotateAroundAxisX(tempOffset, pitch);
@@ -151,6 +149,6 @@ public class SpreadCircleParticle extends CircleParticle {
 
     @Override
     public SpreadCircleParticle clone() {
-        return new SpreadCircleParticle(particle, origin, spread, vertical, particles, radius, tickData, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        return new SpreadCircleParticle(particle, origin, spread, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
     }
 }

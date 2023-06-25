@@ -39,7 +39,7 @@ public class DotParticle extends ParticleSpawner {
         var origin = context.origin();
 
         var vector = position == null ? new Vector(0, 0, 0) : position.get(player, data);
-        builder.location(rotate(origin, player.getLocation().getDirection(), player.getEyeLocation().getPitch(), player.getEyeLocation().getYaw(), vector));
+        builder.location(rotate(origin, origin.getDirection(), origin.getPitch(), origin.getYaw(), vector));
 
         updateParticleData(player, data, builder);
 
