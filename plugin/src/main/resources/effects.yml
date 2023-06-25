@@ -5,6 +5,7 @@ effects:
     display-name: "%rainbow-circle%"
     armor-color: "rainbow"
     permission: "%rainbow-effects"
+    variables: [ 'radius=1', 'particles=32', 'radiusMoving=0.25', 'particlesMoving=8', 'y=0' ]
     interval: 1
     on-tick:
       elytra:
@@ -14,7 +15,17 @@ effects:
       moving:
         event: MOVING
         scripts:
-          - circle [effect=redstone,tick-data=true,particles=16,radius=0.5,amount=10,pos={y=-0.5},origin=head*-1.25,color={name=rainbow;speed=0.15}]
+          - circle [effect=redstone,tick-data=true,particles={particlesMoving},radius={radiusMoving},amount=10,pos={y=-0.5},origin=head*-1.25,color={name=rainbow;speed=0.075}]
+      reset-y:
+        event: STANDING
+        max-executed: 1
+        scripts:
+          - var y=0
+      standing:
+        event: STANDING
+        scripts:
+          - circle [effect=redstone,directional=false,vertical=false,origin=feet,pos={y={y}},color={name=rainbow;speed=0.75}]
+          - var-c [variable=y,max=1.75,min=0,step=0.1]
   rainbow-circle-transition:
     display-name: "%rainbow-circle-transition%"
     armor-color: "rainbow"
@@ -53,6 +64,7 @@ effects:
   rainbow-dots:
     display-name: "%rainbow-dots%"
     armor-color: "rainbow"
+    permission: "%rainbow-effects"
     interval: 1
     on-tick:
       elytra:
@@ -69,9 +81,9 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
-        times: 32
+        times: 24
         scripts:
-          - var r=2*{PI}*{i}/32
+          - var r=2*{PI}*{i}/24
           - var x=cos({r})/2
           - var y=sin({r})/2
           - particle [effect=redstone,direction=true,pos={x={x};y={y}},offset={x={x};y={y}},amount=5,origin=head*-1.25,color={name=rainbow;speed=0.75;revert=false}]
@@ -247,6 +259,7 @@ effects:
   gradient-circle:
     display-name: "%gradient-circle%"
     color-group: "gradients"
+    permission: "%gradient-effects"
     variables: [ 'radius=1', 'particles=32' ]
     interval: 1
     on-tick:
@@ -257,6 +270,7 @@ effects:
   gradient-line:
     display-name: "%gradient-line%"
     color-group: "gradients"
+    permission: "%gradient-effects"
     interval: 1
     on-tick:
       elytra:
@@ -275,6 +289,7 @@ effects:
   gradient-spiral:
     display-name: "%gradient-spiral%"
     color-group: "gradients"
+    permission: "%gradient-effects"
     variables: [ 'x', 'y', 'z', 'step' ]
     interval: 1
     on-tick:
@@ -284,6 +299,12 @@ effects:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={dynamic=true;revert=true;speed=0.25}]
+      moving:
+        event: MOVING
+        scripts:
+          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
+          - particle [effect=redstone,size=2,pos={x={x};z={z}},origin=head,color={dynamic=true;revert=true;speed=0.25}]
       standing:
         event: STANDING
         scripts:
@@ -294,7 +315,7 @@ effects:
       step:
         event: NONE
         scripts:
-          - var step=({step} + 1) % 120
+          - var step=({step} + 1 + {isMoving}) % 120
   parkour-easy:
     display-name: "%parkour-easy%"
     permission: "%parkour"
@@ -493,8 +514,9 @@ effects:
           - circle [effect=electric_spark,particles=16,origin=feet,amount=0]
   rain:
     display-name: "%rain%"
-    variables: [ 'r', 'x', 'z' ]
+    permission: "%weather"
     armor-color: "#345eeb"
+    variables: [ 'r', 'x', 'z' ]
     interval: 3
     on-tick:
       elytra:
@@ -513,8 +535,7 @@ effects:
   snow:
     display-name: "%snow%"
     armor-color: "#FFFFFF"
-    description:
-      - "%exclusive-version% <gold>1.17"
+    permission: "%weather"
     variables: [ 'r', 'x', 'z', 'radius=4' ]
     interval: 3
     on-tick:
@@ -532,11 +553,11 @@ effects:
           - spread [effect=snowflake,radius=0.25,particles=24,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
   rocket:
     display-name: "%rocket%"
-    variables: [ 'x', 'y' ]
     armor-color: "rocket"
     description:
       - "%featured-behavior%"
       - "%elytra-boost%"
+    variables: [ 'x', 'y' ]
     interval: 1
     on-tick:
       do:
@@ -546,70 +567,6 @@ effects:
           - var x={RANDOM}-0.5
           - var y={RANDOM}-0.5
           - "conditional ({CTM} - {LBM} > 2000) ? particle [effect=redstone,direction=true,pos={x={x};y={y}},amount=1,origin=head*-2.5,color={name=rocket}] : particle [effect=redstone,size=3,direction=true,pos={x={x};y={y}},amount=0,origin=head*-2.5,color={name=rocket}]"
-  red-tail:
-    display-name: "%red-tail%"
-    permission: "%tail-effects"
-    armor-color: "#a83252"
-    on-tick:
-      do:
-        event: ELYTRA
-        scripts:
-          - particle [effect=block_marker,block={material=fire_coral},origin=feet]
-  yellow-tail:
-    display-name: "%yellow-tail%"
-    permission: "%tail-effects"
-    armor-color: "#d1b536"
-    on-tick:
-      do:
-        event: ELYTRA
-        scripts:
-          - particle [effect=block_marker,block={material=horn_coral},origin=feet]
-  pink-tail:
-    display-name: "%pink-tail%"
-    permission: "%tail-effects"
-    armor-color: "#f59fda"
-    on-tick:
-      do:
-        event: ELYTRA
-        scripts:
-          - particle [effect=block_marker,block={material=brain_coral},origin=feet]
-  purple-tail:
-    display-name: "%purple-tail%"
-    permission: "%tail-effects"
-    armor-color: "#7134eb"
-    on-tick:
-      do:
-        event: ELYTRA
-        scripts:
-          - particle [effect=block_marker,block={material=bubble_coral},origin=feet]
-  blue-tail:
-    display-name: "%blue-tail%"
-    permission: "%tail-effects"
-    armor-color: "#2658ad"
-    on-tick:
-      do:
-        event: ELYTRA
-        scripts:
-          - particle [effect=block_marker,block={material=tube_coral},origin=feet]
-  rainbow-tail:
-    display-name: "%rainbow-tail%"
-    permission: "%tail-effects"
-    armor-color: "rainbow"
-    variables: [ 'step' ]
-    on-tick:
-      do:
-        event: ELYTRA
-        scripts:
-          - "conditional (step==8) ? var step=0 : var step+=1 ~5"
-          - "conditional (step==0) ? particle [effect=block_marker,block={material=red_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==1) ? particle [effect=block_marker,block={material=orange_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==2) ? particle [effect=block_marker,block={material=yellow_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==3) ? particle [effect=block_marker,block={material=green_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==4) ? particle [effect=block_marker,block={material=lime_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==5) ? particle [effect=block_marker,block={material=cyan_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==6) ? particle [effect=block_marker,block={material=blue_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==7) ? particle [effect=block_marker,block={material=magenta_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==8) ? particle [effect=block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
   pulse:
     display-name: "%pulse%"
     armor-color: "gradient-red-gold"
@@ -699,10 +656,7 @@ effects:
           - var x=-2
   sonic:
     display-name: "%sonic%"
-    permission: "%sonic"
     armor-color: "#65f5fc"
-    description:
-      - "%exclusive-version% <gold>1.19"
     interval: 3
     on-tick:
       elytra:
@@ -713,7 +667,71 @@ effects:
         event: PROJECTILE
         scripts:
           - particle [effect=sonic_boom,origin=head]
-  christmas-1:
+  red-tail:
+    display-name: "%red-tail%"
+    permission: "%tail-effects"
+    armor-color: "#a83252"
+    on-tick:
+      do:
+        event: ELYTRA
+        scripts:
+          - particle [effect=block_marker,block={material=fire_coral},origin=feet]
+  yellow-tail:
+    display-name: "%yellow-tail%"
+    permission: "%tail-effects"
+    armor-color: "#d1b536"
+    on-tick:
+      do:
+        event: ELYTRA
+        scripts:
+          - particle [effect=block_marker,block={material=horn_coral},origin=feet]
+  pink-tail:
+    display-name: "%pink-tail%"
+    permission: "%tail-effects"
+    armor-color: "#f59fda"
+    on-tick:
+      do:
+        event: ELYTRA
+        scripts:
+          - particle [effect=block_marker,block={material=brain_coral},origin=feet]
+  purple-tail:
+    display-name: "%purple-tail%"
+    permission: "%tail-effects"
+    armor-color: "#7134eb"
+    on-tick:
+      do:
+        event: ELYTRA
+        scripts:
+          - particle [effect=block_marker,block={material=bubble_coral},origin=feet]
+  blue-tail:
+    display-name: "%blue-tail%"
+    permission: "%tail-effects"
+    armor-color: "#2658ad"
+    on-tick:
+      do:
+        event: ELYTRA
+        scripts:
+          - particle [effect=block_marker,block={material=tube_coral},origin=feet]
+  rainbow-tail:
+    display-name: "%rainbow-tail%"
+    permission: "%tail-effects"
+    armor-color: "rainbow"
+    variables: [ 'step' ]
+    on-tick:
+      do:
+        event: ELYTRA
+        scripts:
+          - "conditional (step==8) ? var step=0 : var step+=1 ~5"
+          - "conditional (step==0) ? particle [effect=block_marker,block={material=red_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==1) ? particle [effect=block_marker,block={material=orange_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==2) ? particle [effect=block_marker,block={material=yellow_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==3) ? particle [effect=block_marker,block={material=green_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==4) ? particle [effect=block_marker,block={material=lime_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==5) ? particle [effect=block_marker,block={material=cyan_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==6) ? particle [effect=block_marker,block={material=blue_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==7) ? particle [effect=block_marker,block={material=magenta_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==8) ? particle [effect=block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
+  christmas-line:
     display-name: "%christmas-line%"
     permission: "%christmas"
     icon:
@@ -737,7 +755,7 @@ effects:
         event: PROJECTILE
         scripts:
           - particle [effect=redstone,size=5,origin=feet,color={name=christmas;speed=1.75;revert=false}]
-  christmas-2:
+  christmas-circle:
     display-name: "%christmas-circle%"
     permission: "%christmas"
     icon:
