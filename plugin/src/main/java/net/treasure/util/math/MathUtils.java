@@ -9,47 +9,97 @@ import java.util.Random;
 
 public class MathUtils {
 
-    private static final int SIN_BITS, SIN_MASK, SIN_COUNT;
-    private static final double radFull, radToIndex;
-    private static final double degFull, degToIndex;
-    private static final double[] sin, cos;
     private static final DecimalFormat DF;
+
+    static public final float PI = 3.1415927f;
+    static public final float PI2 = PI * 2;
+
+    private static final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
+    private static final int SIN_MASK = ~(-1 << SIN_BITS);
+    private static final int SIN_COUNT = SIN_MASK + 1;
+
+    private static final float radFull = PI * 2;
+    private static final float degFull = 360;
+    private static final float radToIndex = SIN_COUNT / radFull;
+    private static final float degToIndex = SIN_COUNT / degFull;
+
+    public static final float degreesToRadians = 0.017453292519943295f;
 
     static {
         DF = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         DF.setMaximumFractionDigits(340);
     }
 
-    static {
-        SIN_BITS = 12;
-        SIN_MASK = ~(-1 << SIN_BITS);
-        SIN_COUNT = SIN_MASK + 1;
+    private static class Sin {
+        static final float[] table = new float[SIN_COUNT];
 
-        radFull = Math.PI * 2.0;
-        degFull = 360.0;
-        radToIndex = SIN_COUNT / radFull;
-        degToIndex = SIN_COUNT / degFull;
-
-        sin = new double[SIN_COUNT];
-        cos = new double[SIN_COUNT];
-
-        for (int i = 0; i < SIN_COUNT; i++) {
-            sin[i] = Math.sin((i + 0.5f) / SIN_COUNT * radFull);
-            cos[i] = Math.cos((i + 0.5f) / SIN_COUNT * radFull);
-        }
-
-        for (int i = 0; i < 360; i += 90) {
-            sin[(int) (i * degToIndex) & SIN_MASK] = Math.sin(i * Math.PI / 180.0);
-            cos[(int) (i * degToIndex) & SIN_MASK] = Math.cos(i * Math.PI / 180.0);
+        static {
+            for (int i = 0; i < SIN_COUNT; i++) {
+                table[i] = (float) Math.sin((i + 0.5f) / SIN_COUNT * radFull);
+            }
+            for (int i = 0; i < 360; i += 90) {
+                table[(int) (i * degToIndex) & SIN_MASK] = (float) Math.sin(i * degreesToRadians);
+            }
         }
     }
 
-    public static double sin(double rad) {
-        return sin[(int) (rad * radToIndex) & SIN_MASK];
+    public static float sin(double radians) {
+        return Sin.table[(int) (radians * radToIndex) & SIN_MASK];
     }
 
-    public static double cos(double rad) {
-        return cos[(int) (rad * radToIndex) & SIN_MASK];
+    public static float cos(double radians) {
+        return Sin.table[(int) ((radians + PI / 2) * radToIndex) & SIN_MASK];
+    }
+
+    private static final int ATAN2_BITS = 7; // Adjust for accuracy.
+    private static final int ATAN2_BITS2 = ATAN2_BITS << 1;
+    private static final int ATAN2_MASK = ~(-1 << ATAN2_BITS2);
+    private static final int ATAN2_COUNT = ATAN2_MASK + 1;
+    private static final int ATAN2_DIM = (int) Math.sqrt(ATAN2_COUNT);
+    private static final float INV_ATAN2_DIM_MINUS_1 = 1.0f / (ATAN2_DIM - 1);
+
+    private static class Atan2 {
+
+        static final float[] table = new float[ATAN2_COUNT];
+
+        static {
+            for (int i = 0; i < ATAN2_DIM; i++) {
+                for (int j = 0; j < ATAN2_DIM; j++) {
+                    float x0 = (float) i / ATAN2_DIM;
+                    float y0 = (float) j / ATAN2_DIM;
+                    table[j * ATAN2_DIM + i] = (float) Math.atan2(y0, x0);
+                }
+            }
+        }
+    }
+
+    public static float atan2(double y, double x) {
+        float add, mul;
+        if (x < 0) {
+            if (y < 0) {
+                y = -y;
+                mul = 1;
+            } else {
+                mul = -1;
+            }
+            x = -x;
+            add = -PI;
+        } else {
+            if (y < 0) {
+                y = -y;
+                mul = -1;
+            } else {
+                mul = 1;
+            }
+            add = 0;
+        }
+        double invDiv = 1 / ((Math.max(x, y)) * INV_ATAN2_DIM_MINUS_1);
+
+        if (invDiv == Float.POSITIVE_INFINITY) return ((float) Math.atan2(y, x) + add) * mul;
+
+        int xi = (int) (x * invDiv);
+        int yi = (int) (y * invDiv);
+        return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
     }
 
     public static double eval(final String str) {
@@ -144,7 +194,7 @@ public class MathUtils {
                         case "asin" -> Math.asin(x);
                         case "acos" -> Math.acos(x);
                         case "abs" -> Math.abs(x);
-                        case "atan" -> Math.atan2(save, x);
+                        case "atan" -> atan2(save, x);
                         default -> throw new RuntimeException("Unknown function: " + func);
                     };
                 } else {
