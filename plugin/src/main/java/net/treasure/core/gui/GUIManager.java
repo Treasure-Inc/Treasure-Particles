@@ -35,11 +35,8 @@ public class GUIManager implements DataHolder {
     int taskId = -5, interval = 2;
     float colorCycleSpeed = 0.85f;
 
-    public GUIManager(TreasurePlugin plugin) {
+    public GUIManager() {
         this.generator = new ConfigurationGenerator("gui.yml");
-
-        Bukkit.getPluginManager().registerEvents(new EffectsGUIListener(), plugin);
-        Bukkit.getPluginManager().registerEvents(new ColorsGUIListener(), plugin);
 
         EffectsGUI.configure(this);
         ColorsGUI.configure(this);

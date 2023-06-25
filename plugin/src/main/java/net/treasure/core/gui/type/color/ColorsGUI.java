@@ -7,6 +7,7 @@ import net.treasure.core.gui.GUIManager;
 import net.treasure.core.gui.config.ElementType;
 import net.treasure.core.gui.config.GUIElements;
 import net.treasure.core.gui.task.GUITask;
+import net.treasure.core.gui.type.color.listener.ColorsGUIListener;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
 import net.treasure.locale.Translations;
@@ -37,7 +38,11 @@ public class ColorsGUI {
 
     public static void configure(GUIManager manager) {
         ColorsGUI.manager = manager;
-        playerManager = TreasurePlugin.getInstance().getPlayerManager();
+
+        var inst = TreasurePlugin.getInstance();
+        playerManager = inst.getPlayerManager();
+
+        Bukkit.getPluginManager().registerEvents(new ColorsGUIListener(), inst);
     }
 
     public static void setItems() {

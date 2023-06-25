@@ -8,6 +8,7 @@ import net.treasure.core.gui.GUIManager;
 import net.treasure.core.gui.config.ElementType;
 import net.treasure.core.gui.config.GUIElements;
 import net.treasure.core.gui.task.GUITask;
+import net.treasure.core.gui.type.effects.listener.EffectsGUIListener;
 import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.EffectManager;
 import net.treasure.effect.handler.HandlerEvent;
@@ -52,6 +53,8 @@ public class EffectsGUI {
         playerManager = inst.getPlayerManager();
         colorManager = inst.getColorManager();
         translations = inst.getTranslations();
+
+        Bukkit.getPluginManager().registerEvents(new EffectsGUIListener(), inst);
     }
 
     public static void setItems() {
