@@ -1,13 +1,13 @@
 # Bu değeri değiştirmeyin!
 version: "1.0.0"
 # Çeviriler
-prefix: "<b><gradient:#EF476F:#FFD166>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
+prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
 enabled: "<green>Açık"
 disabled: "<red>Kapalı"
 # GUI Mesajları
 gui:
-  title: "      <gradient:#EF476F:#FFD166><b>Treasure Particles"
+  title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
   effect-selected: "<green>Seçildi!"
   select-effect: "<#87FF65>❤ Tıkla ve efekti kullan!"
   reset-effect: "<yellow>Efekti Sıfırla"
@@ -111,14 +111,15 @@ effects:
   sculk-soul: "<#1b2975>Sculk Ruhu"
   plane: "<#b58500>Uçak"
   heart: "<#f54242>Kalp"
+  love-you: "<#f54242>Seni Seviyorum"
   sonic: "<#65f5fc>Sonik"
   snow: "<#E9F1F7>Kar"
   christmas-line: "<#1B512D>Yılbaşı Özel / Çizgi"
   christmas-circle: "<#6F1D1B>Yılbaşı Özel / Dairesel"
+  christmas-spiral: "<#e1fce8>Yılbaşı Özel / Spiral"
   complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Tamamlayıcı"
 # Efekt Açıklamaları
 descriptions:
-  exclusive-version: "<dark_gray>Gereken Sürüm"
   seasonal-effect: "<dark_gray>Dönemsel Efekt"
   featured-behavior: "<dark_gray>Has Özellik"
   elytra-boost: "<#ffbc33>Havai fişek ile elitranı hızlandırdığında efekt değişir."

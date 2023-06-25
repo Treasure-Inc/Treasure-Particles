@@ -1,13 +1,13 @@
 # Do not change!
-version: "1.0.0"
+version: "1.0.1"
 # Translations
-prefix: "<b><gradient:#EF476F:#FFD166>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
+prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
 enabled: "<green>Enabled"
 disabled: "<red>Disabled"
 # GUI
 gui:
-  title: "      <gradient:#EF476F:#FFD166><b>Treasure Particles"
+  title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
   effect-selected: "<green>Selected!"
   select-effect: "<#87FF65>❤ Click to use this effect!"
   reset-effect: "<yellow>Reset Effect"
@@ -111,14 +111,15 @@ effects:
   sculk-soul: "<#1b2975>Sculk Soul"
   plane: "<#b58500>Plane"
   heart: "<#f54242>Heart"
+  love-you: "<#f54242>Love You"
   sonic: "<#65f5fc>Sonic"
   snow: "<#E9F1F7>Snow"
   christmas-line: "<#1B512D>Christmas / Line"
   christmas-circle: "<#6F1D1B>Christmas / Circle"
+  christmas-spiral: "<#e1fce8>Christmas / Spiral"
   complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Complementary"
 # Effects Descriptions
 descriptions:
-  exclusive-version: "<dark_gray>Required Version"
   seasonal-effect: "<dark_gray>Seasonal Effect"
   featured-behavior: "<dark_gray>Featured Behavior"
   christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Shine with New Year's colors."
