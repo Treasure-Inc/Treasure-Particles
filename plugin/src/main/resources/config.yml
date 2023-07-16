@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.0.1"
+version: "1.1.0"
 
 # Translations locale (default=EN)
 locale: EN
@@ -41,8 +41,21 @@ database:
 
 permissions:
   # General
-  base: "trparticles.base" # Base command permission
+  base: "trparticles.base" # Base command permission (GUI)
+  mixer: "trparticles.mixer" # Effect mix permission
   admin: "trparticles.admin" # Admin commands permission
+
+  # Mixer Limits
+  # ------------
+  # If this option is enabled, players can only create certain amount of effect mix
+  # Permission: trparticles.mix_limit.<MAX_MIX>
+  # Example: trparticles.mix_limit.9
+  mix-limit-enabled: false
+  # ------------
+  # If this option is enabled, players can only select certain amount of effect for effect mix
+  # Permission: trparticles.mix_limit.<MAX_EFFECTS>
+  # Example: trparticles.mix_effect_limit.2
+  mix-effect-limit-enabled: false
 
   # Effects Visibility
   # You can show TrParticles effects for the players who have permission, just set the "effects-visibility-permission" to true
@@ -61,3 +74,4 @@ permissions:
   tail-effects: "trparticles.effects.tail" # Permission for tail effects
   text-effects: "trparticles.effects.text" # Permission for text effects
   christmas: "trparticles.effects.christmas" # Permission for Christmas effects
+  death-effects: "trparticles.effects.death-effects" # Permission for death effects

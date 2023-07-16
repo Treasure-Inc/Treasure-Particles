@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.0.1"
+version: "1.1.0"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -7,23 +7,58 @@ enabled: "<green>Enabled"
 disabled: "<red>Disabled"
 # GUI
 gui:
-  title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
-  effect-selected: "<green>Selected!"
-  select-effect: "<#87FF65>❤ Click to use this effect!"
-  reset-effect: "<yellow>Reset Effect"
-  reset-effect-current: "<gray>Current Effect: <gold>{0}"
+  # Common Buttons
   next-page: "<green>> Next Page"
   previous-page: "<green>< Previous Page"
-  random-effect: "<#87FF65>❤ Select Random Effect"
   close: "<red>Close"
   back: "<red>Back"
   filter: "<gold>Supported Events"
-  color-selection-available: "<gray>[Right-Click] You can change the colors of this effect."
+  effects-gui:
+    title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
+    effect-selected: "<green>Selected!"
+    select-effect: "<#87FF65>❤ Click to use this effect!"
+    random-effect: "<#87FF65>❤ Select Random Effect"
+    reset-effect: "<yellow>Reset Effect"
+    current-effect: "<gray>Current Effect: <gold>{0}"
+    color-selection-available: "<gray>[Right-Click] You can change the colors of this effect."
+    event-type: "<dark_gray>Event Type: {0}"
+    event-types: "<dark_gray>Event Types: {0}"
+    mixer: "<dark_green>Effect Mixer"
+    open-player-mix-list: "<green>Click to open your effect mix list!"
+    open-mixer: "<gray>[Right-Click] Open effect mixer GUI."
+    remove-mix: "<red>[Middle-Click] Remove mix."
+    mix-removed: "<prefix> <green>Mix removed." # Chat message
   colors-gui:
     title: "Pick a color scheme"
     color-scheme-selected: "<green>Selected!"
     select-color-scheme: "<#87FF65>❤ Click to use the effect with this color scheme!"
     save-color-scheme: "<gray><i>Right click to save this color scheme to preferences."
+    random-color: "<#87FF65>❤ Select Random Color"
+  mixer-gui:
+    title: "Effect Mixer"
+    all-selected: "<green>All handlers selected!"
+    select-all: "<#87FF65>❤ Click to select this effect!"
+    selected-all: "<prefix> <green>Selected:<reset> {0}"
+    unselect-all: "<red>[Middle-Click] Unselect all handlers of this effect."
+    unselected-all: "<prefix> <yellow>Unselected:<reset> {0}" # Chat message
+    select-handlers: "<gray>[Right-Click] You can select handlers individually."
+    has-dynamic-color: "<gray>• This effect has dynamic colors."
+    prefer-color-group: "<gray>  <yellow>Shift-right-click</yellow> to use this effect's color group."
+    preferred-color-group: "<green>Selected this effect's color group."
+    current-selections: "<gray>Current Selections:"
+    reset-selections: "<red>Reset Selections"
+    preferred-color-group-needed: "<red>You must select an effect's color group to create your mix."
+    confirm: "<green>Confirm"
+    enter-name: "Enter a name for mix"
+    name-already-used: "<prefix> <red>You already created an effect mix with this name, please try different name." # Chat message
+    created: "<prefix> <green>Mix created!"
+    failed: "<prefix> <red>Mix creation failed."
+  handlers-gui:
+    select: "<#87FF65>❤ Click to select this handler!"
+    selected: "<green>Selected!"
+    unselect: "<red>Click to unselect this handler."
+    event-locked: "<yellow>You can no longer select another handler with this event type."
+    event-type: "<dark_gray>Event: {0}"
 # Commands
 commands:
   usage: "<prefix> <yellow>Usage:<gray> {0}"
@@ -33,11 +68,11 @@ commands:
   effect-no-permission: "<prefix> <red>You don't have enough permission to use this effect."
   effect-no-permission-other: "<prefix> <red>That player doesn't have enough permission to use that effect."
   effect-unknown: "<prefix> <red>Couldn't find any effect with name {0}."
-  effect-toggle: "<prefix> <gray>Elytra Effects: {0}"
+  effect-toggle: "<prefix> <gray>Effects: {0}"
   effect-selected: "<prefix> <green>Selected:<reset> {0}"
   effect-selected-other: "<prefix> <green>Selected ({0}):<reset> {1}"
-  effect-reset: "<prefix> <gray>Elytra Effect: <red>OFF"
-  effect-reset-other: "<prefix> <gray>Elytra Effect ({0}): <red>OFF"
+  effect-reset: "<prefix> <gray>Effects: <red>OFF"
+  effect-reset-other: "<prefix> <gray>Effects ({0}): <red>OFF"
   cannot-use-any-effect: "<prefix> <red>You cannot use any effect."
   cannot-use-any-effect-other: "<prefix> <red>That player cannot use any effect."
   unknown-color-scheme: "<prefix> <red>Unknown color scheme."
@@ -58,6 +93,7 @@ events:
   elytra: "Elytra"
   moving: "Moving"
   standing: "Standing"
+  sneaking: "Sneaking"
   projectile: "Shooting"
   mob-kill: "Killing Mob"
   mob-damage: "Damaging Mob"
@@ -120,8 +156,8 @@ effects:
   complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Complementary"
 # Effects Descriptions
 descriptions:
-  seasonal-effect: "<dark_gray>Seasonal Effect"
-  featured-behavior: "<dark_gray>Featured Behavior"
+  seasonal-effect: "<gray>Seasonal Effect"
+  featured-behavior: "<gray>Featured Behavior"
   christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Shine with New Year's colors."
   elytra-boost: "<#ffbc33>Effect changes when boosting elytra with fireworks."
 # Color Names

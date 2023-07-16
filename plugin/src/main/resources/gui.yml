@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.0.0"
+version: "1.1.0"
 # GUI options
 animation: # GUI animations
   enabled: true
@@ -9,18 +9,26 @@ sounds: # GUI sounds (SOUND VOLUME PITCH) (Leave it blank if you don't want it t
   next-page: "minecraft:item.book.page_turn 1 1"
   previous-page: "minecraft:item.book.page_turn 1 1"
   reset: ""
-  filter: "minecraft:ui.button.click 1 1.5"
-  select-effect: "minecraft:block.note_block.pling 1 2"
-  random-effect: "minecraft:block.note_block.pling 1 2"
-  select-color: "minecraft:block.note_block.pling 1 2"
-  random-color: "minecraft:block.note_block.pling 1 2"
+  filter: "minecraft:ui.button.click 0.1 1.5"
+  effects-gui:
+    select-effect: "minecraft:block.note_block.pling 1 2"
+    random-effect: "minecraft:block.note_block.pling 1 2"
+  colors-gui:
+    select-color: "minecraft:block.note_block.pling 1 2"
+    random-color: "minecraft:block.note_block.pling 1 2"
+    back: "minecraft:item.book.page_turn 1 1"
+  mixer-gui:
+    select-effect: "minecraft:ui.button.click 0.1 1.5"
+    confirm: "minecraft:block.note_block.pling 1 2"
+  handlers-gui:
+    select-handler: "minecraft:ui.button.click 0.1 1.5"
+    unselect-handler: "minecraft:ui.button.click 0.1 1.5"
 current-style: "default-gui"
 styles:
   default-gui:
-    size: 54
     effects:
       layout:
-        - "BBBBBBBBB"
+        - "BBBBMBBBB"
         - "BEEEEEEEB"
         - "BEEEEEEEB"
         - "BEEEEEEEB"
@@ -59,6 +67,10 @@ styles:
           key: 'F'
           item:
             material: HOPPER
+        mixer:
+          key: 'M'
+          item:
+            material: END_CRYSTAL
     colors:
       layout:
         - "BBBBBBBBB"
@@ -92,8 +104,81 @@ styles:
           key: "b"
           item:
             material: STRUCTURE_VOID
+    mixer:
+      layout:
+        - "BBBBBBBBB"
+        - "BEEEEEEEB"
+        - "BEEEEEEEB"
+        - "BEEEEEEEB"
+        - "BEEEEEEEB"
+        - "PBBRFCBBN"
+      elements:
+        borders:
+          key: 'B'
+          item:
+            material: BLACK_STAINED_GLASS_PANE
+        default-icon:
+          key: 'E'
+          item:
+            material: LEATHER_BOOTS
+        next-page:
+          key: 'N'
+          item:
+            material: ENDER_PEARL
+        previous-page:
+          key: 'P'
+          item:
+            material: ENDER_EYE
+        reset:
+          key: 'R'
+          item:
+            material: RED_STAINED_GLASS_PANE
+        close:
+          key: 'c'
+          item:
+            material: BARRIER
+        filter:
+          key: 'F'
+          item:
+            material: HOPPER
+        confirm:
+          key: 'C'
+          item:
+            material: LIME_STAINED_GLASS_PANE
+    handlers:
+      elements:
+        elytra:
+          item:
+            material: ELYTRA
+        moving:
+          item:
+            material: LEATHER_BOOTS
+        standing:
+          item:
+            material: SNOWBALL
+        sneaking:
+          item:
+            material: LEATHER_LEGGINGS
+        projectile:
+          item:
+            material: CROSSBOW
+        mob-kill:
+          item:
+            material: CAVE_SPIDER_SPAWN_eGG
+        mob-damage:
+          item:
+            material: SPIDER_SPAWN_eGG
+        player-kill:
+          item:
+            material: WOODEN_SWORD
+        player-damage:
+          item:
+            material: WOODEN_AXE
+        take-damage:
+          item:
+            material: SHIELD
+  # TODO bunu da yap
   elytra-shaped-gui:
-    size: 54
     effects:
       layout:
         - "BBEEEEEBB"

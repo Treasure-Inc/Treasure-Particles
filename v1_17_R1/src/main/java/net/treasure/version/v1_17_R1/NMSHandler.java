@@ -3,8 +3,9 @@ package net.treasure.version.v1_17_R1;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketListenerPlayOut;
 import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
-import net.treasure.common.particles.ParticleBuilder;
-import net.treasure.common.particles.ParticleEffect;
+import net.treasure.util.nms.AbstractNMSHandler;
+import net.treasure.util.nms.particles.ParticleBuilder;
+import net.treasure.util.nms.particles.ParticleEffect;
 import net.treasure.version.v1_17_R1.data.color.NMSDustTransitionData;
 import net.treasure.version.v1_17_R1.data.NMSGenericData;
 import net.treasure.version.v1_17_R1.data.color.NMSDustData;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class NMSHandler extends net.treasure.common.NMSHandler {
+public class NMSHandler extends AbstractNMSHandler {
 
     @Override
     public void sendParticle(ParticleBuilder builder) {

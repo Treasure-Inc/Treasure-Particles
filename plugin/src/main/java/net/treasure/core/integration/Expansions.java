@@ -1,19 +1,18 @@
 package net.treasure.core.integration;
 
-import lombok.AllArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.treasure.TreasureParticles;
+import net.treasure.constants.Keys;
 import net.treasure.locale.Translations;
-import net.treasure.common.Keys;
-import net.treasure.core.player.PlayerManager;
+import net.treasure.player.PlayerManager;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@AllArgsConstructor
 public class Expansions extends PlaceholderExpansion {
 
-    PlayerManager playerManager;
+    final PlayerManager playerManager = TreasureParticles.getPlayerManager();
 
     @Override
     @Nullable

@@ -1,7 +1,7 @@
 package net.treasure.version.v1_19_R2.data.color;
 
 import net.minecraft.core.particles.ParticleParamRedstone;
-import net.treasure.common.particles.data.color.ParticleDustData;
+import net.treasure.util.nms.particles.data.color.ParticleDustData;
 import org.bukkit.Color;
 import org.joml.Vector3f;
 

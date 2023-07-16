@@ -1,7 +1,7 @@
 package net.treasure.version.v1_20_R1.data.color;
 
 import net.minecraft.core.particles.DustColorTransitionOptions;
-import net.treasure.common.particles.data.color.ParticleDustTransitionData;
+import net.treasure.util.nms.particles.data.color.ParticleDustTransitionData;
 import org.bukkit.Color;
 import org.joml.Vector3f;
 

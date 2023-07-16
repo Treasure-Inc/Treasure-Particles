@@ -1,6 +1,6 @@
 package net.treasure.version.v1_16_R2.data.color;
 
-import net.treasure.common.particles.data.color.ParticleDustTransitionData;
+import net.treasure.util.nms.particles.data.color.ParticleDustTransitionData;
 import org.bukkit.Color;
 
 public class NMSDustTransitionData extends ParticleDustTransitionData {

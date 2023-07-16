@@ -1,7 +1,7 @@
 package net.treasure.version.v1_16_R3.data.color;
 
 import net.minecraft.server.v1_16_R3.ParticleParamRedstone;
-import net.treasure.common.particles.data.color.ParticleDustData;
+import net.treasure.util.nms.particles.data.color.ParticleDustData;
 import org.bukkit.Color;
 
 public class NMSDustData extends ParticleDustData {

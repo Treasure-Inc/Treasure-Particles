@@ -1,11 +1,11 @@
 # Do not change!
-version: "1.0.1"
+version: "1.1.0"
 effects:
   rainbow-circle:
     display-name: "%rainbow-circle%"
     armor-color: "rainbow"
     permission: "%rainbow-effects"
-    variables: [ 'radius=1', 'particles=32', 'radiusMoving=0.25', 'particlesMoving=8', 'y=0' ]
+    variables: [ 'y=0' ]
     interval: 1
     on-tick:
       elytra:
@@ -15,14 +15,18 @@ effects:
       moving:
         event: MOVING
         scripts:
-          - circle [effect=redstone,tick-data=true,particles={particlesMoving},radius={radiusMoving},amount=10,pos={y=-0.5},origin=head*-1.25,color={name=rainbow;speed=0.075}]
+          - circle [effect=redstone,tick-data=true,particles=8,radius=0.25,amount=10,pos={y=-0.5},origin=head*-1.25,color={name=rainbow;speed=0.075}]
       reset-y:
         event: STANDING
         max-executed: 1
+        mixer-options:
+          private: true
         scripts:
           - var y=0
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'reset-y' ]
         scripts:
           - circle [effect=redstone,directional=false,vertical=false,origin=feet,pos={y={y}},color={name=rainbow;speed=0.75}]
           - var-c [variable=y,max=1.75,min=0,step=0.1]
@@ -30,24 +34,22 @@ effects:
     display-name: "%rainbow-circle-transition%"
     armor-color: "rainbow"
     permission: "%rainbow-effects"
-    variables: [ 'radius=1', 'particles=32' ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},amount=10,origin=head*-1.25,color={name=rainbow;duo=#FFFFFF;speed=0.75}]
+          - circle [effect=dust_color_transition,tick-data=true,amount=10,origin=head*-1.25,color={name=rainbow;duo=#FFFFFF;speed=0.75}]
   rainbow-circle-acceleration:
     display-name: "%rainbow-circle-acceleration%"
     armor-color: "rainbow"
     permission: "%rainbow-effects"
-    variables: [ 'radius=1', 'particles=32' ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},size={val={velocityLength};min=0.8;max=3},amount=10,origin=head*-1.25,color={name=rainbow;duo=#FFFFFF;speed=0.75}]
+          - circle [effect=dust_color_transition,tick-data=true,size={val={velocityLength};min=0.8;max=3},amount=10,origin=head*-1.25,color={name=rainbow;duo=#FFFFFF;speed=0.75}]
   rainbow-circle-radius:
     display-name: "%rainbow-circle-radius%"
     armor-color: "rainbow"
@@ -114,7 +116,7 @@ effects:
     enable-caching: true
     interval: 1
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         times: 16
         scripts:
@@ -130,24 +132,32 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={name=rainbow;revert=true;speed=0.5}]
       moving:
         event: MOVING
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=2,pos={x={x};z={z}},origin=head,color={name=rainbow;revert=true;speed=0.5}]
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=2,pos={x={x};z={z}},origin=head,color={name=rainbow;revert=true;speed=0.5}]
       step:
         event: NONE
+        mixer-options:
+          private: true
         scripts:
           - var step=({step} + 1+{isMoving}) % 120
   spiral:
@@ -157,6 +167,8 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
         times: 12
         scripts:
           - var stepY+=10
@@ -166,6 +178,8 @@ effects:
           - particle [effect=redstone,amount=5,pos={x={x};z={y};y={z}},direction=true,origin=head,color={name=gradient-spiral;revert=true;speed=0.05}]
       step:
         event: NONE
+        mixer-options:
+          private: true
         scripts:
           - var stepY=-60
           - var stepX+=1
@@ -202,6 +216,8 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'conditions' ]
         times: 8
         scripts:
           - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
@@ -213,14 +229,18 @@ effects:
           - "particle [effect=redstone,pos={x={y};y={x};z={z}},amount=10,origin=head,color={name=rainbow;speed=0.025;revert=true}]"
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'conditions' ]
         times: 8
         scripts:
           - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
           - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "particle [effect=redstone,pos={y={y};x={x};z={z}},amount=1,origin=head,color={name=rainbow;speed=0.025;revert=true}]"
-      post:
+      conditions:
         event: NONE
+        mixer-options:
+          private: true
         scripts:
           - "conditional (stepX>=80) ? var stepX=0 : var stepX+=1"
           - "conditional (reverse==1) ? preset helix-reverse : none"
@@ -233,6 +253,8 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'conditions' ]
         times: 8
         scripts:
           - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
@@ -244,14 +266,18 @@ effects:
           - "particle [effect=end_rod,pos={x={y};y={x};z={z}},amount=0,origin=head]"
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'conditions' ]
         times: 8
         scripts:
           - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
           - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "particle [effect=end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
-      post:
+      conditions:
         event: NONE
+        mixer-options:
+          private: true
         scripts:
           - "conditional (stepX>=80) ? var stepX=0 : var stepX+=1"
           - "conditional (reverse==1) ? preset helix-reverse : none"
@@ -295,18 +321,24 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={dynamic=true;revert=true;speed=0.25}]
       moving:
         event: MOVING
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=2,pos={x={x};z={z}},origin=head,color={dynamic=true;revert=true;speed=0.25}]
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
@@ -314,6 +346,8 @@ effects:
           - particle [effect=redstone,size=2,pos={x={x};z={z};y={y}},origin=head,color={dynamic=true;revert=true;speed=0.25}]
       step:
         event: NONE
+        mixer-options:
+          private: true
         scripts:
           - var step=({step} + 1 + {isMoving}) % 120
   parkour-easy:
@@ -377,6 +411,7 @@ effects:
           - particle [effect=minecraft:block,block={material=redstone_block},origin=feet,pos={y=0.75},offset={x={RANDOM};z={RANDOM}},amount=7] ~3
   tear:
     display-name: "%tear%"
+    permission: "%death-effects"
     armor-color: "tear"
     variables: [ 't=0', 'y=0', 'random=0' ]
     interval: 1
@@ -385,6 +420,8 @@ effects:
         event: MOB_KILL
         reset-event: false
         max-executed: 1
+        mixer-options:
+          private: true
         scripts:
           - var y=0
           - var t=0
@@ -392,6 +429,8 @@ effects:
       mob-kill:
         event: MOB_KILL
         max-executed: 21
+        mixer-options:
+          depend: [ 'reset-variables' ]
         scripts:
           - var t+=1
           - "conditional (t<11) ? return : none"
@@ -401,6 +440,7 @@ effects:
           - preset spore-blossom
   cherry-death:
     display-name: "%cherry-death%"
+    permission: "%death-effects"
     armor-color: "cherry-death"
     interval: 2
     on-tick:
@@ -411,6 +451,7 @@ effects:
           - spread [effect=cherry_leaves,spread=0.25,particles=8,radius=0.25,vertical=false,origin=head,pos={y=0.75}]
   dust-death:
     display-name: "%dust-death%"
+    permission: "%death-effects"
     armor-color: "dust-death"
     interval: 2
     on-tick:
@@ -425,7 +466,7 @@ effects:
     variables: [ 'r', 'x1', 'y1', 'z1', 'x2', 'y2', 'z2' ]
     interval: 1
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - var r+={PI}/60
@@ -446,6 +487,8 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
         times: 3
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
@@ -453,6 +496,8 @@ effects:
           - particle [effect=redstone,amount=10,direction=true,pos={x={x};y={z}},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'step' ]
         times: 3
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
@@ -460,6 +505,8 @@ effects:
           - particle [effect=redstone,amount=10,pos={x={x};z={z};y=-0.25},origin=head,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
       step:
         event: NONE
+        mixer-options:
+          private: true
         scripts:
           - var step=({step} + 1) % 120
   complementary:
@@ -491,6 +538,8 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
         times: 3
         scripts:
           - var x=cos({step} + ({PI} * 2 * ({i} / 3)))
@@ -501,6 +550,8 @@ effects:
           - particle [effect=totem,direction=true,amount=0,offset={x={xAng};y={zAng}},speed=0.375,origin=feet]
       step:
         event: ELYTRA
+        mixer-options:
+          private: true
         scripts:
           - var step=({step} + {PI} / 20) % 40
   beam:
@@ -508,7 +559,7 @@ effects:
     armor-color: "#ffd86b"
     interval: 1
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - circle [effect=electric_spark,particles=16,origin=feet,amount=0]
@@ -560,7 +611,7 @@ effects:
     variables: [ 'x', 'y' ]
     interval: 1
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         times: 24
         scripts:
@@ -600,7 +651,7 @@ effects:
     armor-color: "gradient-dark-aqua-black"
     interval: 15
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - spread [effect=nautilus,spread=0.25,amount=0,speed=1,origin=feet]
@@ -609,7 +660,7 @@ effects:
     armor-color: "gradient-aqua-brown"
     interval: 2
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - spread [effect=soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
@@ -618,7 +669,7 @@ effects:
     armor-color: "dark-3"
     interval: 2
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - spread [effect=sculk_soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
@@ -626,7 +677,7 @@ effects:
     display-name: "%plane%"
     armor-color: "#b58500"
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - particle [effect=wax_on,direction=true,pos={x=1},origin=head]
@@ -634,13 +685,14 @@ effects:
           - particle [effect=wax_off,direction=true,origin=head]
   heart:
     display-name: "%heart%"
-    permission: "%heart"
     armor-color: "heart"
     interval: 15
     variables: [ 'x=-2', 'y1', 'y2' ]
     on-tick:
       effect:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'check' ]
         times: 19
         scripts:
           - var x+=0.2
@@ -650,6 +702,8 @@ effects:
           - particle [effect=heart,direction=true,pos={x={x};y={y2}},origin=feet]
       check:
         event: ELYTRA
+        mixer-options:
+          private: true
         scripts:
           - particle [effect=heart,direction=true,origin=feet]
           - particle [effect=heart,direction=true,origin=feet,pos={y=-2.25}]
@@ -682,7 +736,7 @@ effects:
     permission: "%tail-effects"
     armor-color: "#a83252"
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - particle [effect=block_marker,block={material=fire_coral},origin=feet]
@@ -691,7 +745,7 @@ effects:
     permission: "%tail-effects"
     armor-color: "#d1b536"
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - particle [effect=block_marker,block={material=horn_coral},origin=feet]
@@ -700,7 +754,7 @@ effects:
     permission: "%tail-effects"
     armor-color: "#f59fda"
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - particle [effect=block_marker,block={material=brain_coral},origin=feet]
@@ -709,7 +763,7 @@ effects:
     permission: "%tail-effects"
     armor-color: "#7134eb"
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - particle [effect=block_marker,block={material=bubble_coral},origin=feet]
@@ -718,7 +772,7 @@ effects:
     permission: "%tail-effects"
     armor-color: "#2658ad"
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - particle [effect=block_marker,block={material=tube_coral},origin=feet]
@@ -728,7 +782,7 @@ effects:
     armor-color: "rainbow"
     variables: [ 'step' ]
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - "conditional (step==8) ? var step=0 : var step+=1 ~5"
@@ -775,7 +829,7 @@ effects:
       - "%christmas%"
     interval: 1
     on-tick:
-      do:
+      elytra:
         event: ELYTRA
         scripts:
           - circle [effect=redstone,tick=true,size=3,amount=0,origin=head*-1.25,color={name=christmas;speed=1.75;revert=true}]
@@ -784,22 +838,31 @@ effects:
     permission: "%christmas"
     icon:
       material: "WHITE_CANDLE"
+    description:
+      - "%seasonal-effect%"
+      - "%christmas%"
     variables: [ 'x', 'y', 'z', 'step' ]
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={name=christmas;revert=true;speed=1.75}]
       moving:
         event: MOVING
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - particle [effect=redstone,size=2,pos={x={x};z={z}},origin=head,color={name=christmas;revert=true;speed=1.75}]
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'step' ]
         scripts:
           - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
           - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
@@ -807,5 +870,7 @@ effects:
           - particle [effect=redstone,size=2,pos={x={x};z={z};y={y}},origin=head,color={name=christmas;revert=true;speed=1.75}]
       step:
         event: NONE
+        mixer-options:
+          private: true
         scripts:
           - var step=({step} + 1 + {isMoving}) % 120

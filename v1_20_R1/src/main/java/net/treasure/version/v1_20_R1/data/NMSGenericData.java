@@ -1,7 +1,7 @@
 package net.treasure.version.v1_20_R1.data;
 
-import net.treasure.common.particles.ParticleEffect;
-import net.treasure.common.particles.data.ParticleGenericData;
+import net.treasure.util.nms.particles.ParticleEffect;
+import net.treasure.util.nms.particles.data.ParticleGenericData;
 import org.bukkit.craftbukkit.v1_20_R1.CraftParticle;
 
 public class NMSGenericData extends ParticleGenericData {

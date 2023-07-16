@@ -2,7 +2,7 @@ package net.treasure.version.v1_17_R1.data.color;
 
 import com.mojang.math.Vector3fa;
 import net.minecraft.core.particles.DustColorTransitionOptions;
-import net.treasure.common.particles.data.color.ParticleDustTransitionData;
+import net.treasure.util.nms.particles.data.color.ParticleDustTransitionData;
 import org.bukkit.Color;
 
 public class NMSDustTransitionData extends ParticleDustTransitionData {

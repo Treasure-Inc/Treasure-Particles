@@ -12,16 +12,18 @@ import co.aikar.commands.annotation.Private;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
-import net.treasure.common.Permissions;
+import net.treasure.TreasureParticles;
 import net.treasure.core.TreasurePlugin;
-import net.treasure.core.gui.task.GUITask;
-import net.treasure.core.gui.type.admin.AdminGUI;
-import net.treasure.core.gui.type.effects.EffectsGUI;
-import net.treasure.core.player.PlayerManager;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
+import net.treasure.gui.task.GUITask;
+import net.treasure.gui.type.admin.AdminGUI;
+import net.treasure.gui.type.effects.EffectsGUI;
+import net.treasure.gui.type.mixer.MixerGUI;
 import net.treasure.locale.Locale;
 import net.treasure.locale.Translations;
+import net.treasure.permission.Permissions;
+import net.treasure.player.PlayerManager;
 import net.treasure.util.message.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -39,8 +41,8 @@ public class MainCommand extends BaseCommand {
 
     public MainCommand(TreasurePlugin plugin) {
         this.plugin = plugin;
-        this.effectManager = plugin.getEffectManager();
-        this.playerManager = plugin.getPlayerManager();
+        this.effectManager = TreasureParticles.getEffectManager();
+        this.playerManager = TreasureParticles.getPlayerManager();
     }
 
     @Default
@@ -61,6 +63,17 @@ public class MainCommand extends BaseCommand {
         MessageUtils.sendParsed(player, Translations.EFFECT_TOGGLE, data.isEffectsEnabled() ? Translations.ENABLED : Translations.DISABLED);
     }
 
+    @Subcommand("mixer")
+    @CommandPermission(Permissions.COMMAND_MIXER)
+    public void mixer(Player player) {
+        var data = playerManager.getEffectData(player);
+        if (!data.canCreateAnotherMix()) {
+            MessageUtils.sendParsed(player, Translations.COMMAND_NO_PERMISSION);
+            return;
+        }
+        MixerGUI.open(player);
+    }
+
     @Subcommand("select|sel")
     @CommandCompletion("@effects *")
     @CommandPermission(Permissions.COMMAND_BASE)
@@ -78,7 +91,7 @@ public class MainCommand extends BaseCommand {
         }
 
         var player = self ? (Player) sender : select.player;
-        if ((self || EffectManager.ALWAYS_CHECK_PERMISSION) && !effect.canUse(player)) {
+        if ((self || Permissions.ALWAYS_CHECK_PERMISSION) && !effect.canUse(player)) {
             MessageUtils.sendParsed(sender, self ? Translations.EFFECT_NO_PERMISSION : Translations.EFFECT_NO_PERMISSION_OTHER);
             return;
         }
@@ -147,7 +160,7 @@ public class MainCommand extends BaseCommand {
             return;
         }
 
-        var colorScheme = plugin.getColorManager().getColorScheme(color);
+        var colorScheme = TreasureParticles.getColorManager().getColorScheme(color);
         if (colorScheme == null) {
             MessageUtils.sendParsed(player, Translations.UNKNOWN_COLOR_SCHEME);
             return;
@@ -173,7 +186,7 @@ public class MainCommand extends BaseCommand {
     @CommandPermission(Permissions.COMMAND_ADMIN)
     public void reload(CommandSender sender) {
         MessageUtils.sendParsed(sender, Translations.RELOADING);
-        plugin.reload();
+        TreasureParticles.reload();
         MessageUtils.sendParsed(sender, Translations.RELOADED);
     }
 
@@ -194,7 +207,7 @@ public class MainCommand extends BaseCommand {
         plugin.getConfig().set("locale", locale);
         plugin.saveConfig();
         Bukkit.getScheduler().runTask(plugin, () -> {
-            plugin.reload();
+            TreasureParticles.reload();
             if (oldLocale.equals(Translations.LOCALE)) {
                 MessageUtils.sendParsed(sender, "<prefix> <red>Couldn't set locale to " + locale);
                 return;
@@ -218,8 +231,8 @@ public class MainCommand extends BaseCommand {
         MessageUtils.sendParsed(sender, "<prefix> <gray>Effects Size: <red>" + effectManager.getEffects().size());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Menu Viewers Size: <yellow>" + GUITask.getPlayers().size());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Players Using Effect: <yellow>" + playerManager.getData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
-        MessageUtils.sendParsed(sender, "<prefix> <gray>Color Cycle Speed: <gold>" + plugin.getGuiManager().getColorCycleSpeed());
-        MessageUtils.sendParsed(sender, "<prefix> <gray>Animation Interval: <gold>" + plugin.getGuiManager().getInterval());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Color Cycle Speed: <gold>" + TreasureParticles.getGUIManager().getColorCycleSpeed());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Animation Interval: <gold>" + TreasureParticles.getGUIManager().getInterval());
     }
 
     @Private

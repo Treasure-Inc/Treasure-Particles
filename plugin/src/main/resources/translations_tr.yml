@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.0.1"
+version: "1.1.0"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -7,23 +7,58 @@ enabled: "<green>Açık"
 disabled: "<red>Kapalı"
 # GUI Mesajları
 gui:
-  title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
-  effect-selected: "<green>Seçildi!"
-  select-effect: "<#87FF65>❤ Tıkla ve efekti kullan!"
-  reset-effect: "<yellow>Efekti Sıfırla"
-  reset-effect-current: "<gray>Seçili Efekt: <gold>{0}"
+  # Genel Butonlar
   next-page: "<green>> Sonraki Sayfa"
   previous-page: "<green>< Önceki Sayfa"
-  random-effect: "<#87FF65>❤ Rastgele Efekt Seç"
   close: "<red>Kapat"
   back: "<red>Geri Dön"
   event-filter: "<gold>Çalışma Türü"
-  color-selection-available: "<gray>[Sağ-Tıkla] Bu efektin renklerini değiştirebilirsiniz."
+  effects-gui:
+    title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
+    effect-selected: "<green>Seçildi!"
+    select-effect: "<#87FF65>❤ Tıkla ve efekti kullan!"
+    random-effect: "<#87FF65>❤ Rastgele Efekt Seç"
+    reset-effect: "<yellow>Efekti Sıfırla"
+    current-effect: "<gray>Seçili Efekt: <gold>{0}"
+    color-selection-available: "<gray>[Sağ-Tıkla] Bu efektin renklerini değiştirebilirsin."
+    event-type: "<dark_gray>Çalışma türü: {0}"
+    event-types: "<dark_gray>Çalışma türü: {0}"
+    mixer: "<dark_green>Efekt Mix'leyici"
+    open-player-mix-list: "<green>Efekt mix listeni açmak için tıkla!"
+    open-mixer: "<gray>[Sağ-Tıkla] Mix'leyiciyi aç."
+    remove-mix: "<red>[Orta-Tıkla] Mix'i sil."
+    mix-removed: "<prefix> <green>Mix silindi." # Sohbet mesajı
   colors-gui:
     title: "Bir renk şeması seçiniz"
     color-scheme-selected: "<green>Seçildi!"
     select-color-scheme: "<#87FF65>❤ Tıkla ve efektle bu renk şemasını kullan!"
     save-color-scheme: "<gray><i>Sağ tıklayarak efekt için bu renk şemasını tercihine ekleyebilirsin."
+    random-color: "<#87FF65>❤ Rastgele Renk Seç"
+  mixer-gui:
+    title: "Efekt Mix'leyici"
+    all-selected: "<green>Tüm işleyiciler seçili!"
+    select-all: "<#87FF65>❤ Tıkla ve efekti seç!"
+    selected-all: "<prefix> <green>Efekt seçildi:<reset> {0}"
+    unselect-all: "<red>[Orta-Tıkla] Bu efektin tüm işleyicilerinin seçimini kaldır."
+    unselected-all: "<prefix> <yellow>Seçim kaldırıldı:<reset> {0}" # Sohbet mesajı
+    select-handlers: "<gray>[Sağ-Tıkla] İşleyicileri tek tek seçebilirsin."
+    has-dynamic-color: "<gray>• Bu efekt dinamik renklere sahip."
+    prefer-color-group: "<gray>  Bu efektin renk grubunu kullanmak için <yellow>shift-sağ-tıkla</yellow>."
+    preferred-color-group: "<green>Bu efektin renk grubu kullanılacak."
+    current-selections: "<gray>Seçilenler:"
+    reset-selections: "<red>Seçimleri Sıfırla"
+    preferred-color-group-needed: "<red>Mix'i oluşturabilmek için bir efektin renk grubunu seç."
+    confirm: "<green>Onayla"
+    enter-name: "Mix'in için isim gir"
+    name-already-used: "<prefix> <red>Zaten bu isimle bir mix oluşturmuşsun, lütfen başka bir isim dene." # Sohbet mesajı
+    created: "<prefix> <green>Mix oluşturuldu!"
+    failed: "<prefix> <red>Mix oluşturulamadı."
+  handlers-gui:
+    select: "<#87FF65>❤ Tıkla ve işleyiciyi seç!"
+    selected: "<green>Seçili!"
+    unselect: "<red>Tıkla ve seçimi kaldır."
+    event-locked: "<yellow>Artık bu çalışma türüyle çalışan başka bir işleyici seçemezsin."
+    event-type: "<dark_gray>Çalışma türü: {0}"
 # Komut Mesajları
 commands:
   usage: "<prefix> <yellow>Kullanım:<gray> {0}"
@@ -33,11 +68,11 @@ commands:
   effect-no-permission: "<prefix> <red>Bu efekti kullanabilmek için yeterli yetkin yok."
   effect-no-permission-other: "<prefix> <red>Bu oyuncunun bu efekti kullanabilmek için yeterli yetkisi yok."
   effect-unknown: "<prefix> <red>{0} isminde bir efekt bulunamadı."
-  effect-toggle: "<prefix> <gray>Elitra Efektleri: {0}"
+  effect-toggle: "<prefix> <gray>Efektler: {0}"
   effect-selected: "<prefix> <green>Efekt seçildi:<reset> {0}"
   effect-selected-other: "<prefix> <green>Efekt seçildi ({0}):<reset> {1}"
-  effect-reset: "<prefix> <gray>Elitra efekti sıfırlandı."
-  effect-reset-other: "<prefix> <gray>{0} adlı oyuncunun elitra efekti sıfırlandı."
+  effect-reset: "<prefix> <gray>Efektlerin sıfırlandı."
+  effect-reset-other: "<prefix> <gray>{0} adlı oyuncunun efektleri sıfırlandı."
   cannot-use-any-effect: "<prefix> <red>Hiçbir efekti kullanamazsın."
   cannot-use-any-effect-other: "<prefix> <red>Bu oyuncu hiçbir efekti kullanamaz."
   unknown-color-scheme: "<prefix> <red>Bilinmeyen renk şeması."
@@ -46,7 +81,7 @@ commands:
   reloading: "<prefix> <yellow>TreasureParticles yenileniyor"
   reloaded: "<prefix> <green>Başarıyla yenilendi!"
   args:
-    must-be-a-number: "<prefix> <red>{0} bir sayı değil, lütfen bir sayı giriniz."
+    must-be-a-number: "<prefix> <red>{0} bir sayı değil, lütfen bir sayı girin."
     username-too-short: "<prefix> <red>Kullanıcı ismi çok kısa, en az 3 karakter olmalı."
     not-a-valid-name: "<prefix> <red>{0} geçerli bir kullanıcı ismi değil."
     no-player-found-server: "<prefix> <red>Sunucuya daha önceden {0} ismiyle eşleşen bir oyuncu katılmamış."
@@ -58,6 +93,7 @@ events:
   elytra: "Elitra"
   moving: "Hareket Etme"
   standing: "Hareketsiz Durma"
+  sneaking: "Eğilme"
   projectile: "Atış"
   mob-kill: "Yaratık Öldürme"
   mob-damage: "Yaratığa Hasar Verme"
@@ -120,8 +156,8 @@ effects:
   complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Tamamlayıcı"
 # Efekt Açıklamaları
 descriptions:
-  seasonal-effect: "<dark_gray>Dönemsel Efekt"
-  featured-behavior: "<dark_gray>Has Özellik"
+  seasonal-effect: "<gray>Dönemsel Efekt"
+  featured-behavior: "<gray>Has Özellik"
   elytra-boost: "<#ffbc33>Havai fişek ile elitranı hızlandırdığında efekt değişir."
   christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Yılbaşının harikulade renkleriyle ışılda!"
 # Renk İsimleri
