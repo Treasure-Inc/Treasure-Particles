@@ -127,12 +127,17 @@ public class MixerGUI {
             holder.setItem(slot,
                     new CustomItem(FILTER.item())
                             .setDisplayName(MessageUtils.gui(Translations.BUTTON_FILTER))
-                            .setLore(Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.gui("<dark_gray> • <" + (event.equals(filter) ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList()),
+                            .setLore(Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.gui("<dark_gray> • <" + (event.equals(filter) ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList())
+                            .addLore(
+                                    MessageUtils.gui(Translations.FILTER_UP),
+                                    MessageUtils.gui(Translations.FILTER_DOWN),
+                                    MessageUtils.gui(Translations.FILTER_RESET)
+                            ),
                     event -> {
                         if (event.getClick() == ClickType.MIDDLE) {
                             holder.setPage(0);
                             holder.setFilter(null);
-                            MixerGUI.open(player, holder);
+                            open(player, holder);
                             GUISounds.play(player, GUISounds.FILTER);
                             return;
                         }
@@ -144,7 +149,7 @@ public class MixerGUI {
                         holder.setPage(0);
                         holder.setFilter(newFilter);
 
-                        MixerGUI.open(player, holder);
+                        open(player, holder);
                         GUISounds.play(player, GUISounds.FILTER);
                     });
 
@@ -155,7 +160,7 @@ public class MixerGUI {
                         new CustomItem(PREVIOUS_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_PREVIOUS_PAGE)),
                         event -> {
                             holder.setPage(page - 1);
-                            MixerGUI.open(player, holder);
+                            open(player, holder);
                             GUISounds.play(player, GUISounds.PREVIOUS_PAGE);
                         });
         else if (PREVIOUS_PAGE.isEnabled() && BORDERS.isEnabled())
@@ -172,7 +177,7 @@ public class MixerGUI {
                                 .addLore(currentSelections.isEmpty() ? null : currentSelections),
                         event -> {
                             holder.reset();
-                            MixerGUI.open(player, holder);
+                            open(player, holder);
                             GUISounds.play(player, GUISounds.RESET);
                         });
         else if (RESET.isEnabled() && BORDERS.isEnabled())
@@ -186,7 +191,7 @@ public class MixerGUI {
                         new CustomItem(NEXT_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_NEXT_PAGE)),
                         event -> {
                             holder.setPage(page + 1);
-                            MixerGUI.open(player, holder);
+                            open(player, holder);
                             GUISounds.play(player, GUISounds.NEXT_PAGE);
                         });
         else if (NEXT_PAGE.isEnabled() && BORDERS.isEnabled())

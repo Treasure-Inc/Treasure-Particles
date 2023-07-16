@@ -177,11 +177,10 @@ styles:
         take-damage:
           item:
             material: SHIELD
-  # TODO bunu da yap
   elytra-shaped-gui:
     effects:
       layout:
-        - "BBEEEEEBB"
+        - "MBEEEEEBB"
         - "BEEEBEEEB"
         - "BEEBOBEEB"
         - "BEEBOBEEB"
@@ -220,6 +219,10 @@ styles:
           key: 'F'
           item:
             material: HOPPER
+        mixer:
+          key: 'M'
+          item:
+            material: END_CRYSTAL
     colors:
       layout:
         - "BBBBBBBBB"
@@ -253,3 +256,76 @@ styles:
           key: "b"
           item:
             material: STRUCTURE_VOID
+    mixer:
+      layout:
+        - "BBEEEEEBB"
+        - "BEEEBEEEB"
+        - "BEEBOBEEB"
+        - "BEEBOBEEB"
+        - "BEEBOBEEB"
+        - "PBBrFRBBN"
+      elements:
+        borders:
+          key: 'B'
+          item:
+            material: BLACK_STAINED_GLASS_PANE
+        default-icon:
+          key: 'E'
+          item:
+            material: LEATHER_BOOTS
+        next-page:
+          key: 'N'
+          item:
+            material: ENDER_PEARL
+        previous-page:
+          key: 'P'
+          item:
+            material: ENDER_EYE
+        reset:
+          key: 'R'
+          item:
+            material: RED_STAINED_GLASS_PANE
+        close:
+          key: 'c'
+          item:
+            material: BARRIER
+        filter:
+          key: 'F'
+          item:
+            material: HOPPER
+        confirm:
+          key: 'C'
+          item:
+            material: LIME_STAINED_GLASS_PANE
+    handlers:
+      elements:
+        elytra:
+          item:
+            material: ELYTRA
+        moving:
+          item:
+            material: LEATHER_BOOTS
+        standing:
+          item:
+            material: SNOWBALL
+        sneaking:
+          item:
+            material: LEATHER_LEGGINGS
+        projectile:
+          item:
+            material: CROSSBOW
+        mob-kill:
+          item:
+            material: CAVE_SPIDER_SPAWN_eGG
+        mob-damage:
+          item:
+            material: SPIDER_SPAWN_eGG
+        player-kill:
+          item:
+            material: WOODEN_SWORD
+        player-damage:
+          item:
+            material: WOODEN_AXE
+        take-damage:
+          item:
+            material: SHIELD

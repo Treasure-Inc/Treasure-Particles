@@ -13,6 +13,9 @@ gui:
   close: "<red>Close"
   back: "<red>Back"
   filter: "<gold>Supported Events"
+  filter-up: "<yellow>↑ [Right-Click]"
+  filter-down: "<yellow>↓ [Left-Click]"
+  filter-reset: "<red>✖ [Middle-Click]"
   effects-gui:
     title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
     effect-selected: "<green>Selected!"

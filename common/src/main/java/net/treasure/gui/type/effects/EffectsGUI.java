@@ -115,12 +115,15 @@ public class EffectsGUI {
             holder.setItem(slot,
                     new CustomItem(FILTER.item())
                             .setDisplayName(MessageUtils.gui(Translations.BUTTON_FILTER))
-                            .setLore(Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.gui("<dark_gray> • <" + (event.equals(filter) ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList()),
+                            .setLore(Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.gui("<dark_gray> • <" + (event.equals(filter) ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList())
+                            .addLore(
+                                    MessageUtils.gui(Translations.FILTER_UP),
+                                    MessageUtils.gui(Translations.FILTER_DOWN),
+                                    MessageUtils.gui(Translations.FILTER_RESET)
+                            ),
                     event -> {
                         if (event.getClick() == ClickType.MIDDLE) {
-                            holder.setPage(0);
-                            holder.setFilter(null);
-                            EffectsGUI.open(player, holder, effects);
+                            open(player, null, 0);
                             GUISounds.play(player, GUISounds.FILTER);
                             return;
                         }
@@ -129,10 +132,8 @@ public class EffectsGUI {
 
                         var ordinal = holderFilter == null ? (event.isRightClick() ? values.length - 1 : 0) : holderFilter.ordinal() + (event.isRightClick() ? -1 : 1);
                         var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];
-                        holder.setFilter(newFilter);
-                        holder.setPage(0);
 
-                        EffectsGUI.open(player, holder, effects);
+                        open(player, newFilter, 0);
                         GUISounds.play(player, GUISounds.FILTER);
                     });
 
@@ -143,7 +144,7 @@ public class EffectsGUI {
                         new CustomItem(PREVIOUS_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_PREVIOUS_PAGE)),
                         event -> {
                             holder.setPage(holder.getPage() - 1);
-                            EffectsGUI.open(player, holder, effects);
+                            open(player, holder, effects);
                             GUISounds.play(player, GUISounds.PREVIOUS_PAGE);
                         });
         else if (PREVIOUS_PAGE.isEnabled() && BORDERS.isEnabled())
@@ -159,7 +160,7 @@ public class EffectsGUI {
                                 .addLore(MessageUtils.gui(Translations.EFFECTS_GUI_CURRENT, data.getCurrentEffect().getDisplayName())),
                         event -> {
                             data.setCurrentEffect(null);
-                            EffectsGUI.open(player, holder, effects);
+                            open(player, holder, effects);
                             GUISounds.play(player, GUISounds.RESET);
                         });
         else if (RESET.isEnabled() && BORDERS.isEnabled())
@@ -230,7 +231,7 @@ public class EffectsGUI {
                         new CustomItem(NEXT_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_NEXT_PAGE)),
                         event -> {
                             holder.nextPage();
-                            EffectsGUI.open(player, holder, effects);
+                            open(player, holder, effects);
                             GUISounds.play(player, GUISounds.NEXT_PAGE);
                         });
         else if (NEXT_PAGE.isEnabled() && BORDERS.isEnabled())

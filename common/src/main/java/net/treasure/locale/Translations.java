@@ -35,7 +35,10 @@ public class Translations implements DataHolder {
             BUTTON_PREVIOUS_PAGE,
             BUTTON_CLOSE,
             BUTTON_BACK,
-            BUTTON_FILTER;
+            BUTTON_FILTER,
+            FILTER_UP,
+            FILTER_DOWN,
+            FILTER_RESET;
 
     // Effects GUI
     public static String EFFECTS_GUI_TITLE,
@@ -184,6 +187,9 @@ public class Translations implements DataHolder {
         BUTTON_CLOSE = load("gui.close", "<red>Close");
         BUTTON_BACK = load("gui.back", "<red>Back");
         BUTTON_FILTER = load("gui.filter", "<gold>Supported Events");
+        FILTER_UP = load("gui.filter-up", "<yellow>↑ [Right-Click]");
+        FILTER_DOWN = load("gui.filter-down", "<yellow>↓ [Left-Click]");
+        FILTER_RESET = load("gui.filter-reset", "<red>✖ [Middle-Click]");
 
         // Effects GUI
         EFFECTS_GUI_TITLE = load("gui.effects-gui.title", "      <gradient:#EF476F:#FFD166><b>Treasure Particles");

@@ -12,7 +12,10 @@ gui:
   previous-page: "<green>< Önceki Sayfa"
   close: "<red>Kapat"
   back: "<red>Geri Dön"
-  event-filter: "<gold>Çalışma Türü"
+  filter: "<gold>Çalışma Türü"
+  filter-up: "<yellow>↑ [Sağ-Tıkla]"
+  filter-down: "<yellow>↓ [Sol-Tıkla]"
+  filter-reset: "<red>✖ [Orta-Tıkla]"
   effects-gui:
     title: "      <gradient:#c26767:#c28b67:#d47d66><b>Treasure Particles"
     effect-selected: "<green>Seçildi!"
