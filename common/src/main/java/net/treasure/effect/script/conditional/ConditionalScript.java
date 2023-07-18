@@ -16,7 +16,7 @@ public class ConditionalScript extends Script {
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        boolean success = parent.test(player, data);
+        boolean success = parent.test(player, effect, data);
         if (success)
             return firstExpression.tick(player, data, event, times);
         else

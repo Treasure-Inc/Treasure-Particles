@@ -1,5 +1,6 @@
 package net.treasure.effect;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.treasure.TreasureParticles;
 import net.treasure.color.group.ColorGroup;
@@ -12,10 +13,12 @@ import net.treasure.effect.script.Cached;
 import net.treasure.effect.script.Script;
 import net.treasure.effect.script.conditional.ConditionalScript;
 import net.treasure.effect.script.variable.Variable;
+import net.treasure.gui.type.mixer.MixerHolder;
 import net.treasure.locale.Translations;
 import net.treasure.util.TimeKeeper;
 import net.treasure.util.message.MessageUtils;
 import net.treasure.util.tuples.Pair;
+import net.treasure.util.tuples.Triplet;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,25 +31,42 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 @Getter
+@AllArgsConstructor
 public class Effect {
 
     private final String key, displayName, armorColor, permission;
+
     private String[] description;
     private final ItemStack icon;
-
     private final int interval;
+
     private List<TickHandler> tickHandlers;
-    private final List<Pair<String, Double>> variables;
-
+    private List<Triplet<String, Double, String>> variables;
     private final boolean cachingEnabled;
-    private HashMap<String, double[][]> cache;
 
+    private HashMap<String, double[][]> cache;
     private final ColorGroup colorGroup;
 
     private final EnumSet<HandlerEvent> events;
 
     public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup) {
-        this(key, displayName, description, icon, armorColor, permission, variables, interval, cachingEnabled, colorGroup);
+        this(key, displayName, description, icon, armorColor, permission, interval, cachingEnabled, colorGroup);
+
+        this.variables = new ArrayList<>();
+        for (var variable : variables) {
+            if (hasVariable(variable)) {
+                TreasureParticles.logger().warning(getPrefix() + "Variable '" + variable + "' is already defined.");
+                continue;
+            }
+            if (!isPredefinedVariable(variable))
+                addVariable(variable);
+            else
+                TreasureParticles.logger().warning(getPrefix() + "'" + variable + "' is a pre-defined variable.");
+        }
+
+        addVariable(Variable.I);
+        addVariable(Variable.TIMES);
+
         this.tickHandlers = new ArrayList<>();
         for (var entry : tickHandlers.entrySet()) {
             var pair = entry.getValue();
@@ -58,15 +78,20 @@ public class Effect {
         }
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup) {
-        this(key, displayName, description, icon, armorColor, permission, variables, interval, cachingEnabled, colorGroup);
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<Triplet<String, Double, String>> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup) {
+        this(key, displayName, description, icon, armorColor, permission, interval, cachingEnabled, colorGroup);
+        this.variables = variables;
+
         this.tickHandlers = tickHandlers;
         for (var handler : tickHandlers)
             if (handler.event != null)
                 events.add(handler.event);
+
+        addVariable(Variable.I, null);
+        addVariable(Variable.TIMES, null);
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean cachingEnabled, ColorGroup colorGroup) {
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, int interval, boolean cachingEnabled, ColorGroup colorGroup) {
         this.key = key;
         this.displayName = displayName;
         this.description = description;
@@ -77,22 +102,7 @@ public class Effect {
         this.cachingEnabled = cachingEnabled;
         this.colorGroup = colorGroup;
 
-        this.variables = new ArrayList<>();
         this.events = EnumSet.noneOf(HandlerEvent.class);
-
-        for (var variable : variables) {
-            if (hasVariable(variable)) {
-                TreasureParticles.logger().warning(getPrefix() + "Variable '" + variable + "' is already defined.");
-                continue;
-            }
-            if (checkPredefinedVariable(variable))
-                addVariable(variable);
-            else
-                TreasureParticles.logger().warning(getPrefix() + "'" + variable + "' is a pre-defined variable.");
-        }
-
-        addVariable(Variable.I);
-        addVariable(Variable.TIMES);
     }
 
     public void configure() {
@@ -119,9 +129,8 @@ public class Effect {
 
     public void initialize(EffectData data) {
         // Clone variables
-        List<Pair<String, Double>> variables = new ArrayList<>();
-        for (var pair : this.variables)
-            variables.add(pair.clone());
+        List<Triplet<String, Double, String>> variables = new ArrayList<>();
+        for (var triplet : this.variables) variables.add(triplet.clone());
         data.setVariables(variables);
 
         // Clone tick handlers and their scripts
@@ -169,23 +178,23 @@ public class Effect {
         }
 
         // Get variable 'i'
-        var ip = data.getVariable(Variable.I);
+        var ip = data.getVariable(this, Variable.I);
         if (ip == null) {
             TreasureParticles.logger().warning(getPrefix() + "Couldn't pre-tick effect (Null variable: i)");
             return;
         }
 
         // Get variable 'times'
-        var tp = data.getVariable(Variable.TIMES);
+        var tp = data.getVariable(this, Variable.TIMES);
         if (tp == null) {
             TreasureParticles.logger().warning(getPrefix() + "Couldn't pre-tick effect (Null variable: TIMES)");
             return;
         }
 
         for (var tickHandler : tickHandlers) {
-            tp.setValue((double) tickHandler.times);
+            tp.y((double) tickHandler.times);
             for (int i = 0; i < tickHandler.times; i++) {
-                ip.setValue((double) i);
+                ip.y((double) i);
                 for (var script : tickHandler.lines) {
                     if (script instanceof Cached cached) {
                         cached.preTick(this, data, i);
@@ -200,8 +209,8 @@ public class Effect {
         var event = data.getCurrentEvent();
         TickHandler last = null;
         try {
-            var ip = data.getVariable(Variable.I);
-            var tp = data.getVariable(Variable.TIMES);
+            var ip = data.getVariable(this, Variable.I);
+            var tp = data.getVariable(this, Variable.TIMES);
             if (ip == null || tp == null) {
                 TreasureParticles.logger().warning(getPrefix() + "Couldn't tick effect (Null variable: i or TIMES)");
                 return;
@@ -209,12 +218,12 @@ public class Effect {
             for (var tickHandler : data.getTickHandlers()) {
                 if (tickHandler.interval > 1 && !TimeKeeper.isElapsed(tickHandler.interval)) continue;
                 last = tickHandler;
-                tp.setValue((double) tickHandler.times);
+                tp.y((double) tickHandler.times);
 
                 if (!tickHandler.execute(data, event)) continue;
                 tickHandlerLoop:
                 for (int i = 0; i < tickHandler.times; i++) {
-                    ip.setValue((double) i);
+                    ip.y((double) i);
                     for (var script : tickHandler.lines) {
                         var result = script.doTick(player, data, event, i);
                         if (result == Script.TickResult.BREAK)
@@ -232,34 +241,38 @@ public class Effect {
     }
 
     public void addVariable(String var) {
+        addVariable(var, null);
+    }
+
+    public void addVariable(String var, String effectKey) {
         var matcher = Patterns.VARIABLE.matcher(var);
         if (matcher.matches()) {
             String key = matcher.group("name");
             try {
                 double value = Double.parseDouble(matcher.group("default"));
-                this.variables.add(new Pair<>(key, value));
+                this.variables.add(new Triplet<>(key, value, effectKey));
             } catch (NumberFormatException e) {
-                this.getVariables().add(new Pair<>(key, 0d));
+                this.getVariables().add(new Triplet<>(key, 0d, effectKey));
             }
         } else
-            this.getVariables().add(new Pair<>(var, 0d));
+            this.getVariables().add(new Triplet<>(var, 0d, effectKey));
     }
 
     public boolean hasVariable(String var) {
         for (var pair : variables)
-            if (pair.getKey().equals(var))
+            if (pair.x().equals(var))
                 return true;
         return false;
     }
 
     public boolean isValidVariable(String var) {
         for (var pair : variables)
-            if (pair.getKey().equals(var))
+            if (pair.x().equals(var))
                 return true;
-        return !checkPredefinedVariable(var);
+        return isPredefinedVariable(var);
     }
 
-    public boolean checkPredefinedVariable(String var) {
+    public boolean isPredefinedVariable(String var) {
         return switch (var) {
             case Variable.I, Variable.TIMES,
                     "PI", "TICK", "RANDOM",
@@ -267,8 +280,8 @@ public class Effect {
                     "lastBoostMillis", "LBM",
                     "isMoving", "isStanding",
                     "playerYaw", "playerPitch", "playerX", "playerY", "playerZ",
-                    "velocityLength", "velocityX", "velocityY", "velocityZ" -> false;
-            default -> true;
+                    "velocityLength", "velocityX", "velocityY", "velocityZ" -> true;
+            default -> false;
         };
     }
 
@@ -310,7 +323,7 @@ public class Effect {
         return tickHandlers.stream().filter(handler -> !handler.mixerOptions.isPrivate).toList();
     }
 
-    public boolean hasMixerCompatibleTickHandlers(EnumSet<HandlerEvent> locked) {
-        return tickHandlers.stream().anyMatch(handler -> !handler.mixerOptions.isPrivate && !locked.contains(handler.event));
+    public List<TickHandler> mixerCompatibleTickHandlers(MixerHolder holder) {
+        return tickHandlers.stream().filter(handler -> !handler.mixerOptions.isPrivate && (holder.isSelected(handler) || (holder.canSelectAnotherEffect() && !holder.isLocked(handler.event)))).toList();
     }
 }

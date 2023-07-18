@@ -29,50 +29,50 @@ public class Variable extends Script implements Cached {
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var pair = data.getVariable(variable);
+        var pair = data.getVariable(effect, variable);
         if (pair == null) return TickResult.NORMAL;
-        var effect = data.getCurrentEffect();
         if (effect.isCachingEnabled()) {
-            pair.setValue(effect.getCache().get(tickHandler.key)[times][index]);
+            pair.y(effect.getCache().get(tickHandler.key)[times][index]);
             return TickResult.NORMAL;
         }
         double val;
         try {
-            val = MathUtils.eval(data.replaceVariables(eval));
+            val = MathUtils.eval(data.replaceVariables(effect, eval));
         } catch (Exception e) {
+            e.printStackTrace();
             TreasureParticles.logger().warning("Invalid evaluation: " + eval);
             return TickResult.NORMAL;
         }
         switch (operator) {
-            case EQUAL -> pair.setValue(val);
-            case ADD -> pair.setValue(pair.getValue() + val);
-            case SUBTRACT -> pair.setValue(pair.getValue() - val);
-            case MULTIPLY -> pair.setValue(pair.getValue() * val);
-            case DIVIDE -> pair.setValue(pair.getValue() / val);
+            case EQUAL -> pair.y(val);
+            case ADD -> pair.y(pair.y() + val);
+            case SUBTRACT -> pair.y(pair.y() - val);
+            case MULTIPLY -> pair.y(pair.y() * val);
+            case DIVIDE -> pair.y(pair.y() / val);
         }
         return TickResult.NORMAL;
     }
 
     public void preTick(Effect effect, EffectData data, int times) {
-        var pair = data.getVariable(variable);
+        var pair = data.getVariable(effect, variable);
         if (pair == null) return;
 
         double val;
         try {
-            val = MathUtils.eval(data.replaceVariables(eval));
+            val = MathUtils.eval(data.replaceVariables(effect, eval));
         } catch (Exception e) {
             TreasureParticles.logger().warning("Invalid evaluation: " + eval);
             return;
         }
 
-        pair.setValue(switch (operator) {
+        pair.y(switch (operator) {
             case EQUAL -> val;
-            case ADD -> pair.getValue() + val;
-            case SUBTRACT -> pair.getValue() - val;
-            case MULTIPLY -> pair.getValue() * val;
-            case DIVIDE -> pair.getValue() / val;
+            case ADD -> pair.y() + val;
+            case SUBTRACT -> pair.y() - val;
+            case MULTIPLY -> pair.y() * val;
+            case DIVIDE -> pair.y() / val;
         });
-        effect.getCache().get(tickHandler.key)[times][index] = pair.getValue();
+        effect.getCache().get(tickHandler.key)[times][index] = pair.y();
     }
 
     @Override

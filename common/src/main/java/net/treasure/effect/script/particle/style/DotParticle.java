@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.color.data.ColorData;
-import net.treasure.util.nms.particles.ParticleEffect;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.argument.type.IntArgument;
@@ -13,6 +12,7 @@ import net.treasure.effect.script.argument.type.RangeArgument;
 import net.treasure.effect.script.argument.type.VectorArgument;
 import net.treasure.effect.script.particle.ParticleOrigin;
 import net.treasure.effect.script.particle.ParticleSpawner;
+import net.treasure.util.nms.particles.ParticleEffect;
 import net.treasure.util.nms.particles.Particles;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -38,7 +38,7 @@ public class DotParticle extends ParticleSpawner {
         var builder = context.builder();
         var origin = context.origin();
 
-        var vector = position == null ? new Vector(0, 0, 0) : position.get(player, data);
+        var vector = position == null ? new Vector(0, 0, 0) : position.get(player, this, data);
         builder.location(rotate(origin, origin.getDirection(), origin.getPitch(), origin.getYaw(), vector));
 
         updateParticleData(player, data, builder);

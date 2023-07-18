@@ -50,20 +50,20 @@ public class SpreadCircleParticle extends CircleParticle {
         if (context == null) return TickResult.NORMAL;
         var origin = context.origin();
         var builder = context.builder();
-        var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
+        var vector = this.position != null ? position.get(player, this, data) : new Vector(0, 0, 0);
 
         var direction = player.getLocation().getDirection();
         float pitch = player.getEyeLocation().getPitch(), yaw = player.getEyeLocation().getYaw();
 
         // Circle Particle Variables
-        var particles = this.particles.get(player, data);
-        var radius = this.radius.get(player, data);
+        var particles = this.particles.get(player, this, data);
+        var radius = this.radius.get(player, this, data);
 
         var particleData = particleData(player, data);
 
         // Spread
-        var offset = this.offset != null ? this.offset.get(player, data) : null;
-        var spread = this.spread != null ? this.spread.get(player, data) : null;
+        var offset = this.offset != null ? this.offset.get(player, this, data) : null;
+        var spread = this.spread != null ? this.spread.get(player, this, data) : null;
 
         List<ParticleBuilder> builders = new ArrayList<>();
         for (int i = 0; i < particles; i++) {
@@ -130,15 +130,15 @@ public class SpreadCircleParticle extends CircleParticle {
         };
 
         if (multiplier != null)
-            origin = origin.add(player.getLocation().getDirection().multiply(multiplier.get(player, data)));
+            origin = origin.add(player.getLocation().getDirection().multiply(multiplier.get(player, this, data)));
 
         ParticleBuilder builder = new ParticleBuilder(particle);
 
         if (amount != null)
-            builder.amount(amount.get(player, data));
+            builder.amount(amount.get(player, this, data));
 
         if (speed != null)
-            builder.speed(speed.get(player, data));
+            builder.speed(speed.get(player, this, data));
 
         var playerManager = TreasureParticles.getPlayerManager();
         builder.viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects());

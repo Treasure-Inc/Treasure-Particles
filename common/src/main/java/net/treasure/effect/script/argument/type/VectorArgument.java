@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.treasure.constants.Patterns;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.ScriptArgument;
 import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.util.logging.ComponentLogger;
@@ -27,9 +28,9 @@ public class VectorArgument implements ScriptArgument<Vector> {
             String value = offsetMatcher.group("value");
             try {
                 switch (type) {
-                    case "x" -> x = DoubleArgument.read(value).value;
-                    case "y" -> y = DoubleArgument.read(value).value;
-                    case "z" -> z = DoubleArgument.read(value).value;
+                    case "x" -> x = DoubleArgument.read(value).validate(context).value;
+                    case "y" -> y = DoubleArgument.read(value).validate(context).value;
+                    case "z" -> z = DoubleArgument.read(value).validate(context).value;
                     default -> ComponentLogger.error(context, "Unexpected vector argument: " + type);
                 }
             } catch (Exception ignored) {
@@ -40,23 +41,25 @@ public class VectorArgument implements ScriptArgument<Vector> {
     }
 
     @Override
-    public Vector get(Player player, EffectData data) {
+    public Vector get(Player player, Script script, EffectData data) {
         double x = 0, y = 0, z = 0;
+
+        var effect = script.getEffect();
 
         if (this.x instanceof Double d)
             x = d;
         else if (this.x instanceof String s)
-            x = Double.parseDouble(data.replaceVariables(s));
+            x = data.getVariable(effect, s).y();
 
         if (this.y instanceof Double d)
             y = d;
         else if (this.y instanceof String s)
-            y = Double.parseDouble(data.replaceVariables(s));
+            y = data.getVariable(effect, s).y();
 
         if (this.z instanceof Double d)
             z = d;
         else if (this.z instanceof String s)
-            z = Double.parseDouble(data.replaceVariables(s));
+            z = data.getVariable(effect, s).y();
 
         return new Vector(x, y, z);
     }

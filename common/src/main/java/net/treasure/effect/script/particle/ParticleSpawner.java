@@ -58,17 +58,17 @@ public class ParticleSpawner extends Script {
         };
 
         if (multiplier != null)
-            origin = origin.add(player.getLocation().getDirection().multiply(multiplier.get(player, data)));
+            origin = origin.add(player.getLocation().getDirection().multiply(multiplier.get(player, this, data)));
 
         ParticleBuilder builder = new ParticleBuilder(particle);
 
         if (amount != null)
-            builder.amount(amount.get(player, data));
+            builder.amount(amount.get(player, this, data));
 
         if (speed != null)
-            builder.speed(speed.get(player, data));
+            builder.speed(speed.get(player, this, data));
 
-        var offset = this.offset != null ? this.offset.get(player, data) : null;
+        var offset = this.offset != null ? this.offset.get(player, this, data) : null;
         if (directional && offset != null) {
             offset = Vectors.rotateAroundAxisX(offset, origin.getPitch());
             offset = Vectors.rotateAroundAxisY(offset, origin.getYaw());
@@ -100,7 +100,7 @@ public class ParticleSpawner extends Script {
         }
 
         if (particle.hasProperty(ParticleEffect.Property.DUST)) {
-            var size = this.size != null ? this.size.get(player, data) : 1;
+            var size = this.size != null ? this.size.get(player, this, data) : 1;
             if (particle.equals(ParticleEffect.DUST_COLOR_TRANSITION))
                 if (colorData instanceof DuoImpl duo) {
                     var pair = duo.nextDuo();
@@ -127,7 +127,7 @@ public class ParticleSpawner extends Script {
         }
 
         if (particle.hasProperty(ParticleEffect.Property.DUST)) {
-            var size = this.size != null ? this.size.get(player, data) : 1;
+            var size = this.size != null ? this.size.get(player, this, data) : 1;
             if (particle.equals(ParticleEffect.DUST_COLOR_TRANSITION))
                 if (colorData instanceof DuoImpl duo) {
                     var pair = duo.nextDuo();

@@ -3,6 +3,7 @@ package net.treasure.effect.script.argument.type;
 import net.treasure.constants.Patterns;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.script.Script;
 import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.variable.Variable;
 import net.treasure.util.logging.ComponentLogger;
@@ -37,10 +38,10 @@ public class RangeArgument extends FloatArgument {
         if (val == null) {
             var arg = context.value();
             try {
-                Float.parseFloat(arg);
-                return new RangeArgument(arg);
+                return new RangeArgument(Float.parseFloat(arg));
             } catch (Exception e) {
-                if (context.effect().isValidVariable(Variable.replace(arg)))
+                arg = Variable.replace(arg);
+                if (context.effect().isValidVariable(arg))
                     return new RangeArgument(arg);
                 else
                     throw new ReaderException("Valid values for Float argument: decimals, {variable}");
@@ -67,8 +68,8 @@ public class RangeArgument extends FloatArgument {
     }
 
     @Override
-    public Float get(Player player, EffectData data) {
-        var result = super.get(player, data);
+    public Float get(Player player, Script script, EffectData data) {
+        var result = super.get(player, script, data);
         if (max != null && result > max) return max;
         else if (min != null && result < min) return min;
         else return result;

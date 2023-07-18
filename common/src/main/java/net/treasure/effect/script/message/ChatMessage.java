@@ -16,7 +16,7 @@ public class ChatMessage extends Script {
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        MessageUtils.sendParsed(player, data.replaceVariables(message));
+        MessageUtils.sendParsed(player, data.replaceVariables(effect, message));
         return TickResult.NORMAL;
     }
 

@@ -3,6 +3,7 @@ package net.treasure.effect.script.argument.type;
 import lombok.AllArgsConstructor;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
+import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.ScriptArgument;
 import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.variable.Variable;
@@ -39,24 +40,28 @@ public class DoubleArgument implements ScriptArgument<Double> {
     }
 
     @Override
-    public Double get(Player player, EffectData data) {
+    public Double get(Player player, Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Double d) return d;
-        else if (value instanceof String s) return Double.parseDouble(data.replaceVariables(s));
+        else if (value instanceof String s) return data.getVariable(script.getEffect(), s).y();
         else return null;
     }
 
     @Override
     public DoubleArgument validate(ReaderContext<?> context) throws ReaderException {
-        var arg = context.value();
-        try {
-            Double.parseDouble(arg);
-            return this;
-        } catch (Exception e) {
-            if (context.effect().isValidVariable(Variable.replace(arg)))
+        if (value instanceof Double) return this;
+        if (value instanceof String arg) {
+            try {
+                Double.parseDouble(arg);
                 return this;
-            else
-                throw new ReaderException("Valid values for Double argument: decimals, {variable}");
+            } catch (Exception e) {
+                arg = Variable.replace(arg);
+                if (context.effect().isValidVariable(arg))
+                    return new DoubleArgument(arg);
+                else
+                    throw new ReaderException("Valid values for Double argument: decimals, {variable}");
+            }
         }
+        throw new ReaderException("Valid values for Double argument: decimals, {variable}");
     }
 }

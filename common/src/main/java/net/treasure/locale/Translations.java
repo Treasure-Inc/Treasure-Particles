@@ -245,8 +245,8 @@ public class Translations implements DataHolder {
         COMMAND_USAGE = load("commands.usage", "<prefix> <yellow>Usage:<gray> {0}");
         COMMAND_ERROR = load("commands.error", "<prefix> <red>Error: {0}");
         COMMAND_PLAYERS_ONLY = load("commands.players-only", "<prefix> <red>This command can only be executed by players.");
-        COMMAND_NO_PERMISSION = load("commands.no-permission", "<prefix> <red>You don't have enough permission to perform this command!");
-        EFFECT_NO_PERMISSION = load("commands.effect-no-permission", "<prefix> <red>You don't have enough permission to use that effect.");
+        COMMAND_NO_PERMISSION = load("commands.no-permission", "<prefix> <red>You do not have enough permission to perform this command!");
+        EFFECT_NO_PERMISSION = load("commands.effect-no-permission", "<prefix> <red>You do not have enough permission to use that effect.");
         EFFECT_NO_PERMISSION_OTHER = load("commands.effect-no-permission-other", "<prefix> <red>That player doesn't have enough permission to use that effect.");
         EFFECT_UNKNOWN = load("commands.effect-unknown", "<prefix> <red>Couldn't find any effect with name {0}");
         EFFECT_TOGGLE = load("commands.effect-toggle", "<prefix> <gray>Effects: {0}");

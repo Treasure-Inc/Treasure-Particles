@@ -3,8 +3,9 @@ package net.treasure.effect.script.argument.type;
 import lombok.AllArgsConstructor;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.ScriptArgument;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.variable.Variable;
 import org.bukkit.entity.Player;
 
@@ -22,20 +23,21 @@ public class BooleanArgument implements ScriptArgument<Boolean> {
     }
 
     @Override
-    public Boolean get(Player player, EffectData data) {
+    public Boolean get(Player player, Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Boolean b) return b;
         else if (value instanceof String s) {
-            var i = Integer.parseInt(data.replaceVariables(s));
-            return i != 1 && i != 0 ? null : (i == 1);
+            var i = data.getVariable(script.getEffect(), s).y().intValue();
+            return i != 1 && i != 0 ? null : i == 1;
         } else return null;
     }
 
     @Override
     public BooleanArgument validate(ReaderContext<?> context) throws ReaderException {
-        var arg = context.value();
-        if (arg.equals("true") || arg.equals("false") || context.effect().isValidVariable(Variable.replace(arg)))
-            return this;
+        if (value instanceof Boolean) return this;
+        var arg = Variable.replace(context.value());
+        if (context.effect().isValidVariable(arg))
+            return new BooleanArgument(arg);
         else
             throw new ReaderException("Valid values for Boolean argument: true, false, {variable}");
     }

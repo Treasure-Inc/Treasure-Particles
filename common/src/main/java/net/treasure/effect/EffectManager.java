@@ -125,10 +125,12 @@ public class EffectManager implements DataHolder {
 
     @Override
     public void reload() {
-        if (initialize()) {
-            effects.clear();
-            loadEffects();
-        }
+        Bukkit.getScheduler().runTask(TreasureParticles.getPlugin(), () -> {
+            if (initialize()) {
+                effects.clear();
+                loadEffects();
+            }
+        });
     }
 
     public Effect get(String key) {
@@ -189,7 +191,7 @@ public class EffectManager implements DataHolder {
                     continue;
                 }
 
-                int tickHandlerIndex = 1;
+                int tickHandlerIndex = 0;
                 LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers = new LinkedHashMap<>();
                 for (var tickHandlerKey : onTickSection.getKeys(false)) {
                     var tickHandlerSection = onTickSection.getConfigurationSection(tickHandlerKey);
@@ -220,10 +222,12 @@ public class EffectManager implements DataHolder {
                             continue;
                         }
 
+                        if (!mixerOptions.isPrivate)
+                            tickHandlerIndex++;
                         tickHandlers.put(tickHandlerKey, new Pair<>(
                                 new TickHandler(
                                         tickHandlerKey,
-                                        tickHandlerSection.getString("display-name", "[" + (tickHandlerIndex++) + "]"),
+                                        tickHandlerSection.getString("display-name", "[" + tickHandlerIndex + "]"),
                                         interval,
                                         tickHandlerSection.getInt("times", 1),
                                         mixerOptions,
@@ -311,8 +315,11 @@ public class EffectManager implements DataHolder {
 
         Script script = read(effect, type, args.length == 1 ? null : args[1]);
 
-        if (script != null && interval > 0)
-            script.setInterval(interval);
+        if (script != null) {
+            script.setEffect(effect);
+            if (interval > 0)
+                script.setInterval(interval);
+        }
         return script;
     }
 }

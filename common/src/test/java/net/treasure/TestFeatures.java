@@ -7,7 +7,7 @@ import net.treasure.effect.script.conditional.Condition;
 import net.treasure.effect.script.conditional.ConditionGroup;
 import net.treasure.effect.script.conditional.reader.ConditionReader;
 import net.treasure.util.math.MathUtils;
-import net.treasure.util.tuples.Pair;
+import net.treasure.util.tuples.Triplet;
 import org.junit.jupiter.api.Test;
 
 import java.text.DecimalFormat;
@@ -36,14 +36,14 @@ public class TestFeatures {
 
     @Test
     public void testReader() {
-        final List<Pair<String, Double>> variables = new ArrayList<>();
-        variables.add(new Pair<>("p", 150d));
+        final List<Triplet<String, Double, String>> variables = new ArrayList<>();
+        variables.add(new Triplet<>("p", 150d, null));
 
         var reader = new ConditionReader();
 //        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
 //        var parent = reader.read(null,"((p==1 && q==1) || (r==0 && s==0))");
         var parent = reader.read(null, null, "({p}/10==15)");
-        System.out.println("Test Result: " + parent.test(null, new EffectData(variables)));
+        System.out.println("Test Result: " + parent.test(null, null, new EffectData(variables)));
         System.out.println("-----RESULTS " + parent.inner.size());
         var gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(gson.toJson(parent));
@@ -57,7 +57,7 @@ public class TestFeatures {
         parent.conditions.add(new Condition(true));
         parent.conditions.add(new Condition(false));
         parent.operators.add(ConditionGroup.Operator.AND);
-        System.out.println("Result: " + parent.test(null, null));
+        System.out.println("Result: " + parent.test(null, null, null));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class TestFeatures {
         g2.operators.add(ConditionGroup.Operator.OR);
         parent.inner.add(g2);
 
-        System.out.println("-----Result: " + parent.test(null, null));
+        System.out.println("-----Result: " + parent.test(null, null, null));
     }
 
     @Test
@@ -101,10 +101,10 @@ public class TestFeatures {
 
     @Test
     public void testReplace() {
-        final List<Pair<String, Double>> variables = new ArrayList<>();
-        variables.add(new Pair<>("phase", 150.0547789798));
+        final List<Triplet<String, Double, String>> variables = new ArrayList<>();
+        variables.add(new Triplet<>("phase", 150.0547789798, null));
         EffectData data = new EffectData(variables);
-        System.out.println("Result: " + data.replaceVariables("actionbar {#.##:phase}"));
+        System.out.println("Result: " + data.replaceVariables(null, "actionbar {#.##:phase}"));
     }
 
     @Test

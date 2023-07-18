@@ -205,7 +205,7 @@ public class EffectsGUI {
                             var iterator = data.getMixData().iterator();
                             while (iterator.hasNext()) {
                                 var mixData = iterator.next();
-                                var mixEffect = mixData.get();
+                                var mixEffect = mixData.get(player);
                                 if (mixEffect == null) {
                                     iterator.remove();
                                     continue;
@@ -284,7 +284,9 @@ public class EffectsGUI {
                     .glow(currentEffect)
                     .addItemFlags(ItemFlag.values()), event -> {
                 if (event.getClick() == ClickType.MIDDLE && holder.isPlayerMixGUI()) {
-                    data.getMixData().removeIf(mixData -> mixData.name().equals(effect.getKey()));
+                    data.getMixData().removeIf(mixData -> effect.getKey().equals(player.getName() + "/" + mixData.name()));
+                    if (currentEffect)
+                        data.setCurrentEffect(null);
                     player.closeInventory();
                     MessageUtils.sendParsed(player, Translations.EFFECTS_GUI_MIX_REMOVED);
                     return;

@@ -16,7 +16,7 @@ public class ActionBar extends Script {
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        MessageUtils.sendActionBarParsed(player, data.replaceVariables(message));
+        MessageUtils.sendActionBarParsed(player, data.replaceVariables(effect, message));
         return TickResult.NORMAL;
     }
 

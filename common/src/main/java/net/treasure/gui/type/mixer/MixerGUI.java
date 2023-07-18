@@ -96,12 +96,16 @@ public class MixerGUI {
         var maxEffects = effectSlots.length;
 
         var currentSelections = holder.getSelected().stream().map(pair -> MessageUtils.gui(pair.getKey().getDisplayName() + "<gray>:<reset> " + pair.getValue().displayName)).toList();
+        var limit = data.getMixEffectLimit();
+        var selectedEffectsSize = holder.selectedEffectsSize();
+        var canSelectAnotherEffect = limit == -1 || limit > selectedEffectsSize;
 
         // Create inventory
-        var inventory = Bukkit.createInventory(holder, layout.getSize(), MessageUtils.parseLegacy(Translations.MIXER_GUI_TITLE));
+        var inventory = Bukkit.createInventory(holder, layout.getSize(), MessageUtils.parseLegacy(Translations.MIXER_GUI_TITLE) + (limit != -1 ? " (" + (limit - selectedEffectsSize) + ")" : ""));
         var filter = holder.getFilter();
         var page = holder.getPage();
         holder.setInventory(inventory);
+        holder.canSelectAnotherEffect(canSelectAnotherEffect);
 
         // Borders
         if (BORDERS.isEnabled()) for (int slot : BORDERS.slots())
@@ -117,7 +121,7 @@ public class MixerGUI {
                 .filter(effect ->
                         (filter == null || effect.getEvents().contains(filter)) &&
                         effect.canUse(player) &&
-                        (holder.isSelected(effect) || effect.hasMixerCompatibleTickHandlers(holder.getLocked()))
+                        !effect.mixerCompatibleTickHandlers(holder).isEmpty()
                 )
                 .sorted((o1, o2) -> Boolean.compare(holder.isSelected(o2), holder.isSelected(o1)))
                 .toList();
@@ -259,7 +263,7 @@ public class MixerGUI {
                 color = colorData.next(null);
             }
 
-            var compatibleTickHandlers = effect.mixerCompatibleTickHandlers();
+            var compatibleTickHandlers = effect.mixerCompatibleTickHandlers(holder);
 
             boolean anySelected = holder.isSelected(effect);
             boolean allSelected = true;
@@ -281,8 +285,8 @@ public class MixerGUI {
                             colorGroup != null ? MessageUtils.gui(prefColorGroup ? Translations.MIXER_GUI_PREFERRED_COLOR_GROUP : Translations.MIXER_GUI_PREFER_COLOR_GROUP) : null
                     )
                     .addLore(allSelected ? MessageUtils.gui(Translations.MIXER_GUI_ALL_SELECTED) : null)
-                    .addLore(hasCompatibleSelection ? MessageUtils.gui(Translations.MIXER_GUI_SELECT_ALL) : null)
-                    .addLore(MessageUtils.gui(Translations.MIXER_GUI_SELECT_HANDLERS))
+                    .addLore(hasCompatibleSelection && canSelectAnotherEffect ? MessageUtils.gui(Translations.MIXER_GUI_SELECT_ALL) : null)
+                    .addLore(anySelected || canSelectAnotherEffect ? MessageUtils.gui(Translations.MIXER_GUI_SELECT_HANDLERS) : null)
                     .addLore(anySelected ? MessageUtils.gui(Translations.MIXER_GUI_UNSELECT_ALL) : null)
                     .changeArmorColor(color)
                     .glow(anySelected)
@@ -298,6 +302,7 @@ public class MixerGUI {
                     open(player, holder);
                     return;
                 }
+                if (!canSelectAnotherEffect) return;
                 if (event.isRightClick()) {
                     TickHandlersGUI.open(data, holder, effect);
                     GUISounds.play(player, GUISounds.MIXER_SELECT_EFFECT);
@@ -306,7 +311,6 @@ public class MixerGUI {
                 if (finalAllSelected) return;
                 for (var handler : compatibleTickHandlers) {
                     if (holder.isSelected(handler)) continue;
-                    if (holder.isLocked(handler.event)) continue;
                     holder.add(effect, handler);
                 }
                 MessageUtils.sendParsed(player, Translations.MIXER_GUI_SELECTED_ALL, effect.getDisplayName());
@@ -347,7 +351,7 @@ public class MixerGUI {
         }
 
         data.getMixData().add(mixData);
-        data.setCurrentEffect(mixData.get());
+        data.setCurrentEffect(mixData.get(data.player));
         MessageUtils.sendParsed(data.player, Translations.MIX_CREATED);
         GUISounds.play(data.player, GUISounds.CONFIRM);
         return Collections.singletonList(ResponseAction.close());

@@ -3,8 +3,9 @@ package net.treasure.effect.script.argument.type;
 import lombok.AllArgsConstructor;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.exception.ReaderException;
-import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.Script;
 import net.treasure.effect.script.argument.ScriptArgument;
+import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.variable.Variable;
 import org.bukkit.entity.Player;
 
@@ -23,10 +24,10 @@ public class IntArgument implements ScriptArgument<Integer> {
     }
 
     @Override
-    public Integer get(Player player, EffectData data) {
+    public Integer get(Player player, Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Integer i) return i;
-        else if (value instanceof String s) return (int) Double.parseDouble(data.replaceVariables(s));
+        else if (value instanceof String s) return data.getVariable(script.getEffect(), s).y().intValue();
         else return null;
     }
 
@@ -37,8 +38,9 @@ public class IntArgument implements ScriptArgument<Integer> {
             Integer.parseInt(arg);
             return this;
         } catch (Exception e) {
-            if (context.effect().isValidVariable(Variable.replace(arg)))
-                return this;
+            arg = Variable.replace(arg);
+            if (context.effect().isValidVariable(arg))
+                return new IntArgument(arg);
             else
                 throw new ReaderException("Valid values for Integer argument: integers, {variable}");
         }

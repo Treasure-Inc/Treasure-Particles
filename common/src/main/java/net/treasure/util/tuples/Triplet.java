@@ -7,10 +7,14 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@Accessors(fluent = true)
+@Accessors(fluent = true, chain = true)
 @AllArgsConstructor
-public class Triplet<A, B, C> {
-    A a;
-    B b;
-    C c;
+public class Triplet<X, Y, Z> {
+    X x;
+    Y y;
+    Z z;
+
+    public Triplet<X, Y, Z> clone() {
+        return new Triplet<>(x, y, z);
+    }
 }

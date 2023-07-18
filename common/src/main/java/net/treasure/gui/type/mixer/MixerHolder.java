@@ -10,23 +10,28 @@ import net.treasure.gui.type.effects.EffectsHolder;
 import net.treasure.util.tuples.Pair;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.EnumMap;
 import java.util.List;
 
 @Getter
+@Setter
 public class MixerHolder extends EffectsHolder {
     private final List<Pair<Effect, TickHandler>> selected;
-    private final EnumSet<HandlerEvent> locked;
-    @Setter
+    private final EnumMap<HandlerEvent, Pair<Effect, TickHandler>> locked;
     private String prefColorGroup;
     @Accessors(fluent = true)
     private boolean needsColorGroup;
+    @Accessors(fluent = true)
+    private boolean canSelectAnotherEffect;
 
     public MixerHolder() {
         this.selected = new ArrayList<>();
-        this.locked = EnumSet.noneOf(HandlerEvent.class);
+        this.locked = new EnumMap<>(HandlerEvent.class);
     }
 
+    public long selectedEffectsSize() {
+        return selected.stream().map(Pair::getKey).distinct().count();
+    }
 
     public boolean isSelected(TickHandler handler) {
         return selected.stream().anyMatch(pair -> pair.getValue().equals(handler));
@@ -38,16 +43,18 @@ public class MixerHolder extends EffectsHolder {
 
     public void remove(Effect effect) {
         selected.removeIf(pair -> pair.getKey().equals(effect));
+        locked.values().removeIf(pair -> pair.getKey().equals(effect));
     }
 
     public void remove(TickHandler handler) {
         selected.removeIf(pair -> pair.getValue().equals(handler));
+        locked.values().removeIf(pair -> pair.getValue().equals(handler));
     }
 
     public void add(Effect effect, TickHandler handler) {
         selected.add(new Pair<>(effect, handler));
         if (handler.mixerOptions.lockEvent)
-            locked.add(handler.event);
+            locked.put(handler.event, new Pair<>(effect, handler));
         if (effect.getColorGroup() != null)
             needsColorGroup = true;
     }
@@ -57,7 +64,7 @@ public class MixerHolder extends EffectsHolder {
     }
 
     public boolean isLocked(HandlerEvent event) {
-        return locked.contains(event);
+        return locked.containsKey(event);
     }
 
     public void reset() {

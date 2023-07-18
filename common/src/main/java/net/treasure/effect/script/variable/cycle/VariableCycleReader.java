@@ -1,10 +1,10 @@
 package net.treasure.effect.script.variable.cycle;
 
 import net.treasure.effect.Effect;
-import net.treasure.effect.script.reader.ReaderContext;
-import net.treasure.effect.script.reader.ScriptReader;
 import net.treasure.effect.script.argument.type.DoubleArgument;
 import net.treasure.effect.script.argument.type.StaticArgument;
+import net.treasure.effect.script.reader.ReaderContext;
+import net.treasure.effect.script.reader.ScriptReader;
 
 public class VariableCycleReader extends ScriptReader<VariableCycleReader.Context, VariableCycle> {
 
@@ -12,7 +12,7 @@ public class VariableCycleReader extends ScriptReader<VariableCycleReader.Contex
         addValidArgument(c -> {
             var variable = c.value();
             if (!c.effect().hasVariable(variable)) {
-                error(c, (c.effect().checkPredefinedVariable(variable) ? "Unknown variable" : "You cannot edit pre-defined variables") + ": " + variable);
+                error(c, (!c.effect().isPredefinedVariable(variable) ? "Unknown variable" : "You cannot edit pre-defined variables") + ": " + variable);
                 return;
             }
             c.script().variable = variable;

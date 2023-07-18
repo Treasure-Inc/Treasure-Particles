@@ -39,7 +39,7 @@ public class TickHandlersGUI {
     public static void open(EffectData data, MixerHolder mixerHolder, Effect effect) {
         // Variables
         var player = data.player;
-        var handlers = effect.mixerCompatibleTickHandlers();
+        var handlers = effect.mixerCompatibleTickHandlers(mixerHolder);
 
         // Create inventory
         var holder = new TickHandlersHolder();

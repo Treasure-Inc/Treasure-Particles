@@ -27,14 +27,14 @@ public class VariableCycle extends Script {
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var pair = data.getVariable(variable);
+        var pair = data.getVariable(effect, variable);
         if (pair == null) return TickResult.NORMAL;
 
-        var current = pair.getValue();
+        var current = pair.y();
 
-        var step = this.step.get(player, data);
-        var min = this.min.get(player, data);
-        var max = this.max.get(player, data);
+        var step = this.step.get(player, this, data);
+        var min = this.min.get(player, this, data);
+        var max = this.max.get(player, this, data);
 
         current += forward ? (step) : (-step);
         if (forward ? current >= max : current <= min) {
@@ -42,7 +42,7 @@ public class VariableCycle extends Script {
             forward = revertWhenDone != forward;
         }
 
-        pair.setValue(current);
+        pair.y(current);
         return TickResult.NORMAL;
     }
 

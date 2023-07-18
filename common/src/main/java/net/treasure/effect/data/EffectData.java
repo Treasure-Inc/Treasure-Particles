@@ -11,7 +11,7 @@ import net.treasure.effect.handler.TickHandler;
 import net.treasure.effect.mix.MixData;
 import net.treasure.permission.Permissions;
 import net.treasure.util.TimeKeeper;
-import net.treasure.util.tuples.Pair;
+import net.treasure.util.tuples.Triplet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -39,7 +39,7 @@ public class EffectData {
 
     // Fields for current effect
     private Effect currentEffect;
-    private List<Pair<String, Double>> variables;
+    private List<Triplet<String, Double, String>> variables;
     private List<TickHandler> tickHandlers;
 
     // Handler Event
@@ -58,7 +58,7 @@ public class EffectData {
     // Effect Mix Data
     private List<MixData> mixData = new ArrayList<>();
 
-    public EffectData(List<Pair<String, Double>> variables) {
+    public EffectData(List<Triplet<String, Double, String>> variables) {
         this.player = null;
         this.variables = variables;
     }
@@ -98,12 +98,12 @@ public class EffectData {
         return currentEffect == null ? null : colorPreferences.get(currentEffect.getKey());
     }
 
-    public Pair<String, Double> getVariable(String variable) {
+    public Triplet<String, Double, String> getVariable(Effect effect, String variable) {
         if (variable == null)
             return null;
-        for (var pair : variables)
-            if (pair.getKey().equals(variable))
-                return pair;
+        for (var triplet : variables)
+            if (triplet.x().equals(variable) && (triplet.z() == null || triplet.z().equals(effect.getKey())))
+                return triplet;
         var value = switch (variable) {
             case "isMoving" -> moving ? 1D : 0D;
             case "isStanding" -> !moving ? 1D : 0D;
@@ -123,10 +123,11 @@ public class EffectData {
             case "PI" -> Math.PI;
             default -> null;
         };
-        return value == null ? null : new Pair<>(variable, value);
+        if (value == null) System.out.println(variable);
+        return value == null ? null : new Triplet<>(variable, value, null);
     }
 
-    public String replaceVariables(String line) {
+    public String replaceVariables(Effect effect, String line) {
         StringBuilder builder = new StringBuilder();
 
         var array = line.toCharArray();
@@ -144,9 +145,9 @@ public class EffectData {
                     if (startPos == -1) return null;
 
                     var result = variable.toString();
-                    var p = getVariable(result);
+                    var p = getVariable(effect, result);
                     if (p == null) break;
-                    var value = p.getValue();
+                    var value = p.y();
 
                     if (!format.isEmpty())
                         builder.append(new DecimalFormat(format.toString(), new DecimalFormatSymbols(Locale.ENGLISH)).format(value));
@@ -187,7 +188,7 @@ public class EffectData {
     // Moving
     public void increaseInterval() {
         this.notMovingInterval += 5;
-        if (this.notMovingInterval > 30)
+        if (this.notMovingInterval > 20)
             this.moving = false;
     }
 
@@ -214,7 +215,7 @@ public class EffectData {
     }
 
     public int getMixLimit() {
-        return getMax(Keys.NAMESPACE + ".mix_limit");
+        return getMax(Keys.NAMESPACE + ".mix_limit.");
     }
 
     public boolean canCreateAnotherMix() {
@@ -224,7 +225,7 @@ public class EffectData {
     }
 
     public int getMixEffectLimit() {
-        return getMax(Keys.NAMESPACE + ".mix_effect_limit");
+        return getMax(Keys.NAMESPACE + ".mix_effect_limit.");
     }
 
     private int getMax(String permission) {

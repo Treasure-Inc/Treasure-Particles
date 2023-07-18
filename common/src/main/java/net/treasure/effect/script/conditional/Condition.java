@@ -2,6 +2,7 @@ package net.treasure.effect.script.conditional;
 
 import lombok.Getter;
 import lombok.ToString;
+import net.treasure.effect.Effect;
 import net.treasure.effect.data.EffectData;
 import net.treasure.util.math.MathUtils;
 import org.bukkit.entity.Player;
@@ -27,13 +28,13 @@ public class Condition implements Predicate {
     }
 
     @Override
-    public boolean test(Player player, EffectData data) {
+    public boolean test(Player player, Effect effect, EffectData data) {
         if (data == null)
             return defaultValue;
         double current;
         if (hasEquation) {
-            current = MathUtils.eval(data.replaceVariables(variable));
-        } else current = data.getVariable(variable).getValue();
+            current = MathUtils.eval(data.replaceVariables(effect, variable));
+        } else current = data.getVariable(effect, variable).y();
         return switch (operator) {
             case EQUAL -> current == value;
             case NOT_EQUAL -> current != value;

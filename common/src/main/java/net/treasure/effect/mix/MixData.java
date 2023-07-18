@@ -1,16 +1,26 @@
 package net.treasure.effect.mix;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.TreasureParticles;
 import net.treasure.effect.Effect;
+import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.handler.TickHandler;
+import net.treasure.effect.script.variable.Variable;
 import net.treasure.gui.type.effects.EffectsGUI;
+import net.treasure.util.message.MessageUtils;
 import net.treasure.util.tuples.Pair;
+import net.treasure.util.tuples.Triplet;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -22,15 +32,18 @@ public class MixData {
     List<Pair<String, String>> handlers = new ArrayList<>();
     transient Effect cache;
 
-    public Effect get() {
+    public Effect get(Player player) {
         if (cache != null) return cache;
         var effectManager = TreasureParticles.getEffectManager();
         var colorManager = TreasureParticles.getColorManager();
+        var translations = TreasureParticles.getTranslations();
 
         var interval = Integer.MAX_VALUE;
-        var cachingEnabled = false;
-        List<String> variables = new ArrayList<>();
+        List<Triplet<String, Double, String>> variables = new ArrayList<>();
         List<TickHandler> tickHandlers = new ArrayList<>();
+
+        Set<Effect> ready = new HashSet<>();
+        ListMultimap<Effect, HandlerEvent> effects = ArrayListMultimap.create();
 
         var colorGroup = colorManager.getColorGroup(prefColorGroup);
         if (needsColorGroup && colorGroup == null) return null;
@@ -51,23 +64,25 @@ public class MixData {
             if (effect.getInterval() < interval)
                 interval = effect.getInterval();
 
-            if (effect.isCachingEnabled())
-                cachingEnabled = true;
-
-            variables.addAll(effect.getVariables().stream().map(p -> p.getKey() + "=" + p.getValue()).toList());
+            if (!ready.contains(effect))
+                variables.addAll(effect.getVariables().stream().filter(triplet -> !triplet.x().equals(Variable.I) && !triplet.x().equals(Variable.TIMES)).map(triplet -> triplet.z(effectKey)).toList());
             tickHandlers.add(tickHandler);
+
+            ready.add(effect);
+            if (tickHandler.event != null)
+                effects.put(effect, tickHandler.event);
         }
 
         return cache = new Effect(
+                player.getName() + "/" + name,
                 name,
-                name,
-                null,
+                effects.asMap().entrySet().stream().map(entry -> MessageUtils.gui("<gray>•</gray> " + entry.getKey().getDisplayName() + "<gray>: " + entry.getValue().stream().map(e -> translations.get("events." + e.translationKey())).collect(Collectors.joining(", ")))).toArray(String[]::new),
                 EffectsGUI.DEFAULT_ICON.item(),
                 null,
                 null,
                 variables,
                 interval,
-                cachingEnabled,
+                false,
                 tickHandlers,
                 colorGroup
         );

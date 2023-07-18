@@ -18,7 +18,7 @@ public class VariableReader extends ScriptReader<ReaderContext<Variable>, Variab
 
             var variable = matcher.group(1);
             if (!effect.hasVariable(variable)) {
-                error(effect, type, line, start, end, (effect.checkPredefinedVariable(variable) ? "Unknown variable" : "You cannot edit pre-defined variables") + ": " + variable);
+                error(effect, type, line, start, end, (!effect.isPredefinedVariable(variable) ? "Unknown variable" : "You cannot edit pre-defined variables") + ": " + variable);
                 return null;
             }
 

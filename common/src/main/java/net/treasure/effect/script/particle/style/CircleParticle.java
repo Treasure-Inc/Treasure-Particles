@@ -6,8 +6,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.color.data.ColorData;
 import net.treasure.color.data.RandomNoteColorData;
-import net.treasure.util.nms.particles.ParticleBuilder;
-import net.treasure.util.nms.particles.ParticleEffect;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.script.argument.type.IntArgument;
@@ -16,6 +14,8 @@ import net.treasure.effect.script.argument.type.VectorArgument;
 import net.treasure.effect.script.particle.ParticleOrigin;
 import net.treasure.effect.script.particle.ParticleSpawner;
 import net.treasure.util.math.MathUtils;
+import net.treasure.util.nms.particles.ParticleBuilder;
+import net.treasure.util.nms.particles.ParticleEffect;
 import net.treasure.util.nms.particles.Particles;
 import net.treasure.util.tuples.Triplet;
 import org.bukkit.Location;
@@ -62,7 +62,7 @@ public class CircleParticle extends ParticleSpawner {
         if (context == null) return null;
         var origin = context.origin();
         var builder = context.builder();
-        var vector = this.position != null ? position.get(player, data) : new Vector(0, 0, 0);
+        var vector = this.position != null ? position.get(player, this, data) : new Vector(0, 0, 0);
 
         if (viewers != null)
             builder.viewers(viewers);
@@ -72,8 +72,8 @@ public class CircleParticle extends ParticleSpawner {
     }
 
     public void sendParticles(Player player, EffectData data, ParticleBuilder builder, Location origin, Vector direction, float pitch, float yaw, Vector vector) {
-        var particles = this.particles.get(player, data);
-        var radius = this.radius.get(player, data);
+        var particles = this.particles.get(player, this, data);
+        var radius = this.radius.get(player, this, data);
 
         var particleData = particleData(player, data);
 
