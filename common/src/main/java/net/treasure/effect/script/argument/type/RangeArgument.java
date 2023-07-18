@@ -43,17 +43,21 @@ public class RangeArgument extends FloatArgument {
                 arg = Variable.replace(arg);
                 if (context.effect().isValidVariable(arg))
                     return new RangeArgument(arg);
-                else
-                    throw new ReaderException("Valid values for Float argument: decimals, {variable}");
+                throw new ReaderException("Valid values for Float argument: decimals, {variable}");
             }
         }
 
         if (min == null && max == null) return new RangeArgument(val);
 
+        var strVal = String.valueOf(val);
         try {
-            return new RangeArgument(Float.parseFloat(String.valueOf(val)), min, max).validate(context);
+            return new RangeArgument(Float.parseFloat(strVal), min, max).validate(context);
         } catch (Exception e) {
-            return new RangeArgument(val, min, max);
+            strVal = Variable.replace(strVal);
+            if (context.effect().isValidVariable(strVal))
+                return new RangeArgument(strVal, min, max);
+            throw new ReaderException("Valid values for Range argument: decimals, {variable}");
+
         }
     }
 
