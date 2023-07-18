@@ -123,7 +123,6 @@ public class EffectData {
             case "PI" -> Math.PI;
             default -> null;
         };
-        if (value == null) System.out.println(variable);
         return value == null ? null : new Triplet<>(variable, value, null);
     }
 
