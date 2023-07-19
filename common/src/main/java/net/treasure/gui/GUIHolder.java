@@ -24,8 +24,11 @@ public class GUIHolder implements InventoryHolder {
     @Accessors(fluent = true)
     private boolean hasAnimation = false;
 
-    public GUIHolder() {
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
         this.slotData = new HashMap<>();
+        this.closeListener = null;
+        this.hasAnimation = false;
     }
 
     public void setItem(int where, CustomItem item, ClickListener listener, RGBColorData colorData) {
