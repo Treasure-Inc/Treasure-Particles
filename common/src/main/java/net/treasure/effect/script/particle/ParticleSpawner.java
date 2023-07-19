@@ -44,6 +44,8 @@ public class ParticleSpawner extends Script {
     protected RangeArgument speed, size;
     protected boolean directional = false;
 
+    protected boolean longDistance = false;
+
     @Nullable
     public ParticleContext tick(Player player, EffectData data, HandlerEvent event) {
         var entity = switch (event) {
@@ -77,6 +79,8 @@ public class ParticleSpawner extends Script {
 
         if (offset != null)
             builder.offset(offset);
+
+        builder.longDistance(longDistance);
 
         var playerManager = TreasureParticles.getPlayerManager();
         builder.viewers(viewer -> {

@@ -15,9 +15,20 @@ public class IntArgument implements ScriptArgument<Integer> {
     Object value;
 
     public static IntArgument read(ReaderContext<?> context) throws ReaderException {
+        return read(context, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    public static IntArgument read(ReaderContext<?> context, int min) throws ReaderException {
+        return read(context, min, Integer.MAX_VALUE);
+    }
+
+    public static IntArgument read(ReaderContext<?> context, int min, int max) throws ReaderException {
         var arg = context.value();
         try {
-            return new IntArgument(Integer.parseInt(arg)).validate(context);
+            var i = Integer.parseInt(arg);
+            if (i > max || i < min)
+                throw new ReaderException("Integer must be in range (" + min + ", " + (max != Integer.MAX_VALUE ? max : "∞") + ")");
+            return new IntArgument(i).validate(context);
         } catch (Exception e) {
             return new IntArgument(arg).validate(context);
         }

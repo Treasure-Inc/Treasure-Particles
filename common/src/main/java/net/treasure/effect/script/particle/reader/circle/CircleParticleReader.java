@@ -13,7 +13,7 @@ public class CircleParticleReader extends ParticleReader<CircleParticle> {
         super();
 
         addValidArgument(c -> c.script().tickData(StaticArgument.asBoolean(c)), "tick-data", "tick");
-        addValidArgument(c -> c.script().particles(IntArgument.read(c)), "particles");
+        addValidArgument(c -> c.script().particles(IntArgument.read(c, 1)), "particles");
         addValidArgument(c -> c.script().radius(RangeArgument.read(c)), "radius");
         addValidArgument(c -> c.script().vertical(StaticArgument.asBoolean(c)), "vertical");
     }

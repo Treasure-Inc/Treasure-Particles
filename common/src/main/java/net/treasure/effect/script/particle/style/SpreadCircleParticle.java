@@ -39,8 +39,9 @@ public class SpreadCircleParticle extends CircleParticle {
                                 IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
                                 VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                                 ColorData colorData, Object particleData,
-                                IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(particle, origin, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+                                IntArgument amount, RangeArgument speed, RangeArgument size,
+                                boolean directional, boolean longDistance) {
+        super(particle, origin, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
         this.spread = spread;
     }
 
@@ -140,6 +141,8 @@ public class SpreadCircleParticle extends CircleParticle {
         if (speed != null)
             builder.speed(speed.get(player, this, data));
 
+        builder.longDistance(longDistance);
+
         var playerManager = TreasureParticles.getPlayerManager();
         builder.viewers(viewer -> playerManager.getEffectData(viewer).canSeeEffects());
 
@@ -148,6 +151,13 @@ public class SpreadCircleParticle extends CircleParticle {
 
     @Override
     public SpreadCircleParticle clone() {
-        return new SpreadCircleParticle(particle, origin, spread, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        return new SpreadCircleParticle(
+                particle, origin,
+                spread, particles, radius, tickData, vertical,
+                position, offset, multiplier,
+                colorData, particleData,
+                amount, speed, size,
+                directional, longDistance
+        );
     }
 }

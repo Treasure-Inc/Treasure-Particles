@@ -145,8 +145,18 @@ public class MixerGUI {
                             GUISounds.play(player, GUISounds.FILTER);
                             return;
                         }
-                        var holderFilter = holder.getFilter();
+
                         var values = HandlerEvent.values();
+
+                        if (event.getClick() == ClickType.NUMBER_KEY) {
+                            holder.setPage(0);
+                            holder.setFilter(values[event.getHotbarButton()]);
+                            open(player, holder);
+                            GUISounds.play(player, GUISounds.FILTER);
+                            return;
+                        }
+
+                        var holderFilter = holder.getFilter();
 
                         var ordinal = holderFilter == null ? (event.isRightClick() ? values.length - 1 : 0) : holderFilter.ordinal() + (event.isRightClick() ? -1 : 1);
                         var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];

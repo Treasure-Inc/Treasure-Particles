@@ -26,8 +26,9 @@ public class DotParticle extends ParticleSpawner {
     public DotParticle(ParticleEffect effect, ParticleOrigin origin,
                        VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                        ColorData colorData, Object particleData,
-                       IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+                       IntArgument amount, RangeArgument speed, RangeArgument size,
+                       boolean directional, boolean longDistance) {
+        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
     }
 
     @Override
@@ -49,6 +50,12 @@ public class DotParticle extends ParticleSpawner {
 
     @Override
     public DotParticle clone() {
-        return new DotParticle(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        return new DotParticle(
+                particle, origin,
+                position, offset, multiplier,
+                colorData, particleData,
+                amount, speed, size,
+                directional, longDistance
+        );
     }
 }

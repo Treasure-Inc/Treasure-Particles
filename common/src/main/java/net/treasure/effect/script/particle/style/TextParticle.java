@@ -51,8 +51,9 @@ public class TextParticle extends ParticleSpawner {
                         BufferedImage image,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
-                        IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+                        IntArgument amount, RangeArgument speed, RangeArgument size,
+                        boolean directional, boolean longDistance) {
+        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
         this.stepX = stepX;
         this.stepY = stepY;
         this.scale = scale;
@@ -141,6 +142,14 @@ public class TextParticle extends ParticleSpawner {
 
     @Override
     public TextParticle clone() {
-        return new TextParticle(particle, origin, stepX, stepY, scale, tickData, vertical, rotateX, rotateY, image, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        return new TextParticle(
+                particle, origin,
+                stepX, stepY, scale, tickData, vertical, rotateX, rotateY,
+                image,
+                position, offset, multiplier,
+                colorData, particleData,
+                amount, speed, size,
+                directional, longDistance
+        );
     }
 }

@@ -4,7 +4,7 @@ import net.treasure.constants.Patterns;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.Script;
-import net.treasure.util.UnsafeConsumer;
+import net.treasure.util.unsafe.UnsafeConsumer;
 import net.treasure.util.logging.ComponentLogger;
 
 import java.util.HashMap;

@@ -28,7 +28,7 @@ public class NMSHandler extends AbstractNMSHandler {
         var location = builder.location();
         var packet = new PacketPlayOutWorldParticles(
                 builder.data(),
-                false,
+                builder.longDistance(),
                 location.getX(),
                 location.getY(),
                 location.getZ(),
@@ -56,7 +56,7 @@ public class NMSHandler extends AbstractNMSHandler {
             var location = builder.location();
             var packet = new PacketPlayOutWorldParticles(
                     builder.data(),
-                    false,
+                    builder.longDistance(),
                     location.getX(),
                     location.getY(),
                     location.getZ(),

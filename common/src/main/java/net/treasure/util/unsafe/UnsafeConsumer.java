@@ -1,4 +1,4 @@
-package net.treasure.util;
+package net.treasure.util.unsafe;
 
 @FunctionalInterface
 public interface UnsafeConsumer<T> {

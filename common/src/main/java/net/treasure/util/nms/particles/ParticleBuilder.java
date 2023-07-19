@@ -28,9 +28,10 @@ public class ParticleBuilder {
     private float offsetX = 0, offsetY = 0, offsetZ = 0;
     private float extra = 1;
     private Object data;
+    private boolean longDistance;
 
     public ParticleBuilder copy() {
-        return new ParticleBuilder(particle, viewers, source, location, amount, offsetX, offsetY, offsetZ, extra, data);
+        return new ParticleBuilder(particle, viewers, source, location, amount, offsetX, offsetY, offsetZ, extra, data, longDistance);
     }
 
     public Predicate<Player> filter() {

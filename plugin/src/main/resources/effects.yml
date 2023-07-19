@@ -107,7 +107,7 @@ effects:
       projectile:
         event: PROJECTILE
         scripts:
-          - particle [effect=redstone,size=5,origin=head,color={name=rainbow;speed=0.1;revert=false}]
+          - particle [effect=redstone,size=5,origin=head,color={name=rainbow;speed=0.1;revert=false},long-distance=true]
   rainbow-flag:
     display-name: "%rainbow-flag%"
     armor-color: "rainbow"
@@ -311,7 +311,7 @@ effects:
       projectile:
         event: PROJECTILE
         scripts:
-          - particle [effect=redstone,size=5,origin=feet,color={dynamic=true;speed=0.1;revert=true}]
+          - particle [effect=redstone,size=5,origin=feet,color={dynamic=true;speed=0.1;revert=true},long-distance=true]
   gradient-spiral:
     display-name: "%gradient-spiral%"
     color-group: "gradients"
@@ -818,7 +818,7 @@ effects:
       projectile:
         event: PROJECTILE
         scripts:
-          - particle [effect=redstone,size=5,origin=feet,color={name=christmas;speed=1.75;revert=false}]
+          - particle [effect=redstone,size=5,origin=feet,color={name=christmas;speed=1.75;revert=false},long-distance=true]
   christmas-circle:
     display-name: "%christmas-circle%"
     permission: "%christmas"

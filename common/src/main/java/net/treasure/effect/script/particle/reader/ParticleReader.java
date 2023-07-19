@@ -3,7 +3,6 @@ package net.treasure.effect.script.particle.reader;
 import net.treasure.color.data.ColorData;
 import net.treasure.color.data.duo.DuoImpl;
 import net.treasure.constants.Patterns;
-import net.treasure.util.nms.particles.ParticleEffect;
 import net.treasure.effect.Effect;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.argument.type.DoubleArgument;
@@ -16,6 +15,7 @@ import net.treasure.effect.script.particle.ParticleOrigin;
 import net.treasure.effect.script.particle.ParticleSpawner;
 import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.effect.script.reader.ScriptReader;
+import net.treasure.util.nms.particles.ParticleEffect;
 import net.treasure.util.nms.particles.Particles;
 import org.bukkit.Bukkit;
 
@@ -59,7 +59,6 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> {
             var args = Patterns.ASTERISK.split(c.value());
             var origin = StaticArgument.asEnumArgument(c, ParticleOrigin.class).get(args[0]);
-            if (origin == null) return;
             c.script().origin(origin);
 
             if (args.length == 2) {
@@ -91,6 +90,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         }, "color", "color-scheme");
 
         addValidArgument(c -> c.script().directional(StaticArgument.asBoolean(c)), "direction", "directional");
+
+        addValidArgument(c -> c.script().longDistance(StaticArgument.asBoolean(c)), "long-distance", "long");
 
         addValidArgument(c -> c.script().amount(IntArgument.read(c)), "amount");
 

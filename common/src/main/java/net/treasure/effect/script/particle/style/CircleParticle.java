@@ -42,8 +42,9 @@ public class CircleParticle extends ParticleSpawner {
                           IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
                           VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                           ColorData colorData, Object particleData,
-                          IntArgument amount, RangeArgument speed, RangeArgument size, boolean directional) {
-        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+                          IntArgument amount, RangeArgument speed, RangeArgument size,
+                          boolean directional, boolean longDistance) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
         this.particles = particles;
         this.radius = radius;
         this.tickData = tickData;
@@ -105,6 +106,13 @@ public class CircleParticle extends ParticleSpawner {
 
     @Override
     public CircleParticle clone() {
-        return new CircleParticle(particle, origin, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        return new CircleParticle(
+                particle, origin,
+                particles, radius, tickData, vertical,
+                position, offset, multiplier,
+                colorData, particleData,
+                amount, speed, size,
+                directional, longDistance
+        );
     }
 }
