@@ -41,10 +41,13 @@ public class TextParticle extends ParticleSpawner {
     boolean tickData;
     boolean vertical = true;
 
+    Float rotateX;
+    Float rotateY;
+
     BufferedImage image;
 
     public TextParticle(ParticleEffect effect, ParticleOrigin origin,
-                        int stepX, int stepY, float scale, boolean tickData, boolean vertical,
+                        int stepX, int stepY, float scale, boolean tickData, boolean vertical, Float rotateX, Float rotateY,
                         BufferedImage image,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
@@ -55,6 +58,8 @@ public class TextParticle extends ParticleSpawner {
         this.scale = scale;
         this.tickData = tickData;
         this.vertical = vertical;
+        this.rotateX = rotateX;
+        this.rotateY = rotateY;
         this.image = image;
     }
 
@@ -82,7 +87,10 @@ public class TextParticle extends ParticleSpawner {
                         new Vector((float) image.getWidth() / 2 - x, (float) image.getHeight() / 2 - y, 0) :
                         new Vector((float) image.getHeight() / 2 - y, 0, (float) image.getWidth() / 2 - x)
                 ).multiply(scale);
-                Vectors.rotateAroundAxisY(v, yaw);
+
+                Vectors.rotateAroundAxisY(v, rotateY == null ? yaw : rotateY);
+                if (rotateX != null)
+                    Vectors.rotateAroundAxisX(v, rotateX);
 
                 var copy = builder.copy()
                         .location(location.clone().add(v))
@@ -133,6 +141,6 @@ public class TextParticle extends ParticleSpawner {
 
     @Override
     public TextParticle clone() {
-        return new TextParticle(particle, origin, stepX, stepY, scale, tickData, vertical, image, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
+        return new TextParticle(particle, origin, stepX, stepY, scale, tickData, vertical, rotateX, rotateY, image, position, offset, multiplier, colorData, particleData, amount, speed, size, directional);
     }
 }

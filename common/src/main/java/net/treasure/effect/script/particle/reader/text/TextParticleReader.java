@@ -11,13 +11,16 @@ public class TextParticleReader extends ParticleReader<TextParticle> {
     public TextParticleReader() {
         super();
 
-        addValidArgument(c -> c.script().stepX(StaticArgument.asInt(c)), "step-x");
-        addValidArgument(c -> c.script().stepY(StaticArgument.asInt(c)), "step-y");
+        addValidArgument(c -> c.script().stepX(StaticArgument.asInt(c, 1)), "step-x");
+        addValidArgument(c -> c.script().stepY(StaticArgument.asInt(c, 1)), "step-y");
         addValidArgument(c -> c.script().scale(StaticArgument.asFloat(c)), "scale");
         addValidArgument(c -> c.script().tickData(StaticArgument.asBoolean(c)), "tick-data", "tick");
         addValidArgument(c -> c.script().vertical(StaticArgument.asBoolean(c)), "vertical");
         addValidArgument(c -> c.script().fontName(StaticArgument.asString(c)), "font");
         addValidArgument(c -> c.script().text(StaticArgument.asString(c)), "text");
+
+        addValidArgument(c -> c.script().rotateX(StaticArgument.asFloat(c)), "rotate-x");
+        addValidArgument(c -> c.script().rotateY(StaticArgument.asFloat(c)), "rotate-y");
     }
 
     @Override
