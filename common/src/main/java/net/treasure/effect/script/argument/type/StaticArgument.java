@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.treasure.effect.exception.ReaderException;
 import net.treasure.effect.script.reader.ReaderContext;
 import net.treasure.util.logging.ComponentLogger;
+import net.treasure.util.math.MathUtils;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -47,12 +48,23 @@ public class StaticArgument<T> {
     }
 
     public static int asInt(ReaderContext<?> context) throws ReaderException {
-        return asInt(context.value());
+        return asInt(context.value(), Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    public static int asInt(String value) throws ReaderException {
+    public static int asInt(ReaderContext<?> context, int min) throws ReaderException {
+        return asInt(context.value(), min, Integer.MAX_VALUE);
+    }
+
+    public static int asInt(ReaderContext<?> context, int min, int max) throws ReaderException {
+        return asInt(context.value(), min, max);
+    }
+
+    public static int asInt(String value, int min, int max) throws ReaderException {
         try {
-            return Integer.parseInt(value);
+            var i = Integer.parseInt(value);
+            if (i > max || i < min)
+                throw new ReaderException("Static Integer must be in range (" + min + (max != Integer.MAX_VALUE ? "," + max : "") + "))");
+            return i;
         } catch (Exception e) {
             throw new ReaderException("Valid values for Static Integer argument: integers");
         }
