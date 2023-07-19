@@ -50,7 +50,7 @@ import java.util.logging.Level;
 @Getter
 public class EffectManager implements DataHolder {
 
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.1";
 
     final ConfigurationGenerator generator;
 
