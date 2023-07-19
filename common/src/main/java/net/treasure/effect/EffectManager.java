@@ -125,11 +125,10 @@ public class EffectManager implements DataHolder {
 
     @Override
     public void reload() {
+        effects.clear();
         Bukkit.getScheduler().runTask(TreasureParticles.getPlugin(), () -> {
-            if (initialize()) {
-                effects.clear();
+            if (initialize())
                 loadEffects();
-            }
         });
     }
 

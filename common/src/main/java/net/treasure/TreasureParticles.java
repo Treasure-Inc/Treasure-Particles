@@ -140,7 +140,7 @@ public class TreasureParticles {
         plugin.getLogger().info("Reloaded data holders!");
 
         // Player Manager
-        playerManager.reload();
+        Bukkit.getScheduler().runTaskLater(plugin, () -> playerManager.reload(), 5);
         plugin.getLogger().info("Reloaded player manager!");
 
         plugin.getLogger().info("Reloaded TreasureParticles");
