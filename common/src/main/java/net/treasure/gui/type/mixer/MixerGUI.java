@@ -4,9 +4,7 @@ import net.treasure.TreasureParticles;
 import net.treasure.color.ColorManager;
 import net.treasure.color.data.RGBColorData;
 import net.treasure.color.generator.Gradient;
-import net.treasure.effect.EffectManager;
 import net.treasure.effect.data.EffectData;
-import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.effect.mix.MixData;
 import net.treasure.gui.GUIManager;
 import net.treasure.gui.config.ElementType;
@@ -14,6 +12,7 @@ import net.treasure.gui.config.GUIElements;
 import net.treasure.gui.config.GUIElements.ElementInfo;
 import net.treasure.gui.config.GUISounds;
 import net.treasure.gui.task.GUITask;
+import net.treasure.gui.type.GUI;
 import net.treasure.gui.type.mixer.effect.TickHandlersGUI;
 import net.treasure.locale.Translations;
 import net.treasure.player.PlayerManager;
@@ -34,152 +33,79 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static net.treasure.gui.type.GUI.MIXER;
+import static net.treasure.gui.type.GUIType.MIXER;
 
-public class MixerGUI {
+public class MixerGUI extends GUI {
 
     // Managers
-    private static GUIManager manager;
-    private static EffectManager effectManager;
-    private static PlayerManager playerManager;
-    private static ColorManager colorManager;
-    private static Translations translations;
+    private final PlayerManager playerManager;
+    private final ColorManager colorManager;
 
     // GUI Elements
-    public static ElementInfo BORDERS;
-    public static ElementInfo NEXT_PAGE;
-    public static ElementInfo PREVIOUS_PAGE;
-    public static ElementInfo DEFAULT_ICON;
-    public static ElementInfo RESET;
-    public static ElementInfo CLOSE;
-    public static ElementInfo FILTER;
-    public static ElementInfo CONFIRM;
+    private ElementInfo DEFAULT_ICON;
+    private ElementInfo RESET;
+    private ElementInfo CONFIRM;
 
-    public static void configure(GUIManager manager) {
-        MixerGUI.manager = manager;
-        effectManager = TreasureParticles.getEffectManager();
-        playerManager = TreasureParticles.getPlayerManager();
-        colorManager = TreasureParticles.getColorManager();
-        translations = TreasureParticles.getTranslations();
+    public MixerGUI(GUIManager manager) {
+        super(manager, MIXER);
+        this.effectManager = TreasureParticles.getEffectManager();
+        this.playerManager = TreasureParticles.getPlayerManager();
+        this.colorManager = TreasureParticles.getColorManager();
     }
 
-    public static void setItems() {
-        BORDERS = GUIElements.element(MIXER, ElementType.BORDERS, 'B', new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        NEXT_PAGE = GUIElements.element(MIXER, ElementType.NEXT_PAGE, 'N', new ItemStack(Material.ENDER_PEARL));
-        PREVIOUS_PAGE = GUIElements.element(MIXER, ElementType.PREVIOUS_PAGE, 'N', new ItemStack(Material.ENDER_EYE));
-
-        DEFAULT_ICON = GUIElements.element(MIXER, ElementType.DEFAULT_ICON, 'E', new ItemStack(Material.LEATHER_BOOTS));
-
-        RESET = GUIElements.element(MIXER, ElementType.RESET, 'R', new ItemStack(Material.RED_STAINED_GLASS_PANE));
-        CLOSE = GUIElements.element(MIXER, ElementType.CLOSE, 'c', new ItemStack(Material.BARRIER));
-        FILTER = GUIElements.element(MIXER, ElementType.FILTER, 'F', new ItemStack(Material.HOPPER));
-
-        CONFIRM = GUIElements.element(MIXER, ElementType.CONFIRM, 'C', new ItemStack(Material.LIME_STAINED_GLASS_PANE));
+    @Override
+    public void reload() {
+        super.reload();
+        DEFAULT_ICON = GUIElements.element(type, ElementType.DEFAULT_ICON, 'E', new ItemStack(Material.LEATHER_BOOTS));
+        RESET = GUIElements.element(type, ElementType.RESET, 'R', new ItemStack(Material.RED_STAINED_GLASS_PANE));
+        CONFIRM = GUIElements.element(type, ElementType.CONFIRM, 'C', new ItemStack(Material.LIME_STAINED_GLASS_PANE));
     }
 
-    public static void open(Player player) {
+    @Override
+    public void open(Player player) {
         var holder = new MixerHolder();
-        holder.setPage(0);
         open(player, holder);
     }
 
-    public static void open(Player player, MixerHolder holder) {
+    public void open(Player player, MixerHolder holder) {
         // Variables
         var data = playerManager.getEffectData(player);
-        var layout = manager.getStyle().getLayouts().get(MIXER);
         var colorCycleSpeed = manager.getColorCycleSpeed();
         var effectSlots = DEFAULT_ICON.slots();
         var maxEffects = effectSlots.length;
 
-        var currentSelections = holder.getSelected().stream().map(pair -> MessageUtils.gui(pair.getKey().getDisplayName() + "<gray>:<reset> " + pair.getValue().displayName)).toList();
+        var filter = holder.getFilter();
+        var page = holder.getPage();
+
+        var currentSelections = holder.getSelected().stream().map(pair -> MessageUtils.gui(pair.getKey().getDisplayName() + "<gray>:<reset> " + translations.translate("events", pair.getValue().event.translationKey()))).toList();
         var limit = data.getMixEffectLimit();
         var selectedEffectsSize = holder.selectedEffectsSize();
         var canSelectAnotherEffect = limit == -1 || limit > selectedEffectsSize;
 
         // Create inventory
         var inventory = Bukkit.createInventory(holder, layout.getSize(), MessageUtils.parseLegacy(Translations.MIXER_GUI_TITLE) + (limit != -1 ? " (" + (limit - selectedEffectsSize) + ")" : ""));
-        var filter = holder.getFilter();
-        var page = holder.getPage();
         holder.setInventory(inventory);
         holder.canSelectAnotherEffect(canSelectAnotherEffect);
-
-        // Borders
-        if (BORDERS.isEnabled()) for (int slot : BORDERS.slots())
-            holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
-
-        // Close button
-        if (CLOSE.isEnabled()) for (int slot : CLOSE.slots())
-            holder.setItem(slot, new CustomItem(CLOSE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_CLOSE)), event -> player.closeInventory());
 
         // Effects
         var effects = effectManager.getEffects()
                 .stream()
                 .filter(effect ->
                         (filter == null || effect.getEvents().contains(filter)) &&
-                        effect.canUse(player) &&
-                        !effect.mixerCompatibleTickHandlers(holder).isEmpty()
+                                effect.canUse(player) &&
+                                !effect.mixerCompatibleTickHandlersGUI(holder).isEmpty()
                 )
                 .sorted((o1, o2) -> Boolean.compare(holder.isSelected(o2), holder.isSelected(o1)))
                 .toList();
 
-        // Filter button
-        if (FILTER.isEnabled()) for (int slot : FILTER.slots())
-            holder.setItem(slot,
-                    new CustomItem(FILTER.item())
-                            .setDisplayName(MessageUtils.gui(Translations.BUTTON_FILTER))
-                            .setLore(Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.gui("<dark_gray> • <" + (event.equals(filter) ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList())
-                            .addLore(
-                                    MessageUtils.gui(Translations.FILTER_UP),
-                                    MessageUtils.gui(Translations.FILTER_DOWN),
-                                    MessageUtils.gui(Translations.FILTER_RESET)
-                            ),
-                    event -> {
-                        if (event.getClick() == ClickType.MIDDLE) {
-                            holder.setPage(0);
-                            holder.setFilter(null);
-                            open(player, holder);
-                            GUISounds.play(player, GUISounds.FILTER);
-                            return;
-                        }
+        holder.setAvailableFilters(effectManager.getEffects().stream().filter(effect -> effect.canUse(player) && !effect.mixerCompatibleTickHandlers(holder).isEmpty()).flatMap(effect -> effect.getEvents().stream()).distinct().toList());
 
-                        var values = HandlerEvent.values();
-
-                        if (event.getClick() == ClickType.NUMBER_KEY) {
-                            holder.setPage(0);
-                            holder.setFilter(values[event.getHotbarButton()]);
-                            open(player, holder);
-                            GUISounds.play(player, GUISounds.FILTER);
-                            return;
-                        }
-
-                        var holderFilter = holder.getFilter();
-
-                        var ordinal = holderFilter == null ? (event.isRightClick() ? values.length - 1 : 0) : holderFilter.ordinal() + (event.isRightClick() ? -1 : 1);
-                        var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];
-                        holder.setPage(0);
-                        holder.setFilter(newFilter);
-
-                        open(player, holder);
-                        GUISounds.play(player, GUISounds.FILTER);
-                    });
-
-        // Previous page button
-        if (page > 0 && PREVIOUS_PAGE.isEnabled())
-            for (int slot : PREVIOUS_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(PREVIOUS_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_PREVIOUS_PAGE)),
-                        event -> {
-                            holder.setPage(page - 1);
-                            open(player, holder);
-                            GUISounds.play(player, GUISounds.PREVIOUS_PAGE);
-                        });
-        else if (PREVIOUS_PAGE.isEnabled() && BORDERS.isEnabled())
-            for (int slot : PREVIOUS_PAGE.slots())
-                holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
+        super.commonItems(player, holder)
+                .pageItems(player, holder, (page + 1) * maxEffects < effects.size(), () -> open(player, holder))
+                .filterItem(player, holder, () -> open(player, holder));
 
         // Reset effect button
         if (!holder.getSelected().isEmpty() && RESET.isEnabled())
@@ -196,20 +122,6 @@ public class MixerGUI {
                         });
         else if (RESET.isEnabled() && BORDERS.isEnabled())
             for (int slot : RESET.slots())
-                holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
-
-        // Next page button
-        if ((page + 1) * maxEffects < effects.size() && NEXT_PAGE.isEnabled())
-            for (int slot : NEXT_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(NEXT_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_NEXT_PAGE)),
-                        event -> {
-                            holder.setPage(page + 1);
-                            open(player, holder);
-                            GUISounds.play(player, GUISounds.NEXT_PAGE);
-                        });
-        else if (NEXT_PAGE.isEnabled() && BORDERS.isEnabled())
-            for (int slot : NEXT_PAGE.slots())
                 holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
 
         // Confirm button
@@ -290,9 +202,10 @@ public class MixerGUI {
                     .setDisplayName(effect.getParsedDisplayName())
                     .addLore(effect.getDescription())
                     .addLore(effect.getDescription() != null ? ChatColor.AQUA.toString() : null)
-                    .addLore(
-                            colorGroup != null ? MessageUtils.gui(Translations.MIXER_GUI_HAS_DYNAMIC_COLOR) : null,
-                            colorGroup != null ? MessageUtils.gui(prefColorGroup ? Translations.MIXER_GUI_PREFERRED_COLOR_GROUP : Translations.MIXER_GUI_PREFER_COLOR_GROUP) : null
+                    .addLore(colorGroup == null ? null : List.of(
+                            MessageUtils.gui(Translations.MIXER_GUI_HAS_DYNAMIC_COLOR),
+                            MessageUtils.gui(prefColorGroup ? Translations.MIXER_GUI_PREFERRED_COLOR_GROUP : Translations.MIXER_GUI_PREFER_COLOR_GROUP),
+                            ChatColor.AQUA.toString())
                     )
                     .addLore(allSelected ? MessageUtils.gui(Translations.MIXER_GUI_ALL_SELECTED) : null)
                     .addLore(hasCompatibleSelection && canSelectAnotherEffect ? MessageUtils.gui(Translations.MIXER_GUI_SELECT_ALL) : null)

@@ -10,11 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 
 @AllArgsConstructor
@@ -66,7 +62,7 @@ public class HandlerEventsListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player player) {
-            if (player.isGliding() && event.getEntity() instanceof Firework) return;
+            if (event.getEntity() instanceof Firework) return;
             var data = playerManager.getEffectData(player);
             if (data == null) return;
             var effect = data.getCurrentEffect();

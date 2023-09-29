@@ -8,7 +8,7 @@ import net.treasure.gui.config.ElementType;
 import net.treasure.gui.config.GUIElements;
 import net.treasure.gui.config.GUISounds;
 import net.treasure.gui.task.GUITask;
-import net.treasure.gui.type.effects.EffectsGUI;
+import net.treasure.gui.type.GUI;
 import net.treasure.locale.Translations;
 import net.treasure.player.PlayerManager;
 import net.treasure.util.item.CustomItem;
@@ -23,40 +23,47 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
-import static net.treasure.gui.type.GUI.COLORS;
+import static net.treasure.gui.type.GUIType.COLORS;
 
-public class ColorsGUI {
+public class ColorsGUI extends GUI {
 
-    private static GUIManager manager;
-    private static PlayerManager playerManager;
+    protected final PlayerManager playerManager;
 
-    public static GUIElements.ElementInfo BORDERS;
-    public static GUIElements.ElementInfo COLOR_ICON;
-    public static GUIElements.ElementInfo NEXT_PAGE;
-    public static GUIElements.ElementInfo PREVIOUS_PAGE;
-    public static GUIElements.ElementInfo RANDOM_COLOR;
-    public static GUIElements.ElementInfo BACK;
+    private GUIElements.ElementInfo COLOR_ICON;
+    private GUIElements.ElementInfo RANDOM_COLOR;
+    private GUIElements.ElementInfo BACK;
 
-    public static void configure(GUIManager manager) {
-        ColorsGUI.manager = manager;
-        playerManager = TreasureParticles.getPlayerManager();
+    public ColorsGUI(GUIManager manager) {
+        super(manager, COLORS);
+        this.playerManager = TreasureParticles.getPlayerManager();
     }
 
-    public static void setItems() {
-        BORDERS = GUIElements.element(COLORS, ElementType.BORDERS, 'B', new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        COLOR_ICON = GUIElements.element(COLORS, ElementType.COLOR_ICON, 'C', new ItemStack(Material.LEATHER_HORSE_ARMOR));
-
-        NEXT_PAGE = GUIElements.element(COLORS, ElementType.NEXT_PAGE, 'N', new ItemStack(Material.ENDER_PEARL));
-        PREVIOUS_PAGE = GUIElements.element(COLORS, ElementType.PREVIOUS_PAGE, 'P', new ItemStack(Material.ENDER_EYE));
-        RANDOM_COLOR = GUIElements.element(COLORS, ElementType.RANDOM_COLOR, 'R', new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
-        BACK = GUIElements.element(COLORS, ElementType.BACK, 'b', new ItemStack(Material.STRUCTURE_VOID));
+    @Override
+    public void reload() {
+        super.reload();
+        COLOR_ICON = GUIElements.element(type, ElementType.COLOR_ICON, 'C', new ItemStack(Material.LEATHER_HORSE_ARMOR));
+        RANDOM_COLOR = GUIElements.element(type, ElementType.RANDOM_COLOR, 'R', new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
+        BACK = GUIElements.element(type, ElementType.BACK, 'b', new ItemStack(Material.STRUCTURE_VOID));
     }
 
-    public static void open(Player player, Effect effect, int page) {
+    @Override
+    public void open(Player player) {
+        throw new RuntimeException("Unsupported");
+    }
+
+    public void open(Player player, Effect effect, int page) {
         // Variables
         var data = playerManager.getEffectData(player);
         var preference = data.getColorPreferences().get(effect.getKey());
-        var layout = manager.getStyle().getLayouts().get(COLORS);
+        var colorSlots = COLOR_ICON.slots();
+        var maxColors = colorSlots.length;
+
+        // Colors
+        var colors = effect.getColorGroup().getAvailableOptions().stream().filter(option -> option.canUse(player)).toList();
+        if (colors.isEmpty()) {
+            manager.effectsGUI().open(player);
+            return;
+        }
 
         // Create inventory
         var holder = new ColorsHolder(effect);
@@ -64,56 +71,17 @@ public class ColorsGUI {
         holder.setInventory(inventory);
         holder.setPage(page);
 
-        // Borders
-        if (BORDERS.isEnabled()) for (int slot : BORDERS.slots())
-            holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
-
-        // Colors
-        var colors = effect.getColorGroup().getAvailableOptions().stream().filter(option -> option.canUse(player)).toList();
-        if (colors.isEmpty()) {
-            EffectsGUI.open(player, null, 0);
-            return;
-        }
+        this.commonItems(player, holder)
+                .pageItems(player, holder, (page + 1) * maxColors < colors.size(), () -> open(player, effect, holder.getPage()));
 
         // Back button
         if (BACK.isEnabled()) for (int slot : BACK.slots())
             holder.setItem(slot,
                     new CustomItem(BACK.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_BACK)),
                     event -> {
-                        EffectsGUI.open(player, null, 0);
+                        manager.effectsGUI().open(player);
                         GUISounds.play(player, GUISounds.BACK);
                     });
-
-        // Previous page button
-        if (page > 0 && PREVIOUS_PAGE.isEnabled())
-            for (int slot : PREVIOUS_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(PREVIOUS_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_PREVIOUS_PAGE)),
-                        event -> {
-                            ColorsGUI.open(player, effect, holder.getPage() - 1);
-                            GUISounds.play(player, GUISounds.PREVIOUS_PAGE);
-                        });
-        else if (PREVIOUS_PAGE.isEnabled() && BORDERS.isEnabled())
-            for (int slot : PREVIOUS_PAGE.slots())
-                inventory.setItem(slot, new CustomItem(BORDERS.item())
-                        .emptyName()
-                        .build());
-
-        var colorSlots = COLOR_ICON.slots();
-        var maxColors = colorSlots.length;
-
-        // Next page button
-        if ((page + 1) * maxColors < colors.size() && NEXT_PAGE.isEnabled())
-            for (int slot : NEXT_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(NEXT_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_NEXT_PAGE)),
-                        event -> {
-                            ColorsGUI.open(player, effect, holder.getPage() + 1);
-                            GUISounds.play(player, GUISounds.NEXT_PAGE);
-                        });
-        else if (BORDERS.isEnabled())
-            for (int slot : NEXT_PAGE.slots())
-                holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
 
         // Random color button
         if (RANDOM_COLOR.isEnabled())
@@ -161,7 +129,7 @@ public class ColorsGUI {
 
                     data.setColorPreference(effect, scheme);
                     MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, scheme.getDisplayName(), effect.getDisplayName());
-                    EffectsGUI.open(player, null, 0);
+                    manager.effectsGUI().open(player);
                 } else {
                     sound = GUISounds.SELECT_EFFECT;
 

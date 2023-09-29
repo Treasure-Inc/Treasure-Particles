@@ -5,16 +5,13 @@ import net.treasure.color.ColorManager;
 import net.treasure.color.data.RGBColorData;
 import net.treasure.color.generator.Gradient;
 import net.treasure.effect.Effect;
-import net.treasure.effect.EffectManager;
-import net.treasure.effect.handler.HandlerEvent;
 import net.treasure.gui.GUIManager;
 import net.treasure.gui.config.ElementType;
 import net.treasure.gui.config.GUIElements;
 import net.treasure.gui.config.GUIElements.ElementInfo;
 import net.treasure.gui.config.GUISounds;
 import net.treasure.gui.task.GUITask;
-import net.treasure.gui.type.color.ColorsGUI;
-import net.treasure.gui.type.mixer.MixerGUI;
+import net.treasure.gui.type.GUI;
 import net.treasure.locale.Translations;
 import net.treasure.permission.Permissions;
 import net.treasure.player.PlayerManager;
@@ -30,136 +27,77 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static net.treasure.gui.type.GUI.EFFECTS;
+import static net.treasure.gui.type.GUIType.EFFECTS;
 
-public class EffectsGUI {
+public class EffectsGUI extends GUI {
 
     // Managers
-    private static GUIManager manager;
-    private static EffectManager effectManager;
-    private static PlayerManager playerManager;
-    private static ColorManager colorManager;
-    private static Translations translations;
+    private final PlayerManager playerManager;
+    private final ColorManager colorManager;
 
     // GUI Elements
-    public static ElementInfo BORDERS;
-    public static ElementInfo NEXT_PAGE;
-    public static ElementInfo PREVIOUS_PAGE;
     public static ElementInfo DEFAULT_ICON;
-    public static ElementInfo RANDOM_EFFECT;
-    public static ElementInfo RESET;
-    public static ElementInfo CLOSE;
-    public static ElementInfo FILTER;
-    public static ElementInfo MIXER;
+    private ElementInfo RANDOM_EFFECT;
+    private ElementInfo RESET;
+    private ElementInfo MIXER;
 
-    public static void configure(GUIManager manager) {
-        EffectsGUI.manager = manager;
-        effectManager = TreasureParticles.getEffectManager();
-        playerManager = TreasureParticles.getPlayerManager();
-        colorManager = TreasureParticles.getColorManager();
-        translations = TreasureParticles.getTranslations();
+    public EffectsGUI(GUIManager manager) {
+        super(manager, EFFECTS);
+        this.effectManager = TreasureParticles.getEffectManager();
+        this.playerManager = TreasureParticles.getPlayerManager();
+        this.colorManager = TreasureParticles.getColorManager();
     }
 
-    public static void setItems() {
-        BORDERS = GUIElements.element(EFFECTS, ElementType.BORDERS, 'B', new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        NEXT_PAGE = GUIElements.element(EFFECTS, ElementType.NEXT_PAGE, 'N', new ItemStack(Material.ENDER_PEARL));
-        PREVIOUS_PAGE = GUIElements.element(EFFECTS, ElementType.PREVIOUS_PAGE, 'N', new ItemStack(Material.ENDER_EYE));
-
-        DEFAULT_ICON = GUIElements.element(EFFECTS, ElementType.DEFAULT_ICON, 'E', new ItemStack(Material.LEATHER_BOOTS));
-        RANDOM_EFFECT = GUIElements.element(EFFECTS, ElementType.RANDOM_EFFECT, 'r', new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
-
-        RESET = GUIElements.element(EFFECTS, ElementType.RESET, 'R', new ItemStack(Material.RED_STAINED_GLASS_PANE));
-        CLOSE = GUIElements.element(EFFECTS, ElementType.CLOSE, 'C', new ItemStack(Material.BARRIER));
-        FILTER = GUIElements.element(EFFECTS, ElementType.FILTER, 'F', new ItemStack(Material.HOPPER));
-
-        MIXER = GUIElements.element(EFFECTS, ElementType.MIXER, 'M', new ItemStack(Material.END_CRYSTAL));
+    @Override
+    public void reload() {
+        super.reload();
+        DEFAULT_ICON = GUIElements.element(type, ElementType.DEFAULT_ICON, 'E', new ItemStack(Material.LEATHER_BOOTS));
+        RANDOM_EFFECT = GUIElements.element(type, ElementType.RANDOM_EFFECT, 'r', new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
+        RESET = GUIElements.element(type, ElementType.RESET, 'R', new ItemStack(Material.RED_STAINED_GLASS_PANE));
+        MIXER = GUIElements.element(type, ElementType.MIXER, 'M', new ItemStack(Material.END_CRYSTAL));
     }
 
-    public static void open(Player player, HandlerEvent filter, int page) {
-        var effects = effectManager.getEffects().stream().filter(effect -> (filter == null || effect.getEvents().contains(filter)) && effect.canUse(player)).toList();
+    @Override
+    public void open(Player player) {
         var holder = new EffectsHolder();
-        holder.setFilter(filter);
+        open(player, holder);
+    }
+
+    public void open(Player player, int page) {
+        var holder = new EffectsHolder();
         holder.setPage(page);
+        open(player, holder);
+    }
+
+    public void open(Player player, EffectsHolder holder) {
+        var filter = holder.getFilter();
+        var effects = effectManager.getEffects().stream().filter(effect -> (filter == null || effect.getEvents().contains(filter)) && effect.canUse(player)).toList();
         open(player, holder, effects);
     }
 
-    public static void open(Player player, EffectsHolder holder, List<Effect> effects) {
+    public void open(Player player, EffectsHolder holder, List<Effect> effects) {
         // Variables
         var data = playerManager.getEffectData(player);
-        var layout = manager.getStyle().getLayouts().get(EFFECTS);
         var colorCycleSpeed = manager.getColorCycleSpeed();
         var effectSlots = DEFAULT_ICON.slots();
         var maxEffects = effectSlots.length;
 
         var page = holder.getPage();
-        var filter = holder.getFilter();
 
         // Create inventory
         var inventory = Bukkit.createInventory(holder, layout.getSize(), MessageUtils.parseLegacy(Translations.EFFECTS_GUI_TITLE));
         holder.setInventory(inventory);
 
-        // Borders
-        if (BORDERS.isEnabled()) for (int slot : BORDERS.slots())
-            holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
+        holder.setAvailableFilters(effectManager.getEffects().stream().filter(effect -> effect.canUse(player)).flatMap(effect -> effect.getEvents().stream()).distinct().toList());
 
-        // Close button
-        if (CLOSE.isEnabled()) for (int slot : CLOSE.slots())
-            holder.setItem(slot, new CustomItem(CLOSE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_CLOSE)), event -> player.closeInventory());
+        super.commonItems(player, holder)
+                .pageItems(player, holder, (page + 1) * maxEffects < effects.size(), () -> open(player, holder, effects))
+                .filterItem(player, holder, () -> open(player, holder));
 
-        // Filter button
-        if (FILTER.isEnabled()) for (int slot : FILTER.slots())
-            holder.setItem(slot,
-                    new CustomItem(FILTER.item())
-                            .setDisplayName(MessageUtils.gui(Translations.BUTTON_FILTER))
-                            .setLore(Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.gui("<dark_gray> • <" + (event.equals(filter) ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList())
-                            .addLore(
-                                    MessageUtils.gui(Translations.FILTER_UP),
-                                    MessageUtils.gui(Translations.FILTER_DOWN),
-                                    MessageUtils.gui(Translations.FILTER_RESET)
-                            ),
-                    event -> {
-                        if (event.getClick() == ClickType.MIDDLE) {
-                            open(player, null, 0);
-                            GUISounds.play(player, GUISounds.FILTER);
-                            return;
-                        }
-
-                        var values = HandlerEvent.values();
-
-                        if (event.getClick() == ClickType.NUMBER_KEY) {
-                            open(player, values[event.getHotbarButton()], 0);
-                            GUISounds.play(player, GUISounds.FILTER);
-                            return;
-                        }
-
-                        var holderFilter = holder.getFilter();
-
-                        var ordinal = holderFilter == null ? (event.isRightClick() ? values.length - 1 : 0) : holderFilter.ordinal() + (event.isRightClick() ? -1 : 1);
-                        var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];
-
-                        open(player, newFilter, 0);
-                        GUISounds.play(player, GUISounds.FILTER);
-                    });
-
-        // Previous page button
-        if (page > 0 && PREVIOUS_PAGE.isEnabled())
-            for (int slot : PREVIOUS_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(PREVIOUS_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_PREVIOUS_PAGE)),
-                        event -> {
-                            holder.setPage(holder.getPage() - 1);
-                            open(player, holder, effects);
-                            GUISounds.play(player, GUISounds.PREVIOUS_PAGE);
-                        });
-        else if (PREVIOUS_PAGE.isEnabled() && BORDERS.isEnabled())
-            for (int slot : PREVIOUS_PAGE.slots())
-                holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
-
-        // Reset effect button
+        //region Reset effect button
         if (data.getCurrentEffect() != null && RESET.isEnabled())
             for (int slot : RESET.slots())
                 holder.setItem(slot,
@@ -168,14 +106,15 @@ public class EffectsGUI {
                                 .addLore(MessageUtils.gui(Translations.EFFECTS_GUI_CURRENT, data.getCurrentEffect().getDisplayName())),
                         event -> {
                             data.setCurrentEffect(null);
-                            open(player, holder, effects);
+                            open(player);
                             GUISounds.play(player, GUISounds.RESET);
                         });
         else if (RESET.isEnabled() && BORDERS.isEnabled())
             for (int slot : RESET.slots())
                 holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
+        //endregion
 
-        // Random effect button
+        //region Random effect button
         if (!effects.isEmpty() && RANDOM_EFFECT.isEnabled())
             for (int slot : RANDOM_EFFECT.slots())
                 holder.setItem(slot,
@@ -190,8 +129,9 @@ public class EffectsGUI {
         else if (RANDOM_EFFECT.isEnabled() && BORDERS.isEnabled())
             for (int slot : RANDOM_EFFECT.slots())
                 holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
+        //endregion
 
-        // Mixer button
+        //region Mixer button
         var hasMix = !data.getMixData().isEmpty();
         var canCreateAnotherMix = data.canCreateAnotherMix();
         if (!holder.isPlayerMixGUI() && MIXER.isEnabled() && player.hasPermission(Permissions.MIXER))
@@ -205,7 +145,7 @@ public class EffectsGUI {
                                 ),
                         event -> {
                             if (event.isRightClick() && canCreateAnotherMix) {
-                                MixerGUI.open(player);
+                                manager.mixerGUI().open(player);
                                 return;
                             }
                             if (!hasMix) return;
@@ -231,20 +171,7 @@ public class EffectsGUI {
         else if ((holder.isPlayerMixGUI() || MIXER.isEnabled()) && BORDERS.isEnabled())
             for (int slot : MIXER.slots())
                 holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
-
-        // Next page button
-        if ((page + 1) * maxEffects < effects.size() && NEXT_PAGE.isEnabled())
-            for (int slot : NEXT_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(NEXT_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_NEXT_PAGE)),
-                        event -> {
-                            holder.nextPage();
-                            open(player, holder, effects);
-                            GUISounds.play(player, GUISounds.NEXT_PAGE);
-                        });
-        else if (NEXT_PAGE.isEnabled() && BORDERS.isEnabled())
-            for (int slot : NEXT_PAGE.slots())
-                holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
+        //endregion
 
         // Effects
         int index = 0;
@@ -300,7 +227,7 @@ public class EffectsGUI {
                     return;
                 }
                 if (event.isRightClick() && canUseAny) {
-                    ColorsGUI.open(player, effect, 0);
+                    manager.colorsGUI().open(player, effect, 0);
                     return;
                 }
                 data.setCurrentEffect(effect);

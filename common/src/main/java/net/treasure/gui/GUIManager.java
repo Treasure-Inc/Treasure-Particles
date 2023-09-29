@@ -1,6 +1,7 @@
 package net.treasure.gui;
 
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.treasure.TreasureParticles;
 import net.treasure.configuration.ConfigurationGenerator;
 import net.treasure.configuration.DataHolder;
@@ -10,7 +11,7 @@ import net.treasure.gui.config.GUISounds;
 import net.treasure.gui.config.GUIStyle;
 import net.treasure.gui.listener.GUIListener;
 import net.treasure.gui.task.GUITask;
-import net.treasure.gui.type.GUI;
+import net.treasure.gui.type.GUIType;
 import net.treasure.gui.type.admin.AdminGUI;
 import net.treasure.gui.type.color.ColorsGUI;
 import net.treasure.gui.type.effects.EffectsGUI;
@@ -30,21 +31,31 @@ public class GUIManager implements DataHolder {
     final ConfigurationGenerator generator;
     YamlConfiguration config;
 
+    GUIStyle style;
     final GUIElements elements = new GUIElements();
     final GUISounds sounds = new GUISounds();
-    GUIStyle style;
+
+    @Accessors(fluent = true)
+    final EffectsGUI effectsGUI;
+    @Accessors(fluent = true)
+    final ColorsGUI colorsGUI;
+    @Accessors(fluent = true)
+    final MixerGUI mixerGUI;
+    @Accessors(fluent = true)
+    final AdminGUI adminGUI;
 
     int taskId = -5, interval = 2;
     float colorCycleSpeed = 0.85f;
 
     public GUIManager() {
         this.generator = new ConfigurationGenerator("gui.yml");
+        this.effectsGUI = new EffectsGUI(this);
+        this.colorsGUI = new ColorsGUI(this);
+        this.mixerGUI = new MixerGUI(this);
+        this.adminGUI = new AdminGUI(this);
+        TickHandlersGUI.configure(this);
+
         Bukkit.getPluginManager().registerEvents(new GUIListener(), TreasureParticles.getPlugin());
-        EffectsGUI.configure(this);
-        ColorsGUI.configure(this);
-        AdminGUI.configure(this);
-        MixerGUI.configure(this);
-        TickHandlersGUI.configure();
     }
 
     @Override
@@ -84,9 +95,10 @@ public class GUIManager implements DataHolder {
         elements.initialize(this);
         sounds.initialize(this);
 
-        EffectsGUI.setItems();
-        ColorsGUI.setItems();
-        MixerGUI.setItems();
+        effectsGUI.reload();
+        colorsGUI.reload();
+        mixerGUI.reload();
+        adminGUI.reload();
         TickHandlersGUI.setItems();
         return true;
     }
@@ -101,7 +113,7 @@ public class GUIManager implements DataHolder {
         if (id == null) return null;
         return new GUIStyle(
                 id,
-                Stream.of(GUI.values())
+                Stream.of(GUIType.values())
                         .collect(Collectors.toMap(
                                 gui -> gui,
                                 gui -> new GUILayout(config.getStringList("styles." + id + "." + gui.id() + ".layout").toArray(String[]::new))

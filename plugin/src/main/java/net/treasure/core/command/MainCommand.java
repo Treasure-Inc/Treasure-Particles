@@ -1,25 +1,15 @@
 package net.treasure.core.command;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CatchUnknown;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Name;
-import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Private;
-import co.aikar.commands.annotation.Single;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import net.treasure.TreasureParticles;
 import net.treasure.core.TreasurePlugin;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
+import net.treasure.gui.GUIManager;
 import net.treasure.gui.task.GUITask;
 import net.treasure.gui.type.admin.AdminGUI;
-import net.treasure.gui.type.effects.EffectsGUI;
-import net.treasure.gui.type.mixer.MixerGUI;
 import net.treasure.locale.Locale;
 import net.treasure.locale.Translations;
 import net.treasure.permission.Permissions;
@@ -38,11 +28,13 @@ public class MainCommand extends BaseCommand {
     final TreasurePlugin plugin;
     final PlayerManager playerManager;
     final EffectManager effectManager;
+    final GUIManager guiManager;
 
     public MainCommand(TreasurePlugin plugin) {
         this.plugin = plugin;
-        this.effectManager = TreasureParticles.getEffectManager();
         this.playerManager = TreasureParticles.getPlayerManager();
+        this.effectManager = TreasureParticles.getEffectManager();
+        this.guiManager = TreasureParticles.getGUIManager();
     }
 
     @Default
@@ -53,7 +45,7 @@ public class MainCommand extends BaseCommand {
         int maxPage = (effectManager.getEffects().size() / 28) + 1;
         if (page >= maxPage)
             page = maxPage - 1;
-        EffectsGUI.open(player, null, page);
+        guiManager.effectsGUI().open(player, page);
     }
 
     @Subcommand("toggle")
@@ -71,7 +63,7 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(player, Translations.COMMAND_NO_PERMISSION);
             return;
         }
-        MixerGUI.open(player);
+        guiManager.mixerGUI().open(player);
     }
 
     @Subcommand("select|sel")
@@ -179,7 +171,7 @@ public class MainCommand extends BaseCommand {
     @Subcommand("admin")
     @CommandPermission(Permissions.COMMAND_ADMIN)
     public void admin(Player player) {
-        AdminGUI.open(player, null, null, 0);
+        guiManager.adminGUI().open(player, null, null, 0);
     }
 
     @Subcommand("reload|rl")

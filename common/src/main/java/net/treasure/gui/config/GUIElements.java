@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import net.treasure.gui.GUIManager;
-import net.treasure.gui.type.GUI;
+import net.treasure.gui.type.GUIType;
 import net.treasure.util.item.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,11 +24,11 @@ public class GUIElements {
         path = "styles." + manager.getStyle().id + ".";
     }
 
-    public static ElementInfo element(GUI gui, ElementType type, char key, ItemStack item) {
+    public static ElementInfo element(GUIType gui, ElementType type, char key, ItemStack item) {
         return new ElementInfo(getKey(gui, type, key), getItemStack(gui, type, item)).slots(manager.getStyle().layouts.get(gui).rows);
     }
 
-    private static char getKey(GUI gui, ElementType type, char defaultValue) {
+    private static char getKey(GUIType gui, ElementType type, char defaultValue) {
         try {
             return manager.getConfig().getString(path + gui.id() + ".elements." + type.id + ".key").charAt(0);
         } catch (Exception ignored) {
@@ -36,11 +36,11 @@ public class GUIElements {
         }
     }
 
-    public static ItemStack getItemStack(GUI gui, ElementType buttonType, ItemStack defaultValue) {
-        return getItemStack(manager.getConfig(), buttonType.id, defaultValue);
+    public static ItemStack getItemStack(GUIType gui, ElementType buttonType, ItemStack defaultValue) {
+        return getItemStack(manager.getConfig(), path + gui.id() + ".elements." + buttonType.id + ".item", defaultValue);
     }
 
-    public static ItemStack getItemStack(GUI gui, String buttonId, ItemStack defaultValue) {
+    public static ItemStack getItemStack(GUIType gui, String buttonId, ItemStack defaultValue) {
         return getItemStack(manager.getConfig(), path + gui.id() + ".elements." + buttonId + ".item", defaultValue);
     }
 

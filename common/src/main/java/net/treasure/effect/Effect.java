@@ -323,6 +323,10 @@ public class Effect {
         return tickHandlers.stream().filter(handler -> !handler.mixerOptions.isPrivate).toList();
     }
 
+    public List<TickHandler> mixerCompatibleTickHandlersGUI(MixerHolder holder) {
+        return tickHandlers.stream().filter(handler -> !handler.mixerOptions.isPrivate && (holder.isSelected(handler) || (holder.canSelectAnotherEffect() && !holder.isLocked(handler.event) && (holder.getFilter() == null || holder.getFilter() == handler.event)))).toList();
+    }
+
     public List<TickHandler> mixerCompatibleTickHandlers(MixerHolder holder) {
         return tickHandlers.stream().filter(handler -> !handler.mixerOptions.isPrivate && (holder.isSelected(handler) || (holder.canSelectAnotherEffect() && !holder.isLocked(handler.event)))).toList();
     }

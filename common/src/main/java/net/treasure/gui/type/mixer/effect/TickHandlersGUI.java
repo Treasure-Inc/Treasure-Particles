@@ -4,9 +4,9 @@ import net.treasure.TreasureParticles;
 import net.treasure.effect.Effect;
 import net.treasure.effect.data.EffectData;
 import net.treasure.effect.handler.HandlerEvent;
+import net.treasure.gui.GUIManager;
 import net.treasure.gui.config.GUIElements;
 import net.treasure.gui.config.GUISounds;
-import net.treasure.gui.type.mixer.MixerGUI;
 import net.treasure.gui.type.mixer.MixerHolder;
 import net.treasure.locale.Translations;
 import net.treasure.util.item.CustomItem;
@@ -18,15 +18,17 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.EnumMap;
 
-import static net.treasure.gui.type.GUI.HANDLERS;
+import static net.treasure.gui.type.GUIType.HANDLERS;
 
 public class TickHandlersGUI {
 
+    private static GUIManager manager;
     private static Translations translations;
 
     public static EnumMap<HandlerEvent, ItemStack> ELEMENTS = new EnumMap<>(HandlerEvent.class);
 
-    public static void configure() {
+    public static void configure(GUIManager manager) {
+        TickHandlersGUI.manager = manager;
         translations = TreasureParticles.getTranslations();
     }
 
@@ -47,7 +49,7 @@ public class TickHandlersGUI {
         holder.setInventory(inventory);
         holder.closeListener(p -> {
             if (!holder.lockCloseListener)
-                MixerGUI.open(player, mixerHolder);
+                manager.mixerGUI().open(player, mixerHolder);
         });
 
         for (int i = 0, handlersSize = handlers.size(); i < handlersSize; i++) {

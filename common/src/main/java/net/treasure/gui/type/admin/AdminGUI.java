@@ -10,8 +10,8 @@ import net.treasure.gui.GUIManager;
 import net.treasure.gui.config.GUISounds;
 import net.treasure.gui.task.GUITask;
 import net.treasure.gui.type.GUI;
+import net.treasure.gui.type.GUIType;
 import net.treasure.gui.type.effects.EffectsGUI;
-import net.treasure.locale.Translations;
 import net.treasure.player.PlayerManager;
 import net.treasure.util.item.CustomItem;
 import net.treasure.util.message.MessageUtils;
@@ -24,26 +24,33 @@ import org.bukkit.inventory.ItemFlag;
 
 import java.util.Arrays;
 
-public class AdminGUI {
+public class AdminGUI extends GUI {
 
-    private static GUIManager manager;
-    private static EffectManager effectManager;
-    private static PlayerManager playerManager;
-    private static ColorManager colorManager;
-    private static Translations translations;
+    private final EffectManager effectManager;
+    private final PlayerManager playerManager;
+    private final ColorManager colorManager;
 
-    public static void configure(GUIManager manager) {
-        AdminGUI.manager = manager;
-        effectManager = TreasureParticles.getEffectManager();
-        playerManager = TreasureParticles.getPlayerManager();
-        colorManager = TreasureParticles.getColorManager();
-        translations = TreasureParticles.getTranslations();
+    public AdminGUI(GUIManager manager) {
+        super(manager, GUIType.EFFECTS);
+        this.effectManager = TreasureParticles.getEffectManager();
+        this.playerManager = TreasureParticles.getPlayerManager();
+        this.colorManager = TreasureParticles.getColorManager();
     }
 
-    public static void open(Player player, FilterCategory filterCategory, HandlerEvent filterEvent, int page) {
+    @Override
+    public void open(Player player) {
+        open(player, null, null, 0);
+    }
+
+    public void open(Player player, FilterCategory filterCategory, HandlerEvent filterEvent, int page) {
         // Variables
         var data = playerManager.getEffectData(player);
-        var layout = manager.getStyle().getLayouts().get(GUI.EFFECTS);
+        var colorCycleSpeed = manager.getColorCycleSpeed();
+        var effectSlots = EffectsGUI.DEFAULT_ICON.slots();
+        var maxEffects = effectSlots.length;
+
+        // Effects
+        var effects = effectManager.getEffects().stream().filter(effect -> filterCategory == null || ((filterEvent == null || effect.getEvents().contains(filterEvent)) && (filterCategory == FilterCategory.SUPPORTED_EVENTS || (filterCategory == FilterCategory.HAS_PERMISSION && effect.getPermission() != null) || (filterCategory == FilterCategory.NO_PERMISSION && effect.getPermission() == null)))).toList();
 
         // Create inventory
         var holder = new AdminHolder(filterCategory, filterEvent);
@@ -51,21 +58,13 @@ public class AdminGUI {
         holder.setInventory(inventory);
         holder.setPage(page);
 
-        // Borders
-        if (EffectsGUI.BORDERS.isEnabled()) for (int slot : EffectsGUI.BORDERS.slots())
-            holder.setItem(slot, new CustomItem(EffectsGUI.BORDERS.item()).emptyName());
-
-        // Close button
-        if (EffectsGUI.CLOSE.isEnabled()) for (int slot : EffectsGUI.CLOSE.slots())
-            holder.setItem(slot, new CustomItem(EffectsGUI.CLOSE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_CLOSE)), event -> player.closeInventory());
-
-        // Effects
-        var effects = effectManager.getEffects().stream().filter(effect -> filterCategory == null || ((filterEvent == null || effect.getEvents().contains(filterEvent)) && (filterCategory == FilterCategory.SUPPORTED_EVENTS || (filterCategory == FilterCategory.HAS_PERMISSION && effect.getPermission() != null) || (filterCategory == FilterCategory.NO_PERMISSION && effect.getPermission() == null)))).toList();
+        super.commonItems(player, holder)
+                .pageItems(player, holder, (page + 1) * maxEffects < effects.size(), () -> open(player, holder.getCategory(), holder.getEvent(), holder.getPage() - 1));
 
         // Filter button
-        for (int slot : EffectsGUI.FILTER.slots())
+        for (int slot : FILTER.slots())
             holder.setItem(slot,
-                    new CustomItem(EffectsGUI.FILTER.item())
+                    new CustomItem(FILTER.item())
                             .setDisplayName(MessageUtils.gui("<red>Filter"))
                             .addLore(MessageUtils.gui("<dark_gray>" + (filterCategory == null ? "None" : filterCategory.translation())))
                             .addLore(filterCategory != FilterCategory.SUPPORTED_EVENTS ? null : Arrays.stream(HandlerEvent.values()).map(event -> MessageUtils.gui("<dark_gray> • <" + (event == filterEvent ? "green" : "gray") + ">" + translations.get("events." + event.translationKey()))).toList())
@@ -81,50 +80,17 @@ public class AdminGUI {
 
                             var ordinal = filter == null ? (event.isRightClick() ? values.length - 1 : 0) : filter.ordinal() + (event.isRightClick() ? -1 : 1);
                             var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];
-                            AdminGUI.open(player, newFilter, holder.getEvent(), 0);
+                            open(player, newFilter, holder.getEvent(), 0);
                         } else if (holder.getCategory() == FilterCategory.SUPPORTED_EVENTS) {
                             var filter = holder.getEvent();
                             var values = HandlerEvent.values();
 
                             var ordinal = filter == null ? (event.isRightClick() ? values.length - 1 : 0) : filter.ordinal() + (event.isRightClick() ? -1 : 1);
                             var newFilter = ordinal >= values.length || ordinal < 0 ? null : values[ordinal];
-                            AdminGUI.open(player, holder.getCategory(), newFilter, 0);
+                            open(player, holder.getCategory(), newFilter, 0);
                         }
                         GUISounds.play(player, sound);
                     });
-
-        // Previous page button
-        if (page > 0)
-            for (int slot : EffectsGUI.PREVIOUS_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(EffectsGUI.PREVIOUS_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_PREVIOUS_PAGE)),
-                        event -> {
-                            AdminGUI.open(player, holder.getCategory(), holder.getEvent(), holder.getPage() - 1);
-                            GUISounds.play(player, GUISounds.PREVIOUS_PAGE);
-                        });
-        else if (EffectsGUI.BORDERS.isEnabled())
-            for (int slot : EffectsGUI.PREVIOUS_PAGE.slots())
-                holder.setItem(slot, new CustomItem(EffectsGUI.BORDERS.item()).emptyName());
-
-        var effectSlots = EffectsGUI.DEFAULT_ICON.slots();
-        var maxEffects = effectSlots.length;
-
-        // Next page button
-        if ((page + 1) * maxEffects < effects.size())
-            for (int slot : EffectsGUI.NEXT_PAGE.slots())
-                holder.setItem(slot,
-                        new CustomItem(EffectsGUI.NEXT_PAGE.item()).setDisplayName(MessageUtils.gui(Translations.BUTTON_NEXT_PAGE)),
-                        event -> {
-                            AdminGUI.open(player, holder.getCategory(), holder.getEvent(), holder.getPage() + 1);
-                            GUISounds.play(player, GUISounds.NEXT_PAGE);
-                        });
-        else if (EffectsGUI.BORDERS.isEnabled())
-            for (int slot : EffectsGUI.NEXT_PAGE.slots())
-                inventory.setItem(slot, new CustomItem(EffectsGUI.BORDERS.item())
-                        .emptyName()
-                        .build());
-
-        var colorCycleSpeed = manager.getColorCycleSpeed();
 
         int index = 0;
         for (int i = page * maxEffects; i < (page + 1) * maxEffects; i++) {
