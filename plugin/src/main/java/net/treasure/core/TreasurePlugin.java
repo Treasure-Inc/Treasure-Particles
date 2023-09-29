@@ -6,7 +6,6 @@ import net.treasure.TreasureParticles;
 import net.treasure.color.ColorManager;
 import net.treasure.core.command.MainCommand;
 import net.treasure.core.integration.Expansions;
-import net.treasure.player.listener.JoinQuitListener;
 import net.treasure.database.DatabaseManager;
 import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
@@ -53,6 +52,7 @@ public class TreasurePlugin extends AbstractTreasurePlugin {
             var effect = TreasureParticles.getEffectManager().get(key);
             return effect == null || effect.getColorGroup() == null ? Collections.emptyList() : effect.getColorGroup().getAvailableOptions().stream().map(option -> option.colorScheme().getKey()).toList();
         });
+        commandManager.usePerIssuerLocale(false, false);
     }
 
     private void initializeMetrics() {

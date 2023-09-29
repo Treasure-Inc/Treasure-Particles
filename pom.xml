@@ -6,7 +6,7 @@
 
     <groupId>net.treasure</groupId>
     <artifactId>TreasureParticles</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <packaging>pom</packaging>
     <modules>
         <module>common</module>
@@ -25,11 +25,11 @@
         <module>v1_20_R2</module>
     </modules>
 
-        <properties>
-            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-            <maven.compiler.source>16</maven.compiler.source>
-            <maven.compiler.target>16</maven.compiler.target>
-        </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+    </properties>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
