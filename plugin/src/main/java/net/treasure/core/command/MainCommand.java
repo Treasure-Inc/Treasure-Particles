@@ -9,7 +9,6 @@ import net.treasure.effect.Effect;
 import net.treasure.effect.EffectManager;
 import net.treasure.gui.GUIManager;
 import net.treasure.gui.task.GUITask;
-import net.treasure.gui.type.admin.AdminGUI;
 import net.treasure.locale.Locale;
 import net.treasure.locale.Translations;
 import net.treasure.permission.Permissions;
@@ -221,10 +220,21 @@ public class MainCommand extends BaseCommand {
     @CommandPermission(Permissions.COMMAND_ADMIN)
     public void debugInfo(CommandSender sender) {
         MessageUtils.sendParsed(sender, "<prefix> <gray>Effects Size: <red>" + effectManager.getEffects().size());
-        MessageUtils.sendParsed(sender, "<prefix> <gray>Menu Viewers Size: <yellow>" + GUITask.getPlayers().size());
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Animated Menu Viewers: <yellow>" + GUITask.getPlayers().size());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Players Using Effect: <yellow>" + playerManager.getData().values().stream().filter(data -> data.isEnabled() && data.getCurrentEffect() != null).count());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Color Cycle Speed: <gold>" + TreasureParticles.getGUIManager().getColorCycleSpeed());
         MessageUtils.sendParsed(sender, "<prefix> <gray>Animation Interval: <gold>" + TreasureParticles.getGUIManager().getInterval());
+    }
+
+    @Private
+    @Subcommand("debug permission")
+    @CommandPermission(Permissions.COMMAND_ADMIN)
+    public void debugPermissions(CommandSender sender) {
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Admin Command: <red>" + Permissions.ADMIN);
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Base Command: <red>" + Permissions.BASE);
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Effect Mixer: <yellow>" + Permissions.MIXER);
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Can See Effects: <gold>" + Permissions.CAN_SEE_EFFECTS);
+        MessageUtils.sendParsed(sender, "<prefix> <gray>Access All Effects: <gold>" + Permissions.ACCESS_ALL_EFFECTS);
     }
 
     @Private

@@ -147,6 +147,8 @@ public class TreasureParticles {
     }
 
     private static void configure() {
+        plugin.reloadConfig();
+
         var config = plugin.getConfig();
         if (!VERSION.equals(config.getString("version"))) {
             if (autoUpdateEnabled) {

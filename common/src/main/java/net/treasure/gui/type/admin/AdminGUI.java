@@ -59,7 +59,7 @@ public class AdminGUI extends GUI {
         holder.setPage(page);
 
         super.commonItems(player, holder)
-                .pageItems(player, holder, (page + 1) * maxEffects < effects.size(), () -> open(player, holder.getCategory(), holder.getEvent(), holder.getPage() - 1));
+                .pageItems(player, holder, (page + 1) * maxEffects < effects.size(), () -> open(player, holder.getCategory(), holder.getEvent(), holder.getPage()));
 
         // Filter button
         for (int slot : FILTER.slots())
