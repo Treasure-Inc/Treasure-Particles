@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.1.0"
+version: "1.1.2"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -114,9 +114,9 @@ effects:
   rainbow-flag: "<rainbow>Rengarenk Bayrak"
   rainbow-spiral: "<rainbow>Rengarenk Spiral"
   rainbow-dots: "<rainbow>Rengarenk Noktalar"
-  spiral: "<#3A0CA3>Spiral"
   rainbow-note: "<rainbow>Rengarenk Notalar"
   random-note: "<#36d15f>Rastgele Notalar"
+  whirl: "<#3A0CA3>Sarmal"
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Degrade / Daire"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Degrade / Çizgi"
   gradient-spiral: "<gradient:#E3DFFF:#937666><b>Degrade / Spiral"

@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.0.0"
+version: "1.1.2"
 rainbow-colors-size: 25
 schemes:
   # Gradient Color Schemes
@@ -30,9 +30,6 @@ schemes:
   gradient-white-gray:
     values: [ "#FFFFFF", "#89918b" ]
     size: 20
-  gradient-spiral:
-    values: [ "#F72585", "#B5179E", "#7209B7", "#560BAD", "#480CA8", "#3A0CA3", "#3F37C9", "#4361EE", "#4895EF", "#4CC9F0" ]
-    size: 50
   # Dark Colors
   dark-1:
     name: "%dark-colors% <gray>[1]"
@@ -55,6 +52,9 @@ schemes:
     values: [ "#523822", "#41250C", "#2D1805", "#261405", "#190E03" ]
     size: 20
   # Special
+  whirl:
+    values: [ "#F72585", "#B5179E", "#7209B7", "#560BAD", "#480CA8", "#3A0CA3", "#3F37C9", "#4361EE", "#4895EF", "#4CC9F0" ]
+    size: 50
   heart:
     values: [ "#f54242", "#fc9090" ]
     size: 7

@@ -15,6 +15,7 @@ import net.treasure.effect.script.conditional.ConditionalScript;
 import net.treasure.effect.script.variable.Variable;
 import net.treasure.gui.type.mixer.MixerHolder;
 import net.treasure.locale.Translations;
+import net.treasure.permission.Permissions;
 import net.treasure.util.TimeKeeper;
 import net.treasure.util.message.MessageUtils;
 import net.treasure.util.tuples.Pair;
@@ -124,7 +125,7 @@ public class Effect {
     }
 
     public boolean canUse(Player player) {
-        return permission == null || player.hasPermission(permission);
+        return permission == null || (player.hasPermission(permission) || player.hasPermission(Permissions.ACCESS_ALL_EFFECTS));
     }
 
     public void initialize(EffectData data) {

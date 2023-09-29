@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.1.0"
+version: "1.1.2"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -114,9 +114,9 @@ effects:
   rainbow-flag: "<rainbow>Rainbow Flag"
   rainbow-spiral: "<rainbow>Rainbow Spiral"
   rainbow-dots: "<rainbow>Rainbow Dots"
-  spiral: "<#3A0CA3>Spiral"
   rainbow-note: "<rainbow>Rainbow Notes"
   random-note: "<#36d15f>Random Notes"
+  whirl: "<#3A0CA3>Whirl"
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Gradient / Circle"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Gradient / Line"
   gradient-spiral: "<gradient:#E3DFFF:#937666><b>Gradient / Spiral"
