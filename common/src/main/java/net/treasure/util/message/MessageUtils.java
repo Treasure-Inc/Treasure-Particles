@@ -35,7 +35,7 @@ public class MessageUtils {
                             TagResolver.resolver("prefix", (args, context) -> Tag.inserting(parse(Translations.PREFIX))),
                             TagResolver.resolver("discord", (args, context) -> Tag.styling(ClickEvent.openUrl("https://discord.com/invite/qQbePCtSjh/"))),
                             TagResolver.resolver("download", (args, context) -> Tag.styling(ClickEvent.openUrl("https://builtbybit.com/resources/26794/"))),
-                            TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://treasurestore.gitbook.io/treasure-elytra/")))
+                            TagResolver.resolver("wiki", (args, context) -> Tag.styling(ClickEvent.openUrl("https://treasurestore.gitbook.io/treasure-particles/")))
 
                     ).build()
             ).build();
