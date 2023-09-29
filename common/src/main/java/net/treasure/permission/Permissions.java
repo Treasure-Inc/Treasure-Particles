@@ -11,7 +11,8 @@ public class Permissions implements DataHolder {
     public static String BASE,
             MIXER,
             ADMIN,
-            CAN_SEE_EFFECTS;
+            CAN_SEE_EFFECTS,
+            ACCESS_ALL_EFFECTS;
 
     public static final String COMMAND_BASE = "%base",
             COMMAND_MIXER = "%mixer",
@@ -48,6 +49,7 @@ public class Permissions implements DataHolder {
         replacements.addReplacement(COMMAND_ADMIN, ADMIN = config.getString("permissions.admin", NAMESPACE + ".admin"));
 
         CAN_SEE_EFFECTS = config.getString("permissions.can_see_effects", NAMESPACE + ".can_see_effects");
+        ACCESS_ALL_EFFECTS = config.getString("permissions.access_all_effects", NAMESPACE + ".access_all_effects");
 
         ALWAYS_CHECK_PERMISSION = config.getBoolean("always-check-effect-permission", ALWAYS_CHECK_PERMISSION);
         EFFECTS_VISIBILITY_PERMISSION = config.getBoolean("permissions.effects-visibility-permission", EFFECTS_VISIBILITY_PERMISSION);

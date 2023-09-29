@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.1.0"
+version: "1.1.2"
 
 # Translations locale (default=EN)
 locale: EN
@@ -64,14 +64,21 @@ permissions:
   can-see-effects: "trparticles.can_see_effects"
 
   # Effects Permissions
-  # Only some effects have permission by default
-  # Please check the effects.yml file if you want to add permissions to the effects
-  # You can read the wiki page for detailed information: https://treasurestore.gitbook.io/treasure-elytra/effects/basic-usage#permission
+  # Please check the effects.yml file if you want to add or remove permissions
+  # You can read the wiki page for detailed information: https://treasurestore.gitbook.io/treasure-particles/effects/basic-usage#permission
+  access-all-effects: "trparticles.access-all-effects"
+  # Permission groups
   rainbow-effects: "trparticles.effects.rainbow" # Permission for rainbow-colored effects
   gradient-effects: "trparticles.effects.gradient" # Permission for gradient
+  helix-effects: "trparticles.effects.helix" # Permission for helix effects (including rainbow-helix effect)
+  note-effects: "trparticles.effects.note" # Permission for note effects (including rainbow-note effect)
+  pulse-effects: "trparticles.effects.pulse" # Permission for pulse effects
+  spinning: "trparticles.effects.spinning" # Permission for spinning effects (whirl, orbit, triple line, planner, etc.)
   parkour: "trparticles.effects.parkour" # Permission for parkour effects
   weather: "trparticles.effects.weather" # Permission for snow/rain effects
   tail-effects: "trparticles.effects.tail" # Permission for tail effects
   text-effects: "trparticles.effects.text" # Permission for text effects
   christmas: "trparticles.effects.christmas" # Permission for Christmas effects
-  death-effects: "trparticles.effects.death-effects" # Permission for death effects
+  death-effects: "trparticles.effects.death" # Permission for death effects
+  basic: "trparticles.effects.basic" # Permission for basic effects (sweeping, beam, sonic, plane)
+  special: "trparticles.effects.special" # Permission for special effects (complementary, heart, rocket)
