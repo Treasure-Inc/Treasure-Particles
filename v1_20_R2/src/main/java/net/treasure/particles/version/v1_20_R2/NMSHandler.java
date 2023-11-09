@@ -5,16 +5,15 @@ import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.network.protocol.game.PacketListenerPlayOut;
 import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
 import net.treasure.particles.TreasureParticles;
-import net.treasure.particles.version.v1_20_R2.data.NMSGenericData;
-import net.treasure.particles.version.v1_20_R2.data.PaperGenericData;
-import net.treasure.particles.version.v1_20_R2.data.color.NMSDustData;
 import net.treasure.particles.util.nms.AbstractNMSHandler;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
+import net.treasure.particles.version.v1_20_R2.data.NMSGenericData;
+import net.treasure.particles.version.v1_20_R2.data.PaperGenericData;
+import net.treasure.particles.version.v1_20_R2.data.color.NMSDustData;
 import net.treasure.particles.version.v1_20_R2.data.color.NMSDustTransitionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.craftbukkit.v1_20_R2.CraftParticle;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -84,8 +83,7 @@ public class NMSHandler extends AbstractNMSHandler {
 
     @Override
     public Object getParticleParam(ParticleEffect effect) {
-        var bukkit = effect.bukkit();
-        return bukkit == null ? null : CraftParticle.toNMS(bukkit);
+        return getGenericData(effect, null);
     }
 
     @Override

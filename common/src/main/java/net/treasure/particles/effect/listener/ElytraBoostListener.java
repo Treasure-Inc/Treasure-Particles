@@ -1,15 +1,15 @@
-package net.treasure.effect.listener;
+package net.treasure.particles.effect.listener;
 
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent;
 import lombok.AllArgsConstructor;
-import net.treasure.player.PlayerManager;
+import net.treasure.particles.player.PlayerManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 @AllArgsConstructor
 public class ElytraBoostListener implements Listener {
 
-    PlayerManager manager;
+    final PlayerManager manager;
 
     @EventHandler(ignoreCancelled = true)
     public void on(PlayerElytraBoostEvent event) {

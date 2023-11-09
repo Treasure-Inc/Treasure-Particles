@@ -57,9 +57,18 @@ public class TreasureParticles {
     @Getter
     private static boolean notificationsEnabled;
 
+    @Getter
+    @Setter
+    private static boolean isPaper;
+
     public static void setPlugin(AbstractTreasurePlugin treasurePlugin) {
         if (plugin != null) return;
         plugin = treasurePlugin;
+        try {
+            Class.forName("com.destroystokyo.paper.event.player.PlayerElytraBoostEvent");
+            isPaper = true;
+        } catch (ClassNotFoundException ignored) {
+        }
         initialize();
     }
 
