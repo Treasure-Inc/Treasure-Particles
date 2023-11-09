@@ -1,6 +1,6 @@
 name: TrParticles
 author: ItsZypec
-main: net.treasure.core.TreasurePlugin
+main: net.treasure.particles.TreasurePlugin
 version: ${project.version}
 api-version: 1.16
 website: https://treasurestore.gitbook.io/treasure-particles
