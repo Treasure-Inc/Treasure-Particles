@@ -53,7 +53,7 @@ public class MixerHolder extends EffectsHolder {
 
     public void add(Effect effect, TickHandler handler) {
         selected.add(new Pair<>(effect, handler));
-        if (handler.mixerOptions.lockEvent)
+        if (handler.event != null && handler.mixerOptions.lockEvent)
             locked.put(handler.event, new Pair<>(effect, handler));
         if (effect.getColorGroup() != null)
             needsColorGroup = true;

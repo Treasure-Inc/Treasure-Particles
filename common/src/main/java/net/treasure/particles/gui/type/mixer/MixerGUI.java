@@ -12,9 +12,9 @@ import net.treasure.particles.gui.config.GUIElements;
 import net.treasure.particles.gui.config.GUISounds;
 import net.treasure.particles.gui.task.GUITask;
 import net.treasure.particles.gui.type.GUI;
+import net.treasure.particles.gui.type.GUIType;
 import net.treasure.particles.gui.type.mixer.effect.TickHandlersGUI;
 import net.treasure.particles.locale.Translations;
-import net.treasure.particles.gui.type.GUIType;
 import net.treasure.particles.player.PlayerManager;
 import net.treasure.particles.util.item.CustomItem;
 import net.treasure.particles.util.message.MessageUtils;
@@ -78,7 +78,10 @@ public class MixerGUI extends GUI {
         var filter = holder.getFilter();
         var page = holder.getPage();
 
-        var currentSelections = holder.getSelected().stream().map(pair -> MessageUtils.gui(pair.getKey().getDisplayName() + "<gray>:<reset> " + translations.translate("events", pair.getValue().event.translationKey()))).toList();
+        var currentSelections = holder.getSelected()
+                .stream()
+                .map(pair -> MessageUtils.gui(pair.getKey().getDisplayName() + (pair.getValue().event != null ? "<gray>:<reset> " + translations.get("events." + pair.getValue().event.translationKey()) : "")))
+                .toList();
         var limit = data.getMixEffectLimit();
         var selectedEffectsSize = holder.selectedEffectsSize();
         var canSelectAnotherEffect = limit == -1 || limit > selectedEffectsSize;
@@ -111,7 +114,7 @@ public class MixerGUI extends GUI {
                 holder.setItem(slot,
                         new CustomItem(RESET.item())
                                 .setDisplayName(MessageUtils.gui(Translations.MIXER_GUI_RESET_SELECTIONS))
-                                .setLore(currentSelections.isEmpty() ? null : MessageUtils.gui(Translations.MIXER_GUI_CURRENT_SELECTIONS))
+                                .setLore(currentSelections.isEmpty() ? null : List.of("", MessageUtils.gui(Translations.MIXER_GUI_CURRENT_SELECTIONS)))
                                 .addLore(currentSelections.isEmpty() ? null : currentSelections),
                         event -> {
                             holder.reset();
@@ -128,7 +131,7 @@ public class MixerGUI extends GUI {
                 holder.setItem(slot,
                         new CustomItem(CONFIRM.item())
                                 .setDisplayName(MessageUtils.gui(Translations.MIXER_GUI_CONFIRM))
-                                .setLore(currentSelections.isEmpty() ? null : MessageUtils.gui(Translations.MIXER_GUI_CURRENT_SELECTIONS))
+                                .setLore(currentSelections.isEmpty() ? null : List.of("", MessageUtils.gui(Translations.MIXER_GUI_CURRENT_SELECTIONS)))
                                 .addLore(currentSelections.isEmpty() ? null : currentSelections)
                                 .addLore(!holder.needsColorGroup() ? null : MessageUtils.gui(Translations.MIXER_GUI_PREFERRED_COLOR_GROUP_NEEDED)),
                         event -> {
