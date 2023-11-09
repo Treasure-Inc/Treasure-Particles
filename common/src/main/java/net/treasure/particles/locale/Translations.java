@@ -1,13 +1,13 @@
-package net.treasure.locale;
+package net.treasure.particles.locale;
 
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MinecraftMessageKeys;
 import co.aikar.locales.MessageKeyProvider;
 import lombok.Getter;
-import net.treasure.TreasureParticles;
-import net.treasure.configuration.ConfigurationGenerator;
-import net.treasure.configuration.DataHolder;
-import net.treasure.util.message.MessageUtils;
+import net.treasure.particles.TreasureParticles;
+import net.treasure.particles.configuration.ConfigurationGenerator;
+import net.treasure.particles.configuration.DataHolder;
+import net.treasure.particles.util.message.MessageUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.logging.Level;
 public class Translations implements DataHolder {
 
     public static String LOCALE;
-    public static final String VERSION = "1.1.2";
+    public static final String VERSION = "1.1.3";
 
     private FileConfiguration config;
     @Getter
