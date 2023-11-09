@@ -147,7 +147,7 @@ public class TextParticle extends ParticleSpawner {
                 stepX, stepY, scale, tickData, vertical, rotateX, rotateY,
                 image,
                 position, offset, multiplier,
-                colorData, particleData,
+                colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
                 directional, longDistance
         );

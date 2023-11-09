@@ -21,4 +21,9 @@ public class DuoColorsData extends ColorData implements DuoImpl {
         var index = index();
         return new Pair<>(color1.getColors().get(index), color2.getColors().get(index));
     }
+
+    @Override
+    public DuoColorsData clone() {
+        return new DuoColorsData(color1, color2, speed, revertWhenDone, stopCycle);
+    }
 }

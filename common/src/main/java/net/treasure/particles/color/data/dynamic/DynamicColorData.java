@@ -21,4 +21,9 @@ public class DynamicColorData extends ColorData {
         }
         return colors.get(index);
     }
+
+    @Override
+    public DynamicColorData clone() {
+        return new DynamicColorData(speed, revertWhenDone, stopCycle);
+    }
 }

@@ -110,7 +110,7 @@ public class CircleParticle extends ParticleSpawner {
                 particle, origin,
                 particles, radius, tickData, vertical,
                 position, offset, multiplier,
-                colorData, particleData,
+                colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
                 directional, longDistance
         );

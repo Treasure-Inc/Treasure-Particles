@@ -26,4 +26,9 @@ public class SingleColorData extends ColorData {
     public Color next(EffectData data) {
         return color;
     }
+
+    @Override
+    public SingleColorData clone() {
+        return new SingleColorData(color);
+    }
 }

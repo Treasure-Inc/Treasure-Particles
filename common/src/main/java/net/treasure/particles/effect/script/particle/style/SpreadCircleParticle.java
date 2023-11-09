@@ -155,7 +155,7 @@ public class SpreadCircleParticle extends CircleParticle {
                 particle, origin,
                 spread, particles, radius, tickData, vertical,
                 position, offset, multiplier,
-                colorData, particleData,
+                colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
                 directional, longDistance
         );

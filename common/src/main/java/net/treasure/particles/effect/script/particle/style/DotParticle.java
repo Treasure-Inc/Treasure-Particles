@@ -53,7 +53,7 @@ public class DotParticle extends ParticleSpawner {
         return new DotParticle(
                 particle, origin,
                 position, offset, multiplier,
-                colorData, particleData,
+                colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
                 directional, longDistance
         );

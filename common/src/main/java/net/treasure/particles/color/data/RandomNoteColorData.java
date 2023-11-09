@@ -11,4 +11,9 @@ public class RandomNoteColorData extends ColorData {
     public int random() {
         return MathUtils.generateRandomInteger(min, max);
     }
+
+    @Override
+    public RandomNoteColorData clone() {
+        return new RandomNoteColorData(min, max);
+    }
 }

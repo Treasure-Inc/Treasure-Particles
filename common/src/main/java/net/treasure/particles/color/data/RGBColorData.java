@@ -27,4 +27,9 @@ public class RGBColorData extends ColorData {
         this.speed = tempSpeed;
         return next;
     }
+
+    @Override
+    public RGBColorData clone() {
+        return new RGBColorData(color, speed, revertWhenDone, stopCycle);
+    }
 }

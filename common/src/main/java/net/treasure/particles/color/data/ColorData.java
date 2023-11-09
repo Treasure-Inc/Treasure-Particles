@@ -17,8 +17,8 @@ public class ColorData {
 
     protected int min, max;
     protected float currentIndex = -1;
-    float speed;
-    final boolean revertWhenDone, note, stopCycle;
+    protected float speed;
+    protected final boolean revertWhenDone, note, stopCycle;
     protected boolean forward = true;
 
     public ColorData(float speed, boolean revertWhenDone) {
@@ -72,6 +72,10 @@ public class ColorData {
 
     public Color tempNext(EffectData data) {
         return next(data);
+    }
+
+    public ColorData clone() {
+        return new ColorData(speed, revertWhenDone, stopCycle, note, min, max);
     }
 
     public static ColorData fromString(ReaderContext<?> context) throws ReaderException {
