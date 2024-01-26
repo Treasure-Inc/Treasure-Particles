@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 @AllArgsConstructor
 public class VectorArgument implements ScriptArgument<Vector> {
 
-    Object x, y, z;
+    private Object x, y, z;
 
     public static VectorArgument read(ReaderContext<?> context) throws ReaderException {
         return read(context, context.value());

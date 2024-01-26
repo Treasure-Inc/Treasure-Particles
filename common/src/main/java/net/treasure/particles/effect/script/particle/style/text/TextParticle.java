@@ -1,11 +1,10 @@
-package net.treasure.particles.effect.script.particle.style;
+package net.treasure.particles.effect.script.particle.style.text;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.particles.color.data.ColorData;
-import net.treasure.particles.color.data.RandomNoteColorData;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
@@ -13,6 +12,7 @@ import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -31,24 +31,25 @@ import java.util.List;
 @NoArgsConstructor
 public class TextParticle extends ParticleSpawner {
 
-    static final int black = Color.black.getRGB();
+    private static final int BLACK = Color.black.getRGB();
 
-    int stepX = 1;
-    int stepY = 1;
-    float scale = 0.2f;
-    String fontName = "Tahoma";
-    String text;
-    boolean tickData;
-    boolean vertical = true;
+    private int stepX = 1;
+    private int stepY = 1;
+    private float scale = 0.2f;
+    private String fontName = "Tahoma";
+    private String text;
+    private boolean tickData;
+    private boolean vertical = true;
 
-    Float rotateX;
-    Float rotateY;
+    private Float rotateX;
+    private Float rotateY;
 
-    BufferedImage image;
+    private Vector[] cache;
+    private double cosRx, sinRx, cosRy, sinRy;
 
     public TextParticle(ParticleEffect effect, ParticleOrigin origin,
                         int stepX, int stepY, float scale, boolean tickData, boolean vertical, Float rotateX, Float rotateY,
-                        BufferedImage image,
+                        Vector[] cache, double cosRx, double sinRx, double cosRy, double sinRy,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
                         IntArgument amount, RangeArgument speed, RangeArgument size,
@@ -61,59 +62,67 @@ public class TextParticle extends ParticleSpawner {
         this.vertical = vertical;
         this.rotateX = rotateX;
         this.rotateY = rotateY;
-        this.image = image;
+
+        this.cache = cache;
+        this.cosRx = cosRx;
+        this.sinRx = sinRx;
+        this.cosRy = cosRy;
+        this.sinRy = sinRy;
     }
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var context = tick(player, data, event);
+        var context = tick(player, data, event, true, true);
         if (context == null) return TickResult.NORMAL;
 
-        var builder = context.builder();
-        var origin = context.origin();
+        var builder = context.builder;
 
-        var vector = this.position == null ? new Vector(0, 0, 0) : this.position.get(player, this, data);
+        updateParticleData(builder, player, data);
 
-        var yaw = origin.getYaw();
-        var location = rotate(origin, origin.getDirection(), origin.getPitch(), yaw, vector);
-
-        var particleData = particleData(player, data);
+        boolean rY = rotateY != null, rX = rotateX != null;
 
         List<ParticleBuilder> builders = new ArrayList<>();
-        for (int y = image.getHeight() - 1; y >= 0; y -= stepY) {
-            for (int x = image.getWidth() - 1; x >= 0; x -= stepX) {
-                if (black != image.getRGB(x, y)) continue;
+        for (var v : cache) {
+            Vectors.rotateAroundAxisY(v, rY ? cosRy : context.cosY, rY ? sinRy : context.sinY);
+            if (rX)
+                Vectors.rotateAroundAxisX(v, cosRx, sinRx);
 
-                var v = (vertical ?
-                        new Vector((float) image.getWidth() / 2 - x, (float) image.getHeight() / 2 - y, 0) :
-                        new Vector((float) image.getHeight() / 2 - y, 0, (float) image.getWidth() / 2 - x)
-                ).multiply(scale);
+            builders.add(builder.copy().location(context.origin.clone().add(v)));
 
-                Vectors.rotateAroundAxisY(v, rotateY == null ? yaw : rotateY);
-                if (rotateX != null)
-                    Vectors.rotateAroundAxisX(v, rotateX);
-
-                var copy = builder.copy()
-                        .location(location.clone().add(v))
-                        .data(particleData);
-
-                if (particle == ParticleEffect.NOTE && colorData != null && colorData.isNote())
-                    copy.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
-                else if (particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR) && colorData != null)
-                    copy.offsetColor(colorData.next(data));
-
-                builders.add(copy);
-
-                if (tickData)
-                    particleData = particleData(player, data);
-            }
+            if (tickData)
+                updateParticleData(builder, player, data);
         }
         Particles.send(builders);
         return TickResult.NORMAL;
     }
 
     public void initialize() {
-        this.image = stringToBufferedImage(new Font(fontName, Font.PLAIN, 16), text);
+        var image = stringToBufferedImage(new Font(fontName, Font.PLAIN, 16), text);
+        List<Vector> cache = new ArrayList<>();
+        for (int y = image.getHeight() - 1; y >= 0; y -= stepY) {
+            for (int x = image.getWidth() - 1; x >= 0; x -= stepX) {
+                if (BLACK != image.getRGB(x, y)) continue;
+
+                var v = (vertical ?
+                        new Vector((float) image.getWidth() / 2 - x, (float) image.getHeight() / 2 - y, 0) :
+                        new Vector((float) image.getHeight() / 2 - y, 0, (float) image.getWidth() / 2 - x)
+                ).multiply(scale);
+                cache.add(v);
+            }
+        }
+        this.cache = cache.toArray(Vector[]::new);
+
+        if (rotateX != null) {
+            var angleRx = Math.toRadians(rotateX);
+            this.cosRx = MathUtils.cos(angleRx);
+            this.sinRx = MathUtils.sin(angleRx);
+        }
+
+        if (rotateY != null) {
+            var angleRy = Math.toRadians(-rotateY);
+            this.cosRy = MathUtils.cos(angleRy);
+            this.sinRy = MathUtils.sin(angleRy);
+        }
     }
 
     public static BufferedImage stringToBufferedImage(Font font, String s) {
@@ -145,7 +154,7 @@ public class TextParticle extends ParticleSpawner {
         return new TextParticle(
                 particle, origin,
                 stepX, stepY, scale, tickData, vertical, rotateX, rotateY,
-                image,
+                cache, cosRx, sinRx, cosRy, sinRy,
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,

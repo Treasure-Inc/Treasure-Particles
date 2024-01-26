@@ -2,8 +2,6 @@ package net.treasure.particles.gui.type.mixer;
 
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.ColorManager;
-import net.treasure.particles.color.data.RGBColorData;
-import net.treasure.particles.color.generator.Gradient;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.effect.mix.MixData;
 import net.treasure.particles.gui.GUIManager;
@@ -25,7 +23,6 @@ import net.wesjd.anvilgui.AnvilGUI.Slot;
 import net.wesjd.anvilgui.AnvilGUI.StateSnapshot;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -160,31 +157,15 @@ public class MixerGUI extends GUI {
             int where = effectSlots[index];
 
             var effect = effects.get(i);
-            Color color = null;
-            RGBColorData colorData = null;
 
-            var prefColorGroup = false;
             var colorGroup = effect.getColorGroup();
+            var canUseAny = colorGroup != null && colorGroup.canUseAny(player);
 
-            if (effect.getArmorColor() != null) {
-                var scheme = colorManager.getColorScheme(effect.getArmorColor());
-                if (scheme != null) {
-                    colorData = new RGBColorData(scheme, colorCycleSpeed, true, false);
-                    color = colorData.next(null);
-                } else {
-                    try {
-                        color = Gradient.hex2Rgb(effect.getArmorColor());
-                    } catch (Exception ignored) {
-                        TreasureParticles.logger().warning(effect.getPrefix() + "Unknown armor color value: " + effect.getArmorColor());
-                    }
-                }
-            } else if (colorGroup != null) {
-                prefColorGroup = colorGroup.getKey().equals(holder.getPrefColorGroup());
-                var preference = data.getColorPreference(effect);
-                var scheme = preference == null ? colorGroup.getAvailableOptions().get(0).colorScheme() : preference;
-                colorData = new RGBColorData(scheme, colorCycleSpeed, true, false);
-                color = colorData.next(null);
-            }
+            var pair = holder.colorData(data, effect, colorGroup, canUseAny, colorManager, colorCycleSpeed);
+            var colorData = pair.getKey();
+            var color = pair.getValue();
+
+            var prefColorGroup = canUseAny && colorGroup.getKey().equals(holder.getPrefColorGroup());
 
             var compatibleTickHandlers = effect.mixerCompatibleTickHandlers(holder);
 
@@ -240,7 +221,7 @@ public class MixerGUI extends GUI {
                 MessageUtils.sendParsed(player, Translations.MIXER_GUI_SELECTED_ALL, effect.getDisplayName());
                 open(player, holder);
                 GUISounds.play(player, GUISounds.SELECT_HANDLER);
-            }, colorData);
+            }, colorData, effect.isNameColorAnimationEnabled() ? effect.getDisplayName() : null);
             index += 1;
         }
 

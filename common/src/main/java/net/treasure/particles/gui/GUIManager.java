@@ -17,6 +17,7 @@ import net.treasure.particles.gui.type.color.ColorsGUI;
 import net.treasure.particles.gui.type.effects.EffectsGUI;
 import net.treasure.particles.gui.type.mixer.MixerGUI;
 import net.treasure.particles.gui.type.mixer.effect.TickHandlersGUI;
+import net.treasure.particles.util.logging.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -28,21 +29,21 @@ public class GUIManager implements DataHolder {
 
     public static final String VERSION = "1.1.0";
 
-    final ConfigurationGenerator generator;
-    YamlConfiguration config;
+    private final ConfigurationGenerator generator;
+    private YamlConfiguration config;
 
-    GUIStyle style;
-    final GUIElements elements = new GUIElements();
-    final GUISounds sounds = new GUISounds();
+    private GUIStyle style;
+    private final GUIElements elements = new GUIElements();
+    private final GUISounds sounds = new GUISounds();
 
     @Accessors(fluent = true)
-    final EffectsGUI effectsGUI;
+    private final EffectsGUI effectsGUI;
     @Accessors(fluent = true)
-    final ColorsGUI colorsGUI;
+    private final ColorsGUI colorsGUI;
     @Accessors(fluent = true)
-    final MixerGUI mixerGUI;
+    private final MixerGUI mixerGUI;
     @Accessors(fluent = true)
-    final AdminGUI adminGUI;
+    private final AdminGUI adminGUI;
 
     int taskId = -5, interval = 2;
     float colorCycleSpeed = 0.85f;
@@ -65,7 +66,6 @@ public class GUIManager implements DataHolder {
 
     @Override
     public boolean initialize() {
-
         this.config = generator.generate();
         if (!checkVersion()) {
             if (!TreasureParticles.isAutoUpdateEnabled()) {
@@ -88,7 +88,7 @@ public class GUIManager implements DataHolder {
 
         style = getCurrentStyle();
         if (style == null) {
-            TreasureParticles.logger().warning("Couldn't set GUI style");
+            ComponentLogger.error(generator, "Couldn't set GUI style");
             return false;
         }
 

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 @AllArgsConstructor
 public class IntArgument implements ScriptArgument<Integer> {
 
-    Object value;
+    private Object value;
 
     public static IntArgument read(ReaderContext<?> context) throws ReaderException {
         return read(context, Integer.MIN_VALUE, Integer.MAX_VALUE);

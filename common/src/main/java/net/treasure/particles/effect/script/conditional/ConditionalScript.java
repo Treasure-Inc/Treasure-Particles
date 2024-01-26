@@ -11,8 +11,8 @@ import org.bukkit.entity.Player;
 @Getter
 public class ConditionalScript extends Script {
 
-    ConditionGroup parent;
-    Script firstExpression, secondExpression;
+    private ConditionGroup parent;
+    private Script firstExpression, secondExpression;
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {

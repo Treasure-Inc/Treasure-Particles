@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 @ToString
 public class Condition implements Predicate {
 
-    String variable;
-    Operator operator;
-    double value;
-    boolean hasEquation, defaultValue;
+    private String variable;
+    private Operator operator;
+    private double value;
+    private boolean hasEquation, defaultValue;
 
     public Condition(String variable, Operator operator, double value, boolean hasEquation) {
         this.variable = variable;

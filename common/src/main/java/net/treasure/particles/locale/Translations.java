@@ -7,18 +7,18 @@ import lombok.Getter;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.configuration.ConfigurationGenerator;
 import net.treasure.particles.configuration.DataHolder;
+import net.treasure.particles.util.logging.ComponentLogger;
 import net.treasure.particles.util.message.MessageUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class Translations implements DataHolder {
 
     public static String LOCALE;
-    public static final String VERSION = "1.1.3";
+    public static final String VERSION = "1.2.0";
 
     private FileConfiguration config;
     @Getter
@@ -105,6 +105,9 @@ public class Translations implements DataHolder {
             EFFECT_RESET_OTHER,
             CANNOT_USE_ANY_EFFECT,
             CANNOT_USE_ANY_EFFECT_OTHER,
+            MIX_UNKNOWN,
+            MIX_SELECTED,
+            MIX_SELECTED_OTHER,
             UNKNOWN_COLOR_SCHEME,
             COLOR_SCHEME_SELECTED,
             NOTIFICATIONS_TOGGLE,
@@ -118,7 +121,8 @@ public class Translations implements DataHolder {
             ARGS_NO_PLAYER_FOUND_SERVER,
             ARGS_NO_PLAYER_FOUND_OFFLINE,
             ARGS_PAGE,
-            ARGS_EFFECT;
+            ARGS_EFFECT,
+            ARGS_MIX_NAME;
 
     public static String PAPI_CURRENT_EFFECT_NULL,
             PAPI_ENABLED,
@@ -141,7 +145,7 @@ public class Translations implements DataHolder {
             config = generator.generate();
 
             if (config == null) {
-                LOCALE = Locale.ENGLISH.key;
+                LOCALE = Locale.ENGLISH.getKey();
                 TreasureParticles.getConfig().set("locale", LOCALE);
                 TreasureParticles.saveConfig();
 
@@ -163,7 +167,7 @@ public class Translations implements DataHolder {
 
             return true;
         } catch (Exception exception) {
-            TreasureParticles.logger().log(Level.WARNING, "Couldn't load translations from 'translations_" + LOCALE + ".yml'", exception);
+            ComponentLogger.log("Couldn't load translations from 'translations_" + LOCALE + ".yml'", exception);
             return false;
         }
     }
@@ -256,6 +260,9 @@ public class Translations implements DataHolder {
         EFFECT_RESET_OTHER = load("commands.effect-reset-other", "<prefix> <gray>Effects ({0}): <red>OFF");
         CANNOT_USE_ANY_EFFECT = load("commands.cannot-use-any-effect", "<prefix> <red>You cannot use any effect.");
         CANNOT_USE_ANY_EFFECT_OTHER = load("commands.cannot-use-any-effect-other", "<prefix> <red>That player cannot use any effect.");
+        MIX_UNKNOWN = load("commands.mix-unknown", "<prefix> <red>Could not find any mix with name {0}.<br><i>You can try typing the mix name without adding spaces. Example: <st>My Mix</st> <b>></b> MyMix");
+        MIX_SELECTED = load("commands.mix-selected", "<prefix> <green>Mix selected:<reset> {0}");
+        MIX_SELECTED_OTHER = load("commands.mix-selected-other", "<prefix> <green>Mix selected ({0}):<reset> {1}");
         UNKNOWN_COLOR_SCHEME = load("commands.unknown-color-scheme", "<prefix> <red>Unknown color scheme.");
         COLOR_SCHEME_SELECTED = load("commands.color-scheme-selected", "<prefix> <green>Selected color scheme {0} for the {1} effect.");
         NOTIFICATIONS_TOGGLE = load("commands.notifications-toggle", "<prefix> <gray>Notifications: {0}");
@@ -269,6 +276,7 @@ public class Translations implements DataHolder {
         ARGS_NO_PLAYER_FOUND_OFFLINE = load("commands.args.no-player-found-offline", "<prefix> <red>No player matching {0} could be found.");
         ARGS_PAGE = load("commands.args.arg-page", "page");
         ARGS_EFFECT = load("commands.args.arg-effect", "effect");
+        ARGS_MIX_NAME = load("commands.args.arg-mix-name", "mix-name");
 
         // PlaceholderAPI
         PAPI_CURRENT_EFFECT_NULL = load("placeholders.current-effect-null", "None");
@@ -296,11 +304,12 @@ public class Translations implements DataHolder {
         var replacements = commandManager.getCommandReplacements();
         replacements.addReplacement("page", ARGS_PAGE);
         replacements.addReplacement("effect", ARGS_EFFECT);
+        replacements.addReplacement("mix-name", ARGS_MIX_NAME);
     }
 
     public String load(String key, String defaultValue) {
         if (!config.contains(key)) {
-            TreasureParticles.logger().warning("There is no translation for \"" + key + "\" (Locale: " + LOCALE + ")");
+            ComponentLogger.error(generator, "There is no translation for \"" + key + "\"");
             return defaultValue;
         }
         return config.getString(key);

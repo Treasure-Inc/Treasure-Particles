@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.1.2"
+version: "1.2.0"
 
 # Translations locale (default=EN)
 locale: EN
@@ -15,18 +15,22 @@ notifications: false
 auto-update-configurations: true
 
 # Toggle effect permission check (default=true)
-# If this option is enabled, players will be checked when the following events occur whether they have permission when they're using the TrParticles effects
-# In other words, if this option is disabled, players will only be checked when they're selecting an effect in GUI or selecting an effect with the "/tre select" command
+# If this setting is enabled, players will be checked when the following events occur whether they have permission when they're using the TrParticles effects
+# In other words, if this option is disabled, players will only be checked when they're selecting an effect on GUI or selecting an effect with the "/tre select" command
 # Event list:
 # -player joining server
 # -selecting effect for other players (admin command)
 # -reloading plugin
-# Disable this setting if you want to select an effect for players from the console and let them use the effect even if they don't have enough permission
+# Tip: Disable this setting if you want to select an effect for players from the console and let them use the effect even if they don't have the required permission
 always-check-effect-permission: true
 
 # Toggle colored error logs (console)
-# If this option is enabled, faulty parts will be underlined and highlighted in a different color
+# If this setting is enabled, faulty parts will be underlined and highlighted in a different color
 colored-error-logs: true
+
+# Toggle chat logs
+# If this setting is enabled, errors/warns will also be sent to in-game chat
+chat-logs: true
 
 # Database Settings
 database:
@@ -63,7 +67,7 @@ permissions:
   effects-visibility-permission: false
   can-see-effects: "trparticles.can_see_effects"
 
-  # Effects Permissions
+  # Effects' Permissions
   # Please check the effects.yml file if you want to add or remove permissions
   # You can read the wiki page for detailed information: https://treasurestore.gitbook.io/treasure-particles/effects/basic-usage#permission
   # -------------------------------------

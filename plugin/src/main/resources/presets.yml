@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.1.0"
+version: "1.2.0"
 # Commons
 elytra-boost-1s: "conditional ({CTM} - {LBM} > 1000) ? return : none"
 elytra-boost-3s: "conditional ({CTM} - {LBM} > 3000) ? return : none"
@@ -24,14 +24,14 @@ swap-x-z:
   - "variable x={z}"
   - "variable z={temp}"
 # Parkour
-parkour-circle-easy: "circle [effect=redstone,tick=true,amount=10,origin=head*17.5,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
-parkour-circle-normal: "circle [effect=redstone,amount=10,origin=head*20,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
-parkour-circle-hard: "circle [effect=redstone,amount=5,origin=head*20,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-circle-easy: "circle [effect=minecraft:dust,tick=true,amount=10,origin=head*17.5,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-circle-normal: "circle [effect=minecraft:dust,amount=10,origin=head*20,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-circle-hard: "circle [effect=minecraft:dust,amount=5,origin=head*20,pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
 parkour-success: "play-sound [name=entity.villager.yes,client=true]"
 parkour-fail: "play-sound [name=minecraft:entity.villager.no,client=true]"
 parkour-spawned: "play-sound [name=entity.arrow.hit_player,client=true]"
 # Parkour (Fast)
-parkour-fast: "circle [effect=redstone,amount=10,origin=head*{x={m};y=10;z={m}},pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-fast: "circle [effect=minecraft:dust,amount=10,origin=head*{x={m};y=10;z={m}},pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
 parkour-fast-streak:
   - "play-sound [name=entity.arrow.hit_player,client=true]"
   - "var streak+=1"
@@ -42,13 +42,13 @@ parkour-fast-fail:
   - "var streak=0"
 # Mob Kill Randomizer
 obsidian-tear:
-  - "spread [effect=landing_obsidian_tear,origin=feet,pos={y={y}},direction=false,vertical=false]"
+  - "spread [effect=minecraft:landing_obsidian_tear,origin=feet,pos={y={y}},direction=false,vertical=false]"
   - "return"
 landing-honey:
-  - "spread [effect=landing_honey,origin=feet,pos={y={y}},direction=false,vertical=false]"
+  - "spread [effect=minecraft:landing_honey,origin=feet,pos={y={y}},direction=false,vertical=false]"
   - "return"
 spore-blossom:
-  - "spread [effect=falling_spore_blossom,origin=feet,pos={y={y}},direction=false,vertical=false]"
+  - "spread [effect=minecraft:falling_spore_blossom,origin=feet,pos={y={y}},direction=false,vertical=false]"
   - "return"
 # Debug
 debug-velocity: "actionbar <red>x={velocityX} <gold>y={velocityY} <yellow>z={velocityZ} <green>length={velocityLength}"

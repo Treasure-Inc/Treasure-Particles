@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.1.3"
+version: "1.2.0"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -78,6 +78,9 @@ commands:
   effect-reset-other: "<prefix> <gray>{0} adlı oyuncunun efektleri sıfırlandı."
   cannot-use-any-effect: "<prefix> <red>Hiçbir efekti kullanamazsın."
   cannot-use-any-effect-other: "<prefix> <red>Bu oyuncu hiçbir efekti kullanamaz."
+  mix-unknown: "<prefix> <red>Bu isimde bir mix bulunamadı.<br><i>Mix ismini boşluk koymadan yazmayı deneyebilirsiniz. Örneğin: <st>Efekt Mixim</st> <b>></b> EfektMixim"
+  mix-selected: "<prefix> <green>Mix seçildi:<reset> {0}"
+  mix-selected-other: "<prefix> <green>Mix seçildi ({0}):<reset> {1}"
   unknown-color-scheme: "<prefix> <red>Bilinmeyen renk şeması."
   color-scheme-selected: "<prefix> <green>{1}<green> efekti için {0}<green> renk şeması seçildi."
   notifications-toggle: "<prefix> <gray>Bildirimler: {0}"
@@ -91,6 +94,7 @@ commands:
     no-player-found-offline: "<prefix> <red>Sunucuda {0} ismiyle eşleşen aktif bir oyuncu bulunamadı."
     arg-page: "sayfa"
     arg-effect: "efekt"
+    arg-mix-name: "mix-ismi"
 # Event İsimleri
 events:
   elytra: "Elitra"
@@ -105,58 +109,75 @@ events:
   take-damage: "Hasar Alma"
 # Efekt İsimleri
 effects:
+  # Rengarenk
   rainbow-circle: "<rainbow>Rengarenk Daire"
   rainbow-circle-transition: "<rainbow>Rengarenk Daire <gray>v2"
   rainbow-circle-acceleration: "<rainbow>Rengarenk Daire <gold>v3"
   rainbow-circle-radius: "<rainbow>Rengarenk Daire <aqua>v4"
-  rainbow-random: "<rainbow>Rengarenk"
   rainbow-line: "<rainbow>Rengarenk Çizgi"
-  rainbow-flag: "<rainbow>Rengarenk Bayrak"
   rainbow-spiral: "<rainbow>Rengarenk Spiral"
+  rainbow-trig: "<rainbow>Rengarenk Üçgen"
+  rainbow-rect: "<rainbow>Rengarenk Dikdörtgen"
   rainbow-dots: "<rainbow>Rengarenk Noktalar"
+  rainbow-random: "<rainbow>Rengarenk"
+  rainbow-flag: "<rainbow>Rengarenk Bayrak"
+  # Nota
   rainbow-note: "<rainbow>Rengarenk Notalar"
   random-note: "<#36d15f>Rastgele Notalar"
-  whirl: "<#3A0CA3>Sarmal"
+  # Sarmal
+  helix: "<#fff0c7>Sarmal"
+  helix-rainbow: "<rainbow>Rengarenk Sarmal"
+  # Degrade
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Degrade / Daire"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Degrade / Çizgi"
   gradient-spiral: "<gradient:#E3DFFF:#937666><b>Degrade / Spiral"
-  blood: "<#a8324a>Kan"
-  tear: "<#c2979e>Gözyaşı"
-  cherry-death: "<#ffa3e3>Yapraklı Ölüm"
-  dust-death: "<#756370>Tozlu Ölüm"
-  triple-line: "<gradient:red:blue>Üçlü Çizgi"
-  orbit: "<gradient:#FF8C42:#FF3C38>Yörünge"
+  # Parkur
   parkour-easy: "<b>Parkur <green>KOLAY"
   parkour-normal: "<b>Parkur <gold>NORMAL"
   parkour-hard: "<b>Parkur <red>ZOR!"
   parkour-fast: "<white><b>Parkur <light_purple>HIZLI"
-  sweeping: "<gray>Süpürme"
+  # Dönenler
+  triple-line: "<gradient:red:blue>Üçlü Çizgi"
+  orbit: "<gradient:#FF8C42:#FF3C38>Yörünge"
+  whirl: "<#3A0CA3>Dönence"
   planner: "<gradient:green:dark_green>Planör"
+  # Özel
+  complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Tamamlayıcı"
+  galaxy: "<b>Galaksi"
+  spores: "<b>Sporlar"
+  sweeping: "<gray>Süpürme"
   beam: "<gray>Işın"
-  helix: "<#fff0c7>Sarmal"
-  helix-rainbow: "<rainbow>Rengarenk Sarmal"
-  rain: "<blue>Yağmur"
   rocket: "<#33ff8b>Roket"
+  plane: "<#b58500>Uçak"
+  heart: "<#f54242>Kalp"
+  love-you: "<#f54242>Seni Seviyorum"
+  sonic: "<#65f5fc>Sonik"
+  # Ölüm Efektleri
+  blood: "<#a8324a>Kan"
+  tear: "<#c2979e>Gözyaşı"
+  cherry-death: "<#ffa3e3>Yapraklı Ölüm"
+  dust-death: "<#756370>Tozlu Ölüm"
+  # Nabız
+  pulse: "<gold>Nabız"
+  pulse-reverse: "<dark_aqua>Ters Nabız"
+  pulse-soul: "<#4254f5>Ruh Nabzı"
+  # Ruh
+  soul: "<#4254f5>Ruh"
+  sculk-soul: "<#1b2975>Sculk Ruhu"
+  # Hava Durumu
+  snow: "<#E9F1F7>Kar"
+  rain: "<blue>Yağmur"
+  # Kuyruk
   red-tail: "<#a83252>Kırmızı Kuyruk"
   yellow-tail: "<#d1b536>Sarı Kuyruk"
   pink-tail: "<#f59fda>Pembe Kuyruk"
   purple-tail: "<#7134eb>Mor Kuyruk"
   blue-tail: "<#2658ad>Mavi Kuyruk"
   rainbow-tail: "<rainbow>Rengarenk Kuyruk"
-  pulse: "<gold>Nabız"
-  pulse-reverse: "<dark_aqua>Ters Nabız"
-  pulse-soul: "<#4254f5>Ruh Nabzı"
-  soul: "<#4254f5>Ruh"
-  sculk-soul: "<#1b2975>Sculk Ruhu"
-  plane: "<#b58500>Uçak"
-  heart: "<#f54242>Kalp"
-  love-you: "<#f54242>Seni Seviyorum"
-  sonic: "<#65f5fc>Sonik"
-  snow: "<#E9F1F7>Kar"
+  # Yılbaşı Özel
   christmas-line: "<#1B512D>Yılbaşı Özel / Çizgi"
   christmas-circle: "<#6F1D1B>Yılbaşı Özel / Dairesel"
   christmas-spiral: "<#e1fce8>Yılbaşı Özel / Spiral"
-  complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Tamamlayıcı"
 # Efekt Açıklamaları
 descriptions:
   seasonal-effect: "<gray>Dönemsel Efekt"
@@ -174,7 +195,7 @@ colors:
   aqua-brown: "<gradient:#4254f5:#2e1c1a>Turkuaz > Kahverengi"
   dark-aqua-black: "<gradient:#3449eb:#10174f:#10174f>Koyu Turkuaz > Siyah"
   dark-colors: "<gradient:#CB997E:#B7B7A4>Koyu Renkler"
-# Placeholder Mesajları
+# PlaceholderAPI Mesajları
 placeholders:
   current-effect-null: "Yok"
   enabled: "Açık"

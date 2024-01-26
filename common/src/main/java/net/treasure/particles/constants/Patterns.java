@@ -20,4 +20,6 @@ public final class Patterns {
 
     // CONDITIONS
     public static final Pattern CONDITIONAL = Pattern.compile("(?<condition>.+) (\\?) (?<first>.+) (:) (?<second>.+)");
+    // PERMISSIONS
+    public static final Pattern PERMISSION = Pattern.compile("(?<=^%)(?<perm>.+)(?=%$)");
 }

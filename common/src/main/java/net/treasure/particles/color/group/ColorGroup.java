@@ -11,8 +11,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class ColorGroup {
-    String key;
-    List<Option> availableOptions;
+
+    private String key;
+    private List<Option> availableOptions;
 
     public Option getOption(ColorScheme colorScheme) {
         return availableOptions.stream().filter(option -> option.colorScheme.equals(colorScheme)).findFirst().orElse(null);

@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.database.impl.MySQL;
 import net.treasure.particles.database.impl.SQLite;
+import net.treasure.particles.util.logging.ComponentLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class DatabaseManager {
         var config = TreasureParticles.getConfig();
 
         if (!config.contains("database")) {
-            TreasureParticles.logger().warning("Couldn't find database section in the config.yml");
+            ComponentLogger.error("[config.yml]", "Couldn't find database section");
             return false;
         }
 
@@ -40,18 +41,18 @@ public class DatabaseManager {
         var applier = validDatabases.get(type);
 
         if (applier == null) {
-            TreasureParticles.logger().warning("Invalid database type: " + type);
+            ComponentLogger.error("[config.yml]", "Invalid database type: " + type);
             return false;
         }
 
         this.instance = applier.apply(config);
         if (this.instance == null) {
-            TreasureParticles.logger().warning("Couldn't initialize the database");
+            ComponentLogger.error("[Database]", "Couldn't initialize the database");
             return false;
         }
 
         if (!instance.connect()) {
-            TreasureParticles.logger().warning("Couldn't connect to the database");
+            ComponentLogger.error("[Database]", "Couldn't connect to the database");
             return false;
         }
 

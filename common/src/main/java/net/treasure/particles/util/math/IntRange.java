@@ -9,6 +9,7 @@ import net.treasure.particles.constants.Patterns;
 @Accessors(fluent = true)
 @AllArgsConstructor
 public class IntRange {
+
     protected int min, max;
 
     public static IntRange of(String value) {

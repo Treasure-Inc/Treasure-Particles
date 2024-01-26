@@ -1,10 +1,10 @@
 # Do not change!
-version: "1.1.2"
+version: "1.2.0"
 effects:
   rainbow-circle:
     display-name: "%rainbow-circle%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
     variables: [ 'y=0' ]
     interval: 1
     on-tick:
@@ -32,28 +32,28 @@ effects:
           - var-c [variable=y,max=1.75,min=0,step=0.1]
   rainbow-circle-transition:
     display-name: "%rainbow-circle-transition%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - circle [effect=minecraft:dust_color_transition,tick-data=true,amount=10,origin=head*-1.25,color={name=rainbow;duo=#FFFFFF;speed=0.75}]
+          - circle [effect=minecraft:dust_color_transition,tick-data=true,amount=10,origin=head*-1.25,color={name=rainbow;duo=#ffffff;speed=0.75}]
   rainbow-circle-acceleration:
     display-name: "%rainbow-circle-acceleration%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - circle [effect=minecraft:dust_color_transition,tick-data=true,size={val={velocityLength};min=0.8;max=3},amount=10,origin=head*-1.25,color={name=rainbow;duo=#FFFFFF;speed=0.75}]
+          - circle [effect=minecraft:dust_color_transition,tick-data=true,size={val={velocityLength};min=0.8;max=3},amount=10,origin=head*-1.25,color={name=rainbow;duo=#ffffff;speed=0.75}]
   rainbow-circle-radius:
     display-name: "%rainbow-circle-radius%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
     variables: [ 'radius=0.25',  'speed=0.05' ]
     interval: 1
     on-tick:
@@ -63,36 +63,10 @@ effects:
           - var-c [variable=radius,step={speed},min=0.25,max=1.25]
           - circle [effect=minecraft:dust,tick-data=true,radius={radius},amount=10,origin=head*-1.25,color={name=rainbow;speed=0.75}]
           - "conditional ({CTM} - {LBM} > 3000) ? var speed=0.05 : var speed=0.15"
-  rainbow-dots:
-    display-name: "%rainbow-dots%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - dot [effect=minecraft:dust,origin=feet,amount=5,size={val={velocityLength};min=1},pos={y={RANDOM}},color={name=rainbow}]
-  rainbow-random:
-    display-name: "%rainbow-random%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
-    variables: [ 'r', 'x', 'y' ]
-    interval: 1
-    enable-caching: true
-    on-tick:
-      elytra:
-        event: ELYTRA
-        times: 24
-        scripts:
-          - var r=2*{PI}*{i}/24
-          - var x=cos({r})/2
-          - var y=sin({r})/2
-          - particle [effect=minecraft:dust,direction=true,pos={x={x};y={y}},offset={x={x};y={y}},amount=5,origin=head*-1.25,color={name=rainbow;speed=0.75;revert=false}]
   rainbow-line:
     display-name: "%rainbow-line%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
     interval: 1
     on-tick:
       elytra:
@@ -108,10 +82,100 @@ effects:
         event: PROJECTILE
         scripts:
           - particle [effect=minecraft:dust,size=5,origin=head,color={name=rainbow;speed=0.1;revert=false},long-distance=true]
+  rainbow-spiral:
+    display-name: "%rainbow-spiral%"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - spiral [effect=minecraft:dust,size=5,direction=true,origin=feet,color={name=rainbow;revert=true;speed=0.5}]
+      moving:
+        event: MOVING
+        scripts:
+          - spiral [effect=minecraft:dust,size=2,origin=head,color={name=rainbow;revert=true;speed=0.5}]
+      standing:
+        event: STANDING
+        scripts:
+          - spiral [effect=minecraft:dust,steps=60,size=2,origin=head,color={name=rainbow;revert=true;speed=0.5}]
+  rainbow-trig:
+    display-name: "%rainbow-trig%"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
+    variables: [ 'r' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=3,radius=1.5,origin=feet*-1.1,color={name=rainbow;revert=true;speed=0.25}]
+      standing:
+        event: STANDING
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - polygon [effect=minecraft:dust,vertical=false,rotation={r},step=0.2,points=3,radius=1.5,origin=feet,color={name=rainbow;revert=true;speed=0.25}]
+      rotation:
+        event: NONE
+        mixer-options:
+          private: true
+        scripts:
+          - var-c [variable=r,min=0,max=360,step=2,revert=false]
+  rainbow-rect:
+    display-name: "%rainbow-rect%"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
+    variables: [ 'r' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=4,radius=1.5,origin=feet*-1.1,color={name=rainbow;revert=true;speed=0.25}]
+      standing:
+        event: STANDING
+        scripts:
+          - polygon [effect=minecraft:dust,rotation={r},step=0.2,points=4,radius=1.5,origin=feet,color={name=rainbow;revert=true;speed=0.25}]
+      rotation:
+        event: NONE
+        mixer-options:
+          private: true
+        scripts:
+          - var-c [variable=r,min=0,max=360,step=4,revert=false]
+  rainbow-dots:
+    display-name: "%rainbow-dots%"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - particle [effect=minecraft:dust,origin=feet,amount=5,size={val={velocityLength};min=1},pos={y={RANDOM}},color={name=rainbow}]
+  rainbow-random:
+    display-name: "%rainbow-random%"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
+    variables: [ 'r', 'x', 'y' ]
+    enable-caching: true
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        times: 24
+        scripts:
+          - var r=2*{PI}*{i}/24
+          - var x=cos({r})/2
+          - var y=sin({r})/2
+          - particle [effect=minecraft:dust,direction=true,pos={x={x};y={y}},offset={x={x};y={y}},amount=5,origin=head*-1.25,color={name=rainbow;speed=0.75;revert=false}]
   rainbow-flag:
     display-name: "%rainbow-flag%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
     variables: [ 'r', 'x' ]
     enable-caching: true
     interval: 1
@@ -122,74 +186,37 @@ effects:
         scripts:
           - var r={PI}*{i}/16
           - var x=cos({r})
-          - particle [effect=minecraft:dust,direction=true,pos={x={x};y=-0.5},amount=10,origin=head*-1.25,color={name=rainbow;speed=0.075}]
-  rainbow-spiral:
-    display-name: "%rainbow-spiral%"
-    armor-color: "rainbow"
-    permission: "%rainbow-effects"
-    variables: [ 'x', 'z', 'step' ]
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        mixer-options:
-          depend: [ 'step' ]
-        scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=minecraft:dust,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={name=rainbow;revert=true;speed=0.5}]
-      moving:
-        event: MOVING
-        mixer-options:
-          depend: [ 'step' ]
-        scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=minecraft:dust,size=2,pos={x={x};z={z}},origin=head,color={name=rainbow;revert=true;speed=0.5}]
-      standing:
-        event: STANDING
-        mixer-options:
-          depend: [ 'step' ]
-        scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=minecraft:dust,size=2,pos={x={x};z={z}},origin=head,color={name=rainbow;revert=true;speed=0.5}]
-      step:
-        event: NONE
-        mixer-options:
-          private: true
-        scripts:
-          - var step=({step} + 1+{isMoving}) % 120
+          - particle [effect=minecraft:dust,direction=true,pos={x={x}},amount=10,origin=feet*-1.25,color={name=rainbow;speed=0.075}]
   rainbow-note:
     display-name: "%rainbow-note%"
-    permission: "%note-effects"
-    armor-color: "rainbow"
+    color-animation: "rainbow"
+    permission: "%note-effects%"
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=feet]
+          - particle [effect=minecraft:note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=feet]
       moving:
         event: MOVING
         scripts:
-          - particle [effect=note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=head,pos={y=0.75}]
+          - particle [effect=minecraft:note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=head,pos={y=0.75}]
   random-note:
     display-name: "%random-note%"
-    permission: "%note-effects"
-    armor-color: "#36d15f"
+    color-animation: "#36d15f"
+    permission: "%note-effects%"
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=note,color={name=random-note;note=true;size=24},amount=0,origin=feet]
+          - particle [effect=minecraft:note,color={name=random-note;note=true;size=24},amount=0,origin=feet]
       moving:
         event: MOVING
         scripts:
-          - particle [effect=note,color={name=random-note;note=true;size=24},amount=0,origin=head,pos={y=0.75}]
+          - particle [effect=minecraft:note,color={name=random-note;note=true;size=24},amount=0,origin=head,pos={y=0.75}]
   helix-rainbow:
     display-name: "%helix-rainbow%"
-    permission: "%helix-effects"
-    armor-color: "rainbow"
+    color-animation: "rainbow"
+    permission: "%helix-effects%"
     variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
     interval: 1
     on-tick:
@@ -226,8 +253,8 @@ effects:
           - "conditional (reverse==0) ? preset helix-normal : none"
   helix:
     display-name: "%helix%"
-    permission: "%helix-effects"
-    armor-color: "gradient-white-gray"
+    color-animation: "gradient-white-gray"
+    permission: "%helix-effects%"
     variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
     interval: 1
     on-tick:
@@ -243,7 +270,7 @@ effects:
           - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
           - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
           - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
-          - "particle [effect=end_rod,pos={x={y};y={x};z={z}},amount=0,origin=head]"
+          - "particle [effect=minecraft:end_rod,pos={x={y};y={x};z={z}},amount=0,origin=head]"
       standing:
         event: STANDING
         mixer-options:
@@ -253,7 +280,7 @@ effects:
           - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
           - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "particle [effect=end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
+          - "particle [effect=minecraft:end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
       conditions:
         event: NONE
         mixer-options:
@@ -264,19 +291,77 @@ effects:
           - "conditional (reverse==0) ? preset helix-normal : none"
   complementary:
     display-name: "%complementary%"
-    permission: "%special"
-    armor-color: "complementary1-1"
-    interval: 8
+    color-animation: "complementary1-1"
+    permission: "%special%"
     variables: [ 'radius=1', 'particles=32' ]
+    interval: 8
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - circle [effect=dust_color_transition,tick-data=true,radius={radius},particles={particles},size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5;revert=true}]
+          - circle [effect=minecraft:dust_color_transition,tick-data=true,radius={radius},particles={particles},size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5;revert=true}]
+  galaxy:
+    display-name: "%galaxy%"
+    color-animation: "galaxy"
+    name-color-animation: true
+    permission: "%special%"
+    interval: 1
+    on-tick:
+      standing:
+        event: NONE
+        scripts:
+          - particle [effect=minecraft:wax_on,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~2
+          - particle [effect=minecraft:wax_off,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~3
+          - particle [effect=minecraft:scrape,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~4
+          - particle [effect=minecraft:electric_spark,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~5
+          - particle [effect=minecraft:end_rod,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~6
+          - particle [effect=minecraft:glow,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~7
+  spores:
+    display-name: "%spores%"
+    color-animation: "spores"
+    name-color-animation: true
+    permission: "%special%"
+    interval: 1
+    on-tick:
+      standing:
+        event: NONE
+        scripts:
+          - particle [effect=minecraft:ash,amount=0,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~2
+          - particle [effect=minecraft:mycelium,offset={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=0,origin=head] ~4
+          - particle [effect=minecraft:spore_blossom_air,origin=head] ~6
+          - particle [effect=minecraft:dolphin,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=10,origin=head] ~7
+          - particle [effect=minecraft:crimson_spore,amount=3,origin=head] ~10
+          - particle [effect=minecraft:warped_spore,amount=3,origin=head] ~15
+          - particle [effect=minecraft:white_ash,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=10,origin=head] ~20
+  planner:
+    display-name: "%planner%"
+    color-animation: "#32a852"
+    permission: "%spinning%"
+    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
+        times: 3
+        scripts:
+          - var x=cos({step} + ({PI} * 2 * ({i} / 3)))
+          - var z=sin({step} + ({PI} * 2 * ({i} / 3)))
+          - var angle=atan({z},{x})
+          - var xAng=cos({angle})
+          - var zAng=sin({angle})
+          - particle [effect=minecraft:totem_of_undying,direction=true,amount=0,offset={x={xAng};y={zAng}},speed=0.375,origin=feet]
+      step:
+        event: ELYTRA
+        mixer-options:
+          private: true
+        scripts:
+          - var step=({step} + {PI} / 20) % 40
   gradient-circle:
     display-name: "%gradient-circle%"
     color-group: "gradients"
-    permission: "%gradient-effects"
+    permission: "%gradient-effects%"
     variables: [ 'radius=1', 'particles=32' ]
     interval: 1
     on-tick:
@@ -287,7 +372,7 @@ effects:
   gradient-line:
     display-name: "%gradient-line%"
     color-group: "gradients"
-    permission: "%gradient-effects"
+    permission: "%gradient-effects%"
     interval: 1
     on-tick:
       elytra:
@@ -306,90 +391,71 @@ effects:
   gradient-spiral:
     display-name: "%gradient-spiral%"
     color-group: "gradients"
-    permission: "%gradient-effects"
-    variables: [ 'x', 'y', 'z', 'step' ]
+    permission: "%gradient-effects%"
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
-        mixer-options:
-          depend: [ 'step' ]
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=minecraft:dust,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={dynamic=true;revert=true;speed=0.25}]
+          - spiral [effect=minecraft:dust,size=5,direction=true,origin=feet,color={dynamic=true;revert=true;speed=0.25}]
       moving:
         event: MOVING
-        mixer-options:
-          depend: [ 'step' ]
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=minecraft:dust,size=2,pos={x={x};z={z}},origin=head,color={dynamic=true;revert=true;speed=0.25}]
+          - spiral [effect=minecraft:dust,size=2,origin=head,color={dynamic=true;revert=true;speed=0.25}]
       standing:
         event: STANDING
-        mixer-options:
-          depend: [ 'step' ]
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var y={z}-0.25
-          - particle [effect=minecraft:dust,size=2,pos={x={x};z={z};y={y}},origin=head,color={dynamic=true;revert=true;speed=0.25}]
-      step:
-        event: NONE
-        mixer-options:
-          private: true
-        scripts:
-          - var step=({step} + 1 + {isMoving}) % 120
+          - spiral [effect=minecraft:dust,steps=60,size=2,origin=head,color={dynamic=true;revert=true;speed=0.25}]
   parkour-easy:
     display-name: "%parkour-easy%"
-    permission: "%parkour"
+    color-animation: "#ffffff"
+    permission: "%parkour%"
     variables: [ 'radius=1.5', 'particles=48' ]
-    armor-color: "#FFFFFF"
     interval: 1
     on-tick:
       handler:
         event: ELYTRA
         scripts:
-          - parkour [style=parkour-circle-easy,standby=#FFFFFF,success=#09b849,fail=#b80909,interval=60,duration=5,when-succeeded=parkour-success,when-failed=parkour-fail,when-spawned=parkour-spawned]
+          - parkour [style=parkour-circle-easy,standby=#ffffff,success=#09b849,fail=#b80909,interval=60,duration=5,when-succeeded=parkour-success,when-failed=parkour-fail,when-spawned=parkour-spawned]
   parkour-normal:
     display-name: "%parkour-normal%"
-    permission: "%parkour"
+    color-animation: "#ffffff"
+    permission: "%parkour%"
     variables: [ 'radius=1', 'particles=32' ]
-    armor-color: "#FFFFFF"
     interval: 1
     on-tick:
       handler:
         event: ELYTRA
         scripts:
-          - parkour [style=parkour-circle-normal,standby=#FFFFFF,success=#09b849,fail=#b80909,interval=60,duration=5,when-succeeded=parkour-success,when-failed=parkour-fail,when-spawned=parkour-spawned]
+          - parkour [style=parkour-circle-normal,standby=#ffffff,success=#09b849,fail=#b80909,interval=60,duration=5,when-succeeded=parkour-success,when-failed=parkour-fail,when-spawned=parkour-spawned]
   parkour-hard:
     display-name: "%parkour-hard%"
-    permission: "%parkour"
+    color-animation: "#ffffff"
+    permission: "%parkour%"
     variables: [ 'radius=0.65', 'particles=24' ]
-    armor-color: "#FFFFFF"
     interval: 1
     on-tick:
       handler:
         event: ELYTRA
         scripts:
-          - parkour [style=parkour-circle-hard,standby=#FFFFFF,success=#09b849,fail=#b80909,interval=60,duration=5,when-succeeded=parkour-success,when-failed=parkour-fail,when-spawned=parkour-spawned]
+          - parkour [style=parkour-circle-hard,standby=#ffffff,success=#09b849,fail=#b80909,interval=60,duration=5,when-succeeded=parkour-success,when-failed=parkour-fail,when-spawned=parkour-spawned]
   parkour-fast:
     display-name: "%parkour-fast%"
-    permission: "%parkour"
-    armor-color: "#FFFFFF"
+    color-animation: "#ffffff"
+    permission: "%parkour%"
     variables: [ 'm', 'radius=1', 'particles=32', 'streak=0' ]
+    interval: 1
     on-tick:
       handler:
         event: ELYTRA
         scripts:
           - var m=20+{velocityLength}*5
-          - parkour [style=parkour-fast,standby=#FFFFFF,success=#09b849,fail=#b80909,interval=1,duration=3,when-succeeded=parkour-fast-streak,when-failed=parkour-fast-fail,immediate=true]
+          - parkour [style=parkour-fast,standby=#ffffff,success=#09b849,fail=#b80909,interval=1,duration=3,when-succeeded=parkour-fast-streak,when-failed=parkour-fast-fail,immediate=true]
   triple-line:
     display-name: "%triple-line%"
-    permission: "%spinning"
-    armor-color: "gradient-red-blue"
-    variables: [ 'r', 'x1', 'y1', 'z1', 'x2', 'y2', 'z2' ]
+    color-animation: "gradient-red-blue"
+    permission: "%spinning%"
+    variables: [ 'r', 'x1', 'y1', 'x2', 'y2', 'z' ]
     interval: 1
     on-tick:
       elytra:
@@ -398,97 +464,43 @@ effects:
           - var r+={PI}/60
           - var x1=cos({r})
           - var y1=sin({r})
-          - var z1=sin({r})
-          - var y2={y1}*2
           - var x2={x1}*-1
-          - var z2={z1}*-1
+          - var y2={y1}*2
+          - var z={y1}*-1
           - particle [effect=minecraft:dust,pos={y={y2}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
-          - particle [effect=minecraft:dust,pos={x={x1};y={y1};z={z1}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
-          - particle [effect=minecraft:dust,pos={x={x2};y={y1};z={z2}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
+          - particle [effect=minecraft:dust,pos={x={x1};y={y1};z={y1}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
+          - particle [effect=minecraft:dust,pos={x={x2};y={y1};z={z}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
   orbit:
     display-name: "%orbit%"
-    permission: "%spinning"
-    armor-color: "gradient-red-yellow-blue"
-    variables: [ 'x', 'z', 'step' ]
+    color-animation: "gradient-red-yellow-blue"
+    permission: "%spinning%"
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
-        mixer-options:
-          depend: [ 'step' ]
-        times: 3
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-          - particle [effect=minecraft:dust,amount=10,direction=true,pos={x={x};y={z}},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
+          - multi-spiral [effect=minecraft:dust,amount=10,vertical=true,direction=true,tick=true,origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
       standing:
         event: STANDING
-        mixer-options:
-          depend: [ 'step' ]
-        times: 3
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * {i})))
-          - particle [effect=minecraft:dust,amount=10,pos={x={x};z={z};y=-0.25},origin=head,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
-      step:
-        event: NONE
-        mixer-options:
-          private: true
-        scripts:
-          - var step=({step} + 1) % 120
+          - multi-spiral [effect=minecraft:dust,amount=10,tick=true,pos={y=1.5},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
   whirl:
     display-name: "%whirl%"
-    permission: "%spinning"
-    armor-color: "whirl"
-    variables: [ 'stepX', 'stepY=-60', 'x', 'y', 'z' ]
+    color-animation: "whirl"
+    permission: "%spinning%"
     on-tick:
       elytra:
         event: ELYTRA
-        mixer-options:
-          depend: [ 'step' ]
-        times: 12
         scripts:
-          - var stepY+=10
-          - var x=-(cos((({stepX}+{stepY}) / 90) * {PI} * 2))
-          - var y={stepY}/180
-          - var z=-(sin((({stepX}+{stepY}) / 90) * {PI} * 2))
-          - particle [effect=minecraft:dust,amount=5,pos={x={x};z={y};y={z}},direction=true,origin=head,color={name=whirl;revert=true;speed=0.05}]
-      step:
-        event: NONE
-        mixer-options:
-          private: true
+          - full-spiral [effect=minecraft:dust,gap=0.25,vertical=true,direction=true,amount=5,origin=head,color={name=whirl;revert=true;speed=0.05}]
+      standing:
+        event: STANDING
         scripts:
-          - var stepY=-60
-          - var stepX+=1
-  planner:
-    display-name: "%planner%"
-    permission: "%spinning"
-    armor-color: "#32a852"
-    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        mixer-options:
-          depend: [ 'step' ]
-        times: 3
-        scripts:
-          - var x=cos({step} + ({PI} * 2 * ({i} / 3)))
-          - var z=sin({step} + ({PI} * 2 * ({i} / 3)))
-          - var angle=atan({z},{x})
-          - var xAng=cos({angle})
-          - var zAng=sin({angle})
-          - particle [effect=totem,direction=true,amount=0,offset={x={xAng};y={zAng}},speed=0.375,origin=feet]
-      step:
-        event: ELYTRA
-        mixer-options:
-          private: true
-        scripts:
-          - var step=({step} + {PI} / 20) % 40
+          - full-spiral [effect=minecraft:dust,gap=2,pos={y=1},amount=5,origin=feet,color={name=whirl;revert=true;speed=0.05}]
   tear:
     display-name: "%tear%"
-    permission: "%death-effects"
-    armor-color: "tear"
+    color-animation: "tear"
+    permission: "%death-effects%"
     variables: [ 't=0', 'y=0', 'random=0' ]
     interval: 1
     on-tick:
@@ -516,31 +528,32 @@ effects:
           - preset spore-blossom
   cherry-death:
     display-name: "%cherry-death%"
-    permission: "%death-effects"
-    armor-color: "cherry-death"
+    color-animation: "cherry-death"
+    permission: "%death-effects%"
     interval: 2
     on-tick:
       mob-kill:
         event: MOB_KILL
         max-executed: 5
         scripts:
-          - spread [effect=cherry_leaves,spread=0.25,particles=8,radius=0.25,vertical=false,origin=head,pos={y=0.75}]
+          - spread [effect=minecraft:cherry_leaves,spread=0.25,particles=8,radius=0.25,vertical=false,origin=head,pos={y=0.75}]
   dust-death:
     display-name: "%dust-death%"
-    permission: "%death-effects"
-    armor-color: "dust-death"
+    color-animation: "dust-death"
+    permission: "%death-effects%"
     interval: 2
     on-tick:
       mob-kill:
         event: MOB_KILL
         max-executed: 5
         scripts:
-          - spread [effect=falling_dust,block={material=GRAVEL},spread=0.25,particles=8,radius=0.25,vertical=false,origin=head,pos={y=0.75}]
+          - spread [effect=minecraft:falling_dust,block={material=GRAVEL},spread=0.25,particles=8,radius=0.25,vertical=false,origin=head,pos={y=0.75}]
   blood:
     display-name: "%blood%"
-    permission: "%basic"
-    armor-color: "#a8324a"
+    color-animation: "#a8324a"
+    permission: "%basic%"
     variables: [ 'x=0', 't=0' ]
+    interval: 1
     on-tick:
       take-damage:
         event: TAKE_DAMAGE
@@ -554,8 +567,8 @@ effects:
           - particle [effect=minecraft:block,block={material=redstone_block},origin=feet,pos={y=0.75},offset={x={RANDOM};z={RANDOM}},amount=7] ~3
   sweeping:
     display-name: "%sweeping%"
-    permission: "%basic"
-    armor-color: "#ffffff"
+    color-animation: "#ffffff"
+    permission: "%basic%"
     variables: [ 'size=1' ]
     interval: 1
     on-tick:
@@ -563,46 +576,46 @@ effects:
         event: ELYTRA
         scripts:
           - var-c [variable=size,step=0.25,min=3,max=10]
-          - dot [effect=sweep_attack,amount=0,speed=1,offset={x={size}},pos={y=0.5},origin=feet]
+          - particle [effect=minecraft:sweep_attack,amount=0,speed=1,offset={x={size}},pos={y=0.5},origin=feet]
   beam:
     display-name: "%beam%"
-    permission: "%basic"
-    armor-color: "#ffd86b"
+    color-animation: "#ffd86b"
+    permission: "%basic%"
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - circle [effect=electric_spark,particles=16,origin=feet,amount=0]
+          - circle [effect=minecraft:electric_spark,particles=16,origin=feet,amount=0]
   sonic:
     display-name: "%sonic%"
-    permission: "%basic"
-    armor-color: "#65f5fc"
+    color-animation: "#65f5fc"
+    permission: "%basic%"
     interval: 3
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=sonic_boom,origin=head]
+          - particle [effect=minecraft:sonic_boom,origin=head]
       projectile:
         event: PROJECTILE
         scripts:
-          - particle [effect=sonic_boom,origin=head]
+          - particle [effect=minecraft:sonic_boom,origin=head]
   plane:
     display-name: "%plane%"
-    permission: "%basic"
-    armor-color: "#b58500"
+    color-animation: "#b58500"
+    permission: "%basic%"
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=wax_on,direction=true,pos={x=1},origin=head]
-          - particle [effect=wax_on,direction=true,pos={x=-1},origin=head]
-          - particle [effect=wax_off,direction=true,origin=head]
+          - particle [effect=minecraft:wax_on,direction=true,pos={x=1},origin=head]
+          - particle [effect=minecraft:wax_on,direction=true,pos={x=-1},origin=head]
+          - particle [effect=minecraft:wax_off,direction=true,origin=head]
   rain:
     display-name: "%rain%"
-    permission: "%weather"
-    armor-color: "#345eeb"
+    color-animation: "#345eeb"
+    permission: "%weather%"
     variables: [ 'r', 'x', 'z' ]
     interval: 3
     on-tick:
@@ -613,7 +626,7 @@ effects:
           - var r={i}*{PI}/24
           - var x=cos({r})*{RANDOM}*2.5
           - var z=sin({r})*{RANDOM}*2.5
-          - particle [effect=drip_water,direction=true,pos={x={x};y={z}},amount=0,origin=head*2]
+          - particle [effect=minecraft:dripping_water,direction=true,pos={x={x};y={z}},amount=0,origin=head*2]
       moving:
         event: MOVING
         scripts:
@@ -621,8 +634,8 @@ effects:
           - spread [effect=minecraft:falling_water,spread=1,radius=0.25,particles=3,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
   snow:
     display-name: "%snow%"
-    armor-color: "#FFFFFF"
-    permission: "%weather"
+    color-animation: "#ffffff"
+    permission: "%weather%"
     variables: [ 'r', 'x', 'z', 'radius=4' ]
     interval: 3
     on-tick:
@@ -633,75 +646,75 @@ effects:
           - var r={i}*{PI}/24
           - var x=cos({r})*{RANDOM}*{radius}
           - var z=sin({r})*{RANDOM}*{radius}
-          - particle [effect=snowflake,direction=true,pos={x={x};y={z}},amount=0,origin=head*2]
+          - particle [effect=minecraft:snowflake,direction=true,pos={x={x};y={z}},amount=0,origin=head*2]
       moving:
         event: MOVING
         scripts:
-          - spread [effect=snowflake,radius=0.25,particles=24,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+          - spread [effect=minecraft:snowflake,radius=0.25,particles=24,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
   pulse:
     display-name: "%pulse%"
-    permission: "%pulse-effects"
-    armor-color: "gradient-red-gold"
+    color-animation: "gradient-red-gold"
+    permission: "%pulse-effects%"
     interval: 15
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - spread [effect=flame,radius=0.5,spread=1,amount=0,speed=0.05,origin=feet]
+          - spread [effect=minecraft:flame,radius=0.5,spread=1,amount=0,speed=0.05,origin=feet]
       mob-kill:
         event: MOB_KILL
         max-executed: 1
         scripts:
-          - spread [effect=flame,radius=0.5,spread=0.15,amount=0,speed=0.25,origin=feet,vertical=false,directional=false,pos={y=1}]
+          - spread [effect=minecraft:flame,radius=0.5,spread=0.15,amount=0,speed=0.25,origin=feet,vertical=false,directional=false,pos={y=1}]
   pulse-soul:
     display-name: "%pulse-soul%"
-    permission: "%pulse-effects"
-    armor-color: "gradient-aqua-blue"
+    color-animation: "gradient-aqua-blue"
+    permission: "%pulse-effects%"
     interval: 15
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - spread [effect=soul_fire_flame,radius=0.5,spread=1,amount=0,speed=0.05,origin=feet]
+          - spread [effect=minecraft:soul_fire_flame,radius=0.5,spread=1,amount=0,speed=0.05,origin=feet]
       mob-kill:
         event: MOB_KILL
         max-executed: 1
         scripts:
-          - spread [effect=soul_fire_flame,radius=0.5,spread=0.15,amount=0,speed=0.25,origin=feet,vertical=false,directional=false,pos={y=1}]
+          - spread [effect=minecraft:soul_fire_flame,radius=0.5,spread=0.15,amount=0,speed=0.25,origin=feet,vertical=false,directional=false,pos={y=1}]
   pulse-reverse:
     display-name: "%pulse-reverse%"
-    permission: "%pulse-effects"
-    armor-color: "gradient-dark-aqua-black"
+    color-animation: "gradient-dark-aqua-black"
+    permission: "%pulse-effects%"
     interval: 15
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - spread [effect=nautilus,spread=0.25,amount=0,speed=1,origin=feet]
+          - spread [effect=minecraft:nautilus,spread=0.25,amount=0,speed=1,origin=feet]
   pulse-fast-soul:
     display-name: "%soul%"
-    permission: "%pulse-effects"
-    armor-color: "gradient-aqua-brown"
+    color-animation: "gradient-aqua-brown"
+    permission: "%pulse-effects%"
     interval: 2
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - spread [effect=soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
+          - spread [effect=minecraft:soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
   pulse-fast-sculk:
     display-name: "%sculk-soul%"
-    permission: "%pulse-effects"
-    armor-color: "dark-3"
+    color-animation: "dark-3"
+    permission: "%pulse-effects%"
     interval: 2
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - spread [effect=sculk_soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
+          - spread [effect=minecraft:sculk_soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
   rocket:
     display-name: "%rocket%"
-    permission: "%special"
-    armor-color: "rocket"
+    color-animation: "rocket"
+    permission: "%special%"
     description:
       - "%featured-behavior%"
       - "%elytra-boost%"
@@ -717,10 +730,10 @@ effects:
           - "conditional ({CTM} - {LBM} > 2000) ? particle [effect=minecraft:dust,direction=true,pos={x={x};y={y}},amount=1,origin=head*-2.5,color={name=rocket}] : particle [effect=minecraft:dust,size=3,direction=true,pos={x={x};y={y}},amount=0,origin=head*-2.5,color={name=rocket}]"
   heart:
     display-name: "%heart%"
-    permission: "%special"
-    armor-color: "heart"
-    interval: 15
+    color-animation: "heart"
+    permission: "%special%"
     variables: [ 'x=-2', 'y1', 'y2' ]
+    interval: 15
     on-tick:
       effect:
         event: ELYTRA
@@ -730,96 +743,116 @@ effects:
         scripts:
           - var x+=0.2
           - var y1=1.75*(1-(abs({x})-1)^2)^1/2
-          - particle [effect=heart,direction=true,pos={x={x};y={y1}},origin=feet]
+          - particle [effect=minecraft:heart,direction=true,pos={x={x};y={y1}},origin=feet]
           - var y2=acos(1-abs({x}))-{PI}+0.55
-          - particle [effect=heart,direction=true,pos={x={x};y={y2}},origin=feet]
+          - particle [effect=minecraft:heart,direction=true,pos={x={x};y={y2}},origin=feet]
       check:
         event: ELYTRA
         mixer-options:
           private: true
         scripts:
-          - particle [effect=heart,direction=true,origin=feet]
-          - particle [effect=heart,direction=true,origin=feet,pos={y=-2.25}]
+          - particle [effect=minecraft:heart,direction=true,origin=feet]
+          - particle [effect=minecraft:heart,direction=true,origin=feet,pos={y=-2.25}]
           - var x=-2
   love-you:
     display-name: "%love-you%"
-    permission: "%text-effects"
-    armor-color: "heart"
+    color-animation: "heart"
+    permission: "%text-effects%"
     interval: 40
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - text [effect=heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=false]
+          - text [effect=minecraft:heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=false]
   red-tail:
     display-name: "%red-tail%"
-    permission: "%tail-effects"
-    armor-color: "#a83252"
+    color-animation: "#a83252"
+    permission: "%tail-effects%"
+    interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=block_marker,block={material=fire_coral},origin=feet]
+          - particle [effect=minecraft:block_marker,block={material=fire_coral},origin=feet]
   yellow-tail:
     display-name: "%yellow-tail%"
-    permission: "%tail-effects"
-    armor-color: "#d1b536"
+    color-animation: "#d1b536"
+    permission: "%tail-effects%"
+    interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=block_marker,block={material=horn_coral},origin=feet]
+          - particle [effect=minecraft:block_marker,block={material=horn_coral},origin=feet]
   pink-tail:
     display-name: "%pink-tail%"
-    permission: "%tail-effects"
-    armor-color: "#f59fda"
+    color-animation: "#f59fda"
+    permission: "%tail-effects%"
+    interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=block_marker,block={material=brain_coral},origin=feet]
+          - particle [effect=minecraft:block_marker,block={material=brain_coral},origin=feet]
   purple-tail:
     display-name: "%purple-tail%"
-    permission: "%tail-effects"
-    armor-color: "#7134eb"
+    color-animation: "#7134eb"
+    permission: "%tail-effects%"
+    interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=block_marker,block={material=bubble_coral},origin=feet]
+          - particle [effect=minecraft:block_marker,block={material=bubble_coral},origin=feet]
   blue-tail:
     display-name: "%blue-tail%"
-    permission: "%tail-effects"
-    armor-color: "#2658ad"
+    color-animation: "#2658ad"
+    permission: "%tail-effects%"
+    interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=block_marker,block={material=tube_coral},origin=feet]
+          - particle [effect=minecraft:block_marker,block={material=tube_coral},origin=feet]
   rainbow-tail:
     display-name: "%rainbow-tail%"
-    permission: "%tail-effects"
-    armor-color: "rainbow"
+    color-animation: "rainbow"
+    permission: "%tail-effects%"
     variables: [ 'step' ]
+    interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
           - "conditional (step==8) ? var step=0 : var step+=1 ~5"
-          - "conditional (step==0) ? particle [effect=block_marker,block={material=red_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==1) ? particle [effect=block_marker,block={material=orange_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==2) ? particle [effect=block_marker,block={material=yellow_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==3) ? particle [effect=block_marker,block={material=green_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==4) ? particle [effect=block_marker,block={material=lime_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==5) ? particle [effect=block_marker,block={material=cyan_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==6) ? particle [effect=block_marker,block={material=blue_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==7) ? particle [effect=block_marker,block={material=magenta_stained_glass_pane},origin=feet] : none"
-          - "conditional (step==8) ? particle [effect=block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==0) ? particle [effect=minecraft:block_marker,block={material=red_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==1) ? particle [effect=minecraft:block_marker,block={material=orange_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==2) ? particle [effect=minecraft:block_marker,block={material=yellow_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==3) ? particle [effect=minecraft:block_marker,block={material=green_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==4) ? particle [effect=minecraft:block_marker,block={material=lime_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==5) ? particle [effect=minecraft:block_marker,block={material=cyan_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==6) ? particle [effect=minecraft:block_marker,block={material=blue_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==7) ? particle [effect=minecraft:block_marker,block={material=magenta_stained_glass_pane},origin=feet] : none"
+          - "conditional (step==8) ? particle [effect=minecraft:block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
+  christmas-circle:
+    display-name: "%christmas-circle%"
+    permission: "%christmas%"
+    icon:
+      material: RED_CANDLE
+    description:
+      - "%seasonal-effect%"
+      - "%christmas%"
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - circle [effect=minecraft:dust,tick=true,size=3,amount=0,origin=head*-1.25,color={name=christmas;speed=1.75;revert=true}]
   christmas-line:
     display-name: "%christmas-line%"
-    permission: "%christmas"
+    permission: "%christmas%"
     icon:
-      material: "GREEN_CANDLE"
+      material: GREEN_CANDLE
     description:
       - "%seasonal-effect%"
       - "%christmas%"
@@ -839,58 +872,24 @@ effects:
         event: PROJECTILE
         scripts:
           - particle [effect=minecraft:dust,size=5,origin=feet,color={name=christmas;speed=1.75;revert=false},long-distance=true]
-  christmas-circle:
-    display-name: "%christmas-circle%"
-    permission: "%christmas"
-    icon:
-      material: "RED_CANDLE"
-    description:
-      - "%seasonal-effect%"
-      - "%christmas%"
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - circle [effect=minecraft:dust,tick=true,size=3,amount=0,origin=head*-1.25,color={name=christmas;speed=1.75;revert=true}]
   christmas-spiral:
     display-name: "%christmas-spiral%"
-    permission: "%christmas"
+    permission: "%christmas%"
     icon:
-      material: "WHITE_CANDLE"
+      material: WHITE_CANDLE
     description:
       - "%seasonal-effect%"
       - "%christmas%"
-    variables: [ 'x', 'y', 'z', 'step' ]
     on-tick:
       elytra:
         event: ELYTRA
-        mixer-options:
-          depend: [ 'step' ]
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=minecraft:dust,size=5,direction=true,pos={x={x};y={z}},origin=feet,color={name=christmas;revert=true;speed=1.75}]
+          - spiral [effect=minecraft:dust,size=5,direction=true,origin=feet,color={name=christmas;revert=true;speed=1.75}]
       moving:
         event: MOVING
-        mixer-options:
-          depend: [ 'step' ]
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - particle [effect=minecraft:dust,size=2,pos={x={x};z={z}},origin=head,color={name=christmas;revert=true;speed=1.75}]
+          - spiral [effect=minecraft:dust,size=2,origin=head,color={name=christmas;revert=true;speed=1.75}]
       standing:
         event: STANDING
-        mixer-options:
-          depend: [ 'step' ]
         scripts:
-          - var x=-(cos(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var z=-(sin(({step} / 120) * ({PI} * 2) + ((({PI} * 2) / 3) * 2)))
-          - var y={z}-0.25
-          - particle [effect=minecraft:dust,size=2,pos={x={x};z={z};y={y}},origin=head,color={name=christmas;revert=true;speed=1.75}]
-      step:
-        event: NONE
-        mixer-options:
-          private: true
-        scripts:
-          - var step=({step} + 1 + {isMoving}) % 120
+          - spiral [effect=minecraft:dust,steps=60,size=2,origin=head,color={name=christmas;revert=true;speed=1.75}]

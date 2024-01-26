@@ -8,7 +8,7 @@ import net.treasure.particles.util.TimeKeeper;
 @AllArgsConstructor
 public class EffectsTask implements Runnable {
 
-    final PlayerManager playerManager;
+    private final PlayerManager playerManager;
 
     @Override
     public void run() {

@@ -1,11 +1,11 @@
 package net.treasure.particles.effect.script.conditional.reader;
 
 import lombok.AllArgsConstructor;
-import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.script.conditional.Condition;
 import net.treasure.particles.effect.script.conditional.ConditionGroup;
 import net.treasure.particles.effect.script.reader.DefaultReader;
+import net.treasure.particles.util.logging.ComponentLogger;
 
 @AllArgsConstructor
 public class ConditionReader extends DefaultReader<ConditionGroup> {
@@ -33,7 +33,7 @@ public class ConditionReader extends DefaultReader<ConditionGroup> {
 
             // Check condition group operator
             if (operator != null && !(c == '&' || c == '|')) {
-                TreasureParticles.logger().warning("Couldn't find second operator char");
+                ComponentLogger.error(effect, type, line, pos, pos + 1, "Couldn't find second operator char");
                 return null;
             }
 
@@ -45,7 +45,7 @@ public class ConditionReader extends DefaultReader<ConditionGroup> {
             if (valuePos != -1 && !((c >= '0' && c <= '9') || c == '.' || c == '-')) {
                 value = Double.parseDouble(line.substring(valuePos, pos));
                 if (variable.isEmpty() || variableOperator == null) {
-                    TreasureParticles.logger().warning("No variable or operator but value");
+                    ComponentLogger.error(effect, type, line, pos, pos + 1, "No variable or operator but value");
                     return null;
                 }
                 // Create a new condition group if current is null
@@ -98,7 +98,7 @@ public class ConditionReader extends DefaultReader<ConditionGroup> {
                                 if (!current.conditions.isEmpty() && !current.operators.isEmpty()) { // Single condition group
                                     parent.inner.add(current);
                                 } else {
-                                    TreasureParticles.logger().warning("Unexpected situation, please report this to ");
+                                    ComponentLogger.error(effect, "Unexpected situation, please report this");
                                 }
                             }
                         }
@@ -122,7 +122,7 @@ public class ConditionReader extends DefaultReader<ConditionGroup> {
                     case ')' -> {
                         if (current == null) {
                             if (last == null) {
-                                TreasureParticles.logger().warning("End bracket but current is null pos=" + pos);
+                                ComponentLogger.error(effect, type, line, pos, pos + 1, "End bracket but current is null");
                                 return null;
                             }
                             if (last.parent != null) {
@@ -146,14 +146,14 @@ public class ConditionReader extends DefaultReader<ConditionGroup> {
                     }
                     case '&' -> {
                         if (operator != null) {
-                            if (!operator.equals(ConditionGroup.Operator.AND)) {
-                                TreasureParticles.logger().warning("Different Operator");
+                            if (operator != ConditionGroup.Operator.AND) {
+                                ComponentLogger.error(effect, type, line, pos, pos + 1, "Different operators (Possible solution: &&)");
                                 return null;
                             }
 
                             if (current == null) {
                                 if (last == null) {
-                                    TreasureParticles.logger().warning("Current is null (AND)");
+                                    ComponentLogger.error(effect, type, line, pos, pos + 1, "Current is null (AND)");
                                     return null;
                                 }
 
@@ -170,14 +170,14 @@ public class ConditionReader extends DefaultReader<ConditionGroup> {
                     }
                     case '|' -> {
                         if (operator != null) {
-                            if (!operator.equals(ConditionGroup.Operator.OR)) {
-                                TreasureParticles.logger().warning("Different Operator");
+                            if (operator != ConditionGroup.Operator.OR) {
+                                ComponentLogger.error(effect, type, line, pos, pos + 1, "Different operators (Possible solution: ||)");
                                 return null;
                             }
 
                             if (current == null) {
                                 if (last == null) {
-                                    TreasureParticles.logger().warning("Current is null (OR)");
+                                    ComponentLogger.error(effect, type, line, pos, pos + 1, "Current is null (OR)");
                                     return null;
                                 }
 
@@ -194,7 +194,7 @@ public class ConditionReader extends DefaultReader<ConditionGroup> {
                     }
                     case '=' -> {
                         if (variable.isEmpty()) {
-                            TreasureParticles.logger().warning("No variable but operator");
+                            ComponentLogger.error(effect, type, line, pos, pos + 1, "No variable but operator");
                             return null;
                         }
                         variableOperator = switch (lastChar) {

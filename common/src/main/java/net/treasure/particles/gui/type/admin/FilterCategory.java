@@ -11,5 +11,5 @@ public enum FilterCategory {
     HAS_PERMISSION("Has Permission"),
     NO_PERMISSION("No Permission"),
     SUPPORTED_EVENTS("Supported Events");
-    final String translation;
+    private final String translation;
 }

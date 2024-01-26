@@ -12,7 +12,7 @@ public class MathUtils {
     private static final DecimalFormat DF;
 
     static public final float PI = 3.1415927f;
-    static public final float PI2 = PI * 2;
+    static public final double PI2 = PI * 2;
 
     private static final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
     private static final int SIN_MASK = ~(-1 << SIN_BITS);

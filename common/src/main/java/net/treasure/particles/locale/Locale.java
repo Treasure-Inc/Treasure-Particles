@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public enum Locale {
     ENGLISH("en"),
     TURKISH("tr");
-    final String key;
+    private final String key;
 
     public void generate() {
         new ConfigurationGenerator("translations_" + key + ".yml", "translations").generate();

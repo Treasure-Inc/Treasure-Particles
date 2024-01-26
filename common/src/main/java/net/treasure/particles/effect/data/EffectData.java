@@ -11,6 +11,7 @@ import net.treasure.particles.effect.handler.TickHandler;
 import net.treasure.particles.effect.mix.MixData;
 import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.util.TimeKeeper;
+import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.tuples.Triplet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Setter
@@ -119,8 +121,10 @@ public class EffectData {
             case "currentTimeMillis", "CTM" -> (double) System.currentTimeMillis();
             case "lastBoostMillis", "LBM" -> (double) lastBoostMillis;
             case "RANDOM" -> Math.random();
+            case "RANDOM-" -> ThreadLocalRandom.current().nextDouble(-1, 1);
             case "TICK" -> (double) TimeKeeper.getTimeElapsed();
             case "PI" -> Math.PI;
+            case "2PI" -> MathUtils.PI2;
             default -> null;
         };
         return value == null ? null : new Triplet<>(variable, value, null);

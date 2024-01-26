@@ -6,7 +6,7 @@ import org.bukkit.Color;
 
 public class RGBColorData extends ColorData {
 
-    final ColorScheme color;
+    private final ColorScheme color;
 
     public RGBColorData(ColorScheme color, float speed, boolean revertWhenDone, boolean stopCycle) {
         super(speed, revertWhenDone, stopCycle);

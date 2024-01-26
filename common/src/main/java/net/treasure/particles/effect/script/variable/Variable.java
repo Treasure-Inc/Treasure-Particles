@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.Cached;
 import net.treasure.particles.effect.script.Script;
+import net.treasure.particles.util.logging.ComponentLogger;
 import net.treasure.particles.util.math.MathUtils;
 import org.bukkit.entity.Player;
 
@@ -40,7 +40,7 @@ public class Variable extends Script implements Cached {
             val = MathUtils.eval(data.replaceVariables(effect, eval));
         } catch (Exception e) {
             e.printStackTrace();
-            TreasureParticles.logger().warning("Invalid evaluation: " + eval);
+            ComponentLogger.log("Invalid evaluation: " + eval);
             return TickResult.NORMAL;
         }
         switch (operator) {
@@ -61,7 +61,7 @@ public class Variable extends Script implements Cached {
         try {
             val = MathUtils.eval(data.replaceVariables(effect, eval));
         } catch (Exception e) {
-            TreasureParticles.logger().warning("Invalid evaluation: " + eval);
+            ComponentLogger.log("Invalid evaluation: " + eval);
             return;
         }
 

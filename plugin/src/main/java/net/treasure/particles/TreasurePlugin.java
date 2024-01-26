@@ -3,10 +3,10 @@ package net.treasure.particles;
 import lombok.Getter;
 import net.treasure.particles.color.ColorManager;
 import net.treasure.particles.command.MainCommand;
-import net.treasure.particles.integration.Expansions;
 import net.treasure.particles.database.DatabaseManager;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.EffectManager;
+import net.treasure.particles.integration.Expansions;
 import net.treasure.particles.locale.Translations;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.DrilldownPie;
@@ -15,15 +15,12 @@ import org.bukkit.Bukkit;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Getter
 public class TreasurePlugin extends AbstractTreasurePlugin {
 
     @Override
     public void onEnable() {
-        var start = System.nanoTime();
-
         TreasureParticles.setPlugin(this);
 
         // Commands & Listeners
@@ -35,8 +32,6 @@ public class TreasurePlugin extends AbstractTreasurePlugin {
         // PlaceholderAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
             new Expansions().register();
-
-        getLogger().info("Enabled TreasureParticles (" + TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS) + "ms)");
     }
 
     private void initializeCommands() {

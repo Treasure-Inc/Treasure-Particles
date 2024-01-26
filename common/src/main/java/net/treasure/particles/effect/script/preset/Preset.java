@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Preset extends Script {
 
-    List<Script> scripts;
+    private List<Script> scripts;
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {

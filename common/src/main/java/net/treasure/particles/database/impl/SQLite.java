@@ -3,6 +3,7 @@ package net.treasure.particles.database.impl;
 import lombok.Getter;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.database.Database;
+import net.treasure.particles.util.logging.ComponentLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,12 +12,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
+@Getter
 public class SQLite extends Database {
 
-    @Getter
-    Connection connection;
+    private Connection connection;
 
     @Override
     public boolean connect() {
@@ -26,7 +26,7 @@ public class SQLite extends Database {
             try {
                 exists = dataFolder.createNewFile();
             } catch (IOException e) {
-                TreasureParticles.logger().log(Level.SEVERE, "File write error: database.db", e);
+                ComponentLogger.log("File write error: database.db", e);
                 return false;
             }
         }
@@ -39,7 +39,7 @@ public class SQLite extends Database {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dataFolder);
             return true;
         } catch (Exception e) {
-            TreasureParticles.logger().log(Level.SEVERE, "SQLite exception on initialize", e);
+            ComponentLogger.log("SQLite exception on initialize", e);
         }
         return true;
     }
@@ -60,7 +60,7 @@ public class SQLite extends Database {
             if (rs != null)
                 rs.close();
         } catch (SQLException e) {
-            TreasureParticles.logger().log(Level.WARNING, "Couldn't close connection components", e);
+            ComponentLogger.log("Couldn't close connection components", e);
         }
     }
 }

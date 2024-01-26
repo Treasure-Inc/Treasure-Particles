@@ -1,7 +1,9 @@
 package net.treasure.particles.gui.task;
 
 import lombok.Getter;
+import net.kyori.adventure.text.format.TextColor;
 import net.treasure.particles.gui.GUIHolder;
+import net.treasure.particles.util.message.MessageUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
@@ -35,7 +37,10 @@ public class GUITask implements Runnable {
                 var item = holder.getInventory().getItem(slot);
                 if (item == null) continue;
                 if (item.getItemMeta() != null && item.getItemMeta() instanceof LeatherArmorMeta meta) {
-                    meta.setColor(colorData.next(null));
+                    var color = colorData.next(null);
+                    meta.setColor(color);
+                    if (data.name() != null)
+                        meta.setDisplayName(MessageUtils.gui(data.name(), TextColor.color(color.getRed(), color.getGreen(), color.getBlue())));
                     item.setItemMeta(meta);
                 }
             }

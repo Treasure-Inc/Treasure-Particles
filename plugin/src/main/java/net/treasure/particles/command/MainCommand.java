@@ -1,7 +1,16 @@
 package net.treasure.particles.command;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CatchUnknown;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Name;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Private;
+import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.TreasurePlugin;
@@ -56,13 +65,50 @@ public class MainCommand extends BaseCommand {
 
     @Subcommand("mixer")
     @CommandPermission(Permissions.COMMAND_MIXER)
-    public void mixer(Player player) {
-        var data = playerManager.getEffectData(player);
-        if (!data.canCreateAnotherMix()) {
-            MessageUtils.sendParsed(player, Translations.COMMAND_NO_PERMISSION);
+    public void mixer(CommandSender sender, @Optional @Name("%mix-name") String mixName, @Optional @CommandPermission(Permissions.COMMAND_ADMIN) OnlinePlayer select) {
+        if (mixName == null) {
+            if (!(sender instanceof Player player)) {
+                MessageUtils.sendParsed(sender, Translations.COMMAND_PLAYERS_ONLY);
+                return;
+            }
+
+            var data = playerManager.getEffectData(player);
+            if (!data.canCreateAnotherMix()) {
+                MessageUtils.sendParsed(player, Translations.COMMAND_NO_PERMISSION);
+                return;
+            }
+
+            guiManager.mixerGUI().open(player);
             return;
         }
-        guiManager.mixerGUI().open(player);
+
+        boolean self = select == null || select.player.equals(sender);
+        if (self && !(sender instanceof Player)) {
+            MessageUtils.sendParsed(sender, Translations.COMMAND_PLAYERS_ONLY);
+            return;
+        }
+
+        var player = self ? (Player) sender : select.player;
+        var data = playerManager.getEffectData(player);
+        var o = data.getMixData().stream().filter(mixData -> mixData.name().replaceAll(" ", "").equalsIgnoreCase(mixName)).findFirst();
+        if (o.isEmpty()) {
+            MessageUtils.sendParsed(sender, Translations.MIX_UNKNOWN, mixName);
+            return;
+        }
+
+        var mix = o.get();
+        var effect = mix.get(player);
+        if (effect == null) {
+            data.getMixData().remove(mix);
+            MessageUtils.sendParsed(sender, Translations.MIX_UNKNOWN, mixName);
+            return;
+        }
+
+        data.setCurrentEffect(effect);
+        MessageUtils.sendParsed(player, Translations.MIX_SELECTED, mix.name());
+
+        if (!self)
+            MessageUtils.sendParsed(sender, Translations.MIX_SELECTED_OTHER, player.getName(), mix.name());
     }
 
     @Subcommand("select|sel")
@@ -177,7 +223,7 @@ public class MainCommand extends BaseCommand {
     @CommandPermission(Permissions.COMMAND_ADMIN)
     public void reload(CommandSender sender) {
         MessageUtils.sendParsed(sender, Translations.RELOADING);
-        TreasureParticles.reload();
+        TreasureParticles.reload(sender);
         MessageUtils.sendParsed(sender, Translations.RELOADED);
     }
 
@@ -198,7 +244,7 @@ public class MainCommand extends BaseCommand {
         plugin.getConfig().set("locale", locale);
         plugin.saveConfig();
         Bukkit.getScheduler().runTask(plugin, () -> {
-            TreasureParticles.reload();
+            TreasureParticles.reload(sender);
             if (oldLocale.equals(Translations.LOCALE)) {
                 MessageUtils.sendParsed(sender, "<prefix> <red>Couldn't set locale to " + locale);
                 return;

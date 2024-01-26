@@ -14,8 +14,8 @@ import org.bukkit.entity.Player;
 @Getter
 public class Title extends Script {
 
-    String title, subtitle;
-    int fadeIn, stay, fadeOut;
+    private String title, subtitle;
+    private int fadeIn, stay, fadeOut;
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {

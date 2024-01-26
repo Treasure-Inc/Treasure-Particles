@@ -17,16 +17,16 @@ import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.player.PlayerManager;
 import net.treasure.particles.util.logging.ComponentLogger;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class TreasureParticles {
 
-    public static final String VERSION = "1.1.2"; // config.yml
+    public static final String VERSION = "1.2.0"; // config.yml
 
     @Getter
     private static AbstractTreasurePlugin plugin;
@@ -45,7 +45,8 @@ public class TreasureParticles {
     private static ColorManager colorManager;
     @Getter
     private static Permissions permissions;
-    private static GUIManager guiManager;
+    @Getter
+    private static GUIManager GUIManager;
 
     @Getter
     private static DatabaseManager databaseManager;
@@ -119,13 +120,13 @@ public class TreasureParticles {
         dataHolders.add(permissions);
 
         // GUI Manager
-        guiManager = new GUIManager();
-        dataHolders.add(guiManager);
+        GUIManager = new GUIManager();
+        dataHolders.add(GUIManager);
 
         // Load translations > GUI > colors > effects
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             translations.loadTranslations();
-            guiManager.initialize();
+            GUIManager.initialize();
 
             colorManager.loadColors();
             effectManager.loadEffects();
@@ -136,24 +137,27 @@ public class TreasureParticles {
             playerManager.initializePlayer(player);
     }
 
-    public static void reload() {
+    public static void reload(CommandSender sender) {
+        ComponentLogger.setChatReceiver(sender);
+
         plugin.getLogger().info("Reloading TreasureParticles");
 
         // config.yml
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         configure();
-        plugin.getLogger().info("Reloaded config!");
+        plugin.getLogger().info("..Reloaded config");
 
         // Data Holders
         dataHolders.forEach(DataHolder::reload);
-        plugin.getLogger().info("Reloaded data holders!");
+        plugin.getLogger().info("..Reloaded data holders");
 
         // Player Manager
         Bukkit.getScheduler().runTaskLater(plugin, () -> playerManager.reload(), 5);
-        plugin.getLogger().info("Reloaded player manager!");
+        plugin.getLogger().info("..Reloaded player manager");
 
-        plugin.getLogger().info("Reloaded TreasureParticles");
+        plugin.getLogger().info("Reloaded");
+        ComponentLogger.setChatReceiver(null);
     }
 
     private static void configure() {
@@ -165,26 +169,24 @@ public class TreasureParticles {
                 var generator = new ConfigurationGenerator("config.yml", plugin);
                 generator.reset();
                 plugin.reloadConfig();
-                plugin.getLogger().warning("Generated new config.yml (v" + VERSION + ")");
+                ComponentLogger.error("[config.yml]", "Generated new file (v" + VERSION + ")");
             } else
-                plugin.getLogger().warning("New version of config.yml available (v" + VERSION + ")");
+                ComponentLogger.error("[config.yml]", "New version available (v" + VERSION + ")");
         }
 
         notificationsEnabled = config.getBoolean("notifications", false);
         autoUpdateEnabled = config.getBoolean("auto-update-configurations", true);
-        ComponentLogger.setColored(config.getBoolean("colored-error-logs", true));
-    }
 
-    public static Logger logger() {
-        return plugin.getLogger();
+        ComponentLogger.setColored(config.getBoolean("colored-error-logs", true));
+        ComponentLogger.setChatLogsEnabled(config.getBoolean("chat-logs", true));
     }
 
     public static void newVersionInfo(DataHolder holder) {
-        logger().warning("New version of " + holder.getGenerator().getFileName() + " available (v" + holder.getVersion() + ")");
+        ComponentLogger.error(holder.getGenerator(), "New version available (v" + holder.getVersion() + ")");
     }
 
     public static void generatedNewFile(DataHolder holder) {
-        logger().warning("Generated new " + holder.getGenerator().getFileName() + " (v" + holder.getVersion() + ")");
+        ComponentLogger.error(holder.getGenerator(), "Generated new file (v" + holder.getVersion() + ")");
     }
 
     public static File getDataFolder() {
@@ -197,10 +199,6 @@ public class TreasureParticles {
 
     public static void saveConfig() {
         plugin.saveConfig();
-    }
-
-    public static GUIManager getGUIManager() {
-        return guiManager;
     }
 
     public static Database getDatabase() {

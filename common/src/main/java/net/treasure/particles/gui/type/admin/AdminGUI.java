@@ -2,8 +2,6 @@ package net.treasure.particles.gui.type.admin;
 
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.ColorManager;
-import net.treasure.particles.color.data.RGBColorData;
-import net.treasure.particles.color.generator.Gradient;
 import net.treasure.particles.effect.EffectManager;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.gui.GUIManager;
@@ -17,7 +15,6 @@ import net.treasure.particles.util.item.CustomItem;
 import net.treasure.particles.util.message.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemFlag;
@@ -99,30 +96,13 @@ public class AdminGUI extends GUI {
             int where = effectSlots[index];
 
             var effect = effects.get(i);
-            Color color = null;
-            RGBColorData colorData = null;
 
             var colorGroup = effect.getColorGroup();
             var canUseAny = colorGroup != null && colorGroup.canUseAny(player);
 
-            if (effect.getArmorColor() != null) {
-                var scheme = colorManager.getColorScheme(effect.getArmorColor());
-                if (scheme != null) {
-                    colorData = new RGBColorData(scheme, colorCycleSpeed, true, false);
-                    color = colorData.next(null);
-                } else {
-                    try {
-                        color = Gradient.hex2Rgb(effect.getArmorColor());
-                    } catch (Exception ignored) {
-                        TreasureParticles.logger().warning(effect.getPrefix() + "Unknown armor color value: " + effect.getArmorColor());
-                    }
-                }
-            } else if (canUseAny) {
-                var preference = data.getColorPreference(effect);
-                var scheme = preference == null ? colorGroup.getAvailableOptions().get(0).colorScheme() : preference;
-                colorData = new RGBColorData(scheme, colorCycleSpeed, true, false);
-                color = colorData.next(null);
-            }
+            var pair = holder.colorData(data, effect, colorGroup, canUseAny, colorManager, colorCycleSpeed);
+            var colorData = pair.getKey();
+            var color = pair.getValue();
 
             holder.setItem(where, new CustomItem(effect.getIcon())
                     .setDisplayName(MessageUtils.gui(effect.getDisplayName()))
@@ -137,7 +117,7 @@ public class AdminGUI extends GUI {
                     .addLore(colorGroup != null ? MessageUtils.gui("<gray>Color Group: <yellow>" + colorGroup.getKey()) : null)
                     .changeArmorColor(color)
                     .glow(effect.equals(data.getCurrentEffect()))
-                    .addItemFlags(ItemFlag.values()), null, colorData);
+                    .addItemFlags(ItemFlag.values()), null, colorData, effect.isNameColorAnimationEnabled() ? effect.getDisplayName() : null);
             index += 1;
         }
 

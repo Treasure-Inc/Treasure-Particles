@@ -25,5 +25,5 @@ public enum ElementType {
     BACK("back"),
     // MIXER
     CONFIRM("confirm");
-    final String id;
+    private final String id;
 }

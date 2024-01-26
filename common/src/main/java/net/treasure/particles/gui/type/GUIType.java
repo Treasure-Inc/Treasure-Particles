@@ -12,5 +12,5 @@ public enum GUIType {
     COLORS("colors"),
     MIXER("mixer"),
     HANDLERS("handlers");
-    final String id;
+    private final String id;
 }

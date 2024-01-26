@@ -9,9 +9,9 @@ import java.util.List;
 @Getter
 public class ColorScheme {
 
-    final String key;
-    final String displayName;
-    final List<Color> colors;
+    private final String key;
+    private final String displayName;
+    private final List<Color> colors;
 
     public ColorScheme(String key, String displayName) {
         this.key = key;

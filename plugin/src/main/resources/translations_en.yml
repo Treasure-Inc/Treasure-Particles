@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.1.3"
+version: "1.2.0"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -78,6 +78,9 @@ commands:
   effect-reset-other: "<prefix> <gray>Effects ({0}): <red>OFF"
   cannot-use-any-effect: "<prefix> <red>You cannot use any effect."
   cannot-use-any-effect-other: "<prefix> <red>That player cannot use any effect."
+  mix-unknown: "<prefix> <red>Could not find any mix with name {0}.<br><i>You can try typing the mix name without adding spaces. Example: <st>My Mix</st> <b>></b> MyMix"
+  mix-selected: "<prefix> <green>Mix selected:<reset> {0}"
+  mix-selected-other: "<prefix> <green>Mix selected ({0}):<reset> {1}"
   unknown-color-scheme: "<prefix> <red>Unknown color scheme."
   color-scheme-selected: "<prefix> <green>Selected color scheme {0}<green> for the {1}<green> effect."
   notifications-toggle: "<prefix> <gray>Notifications: {0}"
@@ -91,6 +94,7 @@ commands:
     no-player-found-offline: "<prefix> <red>No player matching {0} could be found."
     arg-page: "page"
     arg-effect: "effect"
+    arg-mix-name: "mix-name"
 # Event Names
 events:
   elytra: "Elytra"
@@ -105,58 +109,75 @@ events:
   take-damage: "Taking Damage"
 # Effect Names
 effects:
+  # Rainbow
   rainbow-circle: "<rainbow>Rainbow Circle"
   rainbow-circle-transition: "<rainbow>Rainbow Circle <gray>v2"
   rainbow-circle-acceleration: "<rainbow>Rainbow Circle <gold>v3"
   rainbow-circle-radius: "<rainbow>Rainbow Circle <aqua>v4"
-  rainbow-random: "<rainbow>Rainbow"
   rainbow-line: "<rainbow>Rainbow Line"
-  rainbow-flag: "<rainbow>Rainbow Flag"
   rainbow-spiral: "<rainbow>Rainbow Spiral"
+  rainbow-trig: "<rainbow>Rainbow Triangle"
+  rainbow-rect: "<rainbow>Rainbow Rectangle"
   rainbow-dots: "<rainbow>Rainbow Dots"
+  rainbow-random: "<rainbow>Rainbow"
+  rainbow-flag: "<rainbow>Rainbow Flag"
+  # Note
   rainbow-note: "<rainbow>Rainbow Notes"
   random-note: "<#36d15f>Random Notes"
-  whirl: "<#3A0CA3>Whirl"
+  # Helix
+  helix-rainbow: "<rainbow>Rainbow Helix"
+  helix: "<#fff0c7>Helix"
+  # Gradient
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Gradient / Circle"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Gradient / Line"
   gradient-spiral: "<gradient:#E3DFFF:#937666><b>Gradient / Spiral"
-  blood: "<#a8324a>Blood"
-  tear: "<#c2979e>Tear"
-  cherry-death: "<#ffa3e3>Cherry Death"
-  dust-death: "<#756370>Dust Death"
-  triple-line: "<gradient:red:blue>Triple Line"
-  orbit: "<gradient:#FF8C42:#FF3C38>Orbit"
+  # Parkour
   parkour-easy: "<white><b>Parkour <green>EASY"
   parkour-normal: "<white><b>Parkour <gold>NORMAL"
   parkour-hard: "<white><b>Parkour <red>HARD!"
   parkour-fast: "<white><b>Parkour <light_purple>FAST"
-  sweeping: "<gray>Sweeping"
+  # Spinning
+  triple-line: "<gradient:red:blue>Triple Line"
+  orbit: "<gradient:#FF8C42:#FF3C38>Orbit"
+  whirl: "<#3A0CA3>Whirl"
   planner: "<gradient:green:dark_green>Planner"
+  # Specials
+  complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Complementary"
+  galaxy: "<b>Galaxy"
+  spores: "<b>Spores"
+  sweeping: "<gray>Sweeping"
   beam: "<gray>Beam"
-  helix: "<#fff0c7>Helix"
-  helix-rainbow: "<rainbow>Rainbow Helix"
-  rain: "<blue>Rain"
   rocket: "<gray>Rocket"
+  plane: "<#b58500>Plane"
+  heart: "<#f54242>Heart"
+  love-you: "<#f54242>Love You"
+  sonic: "<#65f5fc>Sonic"
+  # Death Effects
+  blood: "<#a8324a>Blood"
+  tear: "<#c2979e>Tear"
+  cherry-death: "<#ffa3e3>Cherry Death"
+  dust-death: "<#756370>Dust Death"
+  # Pulse
+  pulse: "<gold>Pulse"
+  pulse-reverse: "<dark_aqua>Reverse Pulse"
+  pulse-soul: "<#4254f5>Soul Pulse"
+  # Soul
+  soul: "<#4254f5>Soul"
+  sculk-soul: "<#1b2975>Sculk Soul"
+  # Weather
+  snow: "<#E9F1F7>Snow"
+  rain: "<blue>Rain"
+  # Tails
   red-tail: "<#a83252>Red Tail"
   yellow-tail: "<#d1b536>Yellow Tail"
   pink-tail: "<#f59fda>Pink Tail"
   purple-tail: "<#7134eb>Purple Tail"
   blue-tail: "<#2658ad>Blue Tail"
   rainbow-tail: "<rainbow>Rainbow Tail"
-  pulse: "<gold>Pulse"
-  pulse-reverse: "<dark_aqua>Reverse Pulse"
-  pulse-soul: "<#4254f5>Soul Pulse"
-  soul: "<#4254f5>Soul"
-  sculk-soul: "<#1b2975>Sculk Soul"
-  plane: "<#b58500>Plane"
-  heart: "<#f54242>Heart"
-  love-you: "<#f54242>Love You"
-  sonic: "<#65f5fc>Sonic"
-  snow: "<#E9F1F7>Snow"
+  # Christmas
   christmas-line: "<#1B512D>Christmas / Line"
   christmas-circle: "<#6F1D1B>Christmas / Circle"
   christmas-spiral: "<#e1fce8>Christmas / Spiral"
-  complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Complementary"
 # Effects Descriptions
 descriptions:
   seasonal-effect: "<gray>Seasonal Effect"
@@ -174,7 +195,7 @@ colors:
   aqua-brown: "<gradient:#4254f5:#2e1c1a>Aqua > Brown"
   dark-aqua-black: "<gradient:#3449eb:#10174f:#10174f>Dark Aqua > Black"
   dark-colors: "<gradient:#CB997E:#B7B7A4>Dark Colors"
-# Placeholder Messages
+# PlaceholderAPI Messages
 placeholders:
   current-effect-null: "None"
   enabled: "Enabled"

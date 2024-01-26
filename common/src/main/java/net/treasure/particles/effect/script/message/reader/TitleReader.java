@@ -5,6 +5,7 @@ import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.script.message.Title;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.reader.ScriptReader;
+import net.treasure.particles.util.logging.ComponentLogger;
 
 public class TitleReader extends ScriptReader<ReaderContext<Title>, Title> {
 
@@ -16,8 +17,6 @@ public class TitleReader extends ScriptReader<ReaderContext<Title>, Title> {
         boolean typeFound = false, split = false;
         int ignore = 0;
 
-        var logger = TreasureParticles.logger();
-
         for (int i = 0; i < array.length; i++) {
             char c = array[i];
             switch (c) {
@@ -27,7 +26,7 @@ public class TitleReader extends ScriptReader<ReaderContext<Title>, Title> {
                         continue;
                     }
                     if (!typeFound) {
-                        logger.warning("Incorrect title expression: " + line);
+                        ComponentLogger.error(effect, "Incorrect title expression: " + line);
                         return null;
                     }
                     try {

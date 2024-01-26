@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 @AllArgsConstructor
 public class JoinQuitListener implements Listener {
 
-    final PlayerManager playerManager;
+    private final PlayerManager playerManager;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on(PlayerJoinEvent event) {

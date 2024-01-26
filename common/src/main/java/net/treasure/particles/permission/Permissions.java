@@ -4,6 +4,8 @@ import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.configuration.ConfigurationGenerator;
 import net.treasure.particles.configuration.DataHolder;
 import net.treasure.particles.constants.Keys;
+import net.treasure.particles.constants.Patterns;
+import net.treasure.particles.util.logging.ComponentLogger;
 
 public class Permissions implements DataHolder {
 
@@ -63,6 +65,15 @@ public class Permissions implements DataHolder {
     }
 
     public String replace(String key) {
-        return key != null && key.startsWith("%") ? TreasureParticles.getConfig().getString("permissions." + key.substring(1), key) : key;
+        if (key == null) return null;
+        var matcher = Patterns.PERMISSION.matcher(key);
+        if (matcher.find()) {
+            var perm = matcher.group("perm");
+            var replaced = TreasureParticles.getConfig().getString("permissions." + perm);
+            if (replaced != null) return replaced;
+            ComponentLogger.error("[config.yml]", "'" + key + " is not specified in permissions section'");
+            return key;
+        }
+        return key;
     }
 }

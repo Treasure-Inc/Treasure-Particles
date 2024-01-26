@@ -1,26 +1,23 @@
-package net.treasure.particles.effect.script.particle.style;
+package net.treasure.particles.effect.script.particle.style.circle;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.particles.color.data.ColorData;
-import net.treasure.particles.color.data.RandomNoteColorData;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
+import net.treasure.particles.effect.script.particle.ParticleContext;
 import net.treasure.particles.effect.script.particle.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
-import net.treasure.particles.util.tuples.Triplet;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,10 +30,10 @@ import java.util.function.Predicate;
 @NoArgsConstructor
 public class CircleParticle extends ParticleSpawner {
 
-    IntArgument particles = new IntArgument(32);
-    RangeArgument radius = new RangeArgument(1f);
-    boolean tickData = false;
-    boolean vertical = true;
+    protected IntArgument particles = new IntArgument(32);
+    protected RangeArgument radius = new RangeArgument(1f);
+    protected boolean tickData = false;
+    protected boolean vertical = true;
 
     public CircleParticle(ParticleEffect particle, ParticleOrigin origin,
                           IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
@@ -58,47 +55,33 @@ public class CircleParticle extends ParticleSpawner {
     }
 
     @Nullable
-    public Triplet<ParticleBuilder, Location, Vector> sendParticles(Player player, EffectData data, HandlerEvent event, Predicate<Player> viewers) {
-        var context = tick(player, data, event);
+    public ParticleContext sendParticles(Player player, EffectData data, HandlerEvent event, Predicate<Player> viewers) {
+        var context = tick(player, data, event, true, false);
         if (context == null) return null;
-        var origin = context.origin();
-        var builder = context.builder();
-        var vector = this.position != null ? position.get(player, this, data) : new Vector(0, 0, 0);
 
         if (viewers != null)
-            builder.viewers(viewers);
+            context.builder.viewers(viewers);
 
-        sendParticles(player, data, builder, origin, origin.getDirection(), origin.getPitch(), origin.getYaw(), vector);
-        return new Triplet<>(builder, origin.clone().add(vector), origin.getDirection());
+        sendParticles(player, data, context);
+        return context;
     }
 
-    public void sendParticles(Player player, EffectData data, ParticleBuilder builder, Location origin, Vector direction, float pitch, float yaw, Vector vector) {
+    public void sendParticles(Player player, EffectData data, ParticleContext context) {
+        var builder = context.builder;
+
         var particles = this.particles.get(player, this, data);
         var radius = this.radius.get(player, this, data);
 
-        var particleData = particleData(player, data);
+        updateParticleData(builder, player, data);
 
         List<ParticleBuilder> builders = new ArrayList<>();
+
+        var s = MathUtils.PI2 / particles;
         for (int i = 0; i < particles; i++) {
-            var r = MathUtils.PI2 * i / particles;
-            var x = MathUtils.cos(r) * radius;
-            var y = MathUtils.sin(r) * radius;
-
-            var location = rotate(origin.clone(), direction.clone(), pitch, yaw, (vertical ? new Vector(x, y, 0) : new Vector(y, 0, x)).add(vector));
-
-            var copy = builder.copy()
-                    .location(location)
-                    .data(particleData);
-
-            if (particle == ParticleEffect.NOTE && colorData != null && colorData.isNote())
-                copy.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
-            else if (particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR) && colorData != null)
-                copy.offsetColor(colorData.next(data));
-
-            builders.add(copy);
-
+            var r = s * i;
+            builders.add(builder.copy().location(location(context, r, radius, vertical)));
             if (tickData)
-                particleData = particleData(player, data);
+                updateParticleData(builder, player, data);
         }
 
         Particles.send(builders);

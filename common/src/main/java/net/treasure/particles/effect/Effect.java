@@ -11,12 +11,14 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.handler.TickHandler;
 import net.treasure.particles.effect.script.Cached;
 import net.treasure.particles.effect.script.Script;
+import net.treasure.particles.effect.script.Script.TickResult;
 import net.treasure.particles.effect.script.conditional.ConditionalScript;
 import net.treasure.particles.effect.script.variable.Variable;
 import net.treasure.particles.gui.type.mixer.MixerHolder;
 import net.treasure.particles.locale.Translations;
 import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.util.TimeKeeper;
+import net.treasure.particles.util.logging.ComponentLogger;
 import net.treasure.particles.util.message.MessageUtils;
 import net.treasure.particles.util.tuples.Pair;
 import net.treasure.particles.util.tuples.Triplet;
@@ -28,14 +30,14 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
 public class Effect {
 
-    private final String key, displayName, armorColor, permission;
+    private final String key, displayName, colorAnimation, permission;
+    private final boolean nameColorAnimationEnabled;
 
     private String[] description;
     private final ItemStack icon;
@@ -50,19 +52,19 @@ public class Effect {
 
     private final EnumSet<HandlerEvent> events;
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup) {
-        this(key, displayName, description, icon, armorColor, permission, interval, cachingEnabled, colorGroup);
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup) {
+        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup);
 
         this.variables = new ArrayList<>();
         for (var variable : variables) {
             if (hasVariable(variable)) {
-                TreasureParticles.logger().warning(getPrefix() + "Variable '" + variable + "' is already defined.");
+                ComponentLogger.error(this, "Variable '" + variable + "' is already defined.");
                 continue;
             }
             if (!isPredefinedVariable(variable))
                 addVariable(variable);
             else
-                TreasureParticles.logger().warning(getPrefix() + "'" + variable + "' is a pre-defined variable.");
+                ComponentLogger.error(this, "Variable '" + variable + "' is a pre-defined variable.");
         }
 
         addVariable(Variable.I);
@@ -79,8 +81,8 @@ public class Effect {
         }
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, List<Triplet<String, Double, String>> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup) {
-        this(key, displayName, description, icon, armorColor, permission, interval, cachingEnabled, colorGroup);
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<Triplet<String, Double, String>> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup) {
+        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup);
         this.variables = variables;
 
         this.tickHandlers = tickHandlers;
@@ -92,13 +94,14 @@ public class Effect {
         addVariable(Variable.TIMES, null);
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String armorColor, String permission, int interval, boolean cachingEnabled, ColorGroup colorGroup) {
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, int interval, boolean cachingEnabled, ColorGroup colorGroup) {
         this.key = key;
         this.displayName = displayName;
         this.description = description;
         this.icon = icon;
-        this.armorColor = armorColor;
+        this.colorAnimation = colorAnimation;
         this.permission = permission;
+        this.nameColorAnimationEnabled = nameColorAnimationEnabled;
         this.interval = interval;
         this.cachingEnabled = cachingEnabled;
         this.colorGroup = colorGroup;
@@ -173,7 +176,7 @@ public class Effect {
                 cache.put(tickHandler.key, new double[tickHandler.times][index]);
         }
         if (cache.isEmpty()) {
-            TreasureParticles.logger().warning(getPrefix() + "There is nothing to cache for this effect, you can disable the caching");
+            ComponentLogger.error(this, "There is nothing to cache for this effect, you can disable the caching");
             cache = null;
             return;
         }
@@ -181,14 +184,14 @@ public class Effect {
         // Get variable 'i'
         var ip = data.getVariable(this, Variable.I);
         if (ip == null) {
-            TreasureParticles.logger().warning(getPrefix() + "Couldn't pre-tick effect (Null variable: i)");
+            ComponentLogger.error(this, "Couldn't pre-tick effect (Null variable: i)");
             return;
         }
 
         // Get variable 'times'
         var tp = data.getVariable(this, Variable.TIMES);
         if (tp == null) {
-            TreasureParticles.logger().warning(getPrefix() + "Couldn't pre-tick effect (Null variable: TIMES)");
+            ComponentLogger.error(this, "Couldn't pre-tick effect (Null variable: TIMES)");
             return;
         }
 
@@ -213,7 +216,7 @@ public class Effect {
             var ip = data.getVariable(this, Variable.I);
             var tp = data.getVariable(this, Variable.TIMES);
             if (ip == null || tp == null) {
-                TreasureParticles.logger().warning(getPrefix() + "Couldn't tick effect (Null variable: i or TIMES)");
+                ComponentLogger.error(this, "Couldn't tick effect (Null variable: i or TIMES)");
                 return;
             }
             for (var tickHandler : data.getTickHandlers()) {
@@ -227,17 +230,17 @@ public class Effect {
                     ip.y((double) i);
                     for (var script : tickHandler.lines) {
                         var result = script.doTick(player, data, event, i);
-                        if (result == Script.TickResult.BREAK)
+                        if (result == TickResult.BREAK)
                             break;
-                        else if (result == Script.TickResult.BREAK_HANDLER)
+                        else if (result == TickResult.BREAK_HANDLER)
                             break tickHandlerLoop;
-                        else if (result == Script.TickResult.RETURN)
+                        else if (result == TickResult.RETURN)
                             return;
                     }
                 }
             }
         } catch (Exception e) {
-            TreasureParticles.logger().log(Level.WARNING, getPrefix() + (last != null ? "Tick Handler: " + last.key : "Unexpected error."), e);
+            ComponentLogger.log(getPrefix() + (last != null ? " Tick Handler: " + last.key : " Unexpected error"), e);
         }
     }
 
@@ -276,7 +279,7 @@ public class Effect {
     public boolean isPredefinedVariable(String var) {
         return switch (var) {
             case Variable.I, Variable.TIMES,
-                    "PI", "TICK", "RANDOM",
+                    "2PI", "PI", "TICK", "RANDOM", "RANDOM-",
                     "currentTimeMillis", "CTM",
                     "lastBoostMillis", "LBM",
                     "isMoving", "isStanding",
@@ -289,7 +292,6 @@ public class Effect {
     public List<Script> readScripts(TickHandler tickHandler, List<String> lines) {
         List<Script> scripts = new ArrayList<>();
         var effectManager = TreasureParticles.getEffectManager();
-        var logger = TreasureParticles.logger();
         for (var line : lines) {
             try {
                 var script = effectManager.readLine(this, line);
@@ -297,19 +299,17 @@ public class Effect {
                     script.setTickHandler(tickHandler);
                     scripts.add(script);
                 } else
-                    logger.log(Level.WARNING, getPrefix() + "Couldn't read line: " + line);
+                    ComponentLogger.error(this, "Couldn't read line: " + line);
             } catch (ReaderException e) {
-                if (e.getMessage() != null) {
-                    logger.log(Level.WARNING, getPrefix() + "Couldn't read line: " + line);
-                    logger.warning("└ " + e.getMessage());
-                }
+                if (e.getMessage() != null)
+                    ComponentLogger.error(this, "Couldn't read line: " + line, new String[]{e.getMessage()});
             }
         }
         return scripts;
     }
 
     public String getPrefix() {
-        return "[" + key + "] ";
+        return "[" + key + "]";
     }
 
     public String getParsedDisplayName() {

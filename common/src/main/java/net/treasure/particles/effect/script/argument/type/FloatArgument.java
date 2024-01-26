@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 @AllArgsConstructor
 public class FloatArgument implements ScriptArgument<Float> {
 
-    Object value;
+    private Object value;
 
     public static FloatArgument read(String arg) {
         try {

@@ -10,9 +10,10 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true, chain = true)
 @AllArgsConstructor
 public class Triplet<X, Y, Z> {
-    X x;
-    Y y;
-    Z z;
+
+    private X x;
+    private Y y;
+    private Z z;
 
     public Triplet<X, Y, Z> clone() {
         return new Triplet<>(x, y, z);

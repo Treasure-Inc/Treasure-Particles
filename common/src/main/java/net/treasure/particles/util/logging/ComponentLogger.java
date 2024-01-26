@@ -1,42 +1,59 @@
 package net.treasure.particles.util.logging;
 
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.treasure.particles.TreasureParticles;
+import net.treasure.particles.configuration.ConfigurationGenerator;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.util.message.MessageUtils;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ComponentLogger {
 
-    static final String PREFIX = "TrParticles";
-    static Logger logger = TreasureParticles.logger();
+    private static final String TAG = "TrParticles";
+    private static final Logger logger = TreasureParticles.getPlugin().getLogger();
     @Setter
-    static boolean colored = true;
+    private static boolean colored = true;
+    @Setter
+    private static boolean chatLogsEnabled = true;
+    @Setter
+    private static CommandSender chatReceiver;
 
-    public static void error(ReaderContext<?> context, String... messages) {
-        error(context.effect(), context.type(), context.line(), context.start(), context.end(), messages);
+    // Console Logs
+    public static void log(String message) {
+        log(message, null);
+    }
+
+    public static void log(String message, Throwable throwable) {
+        logger.log(Level.WARNING, message, throwable);
+        if (chatLogsEnabled && chatReceiver != null)
+            MessageUtils.sendParsed(chatReceiver, "<yellow>[" + TAG + "] " + message);
+    }
+
+    // Errors
+    public static void error(ConfigurationGenerator generator, String error, String... messages) {
+        error("[" + generator.getFileName() + "]", error, messages);
+    }
+
+
+    // Effect Errors
+    public static void error(Effect effect, String error, String... messages) {
+        error(effect.getPrefix(), error, messages);
     }
 
     public static void error(Effect effect, String type, String line, String... messages) {
-        if (colored) {
-            MessageUtils.logParsed("<yellow>[<prefix>] <red><effect><yellow><type> <line>",
-                    Placeholder.unparsed("prefix", PREFIX),
-                    Placeholder.unparsed("effect", effect.getPrefix()),
-                    Placeholder.unparsed("type", type),
-                    Placeholder.unparsed("line", line)
-            );
-            for (String message : messages)
-                MessageUtils.logParsed("<gold>└ " + message);
-            return;
-        }
+        error(effect.getPrefix(), type + " " + line, messages);
+    }
 
-        logger.warning(effect.getPrefix() + line);
-        for (String message : messages) {
-            logger.warning("└ " + message);
-        }
+    public static void error(ReaderContext<?> context, String... messages) {
+        error(context.effect(), context.type(), context.line(), context.start(), context.end(), messages);
     }
 
     public static void error(Effect effect, String type, String line, int start, int end, String... messages) {
@@ -45,15 +62,24 @@ public class ComponentLogger {
             return;
         }
 
-        line = "<yellow>" + line.substring(0, start) + "<gold><u>" + line.substring(start, end) + "</u></gold>" + line.substring(end);
-        MessageUtils.logParsed("<yellow>[<prefix>] <red><effect><yellow><type> <line>",
-                Placeholder.unparsed("prefix", PREFIX),
-                Placeholder.unparsed("effect", effect.getPrefix()),
-                Placeholder.unparsed("type", type),
-                Placeholder.parsed("line", line)
+        error(effect, type, "<yellow>" + line.substring(0, start) + "<gold><u>" + line.substring(start, end) + "</u></gold>" + line.substring(end), messages);
+    }
+
+    public static void error(String prefix, String error, String... messages) {
+        var parsed = MessageUtils.parse("<red><prefix> <yellow><error>",
+                Placeholder.unparsed("prefix", prefix),
+                Placeholder.parsed("error", error)
         );
-        for (String message : messages) {
-            MessageUtils.logParsed("<gold>└ " + message);
+        for (var message : messages) parsed = parsed.appendNewline().append(MessageUtils.parse("<gold>└ " + message));
+
+        if (!colored) {
+            logger.warning(prefix + " " + error);
+            for (var message : messages) logger.warning("└ " + message);
+            if (chatLogsEnabled && chatReceiver instanceof Player) MessageUtils.send(chatReceiver, parsed);
+            return;
         }
+
+        MessageUtils.sendConsole(Component.text("[" + TAG + "] ", NamedTextColor.YELLOW).append(parsed));
+        if (chatLogsEnabled && chatReceiver instanceof Player) MessageUtils.send(chatReceiver, parsed);
     }
 }

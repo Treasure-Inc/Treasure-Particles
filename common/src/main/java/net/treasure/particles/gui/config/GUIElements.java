@@ -21,23 +21,23 @@ public class GUIElements {
 
     public void initialize(GUIManager manager) {
         GUIElements.manager = manager;
-        path = "styles." + manager.getStyle().id + ".";
+        path = "styles." + manager.getStyle().getId() + ".";
     }
 
     public static ElementInfo element(GUIType gui, ElementType type, char key, ItemStack item) {
-        return new ElementInfo(getKey(gui, type, key), getItemStack(gui, type, item)).slots(manager.getStyle().layouts.get(gui).rows);
+        return new ElementInfo(getKey(gui, type, key), getItemStack(gui, type, item)).slots(manager.getStyle().getLayouts().get(gui).getRows());
     }
 
     private static char getKey(GUIType gui, ElementType type, char defaultValue) {
         try {
-            return manager.getConfig().getString(path + gui.id() + ".elements." + type.id + ".key").charAt(0);
+            return manager.getConfig().getString(path + gui.id() + ".elements." + type.id() + ".key").charAt(0);
         } catch (Exception ignored) {
             return defaultValue;
         }
     }
 
     public static ItemStack getItemStack(GUIType gui, ElementType buttonType, ItemStack defaultValue) {
-        return getItemStack(manager.getConfig(), path + gui.id() + ".elements." + buttonType.id + ".item", defaultValue);
+        return getItemStack(manager.getConfig(), path + gui.id() + ".elements." + buttonType.id() + ".item", defaultValue);
     }
 
     public static ItemStack getItemStack(GUIType gui, String buttonId, ItemStack defaultValue) {
@@ -79,9 +79,9 @@ public class GUIElements {
     @Accessors(fluent = true, chain = true)
     @RequiredArgsConstructor
     public static class ElementInfo {
-        final char key;
-        final ItemStack item;
-        int[] slots;
+        private final char key;
+        private final ItemStack item;
+        private int[] slots;
 
         public ElementInfo slots(String[] layout) {
             this.slots = layout(layout, key);

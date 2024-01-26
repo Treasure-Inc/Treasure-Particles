@@ -18,8 +18,8 @@ public enum HandlerEvent {
     PLAYER_KILL("player-kill"),
     PLAYER_DAMAGE("player-damage"),
     TAKE_DAMAGE("take-damage");
-    final String translationKey;
-    final boolean isSpecial;
+    private final String translationKey;
+    private final boolean isSpecial;
 
     HandlerEvent(String translationKey) {
         this.translationKey = translationKey;

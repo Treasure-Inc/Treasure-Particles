@@ -54,7 +54,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
             }
 
             c.script().particle(particle);
-        }, "effect", "particle");
+        }, true, "effect", "particle");
 
         addValidArgument(c -> {
             var args = Patterns.ASTERISK.split(c.value());
@@ -83,7 +83,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> {
             var particle = c.script().particle();
             if (particle != null && !particle.hasProperty(ParticleEffect.Property.CAN_BE_COLORED)) {
-                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.name());
+                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.getFieldName());
                 return;
             }
             c.script().colorData(ColorData.fromString(c));
@@ -102,7 +102,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> {
             var particle = c.script().particle();
             if (particle != null && !particle.hasProperty(ParticleEffect.Property.REQUIRES_ITEM)) {
-                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.name());
+                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.getFieldName());
                 return;
             }
             var item = ItemStackArgument.read(c);
@@ -113,7 +113,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> {
             var particle = c.script().particle();
             if (particle != null && !particle.hasProperty(ParticleEffect.Property.REQUIRES_BLOCK)) {
-                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.name());
+                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.getFieldName());
                 return;
             }
             var item = ItemStackArgument.read(c);
@@ -162,11 +162,6 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
     @Override
     public boolean validate(Context<T> context) throws ReaderException {
         var particle = context.script().particle();
-        if (particle == null) {
-            error(context.effect(), context.type(), context.line(), "You must define an 'effect' value");
-            return false;
-        }
-
         if (context.script().origin() == null) {
             error(context.effect(), context.type(), context.line(), "You must define an 'origin' value (" + Stream.of(ParticleOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
             return false;

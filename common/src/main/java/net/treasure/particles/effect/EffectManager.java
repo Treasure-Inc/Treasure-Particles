@@ -25,17 +25,22 @@ import net.treasure.particles.effect.script.message.reader.TitleReader;
 import net.treasure.particles.effect.script.parkour.reader.ParkourReader;
 import net.treasure.particles.effect.script.particle.reader.circle.CircleParticleReader;
 import net.treasure.particles.effect.script.particle.reader.circle.SpreadCircleParticleReader;
-import net.treasure.particles.effect.script.particle.reader.dot.DotParticleReader;
+import net.treasure.particles.effect.script.particle.reader.polygon.PolygonParticleReader;
+import net.treasure.particles.effect.script.particle.reader.single.SingleParticleReader;
+import net.treasure.particles.effect.script.particle.reader.spiral.FullSpiralParticleReader;
+import net.treasure.particles.effect.script.particle.reader.spiral.MultiSpiralParticleReader;
+import net.treasure.particles.effect.script.particle.reader.spiral.SpiralParticleReader;
 import net.treasure.particles.effect.script.particle.reader.text.TextParticleReader;
 import net.treasure.particles.effect.script.preset.reader.PresetReader;
 import net.treasure.particles.effect.script.reader.DefaultReader;
 import net.treasure.particles.effect.script.sound.reader.SoundReader;
-import net.treasure.particles.effect.script.variable.cycle.VariableCycleReader;
+import net.treasure.particles.effect.script.variable.reader.VariableCycleReader;
 import net.treasure.particles.effect.script.variable.reader.VariableReader;
 import net.treasure.particles.effect.task.EffectsTask;
 import net.treasure.particles.effect.task.MovementCheck;
 import net.treasure.particles.gui.config.GUIElements;
 import net.treasure.particles.gui.type.effects.EffectsGUI;
+import net.treasure.particles.util.logging.ComponentLogger;
 import net.treasure.particles.util.message.MessageUtils;
 import net.treasure.particles.util.tuples.Pair;
 import org.bukkit.Bukkit;
@@ -45,19 +50,16 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 @Getter
 public class EffectManager implements DataHolder {
 
-    public static final String VERSION = "1.1.2";
+    public static final String VERSION = "1.2.0";
 
-    final ConfigurationGenerator generator;
-
-    final List<Effect> effects;
-    final Presets presets;
-    final HashMap<String, DefaultReader<?>> readers;
+    private final ConfigurationGenerator generator;
+    private final List<Effect> effects;
+    private final Presets presets;
+    private final HashMap<String, DefaultReader<?>> readers;
 
     public EffectManager() {
         this.generator = new ConfigurationGenerator("effects.yml");
@@ -83,22 +85,33 @@ public class EffectManager implements DataHolder {
         // Variables
         registerReader(new VariableReader(), "variable", "var");
         registerReader(new VariableCycleReader(), "variable-cycle", "var-c");
+
         // Particles
-        registerReader(new DotParticleReader(), "particle", "dot");
+        registerReader(new SingleParticleReader(), "particle", "single");
+        //- Circles
         registerReader(new CircleParticleReader(), "circle");
         registerReader(new SpreadCircleParticleReader(), "spread");
+        //- Misc
         registerReader(new ParkourReader(), "parkour");
         registerReader(new TextParticleReader(), "text");
+        registerReader(new PolygonParticleReader(), "polygon");
+        //- Spirals
+        registerReader(new SpiralParticleReader(), "spiral");
+        registerReader(new MultiSpiralParticleReader(), "multi-spiral");
+        registerReader(new FullSpiralParticleReader(), "full-spiral");
+
         // Messages
         registerReader(new BasicScriptReader<>(ChatMessage::new), "chat");
         registerReader(new BasicScriptReader<>(ActionBar::new), "actionbar");
         registerReader(new TitleReader(), "title");
+
         // Sound
         registerReader(new SoundReader(), "play-sound", "sound");
+
         // Others
         registerReader(new PresetReader(), "preset");
         registerReader(new ConditionalScriptReader(), "conditional");
-
+        //- Tick Handler Stuffs
         registerReader(new BasicScriptReader<>(s -> new EmptyScript()), "none");
         registerReader(new BasicScriptReader<>(s -> new ReturnScript()), "return");
         registerReader(new BasicScriptReader<>(s -> new BreakScript()), "break");
@@ -118,7 +131,7 @@ public class EffectManager implements DataHolder {
             var config = generator.generate();
             if (config == null) return false;
         } catch (Exception e) {
-            TreasureParticles.logger().log(Level.WARNING, "Couldn't load/create effects.yml", e);
+            ComponentLogger.log("Couldn't load/create effects.yml", e);
             return false;
         }
         return true;
@@ -127,10 +140,8 @@ public class EffectManager implements DataHolder {
     @Override
     public void reload() {
         effects.clear();
-        Bukkit.getScheduler().runTask(TreasureParticles.getPlugin(), () -> {
-            if (initialize())
-                loadEffects();
-        });
+        if (initialize())
+            loadEffects();
     }
 
     public Effect get(String key) {
@@ -142,7 +153,6 @@ public class EffectManager implements DataHolder {
     }
 
     public void loadEffects() {
-        var start = System.nanoTime();
         var config = generator.getConfiguration();
         if (config == null) return;
 
@@ -159,7 +169,7 @@ public class EffectManager implements DataHolder {
 
         var section = config.getConfigurationSection("effects");
         if (section == null) {
-            TreasureParticles.logger().info("Couldn't find any effect");
+            ComponentLogger.error(generator, "Couldn't find any effect");
             return;
         }
 
@@ -180,14 +190,14 @@ public class EffectManager implements DataHolder {
                 // Interval
                 var interval = path.getInt("interval", 1);
                 if (interval < 1) {
-                    TreasureParticles.logger().warning("[" + key + "] Invalid interval value: " + interval);
+                    ComponentLogger.error("[" + key + "]", "Interval value must be greater or equal than 1");
                     continue;
                 }
 
                 // Tick Handlers
                 var onTickSection = path.getConfigurationSection("on-tick");
                 if (onTickSection == null) {
-                    TreasureParticles.logger().warning("[" + key + "] Effect must have on-tick section");
+                    ComponentLogger.error("[" + key + "]", "Effect must have on-tick section");
                     continue;
                 }
 
@@ -198,7 +208,7 @@ public class EffectManager implements DataHolder {
                     if (tickHandlerSection == null) continue;
                     var event = tickHandlerSection.getString("event");
                     if (event == null) {
-                        TreasureParticles.logger().warning("[" + key + "] Tick handler must have event: " + tickHandlerKey);
+                        ComponentLogger.error("[" + key + "]", "Tick handler must have event: " + tickHandlerKey);
                         continue;
                     }
 
@@ -210,7 +220,7 @@ public class EffectManager implements DataHolder {
                         mixerOptions.depends = tickHandlerSection.getStringList("mixer-options.depend");
 
                         if (mixerOptions.depends.stream().anyMatch(id -> !onTickSection.contains(id))) {
-                            TreasureParticles.logger().warning("[" + key + "] Mixer options have unknown depend tick handlers");
+                            ComponentLogger.error("[" + key + "]", "Mixer options have unknown depend tick handlers: " + tickHandlerKey);
                             continue;
                         }
                     }
@@ -218,7 +228,7 @@ public class EffectManager implements DataHolder {
                     try {
                         var tickHandlerInterval = tickHandlerSection.getInt("interval", interval);
                         if (tickHandlerInterval < interval) {
-                            TreasureParticles.logger().warning("[" + key + "] Tick handler's interval cannot be lower than the effect's interval: " + tickHandlerKey);
+                            ComponentLogger.error("[" + key + "]", "Tick handler's interval cannot be lower than the effect's interval: " + tickHandlerKey);
                             continue;
                         }
 
@@ -228,7 +238,7 @@ public class EffectManager implements DataHolder {
                                 new TickHandler(
                                         tickHandlerKey,
                                         tickHandlerSection.getString("display-name", "[" + tickHandlerIndex + "]"),
-                                        interval,
+                                        tickHandlerInterval,
                                         tickHandlerSection.getInt("times", 1),
                                         mixerOptions,
                                         tickHandlerSection.getInt("max-executed", 0),
@@ -238,9 +248,9 @@ public class EffectManager implements DataHolder {
                                 tickHandlerSection.getStringList("scripts")
                         ));
                     } catch (IllegalArgumentException e) {
-                        TreasureParticles.logger().warning("[" + key + "] Unknown event type: " + tickHandlerKey + ", " + event);
+                        ComponentLogger.error("[" + key + "]", "Unknown event type for '" + tickHandlerKey + "' tick handler: " + event);
                     } catch (Exception e) {
-                        TreasureParticles.logger().warning("[" + key + "] Couldn't read tick handler options: " + tickHandlerKey);
+                        ComponentLogger.error("[" + key + "]", "Couldn't read tick handler options: " + tickHandlerKey);
                     }
                 }
 
@@ -262,8 +272,9 @@ public class EffectManager implements DataHolder {
                         displayName,
                         description != null ? description.toArray(String[]::new) : null,
                         icon,
-                        path.getString("armor-color"),
+                        path.getString("color-animation"),
                         permission,
+                        path.getBoolean("name-color-animation", false),
                         path.getStringList("variables"),
                         interval,
                         path.getBoolean("enable-caching", false),
@@ -274,10 +285,9 @@ public class EffectManager implements DataHolder {
 
                 effects.add(effect);
             } catch (Exception e) {
-                TreasureParticles.logger().log(Level.WARNING, "Couldn't load effect: " + key, e);
+                ComponentLogger.log("Couldn't load effect: " + key, e);
             }
         }
-        TreasureParticles.logger().info("Loaded " + effects.size() + " effects (" + TimeUnit.MILLISECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS) + "ms)");
     }
 
     public void registerReader(DefaultReader<?> reader, String... aliases) {
@@ -285,7 +295,7 @@ public class EffectManager implements DataHolder {
             this.readers.put(alias, reader);
     }
 
-    public <S> S read(Effect effect, String type, String line) throws ReaderException {
+    public <S extends Script> S read(Effect effect, String type, String line) throws ReaderException {
         if (!readers.containsKey(type))
             throw new ReaderException("Invalid script type: " + type);
         // noinspection unchecked
@@ -300,7 +310,7 @@ public class EffectManager implements DataHolder {
             try {
                 interval = Integer.parseInt(args[1]);
             } catch (Exception ignored) {
-                TreasureParticles.logger().warning(effect.getPrefix() + "Invalid interval syntax: " + line);
+                ComponentLogger.error(effect, "", line, intervalIndex, line.length(), "Invalid interval syntax");
             }
             line = args[0];
         }
@@ -313,7 +323,7 @@ public class EffectManager implements DataHolder {
             return null;
         }
 
-        Script script = read(effect, type, args.length == 1 ? null : args[1]);
+        var script = read(effect, type, args.length == 1 ? null : args[1]);
 
         if (script != null) {
             script.setEffect(effect);

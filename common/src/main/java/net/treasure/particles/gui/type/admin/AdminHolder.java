@@ -8,6 +8,6 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 @Getter
 @AllArgsConstructor
 public class AdminHolder extends GUIHolder {
-    FilterCategory category;
-    HandlerEvent event;
+    private FilterCategory category;
+    private HandlerEvent event;
 }

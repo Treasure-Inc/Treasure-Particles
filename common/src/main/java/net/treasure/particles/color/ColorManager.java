@@ -9,6 +9,7 @@ import net.treasure.particles.color.scheme.ColorScheme;
 import net.treasure.particles.color.scheme.GradientColorScheme;
 import net.treasure.particles.configuration.ConfigurationGenerator;
 import net.treasure.particles.configuration.DataHolder;
+import net.treasure.particles.util.logging.ComponentLogger;
 import org.bukkit.Color;
 
 import java.util.ArrayList;
@@ -19,11 +20,11 @@ import java.util.List;
 
 public class ColorManager implements DataHolder {
 
-    public static final String VERSION = "1.1.2";
-    final ConfigurationGenerator generator;
+    public static final String VERSION = "1.2.0";
+    private final ConfigurationGenerator generator;
 
-    final List<ColorScheme> colors;
-    final List<ColorGroup> groups;
+    private final List<ColorScheme> colors;
+    private final List<ColorGroup> groups;
 
     public ColorManager() {
         this.generator = new ConfigurationGenerator("colors.yml");
@@ -83,26 +84,27 @@ public class ColorManager implements DataHolder {
 
         for (var key : section.getKeys(false)) {
             if (!checkColorSchemeName(key)) {
-                TreasureParticles.logger().warning("You cannot use '" + key + "' for color scheme name");
+                ComponentLogger.error(generator, "You cannot use '" + key + "' for color scheme name");
                 continue;
             }
-            var path = key + ".";
-            if (!section.contains(path + "values")) {
-                TreasureParticles.logger().warning("Please define color values for color scheme '" + key + "'");
+            var tempSection = section.getConfigurationSection(key);
+            if (tempSection == null) continue;
+            if (!tempSection.contains("values")) {
+                ComponentLogger.error(generator, "Please define color values for color scheme '" + key + "'");
                 continue;
             }
-            if (!section.contains(path + "size")) {
-                TreasureParticles.logger().warning("Please define a size value for color scheme '" + key + "'");
+            if (!tempSection.contains("size")) {
+                ComponentLogger.error(generator, "Please define a size value for color scheme '" + key + "'");
                 continue;
             }
-            var displayName = section.getString(path + "name");
+            var displayName = tempSection.getString("name");
             displayName = translations.translate("colors", displayName);
 
             GradientColorScheme color = new GradientColorScheme(
                     key,
                     displayName,
-                    section.getInt(path + "size"),
-                    section.getStringList(path + "values").stream().map(Gradient::hex2Rgb).toArray(Color[]::new)
+                    tempSection.getInt("size"),
+                    tempSection.getStringList("values").stream().map(Gradient::hex2Rgb).toArray(Color[]::new)
             );
             colors.add(color);
         }

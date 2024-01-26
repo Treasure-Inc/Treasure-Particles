@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 @AllArgsConstructor
 public class BooleanArgument implements ScriptArgument<Boolean> {
 
-    Object value;
+    private Object value;
 
     public static BooleanArgument read(ReaderContext<?> context) throws ReaderException {
         var arg = context.value();

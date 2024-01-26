@@ -11,8 +11,7 @@ import org.bukkit.entity.Player;
 
 public class RangeArgument extends FloatArgument {
 
-    Float min;
-    Float max;
+    private Float min, max;
 
     public static RangeArgument read(ReaderContext<?> context) throws ReaderException {
         Float min = null;

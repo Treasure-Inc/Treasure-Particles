@@ -15,6 +15,7 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
+import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -47,7 +48,7 @@ public class ParticleSpawner extends Script {
     protected boolean longDistance = false;
 
     @Nullable
-    public ParticleContext tick(Player player, EffectData data, HandlerEvent event) {
+    public ParticleContext tick(Player player, EffectData data, HandlerEvent event, boolean configureOffset, boolean rotatePos) {
         var entity = switch (event) {
             case ELYTRA, STANDING, MOVING, SNEAKING, TAKE_DAMAGE -> player;
             case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE -> data.getTargetEntity();
@@ -58,11 +59,12 @@ public class ParticleSpawner extends Script {
             case FEET -> entity.getLocation();
             case WORLD -> new Location(entity.getWorld(), 0, 0, 0);
         };
+        var direction = origin.getDirection();
 
         if (multiplier != null)
-            origin = origin.add(player.getLocation().getDirection().multiply(multiplier.get(player, this, data)));
+            origin.add(direction.clone().multiply(multiplier.get(player, this, data)));
 
-        ParticleBuilder builder = new ParticleBuilder(particle);
+        var builder = new ParticleBuilder(particle);
 
         if (amount != null)
             builder.amount(amount.get(player, this, data));
@@ -70,28 +72,43 @@ public class ParticleSpawner extends Script {
         if (speed != null)
             builder.speed(speed.get(player, this, data));
 
-        var offset = this.offset != null ? this.offset.get(player, this, data) : null;
-        if (directional && offset != null) {
-            offset = Vectors.rotateAroundAxisX(offset, origin.getPitch());
-            offset = Vectors.rotateAroundAxisY(offset, origin.getYaw());
-            offset = offset.add(origin.getDirection().add(offset));
-        }
-
-        if (offset != null)
-            builder.offset(offset);
-
         builder.longDistance(longDistance);
 
+        // Rotations
+        var angleP = Math.toRadians(origin.getPitch());
+        var cosP = MathUtils.cos(angleP);
+        var sinP = MathUtils.sin(angleP);
+
+        var angleY = Math.toRadians(-origin.getYaw());
+        var cosY = MathUtils.cos(angleY);
+        var sinY = MathUtils.sin(angleY);
+
+        // Position
+        var pos = this.position != null ? this.position.get(player, this, data) : new Vector(0, 0, 0);
+        if (rotatePos)
+            origin.add(rotate(direction, pos, cosP, sinP, cosY, sinY));
+        else
+            origin.add(pos);
+
+        // Offset
+        if (configureOffset) {
+            var offset = this.offset != null ? this.offset.get(player, this, data) : null;
+            if (offset != null) offset.add(rotate(direction, offset, cosP, sinP, cosY, sinY));
+            if (offset != null)
+                builder.offset(offset);
+        }
+
+        // Viewers
         var playerManager = TreasureParticles.getPlayerManager();
         builder.viewers(viewer -> {
             var d = playerManager.getEffectData(viewer);
             return d != null && d.canSeeEffects();
         });
 
-        return new ParticleContext(builder, origin);
+        return new ParticleContext(builder, origin, direction, cosP, sinP, cosY, sinY);
     }
 
-    public void updateParticleData(Player player, EffectData data, ParticleBuilder builder) {
+    public void updateParticleData(ParticleBuilder builder, Player player, EffectData data) {
         if (particleData != null) {
             builder.data(particleData);
             return;
@@ -122,37 +139,33 @@ public class ParticleSpawner extends Script {
         }
     }
 
-    public Object particleData(Player player, EffectData data) {
-        if (particleData != null) return particleData();
-
-        if (colorData == null || particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR)) {
-            particleData = Particles.NMS.getParticleParam(particle);
-            return particleData;
-        }
-
-        if (particle.hasProperty(ParticleEffect.Property.DUST)) {
-            var size = this.size != null ? this.size.get(player, this, data) : 1;
-            if (particle.equals(ParticleEffect.DUST_COLOR_TRANSITION))
-                if (colorData instanceof DuoImpl duo) {
-                    var pair = duo.nextDuo();
-                    return Particles.NMS.getColorTransitionData(pair.getKey(), pair.getValue(), size);
-                } else
-                    return Particles.NMS.getColorTransitionData(colorData.next(data), colorData.tempNext(data), size);
-            else
-                return Particles.NMS.getDustData(colorData.next(data), size);
-        }
-        return null;
+    public Location location(ParticleContext context, Vector vector) {
+        return context.origin.clone().add(rotate(context, vector));
     }
 
-    public Location rotate(Location origin, Vector direction, float pitch, float yaw, Vector vector) {
+    public Location location(ParticleContext context, double z, double r, float radius, boolean vertical) {
+        var x = MathUtils.cos(r) * radius;
+        var y = MathUtils.sin(r) * radius;
+        return location(context, vertical ? new Vector(x, y, z) : new Vector(x, z, y));
+    }
+
+    public Location location(ParticleContext context, double r, float radius, boolean vertical) {
+        var x = MathUtils.cos(r) * radius;
+        var y = MathUtils.sin(r) * radius;
+        return location(context, vertical ? new Vector(x, y, 0) : new Vector(x, 0, y));
+    }
+
+    public Vector rotate(ParticleContext context, Vector vector) {
+        return rotate(context.direction, vector, context.cosP, context.sinP, context.cosY, context.sinY);
+    }
+
+    public Vector rotate(Vector direction, Vector vector, double cosP, double sinP, double cosY, double sinY) {
         if (directional) {
-            vector = Vectors.rotateAroundAxisX(vector, pitch);
-            vector = Vectors.rotateAroundAxisY(vector, yaw);
-            origin.add(direction.add(vector));
-        } else {
-            origin.add(vector);
+            Vectors.rotateAroundAxisX(vector, cosP, sinP);
+            Vectors.rotateAroundAxisY(vector, cosY, sinY);
+            return direction.clone().add(vector);
         }
-        return origin;
+        return vector;
     }
 
     @Override

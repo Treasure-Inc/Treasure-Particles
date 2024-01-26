@@ -7,7 +7,7 @@ import org.bukkit.Color;
 
 public class DuoColorsData extends ColorData implements DuoImpl {
 
-    final ColorScheme color1, color2;
+    private final ColorScheme color1, color2;
 
     public DuoColorsData(ColorScheme color1, ColorScheme color2, float speed, boolean revertWhenDone, boolean stopCycle) {
         super(speed, revertWhenDone, stopCycle);

@@ -2,12 +2,12 @@ package net.treasure.particles.util.message;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -17,13 +17,10 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.Ticks;
 import net.treasure.particles.TreasureParticles;
-import net.treasure.particles.constants.Keys;
 import net.treasure.particles.locale.Translations;
 import org.bukkit.command.CommandSender;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 @Accessors(fluent = true)
 public class MessageUtils {
@@ -50,10 +47,37 @@ public class MessageUtils {
         gsonSerializer = BukkitComponentSerializer.gson();
     }
 
-    public static void logParsed(String message, TagResolver.Single... resolvers) {
+    // Parsers
+    public static Component parse(String message, TagResolver... resolvers) {
+        return miniMessage.deserialize(message, resolvers);
+    }
+
+    public static String parseLegacy(String message, Object... arguments) {
+        return serializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)));
+    }
+
+    public static String gui(String message, Object... arguments) {
+        return serializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)).colorIfAbsent(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
+    }
+
+    public static String gui(String message, TextColor color, Object... arguments) {
+        return serializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)).colorIfAbsent(color).decoration(TextDecoration.ITALIC, false));
+    }
+
+    public static String json(String message, Object... arguments) {
+        return gsonSerializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)));
+    }
+
+    // Console
+    public static void sendConsole(Component message) {
+        adventure.console().sendMessage(message);
+    }
+
+    public static void sendConsoleParsed(String message, TagResolver... resolvers) {
         adventure.console().sendMessage(miniMessage.deserialize(message, resolvers));
     }
 
+    // Command Sender
     public static void send(CommandSender sender, Component message) {
         adventure.sender(sender).sendMessage(message);
     }
@@ -64,18 +88,6 @@ public class MessageUtils {
 
     public static void sendParsed(CommandSender sender, String message, Object... arguments) {
         adventure.sender(sender).sendMessage(miniMessage.deserialize(MessageFormat.format(message, arguments)));
-    }
-
-    public static void openBook(CommandSender sender, List<String> messages) {
-        var audience = adventure.sender(sender);
-        List<Component> components = new ArrayList<>();
-        for (String message : messages)
-            components.add(miniMessage.deserialize(message));
-        audience.openBook(Book.book(
-                Component.text(Keys.NAMESPACE),
-                Component.text(Keys.NAMESPACE),
-                components
-        ));
     }
 
     public static void sendActionBar(CommandSender sender, Component message) {
@@ -96,21 +108,5 @@ public class MessageUtils {
                 subtitle == null ? Component.empty() : miniMessage.deserialize(subtitle),
                 Title.Times.times(Ticks.duration(fadeIn), Ticks.duration(stay), Ticks.duration(fadeOut))
         ));
-    }
-
-    public static Component parse(String message) {
-        return miniMessage.deserialize(message);
-    }
-
-    public static String parseLegacy(String message, Object... arguments) {
-        return serializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)));
-    }
-
-    public static String gui(String message, Object... arguments) {
-        return serializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)).colorIfAbsent(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-    }
-
-    public static String json(String message, Object... arguments) {
-        return gsonSerializer.serialize(miniMessage.deserialize(MessageFormat.format(message, arguments)));
     }
 }

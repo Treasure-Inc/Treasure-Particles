@@ -1,14 +1,13 @@
 package net.treasure.particles.database.impl;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.database.Database;
+import net.treasure.particles.util.logging.ComponentLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class MySQL extends Database {
 
@@ -47,7 +46,7 @@ public class MySQL extends Database {
         try {
             hikari.close();
         } catch (Exception e) {
-            TreasureParticles.logger().log(Level.WARNING, "Couldn't close database connection", e);
+            ComponentLogger.log("Couldn't close database connection", e);
         }
     }
 
@@ -61,7 +60,7 @@ public class MySQL extends Database {
             if (rs != null)
                 rs.close();
         } catch (SQLException e) {
-            TreasureParticles.logger().log(Level.WARNING, "Couldn't close connection components", e);
+            ComponentLogger.log("Couldn't close connection components", e);
         }
     }
 }

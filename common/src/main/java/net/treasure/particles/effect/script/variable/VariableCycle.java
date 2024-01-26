@@ -1,4 +1,4 @@
-package net.treasure.particles.effect.script.variable.cycle;
+package net.treasure.particles.effect.script.variable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +18,10 @@ import org.bukkit.entity.Player;
 @AllArgsConstructor
 public class VariableCycle extends Script {
 
-    String variable;
-    Operator operator = Operator.ADD;
-    DoubleArgument step, min, max;
-    boolean revertWhenDone = true;
+    private String variable;
+    private Operator operator = Operator.ADD;
+    private DoubleArgument step, min, max;
+    private boolean revertWhenDone = true;
 
     boolean forward = true;
 

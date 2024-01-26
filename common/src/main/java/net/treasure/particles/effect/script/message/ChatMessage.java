@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 @NoArgsConstructor
 public class ChatMessage extends Script {
 
-    String message;
+    private String message;
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {

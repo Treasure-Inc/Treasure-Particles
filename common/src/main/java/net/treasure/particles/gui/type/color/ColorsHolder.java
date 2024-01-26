@@ -8,5 +8,5 @@ import net.treasure.particles.effect.Effect;
 @Getter
 @AllArgsConstructor
 public class ColorsHolder extends GUIHolder {
-    Effect effect;
+    private Effect effect;
 }

@@ -5,7 +5,7 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.StaticArgument;
 import net.treasure.particles.effect.script.particle.reader.ParticleReader;
-import net.treasure.particles.effect.script.particle.style.CircleParticle;
+import net.treasure.particles.effect.script.particle.style.circle.CircleParticle;
 
 public class CircleParticleReader extends ParticleReader<CircleParticle> {
 

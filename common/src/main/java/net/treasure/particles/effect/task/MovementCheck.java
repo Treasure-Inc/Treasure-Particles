@@ -7,7 +7,7 @@ import org.bukkit.util.Vector;
 @AllArgsConstructor
 public class MovementCheck implements Runnable {
 
-    final PlayerManager playerManager;
+    private final PlayerManager playerManager;
 
     @Override
     public void run() {

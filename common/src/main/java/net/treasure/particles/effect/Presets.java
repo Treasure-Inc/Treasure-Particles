@@ -12,11 +12,11 @@ import java.util.List;
 
 public class Presets implements DataHolder {
 
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.2.0";
 
     @Getter
-    final ConfigurationGenerator generator;
-    FileConfiguration configuration;
+    private final ConfigurationGenerator generator;
+    private FileConfiguration configuration;
 
     public Presets() {
         this.generator = new ConfigurationGenerator("presets.yml");

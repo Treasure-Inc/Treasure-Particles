@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 @AllArgsConstructor
 public class ElytraBoostListener implements Listener {
 
-    final PlayerManager manager;
+    private final PlayerManager manager;
 
     @EventHandler(ignoreCancelled = true)
     public void on(PlayerElytraBoostEvent event) {

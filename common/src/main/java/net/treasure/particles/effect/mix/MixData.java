@@ -26,11 +26,12 @@ import java.util.stream.Collectors;
 @Setter
 @Accessors(fluent = true)
 public class MixData {
-    String name;
-    boolean needsColorGroup;
-    String prefColorGroup;
-    List<Pair<String, String>> handlers = new ArrayList<>();
-    transient Effect cache;
+
+    private String name;
+    private boolean needsColorGroup;
+    private String prefColorGroup;
+    private List<Pair<String, String>> handlers = new ArrayList<>();
+    private transient Effect cache;
 
     public Effect get(Player player) {
         if (cache != null) return cache;
@@ -80,6 +81,7 @@ public class MixData {
                 EffectsGUI.DEFAULT_ICON.item(),
                 null,
                 null,
+                false,
                 variables,
                 interval,
                 false,

@@ -4,15 +4,16 @@ import net.treasure.particles.constants.Patterns;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.exception.ReaderException;
 import net.treasure.particles.effect.script.Script;
-import net.treasure.particles.util.unsafe.UnsafeConsumer;
 import net.treasure.particles.util.logging.ComponentLogger;
+import net.treasure.particles.util.unsafe.UnsafeConsumer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
 public abstract class ScriptReader<C extends ReaderContext<T>, T extends Script> extends DefaultReader<T> {
 
-    private final HashMap<String, UnsafeConsumer<C>> validArguments = new HashMap<>();
+    private final HashMap<String, ValidArgument<C, T>> validArguments = new HashMap<>();
 
     public C createContext(Effect effect, String type, String line) {
         return null;
@@ -23,9 +24,14 @@ public abstract class ScriptReader<C extends ReaderContext<T>, T extends Script>
     }
 
     public void addValidArgument(UnsafeConsumer<C> consumer, String... aliases) {
+        addValidArgument(consumer, false, aliases);
+    }
+
+    public void addValidArgument(UnsafeConsumer<C> consumer, boolean required, String... aliases) {
         if (aliases == null) return;
-        for (var key : aliases)
-            validArguments.put(key, consumer);
+        var key = aliases[0];
+        for (var alias : aliases)
+            validArguments.put(alias, new ValidArgument<>(key, consumer, required));
     }
 
     public void removeArguments(String... arguments) {
@@ -41,6 +47,8 @@ public abstract class ScriptReader<C extends ReaderContext<T>, T extends Script>
     public T read(Effect effect, String type, String line) throws ReaderException {
         var context = createContext(effect, type, line);
         var matcher = Patterns.SCRIPT.matcher(line);
+
+        var requiredArguments = new ArrayList<>(validArguments.values().stream().filter(arg -> arg.required).map(arg -> arg.key).distinct().toList());
 
         while (matcher.find()) {
             String key = matcher.group("type");
@@ -63,10 +71,17 @@ public abstract class ScriptReader<C extends ReaderContext<T>, T extends Script>
 
             var argument = validArguments.get(key);
             try {
-                argument.accept(context);
+                argument.reader.accept(context);
+                requiredArguments.remove(argument.key);
             } catch (Exception e) {
                 error(context, "Unexpected argument value: " + e.getMessage());
             }
+        }
+
+        if (!requiredArguments.isEmpty()) {
+            for (var key : requiredArguments)
+                error(context.effect(), context.type(), context.line(), "You must define the '" + key + "' value");
+            return null;
         }
 
         if (!validate(context)) return null;

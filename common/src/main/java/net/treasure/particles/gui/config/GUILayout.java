@@ -4,8 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class GUILayout {
-    int size;
-    String[] rows;
+
+    private final int size;
+    private final String[] rows;
 
     public GUILayout(String... rows) {
         this.rows = rows;

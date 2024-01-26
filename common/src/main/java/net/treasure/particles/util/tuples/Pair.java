@@ -8,8 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Pair<K, V> {
-    K key;
-    V value;
+
+    private K key;
+    private V value;
 
     public Pair<K, V> clone() {
         return new Pair<>(key, value);

@@ -21,7 +21,7 @@ public class PlaySound extends Script {
     private String sound;
     private SoundCategory category = SoundCategory.MASTER;
     private boolean clientSide = true;
-    float volume = 1, pitch = 1;
+    private float volume = 1, pitch = 1;
 
     @Override
     public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {

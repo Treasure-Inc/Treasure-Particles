@@ -14,15 +14,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
+@Getter
 @RequiredArgsConstructor
 public class ConfigurationGenerator {
 
-    @Getter
-    final String fileName;
-    final String directory;
-    @Getter
-    YamlConfiguration configuration;
-    final Plugin plugin;
+    private final String fileName;
+    private final String directory;
+    private YamlConfiguration configuration;
+    private final Plugin plugin;
 
     public ConfigurationGenerator(String fileName) {
         this.fileName = fileName;

@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.1.2"
+version: "1.2.0"
 rainbow-colors-size: 25
 schemes:
   # Gradient Color Schemes
@@ -76,6 +76,12 @@ schemes:
   complementary1-2:
     values: [ "#75E41B","#1FE0A5", "#2374DC" ]
     size: 50
+  galaxy:
+    values: [ "#ffe2e0", "#e6821e", "#ffe2e0", "#388a62", "#ffe2e0", "#214c57" ]
+    size: 25
+  spores:
+    values: [ "#f59784", "#f06d26", "#4b9120" ]
+    size: 15
   # Christmas
   christmas:
     values: [ "#ef233c", "#d5f2e3", "#73ba9b", "#003e1f", "#d90429", "#823a14" ]
