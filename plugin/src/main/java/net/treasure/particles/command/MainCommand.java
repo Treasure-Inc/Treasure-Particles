@@ -50,9 +50,9 @@ public class MainCommand extends BaseCommand {
     @CommandPermission(Permissions.COMMAND_BASE)
     public void menu(Player player, @Default("0") @Name("%page") int page) {
         page = Math.max(0, page - 1);
-        int maxPage = (effectManager.getEffects().size() / guiManager.effectsGUI().getMaxEffects()) + 1;
+        int maxPage =  effectManager.getEffects().size() / (guiManager.effectsGUI().getMaxEffects() + 1);
         if (page >= maxPage)
-            page = maxPage - 1;
+            page = maxPage;
         guiManager.effectsGUI().open(player, page);
     }
 
