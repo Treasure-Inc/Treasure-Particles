@@ -19,6 +19,7 @@ public class FullSpiralParticleReader extends ParticleReader<FullSpiralParticle>
         addValidArgument(c -> c.script().gap(DoubleArgument.read(c)), "gap");
         addValidArgument(c -> c.script().vertical(StaticArgument.asBoolean(c)), "vertical");
         addValidArgument(c -> c.script().tickData(StaticArgument.asBoolean(c)), "tick-data", "tick");
+        addValidArgument(c -> c.script().reverse(StaticArgument.asBoolean(c) ? -1 : 1), "reverse");
     }
 
     @Override

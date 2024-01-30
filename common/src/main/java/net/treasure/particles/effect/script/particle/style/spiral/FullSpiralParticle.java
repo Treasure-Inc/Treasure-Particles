@@ -34,6 +34,7 @@ public class FullSpiralParticle extends ParticleSpawner {
     private DoubleArgument gap = new DoubleArgument(4D);
     private boolean tickData = false;
     private boolean vertical = false;
+    private int reverse = -1;
 
     private double stepX;
 
@@ -70,7 +71,7 @@ public class FullSpiralParticle extends ParticleSpawner {
         List<ParticleBuilder> builders = new ArrayList<>();
 
         for (double stepY = -60; stepY < 60; stepY += 120D / spirals) {
-            var r = ((stepX + stepY) / steps) * MathUtils.PI2;
+            var r = ((stepX + stepY) / steps) * MathUtils.PI2 * reverse;
             var location = location(context, stepY / steps * gap, r, radius, vertical);
             builders.add(builder.copy().location(location));
 
