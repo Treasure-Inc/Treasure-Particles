@@ -10,7 +10,7 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -26,20 +26,22 @@ public class SpiralParticle extends ParticleSpawner {
     private RangeArgument radius = new RangeArgument(1f);
     private IntArgument steps = new IntArgument(120);
     private boolean vertical = false;
+    private int reverse = 1;
 
     private double step;
 
     public SpiralParticle(ParticleEffect effect, ParticleOrigin origin,
                           RangeArgument radius, IntArgument steps,
-                          boolean vertical,
+                          boolean vertical, int reverse,
                           VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                           ColorData colorData, Object particleData,
                           IntArgument amount, RangeArgument speed, RangeArgument size,
-                          boolean directional, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
+                          boolean directionalX, boolean directionalY, boolean longDistance) {
+        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
         this.radius = radius;
         this.steps = steps;
         this.vertical = vertical;
+        this.reverse = reverse;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class SpiralParticle extends ParticleSpawner {
         var radius = this.radius.get(player, this, data);
         var steps = this.steps.get(player, this, data);
 
-        var r = (step / steps) * MathUtils.PI2;
+        var r = reverse * (step / steps) * MathUtils.PI2;
         builder.location(location(context, r, radius, vertical));
 
         updateParticleData(builder, player, data);
@@ -71,11 +73,11 @@ public class SpiralParticle extends ParticleSpawner {
         return new SpiralParticle(
                 particle, origin,
                 radius, steps,
-                vertical,
+                vertical, reverse,
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directional, longDistance
+                directionalX, directionalY, longDistance
         );
     }
 }

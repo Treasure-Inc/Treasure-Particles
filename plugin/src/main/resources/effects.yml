@@ -15,14 +15,7 @@ effects:
       moving:
         event: MOVING
         scripts:
-          - circle [effect=minecraft:dust,tick-data=true,particles=8,radius=0.25,amount=10,pos={y=-0.5},origin=head*-1.25,color={name=rainbow;speed=0.075}]
-      reset-y:
-        event: STANDING
-        max-executed: 1
-        mixer-options:
-          private: true
-        scripts:
-          - var y=0
+          - circle [effect=minecraft:dust,tick-data=true,particles=8,radius=0.25,amount=10,pos={y=-0.5},billboard=vertical,origin=head*-1.25,color={name=rainbow;speed=0.075}]
       standing:
         event: STANDING
         mixer-options:
@@ -30,13 +23,20 @@ effects:
         scripts:
           - circle [effect=minecraft:dust,directional=false,vertical=false,origin=feet,pos={y={y}},color={name=rainbow;speed=0.75}]
           - var-c [variable=y,max=1.75,min=0,step=0.1]
+      reset-y:
+        event: STANDING
+        max-executed: 1
+        mixer-options:
+          private: true
+        scripts:
+          - var y=0
   rainbow-circle-transition:
     display-name: "%rainbow-circle-transition%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
     interval: 1
     on-tick:
-      elytra:
+      handler:
         event: ELYTRA
         scripts:
           - circle [effect=minecraft:dust_color_transition,tick-data=true,amount=10,origin=head*-1.25,color={name=rainbow;duo=#ffffff;speed=0.75}]
@@ -46,7 +46,7 @@ effects:
     permission: "%rainbow-effects%"
     interval: 1
     on-tick:
-      elytra:
+      handler:
         event: ELYTRA
         scripts:
           - circle [effect=minecraft:dust_color_transition,tick-data=true,size={val={velocityLength};min=0.8;max=3},amount=10,origin=head*-1.25,color={name=rainbow;duo=#ffffff;speed=0.75}]
@@ -57,7 +57,7 @@ effects:
     variables: [ 'radius=0.25',  'speed=0.05' ]
     interval: 1
     on-tick:
-      elytra:
+      handler:
         event: ELYTRA
         scripts:
           - var-c [variable=radius,step={speed},min=0.25,max=1.25]
@@ -91,15 +91,15 @@ effects:
       elytra:
         event: ELYTRA
         scripts:
-          - spiral [effect=minecraft:dust,size=5,direction=true,origin=feet,color={name=rainbow;revert=true;speed=0.5}]
+          - spiral [effect=minecraft:dust,steps=30,size=5,direction=true,origin=feet,color={name=rainbow;revert=true;speed=0.5}]
       moving:
         event: MOVING
         scripts:
-          - spiral [effect=minecraft:dust,size=2,origin=head,color={name=rainbow;revert=true;speed=0.5}]
+          - spiral [effect=minecraft:dust,steps=30,size=2,origin=head,color={name=rainbow;revert=true;speed=0.5}]
       standing:
         event: STANDING
         scripts:
-          - spiral [effect=minecraft:dust,steps=60,size=2,origin=head,color={name=rainbow;revert=true;speed=0.5}]
+          - spiral [effect=minecraft:dust,steps=60,size=2,radius=0.75,origin=head,color={name=rainbow;revert=true;speed=0.5}]
   rainbow-trig:
     display-name: "%rainbow-trig%"
     color-animation: "rainbow"
@@ -112,13 +112,19 @@ effects:
         mixer-options:
           depend: [ 'rotation' ]
         scripts:
-          - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=3,radius=1.5,origin=feet*-1.1,color={name=rainbow;revert=true;speed=0.25}]
+          - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=3,radius=1.5,origin=feet*-1.1,color={name=rainbow;speed=0.25}]
+      moving:
+        event: MOVING
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - polygon [effect=minecraft:dust,vertical=true,billboard=vertical,rotation={r},step=0.2,points=3,origin=feet*-1.1,pos={y=1},color={name=rainbow;speed=0.25}]
       standing:
         event: STANDING
         mixer-options:
           depend: [ 'rotation' ]
         scripts:
-          - polygon [effect=minecraft:dust,vertical=false,rotation={r},step=0.2,points=3,radius=1.5,origin=feet,color={name=rainbow;revert=true;speed=0.25}]
+          - polygon [effect=minecraft:dust,vertical=false,rotation={r},step=0.2,points=3,radius=1.5,origin=feet,color={name=rainbow;speed=0.25}]
       rotation:
         event: NONE
         mixer-options:
@@ -134,12 +140,22 @@ effects:
     on-tick:
       elytra:
         event: ELYTRA
+        mixer-options:
+          depend: [ 'rotation' ]
         scripts:
-          - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=4,radius=1.5,origin=feet*-1.1,color={name=rainbow;revert=true;speed=0.25}]
+          - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=4,radius=1.5,origin=feet*-1.1,color={name=rainbow;speed=0.25}]
+      moving:
+        event: MOVING
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - polygon [effect=minecraft:dust,vertical=true,billboard=vertical,rotation={r},step=0.2,points=4,pos={y=1},origin=feet*-1.1,color={name=rainbow;speed=0.25}]
       standing:
         event: STANDING
+        mixer-options:
+          depend: [ 'rotation' ]
         scripts:
-          - polygon [effect=minecraft:dust,rotation={r},step=0.2,points=4,radius=1.5,origin=feet,color={name=rainbow;revert=true;speed=0.25}]
+          - polygon [effect=minecraft:dust,rotation={r},step=0.2,points=4,radius=1.5,origin=feet,color={name=rainbow;speed=0.25}]
       rotation:
         event: NONE
         mixer-options:
@@ -152,7 +168,7 @@ effects:
     permission: "%rainbow-effects%"
     interval: 1
     on-tick:
-      elytra:
+      handler:
         event: ELYTRA
         scripts:
           - particle [effect=minecraft:dust,origin=feet,amount=5,size={val={velocityLength};min=1},pos={y={RANDOM}},color={name=rainbow}]
@@ -164,7 +180,7 @@ effects:
     enable-caching: true
     interval: 1
     on-tick:
-      elytra:
+      handler:
         event: ELYTRA
         times: 24
         scripts:
@@ -180,7 +196,7 @@ effects:
     enable-caching: true
     interval: 1
     on-tick:
-      elytra:
+      handler:
         event: ELYTRA
         times: 16
         scripts:
@@ -190,7 +206,7 @@ effects:
   rainbow-note:
     display-name: "%rainbow-note%"
     color-animation: "rainbow"
-    permission: "%note-effects%"
+    permission: "%rainbow-effects%"
     on-tick:
       elytra:
         event: ELYTRA
@@ -200,175 +216,79 @@ effects:
         event: MOVING
         scripts:
           - particle [effect=minecraft:note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=head,pos={y=0.75}]
-  random-note:
-    display-name: "%random-note%"
-    color-animation: "#36d15f"
-    permission: "%note-effects%"
+  rainbow-wreath:
+    display-name: "%rainbow-wreath%"
+    color-animation: "rainbow"
+    permission: "%rainbow-effects%"
+    interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - particle [effect=minecraft:note,color={name=random-note;note=true;size=24},amount=0,origin=feet]
+          - spiral [effect=minecraft:dust,vertical=true,steps=30,size=5,direction=true,origin=feet,color={name=rainbow;revert=true;speed=0.5}]
       moving:
         event: MOVING
         scripts:
-          - particle [effect=minecraft:note,color={name=random-note;note=true;size=24},amount=0,origin=head,pos={y=0.75}]
-  helix-rainbow:
-    display-name: "%helix-rainbow%"
+          - multi-spiral [effect=minecraft:dust,vertical=true,steps=15,size=2,spirals=3,radius=1.25,pos={y=1},billboard=vertical,tick=true,origin=feet*-1.1,color={name=rainbow;revert=true;speed=0.75}]
+      standing:
+        event: STANDING
+        scripts:
+          - multi-spiral [effect=minecraft:dust,vertical=true,steps=45,size=2,spirals=3,radius=1.25,pos={y=1},origin=feet,color={name=rainbow;revert=true;speed=0.75}]
+  rainbow-atom:
+    display-name: "%rainbow-atom%"
     color-animation: "rainbow"
-    permission: "%helix-effects%"
-    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
+    permission: "%rainbow-effects%"
+    variables: [ 'x=-1', 'z=0' ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'conditions' ]
-        times: 8
+          depend: [ 'x-z' ]
         scripts:
-          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "var y=({stepY} / {maxStepY}) * 1.5"
-          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
-          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
-          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
-          - "particle [effect=minecraft:dust,pos={x={y};y={x};z={z}},amount=10,origin=head,color={name=rainbow;speed=0.025;revert=true}]"
+          - multi-spiral [effect=minecraft:dust,size=1.5,spirals=5,steps=30,pos={x={x};y=0.25;z={z}},origin=feet,color={name=rainbow;speed=0.5},direction=true,vertical=true]
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'conditions' ]
-        times: 8
+          depend: [ 'x-z' ]
         scripts:
-          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
-          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "particle [effect=minecraft:dust,pos={y={y};x={x};z={z}},amount=1,origin=head,color={name=rainbow;speed=0.025;revert=true}]"
-      conditions:
+          - multi-spiral [effect=minecraft:dust,size=1.5,spirals=5,steps=30,pos={x={x};y=0.25;z={z}},origin=feet,color={name=rainbow;speed=0.5}]
+      x-z:
         event: NONE
         mixer-options:
           private: true
         scripts:
-          - "conditional (stepX>=80) ? var stepX=0 : var stepX+=1"
-          - "conditional (reverse==1) ? preset helix-reverse : none"
-          - "conditional (reverse==0) ? preset helix-normal : none"
-  helix:
-    display-name: "%helix%"
-    color-animation: "gradient-white-gray"
-    permission: "%helix-effects%"
-    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        mixer-options:
-          depend: [ 'conditions' ]
-        times: 8
-        scripts:
-          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "var y=({stepY} / {maxStepY}) * 1.5"
-          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
-          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
-          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
-          - "particle [effect=minecraft:end_rod,pos={x={y};y={x};z={z}},amount=0,origin=head]"
-      standing:
-        event: STANDING
-        mixer-options:
-          depend: [ 'conditions' ]
-        times: 8
-        scripts:
-          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
-          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "particle [effect=minecraft:end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
-      conditions:
-        event: NONE
-        mixer-options:
-          private: true
-        scripts:
-          - "conditional (stepX>=80) ? var stepX=0 : var stepX+=1"
-          - "conditional (reverse==1) ? preset helix-reverse : none"
-          - "conditional (reverse==0) ? preset helix-normal : none"
-  complementary:
-    display-name: "%complementary%"
-    color-animation: "complementary1-1"
-    permission: "%special%"
-    variables: [ 'radius=1', 'particles=32' ]
-    interval: 8
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - circle [effect=minecraft:dust_color_transition,tick-data=true,radius={radius},particles={particles},size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5;revert=true}]
-  galaxy:
-    display-name: "%galaxy%"
-    color-animation: "galaxy"
-    name-color-animation: true
-    permission: "%special%"
-    interval: 1
-    on-tick:
-      standing:
-        event: NONE
-        scripts:
-          - particle [effect=minecraft:wax_on,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~2
-          - particle [effect=minecraft:wax_off,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~3
-          - particle [effect=minecraft:scrape,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~4
-          - particle [effect=minecraft:electric_spark,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~5
-          - particle [effect=minecraft:end_rod,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~6
-          - particle [effect=minecraft:glow,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~7
-  spores:
-    display-name: "%spores%"
-    color-animation: "spores"
-    name-color-animation: true
-    permission: "%special%"
-    interval: 1
-    on-tick:
-      standing:
-        event: NONE
-        scripts:
-          - particle [effect=minecraft:ash,amount=0,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~2
-          - particle [effect=minecraft:mycelium,offset={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=0,origin=head] ~4
-          - particle [effect=minecraft:spore_blossom_air,origin=head] ~6
-          - particle [effect=minecraft:dolphin,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=10,origin=head] ~7
-          - particle [effect=minecraft:crimson_spore,amount=3,origin=head] ~10
-          - particle [effect=minecraft:warped_spore,amount=3,origin=head] ~15
-          - particle [effect=minecraft:white_ash,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=10,origin=head] ~20
-  planner:
-    display-name: "%planner%"
-    color-animation: "#32a852"
-    permission: "%spinning%"
-    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        mixer-options:
-          depend: [ 'step' ]
-        times: 3
-        scripts:
-          - var x=cos({step} + ({PI} * 2 * ({i} / 3)))
-          - var z=sin({step} + ({PI} * 2 * ({i} / 3)))
-          - var angle=atan({z},{x})
-          - var xAng=cos({angle})
-          - var zAng=sin({angle})
-          - particle [effect=minecraft:totem_of_undying,direction=true,amount=0,offset={x={xAng};y={zAng}},speed=0.375,origin=feet]
-      step:
-        event: ELYTRA
-        mixer-options:
-          private: true
-        scripts:
-          - var step=({step} + {PI} / 20) % 40
+          - var-c [variable=x,min=-1,max=1,step=0.15]
+          - var-c [variable=z,min=-1,max=1,step=0.15]
   gradient-circle:
     display-name: "%gradient-circle%"
     color-group: "gradients"
     permission: "%gradient-effects%"
-    variables: [ 'radius=1', 'particles=32' ]
+    variables: [ 'y=0' ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         scripts:
-          - circle [effect=minecraft:dust,radius={radius},particles={particles},amount=10,origin=head*-1.25,color={dynamic=true;revert=true;speed=0.25}]
+          - circle [effect=minecraft:dust,amount=10,origin=head*-1.25,color={dynamic=true;revert=true;speed=0.25}]
+      moving:
+        event: MOVING
+        scripts:
+          - circle [effect=minecraft:dust,particles=8,radius=0.25,pos={y=-0.5},amount=10,billboard=vertical,origin=head*-1.25,color={dynamic=true;revert=true;speed=0.25}]
+      standing:
+        event: STANDING
+        mixer-options:
+          depend: [ 'reset-y' ]
+        scripts:
+          - circle [effect=minecraft:dust,directional=false,vertical=false,pos={y={y}},origin=feet,color={dynamic=true;revert=true;speed=0.25}]
+          - var-c [variable=y,max=1.75,min=0,step=0.1]
+      reset-y:
+        event: STANDING
+        max-executed: 1
+        mixer-options:
+          private: true
+        scripts:
+          - var y=0
   gradient-line:
     display-name: "%gradient-line%"
     color-group: "gradients"
@@ -397,15 +317,15 @@ effects:
       elytra:
         event: ELYTRA
         scripts:
-          - spiral [effect=minecraft:dust,size=5,direction=true,origin=feet,color={dynamic=true;revert=true;speed=0.25}]
+          - spiral [effect=minecraft:dust,steps=30,size=5,direction=true,origin=feet,color={dynamic=true;revert=true;speed=0.25}]
       moving:
         event: MOVING
         scripts:
-          - spiral [effect=minecraft:dust,size=2,origin=head,color={dynamic=true;revert=true;speed=0.25}]
+          - spiral [effect=minecraft:dust,steps=30,size=2,origin=head,color={dynamic=true;revert=true;speed=0.25}]
       standing:
         event: STANDING
         scripts:
-          - spiral [effect=minecraft:dust,steps=60,size=2,origin=head,color={dynamic=true;revert=true;speed=0.25}]
+          - spiral [effect=minecraft:dust,steps=60,size=2,radius=0.75,origin=head,color={dynamic=true;revert=true;speed=0.25}]
   parkour-easy:
     display-name: "%parkour-easy%"
     color-animation: "#ffffff"
@@ -451,6 +371,218 @@ effects:
         scripts:
           - var m=20+{velocityLength}*5
           - parkour [style=parkour-fast,standby=#ffffff,success=#09b849,fail=#b80909,interval=1,duration=3,when-succeeded=parkour-fast-streak,when-failed=parkour-fast-fail,immediate=true]
+  complementary:
+    display-name: "%complementary%"
+    color-animation: "complementary1-1"
+    name-color-animation: true
+    permission: "%special%"
+    variables: [ 'radius=1', 'particles=32' ]
+    interval: 8
+    on-tick:
+      handler:
+        event: ELYTRA
+        scripts:
+          - circle [effect=minecraft:dust_color_transition,tick-data=true,radius={radius},particles={particles},size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5;revert=true}]
+  helix:
+    display-name: "%helix%"
+    color-animation: "gradient-white-gray"
+    name-color-animation: true
+    permission: "%special%"
+    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        mixer-options:
+          depend: [ 'conditions' ]
+        times: 8
+        scripts:
+          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var y=({stepY} / {maxStepY}) * 1.5"
+          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
+          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
+          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
+          - "particle [effect=minecraft:end_rod,pos={x={y};y={x};z={z}},amount=0,origin=head]"
+      standing:
+        event: STANDING
+        mixer-options:
+          depend: [ 'conditions' ]
+        times: 8
+        scripts:
+          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
+          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "particle [effect=minecraft:end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
+      conditions:
+        event: NONE
+        mixer-options:
+          private: true
+        scripts:
+          - "conditional (stepX>=80) ? var stepX=0 : var stepX+=1"
+          - "conditional (reverse==1) ? preset helix-reverse : none"
+          - "conditional (reverse==0) ? preset helix-normal : none"
+  galaxy:
+    display-name: "%galaxy%"
+    color-animation: "galaxy"
+    name-color-animation: true
+    permission: "%special%"
+    interval: 1
+    on-tick:
+      handler:
+        event: NONE
+        scripts:
+          - particle [effect=minecraft:wax_on,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~2
+          - particle [effect=minecraft:wax_off,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~3
+          - particle [effect=minecraft:scrape,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~4
+          - particle [effect=minecraft:electric_spark,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~5
+          - particle [effect=minecraft:end_rod,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~6
+          - particle [effect=minecraft:glow,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~7
+  spores:
+    display-name: "%spores%"
+    color-animation: "spores"
+    name-color-animation: true
+    permission: "%special%"
+    interval: 1
+    on-tick:
+      handler:
+        event: NONE
+        scripts:
+          - particle [effect=minecraft:ash,amount=0,speed=0,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},origin=head] ~2
+          - particle [effect=minecraft:mycelium,offset={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=0,origin=head] ~4
+          - particle [effect=minecraft:spore_blossom_air,origin=head] ~6
+          - particle [effect=minecraft:dolphin,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=10,origin=head] ~7
+          - particle [effect=minecraft:crimson_spore,amount=3,origin=head] ~10
+          - particle [effect=minecraft:warped_spore,amount=3,origin=head] ~15
+          - particle [effect=minecraft:white_ash,pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},amount=10,origin=head] ~20
+  twinkle:
+    display-name: "%twinkle%"
+    color-animation: "twinkle"
+    name-color-animation: true
+    permission: "%special%"
+    variables: [ 'r=0.65' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,radius={r},amount=3,speed=0,vertical=true,directional=true,origin=feet]
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,radius={r},amount=3,speed=0,vertical=true,directional=true,reverse=true,origin=feet]
+      moving:
+        event: MOVING
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.25},radius={r},amount=3,speed=0,origin=feet]
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.25},radius={r},amount=3,speed=0,reverse=true,origin=feet]
+      standing:
+        event: STANDING
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.5},radius={r},amount=3,speed=0,origin=feet]
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.5},radius={r},amount=3,speed=0,reverse=true,origin=feet]
+      rotation:
+        event: NONE
+        mixer-options:
+          private: true
+        scripts:
+          - var-c [variable=r,step=0.1,min=0.65,max=1]
+  triangles:
+    display-name: "%triangles%"
+    color-animation: "triangles"
+    name-color-animation: true
+    permission: "%special%"
+    variables: [ 'r1', 'r2=45' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - polygon [effect=minecraft:dust,points=3,vertical=true,directional=true,size=0.75,rotation={r1},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
+          - polygon [effect=minecraft:dust,points=3,vertical=true,directional=true,size=0.75,rotation={r2},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
+      moving:
+        event: MOVING
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - polygon [effect=minecraft:dust,points=3,vertical=true,billboard=vertical,size=0.75,rotation={r1},pos={y=1},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
+          - polygon [effect=minecraft:dust,points=3,vertical=true,billboard=vertical,size=0.75,rotation={r2},pos={y=1},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
+      standing:
+        event: STANDING
+        mixer-options:
+          depend: [ 'rotation' ]
+        scripts:
+          - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r1},origin=feet,color={name=triangles;speed=0.1;revert=true}]
+          - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r2},origin=feet,color={name=triangles;speed=0.1;revert=true}]
+      rotation:
+        event: NONE
+        mixer-options:
+          private: true
+        scripts:
+          - var-c [variable=r1,min=0,max=360,step=1]
+          - var-c [variable=r2,min=0,max=360,step=1]
+  smoke:
+    display-name: "%smoke%"
+    color-animation: "smoke"
+    name-color-animation: true
+    permission: "%special%"
+    interval: 1
+    on-tick:
+      moving:
+        event: MOVING
+        scripts:
+          - circle [effect=minecraft:small_flame,speed=0,particles=12,radius=0.25,vertical=false,directional=false,pos={y=0.4},origin=head]
+          - single [effect=minecraft:large_smoke,speed=0,pos={y=0.5},origin=head] ~2
+      standing:
+        event: STANDING
+        scripts:
+          - spiral [effect=minecraft:flame,speed=0,steps=12,radius=0.45,vertical=false,directional=false,pos={y=0.25},origin=head]
+          - spiral [effect=minecraft:small_flame,speed=0,steps=12,radius=0.25,vertical=false,directional=false,pos={y=0.4},origin=head]
+          - single [effect=minecraft:large_smoke,speed=0,pos={y=0.5},origin=head] ~2
+  planner:
+    display-name: "%planner%"
+    color-animation: "#32a852"
+    permission: "%spinning%"
+    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        mixer-options:
+          depend: [ 'step' ]
+        times: 3
+        scripts:
+          - var x=cos({step} + ({2PI} * ({i} / 3)))
+          - var z=sin({step} + ({2PI} * ({i} / 3)))
+          - var angle=atan({z},{x})
+          - var xAng=cos({angle})
+          - var zAng=sin({angle})
+          - particle [effect=minecraft:totem_of_undying,direction=true,amount=0,offset={x={xAng};y={zAng}},speed=0.375,origin=feet]
+      step:
+        event: ELYTRA
+        mixer-options:
+          private: true
+        scripts:
+          - var step=({step} + {PI} / 20) % 40
+  orbit:
+    display-name: "%orbit%"
+    color-animation: "gradient-red-yellow-blue"
+    permission: "%spinning%"
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - multi-spiral [effect=minecraft:dust,amount=10,vertical=true,direction=true,tick=true,origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
+      standing:
+        event: STANDING
+        scripts:
+          - multi-spiral [effect=minecraft:dust,amount=10,tick=true,pos={y=1.5},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
   triple-line:
     display-name: "%triple-line%"
     color-animation: "gradient-red-blue"
@@ -470,20 +602,6 @@ effects:
           - particle [effect=minecraft:dust,pos={y={y2}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
           - particle [effect=minecraft:dust,pos={x={x1};y={y1};z={y1}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
           - particle [effect=minecraft:dust,pos={x={x2};y={y1};z={z}},amount=10,origin=head*2,color={name=gradient-red-blue;revert=true;speed=1}]
-  orbit:
-    display-name: "%orbit%"
-    color-animation: "gradient-red-yellow-blue"
-    permission: "%spinning%"
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - multi-spiral [effect=minecraft:dust,amount=10,vertical=true,direction=true,tick=true,origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
-      standing:
-        event: STANDING
-        scripts:
-          - multi-spiral [effect=minecraft:dust,amount=10,tick=true,pos={y=1.5},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
   whirl:
     display-name: "%whirl%"
     color-animation: "whirl"
@@ -630,13 +748,18 @@ effects:
       moving:
         event: MOVING
         scripts:
-          - spread [effect=minecraft:cloud,radius=0.25,particles=24,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+          - circle [effect=minecraft:cloud,radius=0.25,particles=12,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+          - spread [effect=minecraft:falling_water,spread=1,radius=0.25,particles=3,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+      standing:
+        event: STANDING
+        scripts:
+          - circle [effect=minecraft:cloud,radius=0.25,particles=6,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
           - spread [effect=minecraft:falling_water,spread=1,radius=0.25,particles=3,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
   snow:
     display-name: "%snow%"
     color-animation: "#ffffff"
     permission: "%weather%"
-    variables: [ 'r', 'x', 'z', 'radius=4' ]
+    variables: [ 'r', 'x', 'z' ]
     interval: 3
     on-tick:
       elytra:
@@ -644,13 +767,17 @@ effects:
         times: 24
         scripts:
           - var r={i}*{PI}/24
-          - var x=cos({r})*{RANDOM}*{radius}
-          - var z=sin({r})*{RANDOM}*{radius}
+          - var x=cos({r})*{RANDOM}*2
+          - var z=sin({r})*{RANDOM}*2
           - particle [effect=minecraft:snowflake,direction=true,pos={x={x};y={z}},amount=0,origin=head*2]
       moving:
         event: MOVING
         scripts:
-          - spread [effect=minecraft:snowflake,radius=0.25,particles=24,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+          - spread [effect=minecraft:snowflake,radius=0.25,particles=12,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+      standing:
+        event: STANDING
+        scripts:
+          - spread [effect=minecraft:snowflake,radius=0.25,particles=12,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
   pulse:
     display-name: "%pulse%"
     color-animation: "gradient-red-gold"
@@ -834,62 +961,3 @@ effects:
           - "conditional (step==6) ? particle [effect=minecraft:block_marker,block={material=blue_stained_glass_pane},origin=feet] : none"
           - "conditional (step==7) ? particle [effect=minecraft:block_marker,block={material=magenta_stained_glass_pane},origin=feet] : none"
           - "conditional (step==8) ? particle [effect=minecraft:block_marker,block={material=purple_stained_glass_pane},origin=feet] : none"
-  christmas-circle:
-    display-name: "%christmas-circle%"
-    permission: "%christmas%"
-    icon:
-      material: RED_CANDLE
-    description:
-      - "%seasonal-effect%"
-      - "%christmas%"
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - circle [effect=minecraft:dust,tick=true,size=3,amount=0,origin=head*-1.25,color={name=christmas;speed=1.75;revert=true}]
-  christmas-line:
-    display-name: "%christmas-line%"
-    permission: "%christmas%"
-    icon:
-      material: GREEN_CANDLE
-    description:
-      - "%seasonal-effect%"
-      - "%christmas%"
-    variables: [ ]
-    interval: 1
-    on-tick:
-      elytra:
-        times: 3
-        event: ELYTRA
-        scripts:
-          - particle [effect=minecraft:dust,size=10,origin=head,color={name=christmas;speed=1.75;revert=false}]
-      moving:
-        event: MOVING
-        scripts:
-          - particle [effect=minecraft:dust,size=3,origin=feet,color={name=christmas;speed=1.75;revert=false}]
-      projectile:
-        event: PROJECTILE
-        scripts:
-          - particle [effect=minecraft:dust,size=5,origin=feet,color={name=christmas;speed=1.75;revert=false},long-distance=true]
-  christmas-spiral:
-    display-name: "%christmas-spiral%"
-    permission: "%christmas%"
-    icon:
-      material: WHITE_CANDLE
-    description:
-      - "%seasonal-effect%"
-      - "%christmas%"
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - spiral [effect=minecraft:dust,size=5,direction=true,origin=feet,color={name=christmas;revert=true;speed=1.75}]
-      moving:
-        event: MOVING
-        scripts:
-          - spiral [effect=minecraft:dust,size=2,origin=head,color={name=christmas;revert=true;speed=1.75}]
-      standing:
-        event: STANDING
-        scripts:
-          - spiral [effect=minecraft:dust,steps=60,size=2,origin=head,color={name=christmas;revert=true;speed=1.75}]

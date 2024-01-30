@@ -15,6 +15,7 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
@@ -43,7 +44,8 @@ public class ParticleSpawner extends Script {
     protected Object particleData;
     protected IntArgument amount;
     protected RangeArgument speed, size;
-    protected boolean directional = false;
+
+    protected boolean directionalX = false, directionalY = false;
 
     protected boolean longDistance = false;
 
@@ -160,12 +162,11 @@ public class ParticleSpawner extends Script {
     }
 
     public Vector rotate(Vector direction, Vector vector, double cosP, double sinP, double cosY, double sinY) {
-        if (directional) {
+        if (directionalX)
             Vectors.rotateAroundAxisX(vector, cosP, sinP);
+        if (directionalY)
             Vectors.rotateAroundAxisY(vector, cosY, sinY);
-            return direction.clone().add(vector);
-        }
-        return vector;
+        return directionalX || directionalY ? direction.clone().add(vector) : vector;
     }
 
     @Override

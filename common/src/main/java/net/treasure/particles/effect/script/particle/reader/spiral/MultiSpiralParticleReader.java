@@ -17,6 +17,7 @@ public class MultiSpiralParticleReader extends ParticleReader<MultiSpiralParticl
         addValidArgument(c -> c.script().steps(IntArgument.read(c)), "steps");
         addValidArgument(c -> c.script().vertical(StaticArgument.asBoolean(c)), "vertical");
         addValidArgument(c -> c.script().tickData(StaticArgument.asBoolean(c)), "tick-data", "tick");
+        addValidArgument(c -> c.script().reverse(StaticArgument.asBoolean(c) ? -1 : 1), "reverse");
     }
 
     @Override

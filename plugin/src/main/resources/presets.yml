@@ -31,7 +31,7 @@ parkour-success: "play-sound [name=entity.villager.yes,client=true]"
 parkour-fail: "play-sound [name=minecraft:entity.villager.no,client=true]"
 parkour-spawned: "play-sound [name=entity.arrow.hit_player,client=true]"
 # Parkour (Fast)
-parkour-fast: "circle [effect=minecraft:dust,amount=10,origin=head*{x={m};y=10;z={m}},pos={x={RANDOM};y={RANDOM};z={RANDOM}},radius={radius},particles={particles},color=#FFFFFF]"
+parkour-fast: "circle [effect=minecraft:dust,amount=10,origin=head*{x={m};y=10;z={m}},pos={x={RANDOM-};y={RANDOM-};z={RANDOM-}},radius={radius},particles={particles},color=#FFFFFF]"
 parkour-fast-streak:
   - "play-sound [name=entity.arrow.hit_player,client=true]"
   - "var streak+=1"

@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.player.PlayerManager;
 import net.treasure.particles.util.TimeKeeper;
+import org.bukkit.scheduler.BukkitRunnable;
 
 @AllArgsConstructor
-public class EffectsTask implements Runnable {
+public class EffectsTask extends BukkitRunnable {
 
     private final PlayerManager playerManager;
 

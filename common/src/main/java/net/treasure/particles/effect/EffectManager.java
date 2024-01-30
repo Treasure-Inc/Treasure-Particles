@@ -61,26 +61,26 @@ public class EffectManager implements DataHolder {
     private final Presets presets;
     private final HashMap<String, DefaultReader<?>> readers;
 
+    private int effectsTaskId = -5;
+
     public EffectManager() {
         this.generator = new ConfigurationGenerator("effects.yml");
         this.effects = new ArrayList<>();
         this.presets = new Presets();
         this.readers = new HashMap<>();
 
-        var plugin = TreasureParticles.getPlugin();
-
         // Register listeners
         var pm = Bukkit.getPluginManager();
-        pm.registerEvents(new HandlerEventsListener(TreasureParticles.getPlayerManager()), plugin);
+        pm.registerEvents(new HandlerEventsListener(TreasureParticles.getPlayerManager()), TreasureParticles.getPlugin());
         if (TreasureParticles.isPaper())
             try {
-                pm.registerEvents(new ElytraBoostListener(TreasureParticles.getPlayerManager()), plugin);
+                pm.registerEvents(new ElytraBoostListener(TreasureParticles.getPlayerManager()), TreasureParticles.getPlugin());
             } catch (Exception ignored) {
             }
 
         // Run tasks
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new EffectsTask(TreasureParticles.getPlayerManager()), 0, 1);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new MovementCheck(TreasureParticles.getPlayerManager()), 0, 5);
+        runTask();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(TreasureParticles.getPlugin(), new MovementCheck(TreasureParticles.getPlayerManager()), 0, 5);
 
         // Variables
         registerReader(new VariableReader(), "variable", "var");
@@ -140,8 +140,20 @@ public class EffectManager implements DataHolder {
     @Override
     public void reload() {
         effects.clear();
-        if (initialize())
+        if (initialize()) {
             loadEffects();
+            runTask();
+        }
+    }
+
+    public void runTask() {
+        var task = new EffectsTask(TreasureParticles.getPlayerManager());
+        task.runTaskTimerAsynchronously(TreasureParticles.getPlugin(), 5, 1);
+        effectsTaskId = task.getTaskId();
+    }
+
+    public void cancelTask() {
+        Bukkit.getScheduler().cancelTask(effectsTaskId);
     }
 
     public Effect get(String key) {

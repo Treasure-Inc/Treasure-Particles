@@ -28,9 +28,11 @@ public class ParkourReader extends ScriptReader<ParkourReader.Context, Parkour> 
         addValidArgument(c -> c.script().success(ColorData.fromString(c)), "success");
         addValidArgument(c -> c.script().fail(ColorData.fromString(c)), "fail");
 
+        addValidArgument(c -> c.script().configure(TreasureParticles.getEffectManager().read(c.effect(), "preset", c.value())), "configure");
         addValidArgument(c -> c.script().whenSpawned(TreasureParticles.getEffectManager().read(c.effect(), "preset", c.value())), "when-spawned");
         addValidArgument(c -> c.script().whenSucceeded(TreasureParticles.getEffectManager().read(c.effect(), "preset", c.value())), "when-succeeded");
         addValidArgument(c -> c.script().whenFailed(TreasureParticles.getEffectManager().read(c.effect(), "preset", c.value())), "when-failed");
+        addValidArgument(c -> c.script().whenStarted(TreasureParticles.getEffectManager().read(c.effect(), "preset", c.value())), "when-started");
 
         addValidArgument(c -> c.script().immediate(StaticArgument.asBoolean(c)), "immediate");
     }

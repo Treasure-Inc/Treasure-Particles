@@ -15,6 +15,7 @@ public class SpiralParticleReader extends ParticleReader<SpiralParticle> {
         addValidArgument(c -> c.script().radius(RangeArgument.read(c)), "radius");
         addValidArgument(c -> c.script().steps(IntArgument.read(c)), "steps");
         addValidArgument(c -> c.script().vertical(StaticArgument.asBoolean(c)), "vertical");
+        addValidArgument(c -> c.script().reverse(StaticArgument.asBoolean(c) ? -1 : 1), "reverse");
     }
 
     @Override

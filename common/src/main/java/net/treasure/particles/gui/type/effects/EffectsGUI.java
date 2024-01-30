@@ -1,5 +1,6 @@
 package net.treasure.particles.gui.type.effects;
 
+import lombok.Getter;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.ColorManager;
 import net.treasure.particles.effect.Effect;
@@ -41,6 +42,9 @@ public class EffectsGUI extends GUI {
     private ElementInfo RESET;
     private ElementInfo MIXER;
 
+    @Getter
+    private int maxEffects;
+
     public EffectsGUI(GUIManager manager) {
         super(manager, EFFECTS);
         this.effectManager = TreasureParticles.getEffectManager();
@@ -55,6 +59,7 @@ public class EffectsGUI extends GUI {
         RANDOM_EFFECT = GUIElements.element(type, ElementType.RANDOM_EFFECT, 'r', new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
         RESET = GUIElements.element(type, ElementType.RESET, 'R', new ItemStack(Material.RED_STAINED_GLASS_PANE));
         MIXER = GUIElements.element(type, ElementType.MIXER, 'M', new ItemStack(Material.END_CRYSTAL));
+        maxEffects = DEFAULT_ICON.slots().length;
     }
 
     @Override
@@ -80,7 +85,6 @@ public class EffectsGUI extends GUI {
         var data = playerManager.getEffectData(player);
         var colorCycleSpeed = manager.getColorCycleSpeed();
         var effectSlots = DEFAULT_ICON.slots();
-        var maxEffects = effectSlots.length;
 
         var page = holder.getPage();
 

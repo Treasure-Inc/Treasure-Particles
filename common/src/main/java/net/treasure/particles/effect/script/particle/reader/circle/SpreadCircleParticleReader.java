@@ -28,7 +28,7 @@ public class SpreadCircleParticleReader extends ParticleReader<SpreadCircleParti
     public static class Context extends ParticleReader.Context<SpreadCircleParticle> {
         public Context(Effect effect, String type, String line) {
             super(effect, type, line, new SpreadCircleParticle());
-            script.directional(true);
+            script.directionalX(true).directionalY(true);
         }
     }
 }

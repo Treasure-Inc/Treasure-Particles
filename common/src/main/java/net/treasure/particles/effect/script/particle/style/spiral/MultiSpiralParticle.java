@@ -10,7 +10,7 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
@@ -32,22 +32,24 @@ public class MultiSpiralParticle extends ParticleSpawner {
     private IntArgument steps = new IntArgument(120);
     private boolean tickData = false;
     private boolean vertical = false;
+    private int reverse = 1;
 
     private double step;
 
     public MultiSpiralParticle(ParticleEffect effect, ParticleOrigin origin,
                                RangeArgument radius, IntArgument spirals, IntArgument steps,
-                               boolean tickData, boolean vertical,
+                               boolean tickData, boolean vertical, int reverse,
                                VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                                ColorData colorData, Object particleData,
                                IntArgument amount, RangeArgument speed, RangeArgument size,
-                               boolean directional, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
+                               boolean directionalX, boolean directionalY, boolean longDistance) {
+        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
         this.radius = radius;
         this.spirals = spirals;
         this.steps = steps;
         this.tickData = tickData;
         this.vertical = vertical;
+        this.reverse = reverse;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class MultiSpiralParticle extends ParticleSpawner {
 
         List<ParticleBuilder> builders = new ArrayList<>();
 
-        var s = (step / steps) * MathUtils.PI2;
+        var s = reverse * (step / steps) * MathUtils.PI2;
         var dP = MathUtils.PI2 / spirals;
         for (int i = 0; i < spirals; i++) {
             var r = s + dP * i;
@@ -88,11 +90,11 @@ public class MultiSpiralParticle extends ParticleSpawner {
         return new MultiSpiralParticle(
                 particle, origin,
                 radius, spirals, steps,
-                tickData, vertical,
+                tickData, vertical, reverse,
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directional, longDistance
+                directionalX, directionalY, longDistance
         );
     }
 }

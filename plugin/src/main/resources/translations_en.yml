@@ -121,12 +121,9 @@ effects:
   rainbow-dots: "<rainbow>Rainbow Dots"
   rainbow-random: "<rainbow>Rainbow"
   rainbow-flag: "<rainbow>Rainbow Flag"
-  # Note
   rainbow-note: "<rainbow>Rainbow Notes"
-  random-note: "<#36d15f>Random Notes"
-  # Helix
-  helix-rainbow: "<rainbow>Rainbow Helix"
-  helix: "<#fff0c7>Helix"
+  rainbow-wreath: "<rainbow>Rainbow Wreath"
+  rainbow-atom: "<rainbow>Rainbow Atom"
   # Gradient
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Gradient / Circle"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Gradient / Line"
@@ -142,9 +139,13 @@ effects:
   whirl: "<#3A0CA3>Whirl"
   planner: "<gradient:green:dark_green>Planner"
   # Specials
-  complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Complementary"
+  helix: "<b>Helix"
+  complementary: "<b>Complementary"
   galaxy: "<b>Galaxy"
   spores: "<b>Spores"
+  twinkle: "<b>Twinkle"
+  triangles: "<b>Triangles"
+  smoke: "<b>Smoke"
   sweeping: "<gray>Sweeping"
   beam: "<gray>Beam"
   rocket: "<gray>Rocket"
@@ -195,6 +196,7 @@ colors:
   aqua-brown: "<gradient:#4254f5:#2e1c1a>Aqua > Brown"
   dark-aqua-black: "<gradient:#3449eb:#10174f:#10174f>Dark Aqua > Black"
   dark-colors: "<gradient:#CB997E:#B7B7A4>Dark Colors"
+  christmas: "<gradient:#A7C957:#F2E8CF:#BC4749><b>Christmas"
 # PlaceholderAPI Messages
 placeholders:
   current-effect-null: "None"

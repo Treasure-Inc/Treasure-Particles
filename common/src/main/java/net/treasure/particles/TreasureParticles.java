@@ -139,6 +139,7 @@ public class TreasureParticles {
 
     public static void reload(CommandSender sender) {
         ComponentLogger.setChatReceiver(sender);
+        effectManager.cancelTask();
 
         plugin.getLogger().info("Reloading TreasureParticles");
 

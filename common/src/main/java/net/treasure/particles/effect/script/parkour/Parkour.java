@@ -27,24 +27,30 @@ public class Parkour extends Script {
     private IntArgument duration;
     private CircleParticle style;
     private ColorData standby, success, fail;
-    private Script whenSpawned, whenSucceeded, whenFailed;
+    private Script configure, whenSpawned, whenSucceeded, whenFailed, whenStarted;
     private boolean immediate;
 
     private boolean completed = false;
     private boolean scriptExecuted = false;
+    private boolean freshStart = true;
     private ParticleContext context;
     private long lastSpawned = -5;
 
-    public Parkour(IntArgument interval, IntArgument duration, CircleParticle style, ColorData standby, ColorData success, ColorData fail, Script whenSpawned, Script whenSucceeded, Script whenFailed, boolean immediate) {
+    public Parkour(IntArgument interval, IntArgument duration,
+                   CircleParticle style, ColorData standby, ColorData success, ColorData fail,
+                   Script configure, Script whenSpawned, Script whenSucceeded, Script whenFailed, Script whenStarted,
+                   boolean immediate) {
         this.interval = interval;
         this.duration = duration;
         this.style = style;
         this.standby = standby;
         this.success = success;
         this.fail = fail;
+        this.configure = configure;
         this.whenSpawned = whenSpawned;
         this.whenSucceeded = whenSucceeded;
         this.whenFailed = whenFailed;
+        this.whenStarted = whenStarted;
         this.immediate = immediate;
     }
 
@@ -53,12 +59,17 @@ public class Parkour extends Script {
         if (lastSpawned == -5) {
             var interval = this.interval.get(player, this, data);
             if (!TimeKeeper.isElapsed(interval)) return TickResult.NORMAL;
+            if (configure != null)
+                configure.tick(player, data, event, times);
             lastSpawned = System.currentTimeMillis();
             style.colorData(standby);
             context = style.sendParticles(player, data, event, p -> p.equals(player));
             if (context == null) return TickResult.NORMAL;
             if (whenSpawned != null)
                 whenSpawned.tick(player, data, event, times);
+            if (freshStart && whenStarted != null)
+                whenStarted.tick(player, data, event, times);
+            freshStart = false;
             return TickResult.NORMAL;
         }
 
@@ -77,6 +88,7 @@ public class Parkour extends Script {
                 style.sendParticles(player, data, context);
                 return TickResult.NORMAL;
             }
+            freshStart = true;
             reset();
             return TickResult.NORMAL;
         }
@@ -113,6 +125,16 @@ public class Parkour extends Script {
 
     @Override
     public Script clone() {
-        return new Parkour(interval, duration, style.clone(), standby, success, fail, whenSpawned, whenSucceeded.cloneScript(), whenFailed.cloneScript(), immediate);
+        return new Parkour(
+                interval, duration,
+                style.clone(),
+                standby != null ? standby.clone() : null, success != null ? success.clone() : null, fail != null ? fail.clone() : null,
+                configure != null ? configure.cloneScript() : null,
+                whenSpawned != null ? whenSpawned.cloneScript() : null,
+                whenSucceeded != null ? whenSucceeded.cloneScript() : null,
+                whenFailed != null ? whenFailed.cloneScript() : null,
+                whenStarted != null ? whenStarted.cloneScript() : null,
+                immediate
+        );
     }
 }

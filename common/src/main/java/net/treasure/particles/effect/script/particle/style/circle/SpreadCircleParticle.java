@@ -10,7 +10,7 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -35,8 +35,8 @@ public class SpreadCircleParticle extends CircleParticle {
                                 VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                                 ColorData colorData, Object particleData,
                                 IntArgument amount, RangeArgument speed, RangeArgument size,
-                                boolean directional, boolean longDistance) {
-        super(particle, origin, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
+                                boolean directionalX, boolean directionalY, boolean longDistance) {
+        super(particle, origin, particles, radius, tickData, vertical, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
         this.spread = spread;
     }
 
@@ -58,8 +58,9 @@ public class SpreadCircleParticle extends CircleParticle {
         var spread = this.spread != null ? this.spread.get(player, this, data) : null;
 
         List<ParticleBuilder> builders = new ArrayList<>();
+        var p = MathUtils.PI2 / particles;
         for (int i = 0; i < particles; i++) {
-            var r = MathUtils.PI2 * i / particles;
+            var r = p * i;
             var x = MathUtils.cos(r) * radius;
             var y = MathUtils.sin(r) * radius;
 
@@ -71,7 +72,7 @@ public class SpreadCircleParticle extends CircleParticle {
             var tempOffset = offset.clone();
             if (spread != null) {
                 var angle = MathUtils.atan2(y, x);
-                tempOffset.add(vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.sin(angle) * spread, 0, MathUtils.cos(angle) * spread));
+                tempOffset.add(vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.cos(angle) * spread, 0, MathUtils.sin(angle) * spread));
             }
             copy.offset(rotate(context, tempOffset));
 
@@ -93,7 +94,7 @@ public class SpreadCircleParticle extends CircleParticle {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directional, longDistance
+                directionalX, directionalY, longDistance
         );
     }
 }

@@ -10,7 +10,7 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
@@ -53,8 +53,8 @@ public class TextParticle extends ParticleSpawner {
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
                         IntArgument amount, RangeArgument speed, RangeArgument size,
-                        boolean directional, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
+                        boolean directionalX, boolean directionalY, boolean longDistance) {
+        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
         this.stepX = stepX;
         this.stepY = stepY;
         this.scale = scale;
@@ -158,7 +158,7 @@ public class TextParticle extends ParticleSpawner {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directional, longDistance
+                directionalX, directionalY, longDistance
         );
     }
 }

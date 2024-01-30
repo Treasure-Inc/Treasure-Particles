@@ -82,8 +82,18 @@ schemes:
   spores:
     values: [ "#f59784", "#f06d26", "#4b9120" ]
     size: 15
+  twinkle:
+    values: [ "#235dba", "#0d4194" ]
+    size: 15
+  triangles:
+    values: [ "#c42178", "#9c21c4" ]
+    size: 15
+  smoke:
+    values: [ "#fee440", "#9e2a2b", "#540b0e" ]
+    size: 20
   # Christmas
   christmas:
+    name: "%christmas%"
     values: [ "#ef233c", "#d5f2e3", "#73ba9b", "#003e1f", "#d90429", "#823a14" ]
     size: 30
 groups:
@@ -99,3 +109,4 @@ groups:
     dark-3: "none"
     dark-4: "none"
     dark-5: "none"
+    christmas: "%christmas-colors%"

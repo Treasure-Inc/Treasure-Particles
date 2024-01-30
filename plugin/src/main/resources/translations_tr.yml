@@ -121,12 +121,9 @@ effects:
   rainbow-dots: "<rainbow>Rengarenk Noktalar"
   rainbow-random: "<rainbow>Rengarenk"
   rainbow-flag: "<rainbow>Rengarenk Bayrak"
-  # Nota
   rainbow-note: "<rainbow>Rengarenk Notalar"
-  random-note: "<#36d15f>Rastgele Notalar"
-  # Sarmal
-  helix: "<#fff0c7>Sarmal"
-  helix-rainbow: "<rainbow>Rengarenk Sarmal"
+  rainbow-wreath: "<rainbow>Rengarenk Çelenk"
+  rainbow-atom: "<rainbow>Rengarenk Atom"
   # Degrade
   gradient-circle: "<gradient:#E3DFFF:#937666><b>Degrade / Daire"
   gradient-line: "<gradient:#E3DFFF:#937666><b>Degrade / Çizgi"
@@ -142,9 +139,13 @@ effects:
   whirl: "<#3A0CA3>Dönence"
   planner: "<gradient:green:dark_green>Planör"
   # Özel
+  helix: "<b>Sarmal"
   complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Tamamlayıcı"
   galaxy: "<b>Galaksi"
   spores: "<b>Sporlar"
+  twinkle: "<b>Pırıltı"
+  triangles: "<b>Üçgenler"
+  smoke: "<b>Duman"
   sweeping: "<gray>Süpürme"
   beam: "<gray>Işın"
   rocket: "<#33ff8b>Roket"
@@ -195,6 +196,7 @@ colors:
   aqua-brown: "<gradient:#4254f5:#2e1c1a>Turkuaz > Kahverengi"
   dark-aqua-black: "<gradient:#3449eb:#10174f:#10174f>Koyu Turkuaz > Siyah"
   dark-colors: "<gradient:#CB997E:#B7B7A4>Koyu Renkler"
+  christmas: "<gradient:#A7C957:#F2E8CF:#BC4749><b>Yılbaşı"
 # PlaceholderAPI Mesajları
 placeholders:
   current-effect-null: "Yok"

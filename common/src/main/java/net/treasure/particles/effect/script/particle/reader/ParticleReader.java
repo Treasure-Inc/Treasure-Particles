@@ -11,8 +11,9 @@ import net.treasure.particles.effect.script.argument.type.ItemStackArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.StaticArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.effect.script.particle.config.Billboard;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.reader.ScriptReader;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -89,7 +90,15 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
             c.script().colorData(ColorData.fromString(c));
         }, "color", "color-scheme");
 
-        addValidArgument(c -> c.script().directional(StaticArgument.asBoolean(c)), "direction", "directional");
+        addValidArgument(c -> {
+            var directional = StaticArgument.asBoolean(c);
+            c.script().directionalX(directional).directionalY(directional);
+        }, "direction", "directional");
+
+        addValidArgument(c -> {
+            var billboard = StaticArgument.asEnum(c, Billboard.class);
+            c.script().directionalX(billboard.x()).directionalY(billboard.y());
+        }, "billboard");
 
         addValidArgument(c -> c.script().longDistance(StaticArgument.asBoolean(c)), "long-distance", "long");
 
@@ -161,13 +170,14 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
     @Override
     public boolean validate(Context<T> context) throws ReaderException {
-        var particle = context.script().particle();
-        if (context.script().origin() == null) {
+        var script = context.script();
+        var particle = script.particle();
+        if (script.origin() == null) {
             error(context.effect(), context.type(), context.line(), "You must define an 'origin' value (" + Stream.of(ParticleOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
             return false;
         }
 
-        var colorData = context.script().colorData();
+        var colorData = script.colorData();
         if (particle.hasProperty(ParticleEffect.Property.DUST) && colorData == null) {
             error(context.effect(), context.type(), context.line(), "You must define a 'color' value");
             return false;

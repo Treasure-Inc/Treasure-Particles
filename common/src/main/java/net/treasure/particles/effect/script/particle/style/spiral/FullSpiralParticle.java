@@ -11,14 +11,13 @@ import net.treasure.particles.effect.script.argument.type.DoubleArgument;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +43,8 @@ public class FullSpiralParticle extends ParticleSpawner {
                               VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                               ColorData colorData, Object particleData,
                               IntArgument amount, RangeArgument speed, RangeArgument size,
-                              boolean directional, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directional, longDistance);
+                              boolean directionalX, boolean directionalY, boolean longDistance) {
+        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
         this.radius = radius;
         this.spirals = spirals;
         this.steps = steps;
@@ -94,7 +93,7 @@ public class FullSpiralParticle extends ParticleSpawner {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directional, longDistance
+                directionalX, directionalY, longDistance
         );
     }
 }
