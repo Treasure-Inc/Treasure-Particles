@@ -158,23 +158,7 @@ public class EffectManager implements DataHolder {
             loadEffects();
             runTask();
         }
-        Bukkit.getScheduler().runTaskLater(TreasureParticles.getPlugin(), () -> {
-            var data = staticEffects.loadAll();
-            for (var entry : data.entrySet()) {
-                var effect = get(entry.getValue().getKey());
-                if (effect == null) {
-                    ComponentLogger.error(staticEffects.getGenerator(), "Unknown static(" + entry.getKey() + ") effect: " + entry.getValue().getKey());
-                    continue;
-                }
-                if (!effect.isStaticSupported()) {
-                    ComponentLogger.error(staticEffects.getGenerator(), "This effect does not support static(" + entry.getKey() + "): " + entry.getValue().getKey());
-                    continue;
-                }
-                var d = new LocationEffectData(entry.getKey(), entry.getValue().getValue());
-                d.setCurrentEffect(effect);
-                this.data.put(entry.getKey(), d);
-            }
-        }, 20);
+        loadStatics();
     }
 
     public void runTask() {
@@ -193,6 +177,26 @@ public class EffectManager implements DataHolder {
 
     public boolean has(String key) {
         return effects.stream().anyMatch(effect -> effect.getKey().equals(key));
+    }
+
+    public void loadStatics() {
+        Bukkit.getScheduler().runTaskLater(TreasureParticles.getPlugin(), () -> {
+            var data = staticEffects.loadAll();
+            for (var entry : data.entrySet()) {
+                var effect = get(entry.getValue().getKey());
+                if (effect == null) {
+                    ComponentLogger.error(staticEffects.getGenerator(), "Unknown static(" + entry.getKey() + ") effect: " + entry.getValue().getKey());
+                    continue;
+                }
+                if (!effect.isStaticSupported()) {
+                    ComponentLogger.error(staticEffects.getGenerator(), "This effect does not support static(" + entry.getKey() + "): " + entry.getValue().getKey());
+                    continue;
+                }
+                var d = new LocationEffectData(entry.getKey(), entry.getValue().getValue());
+                d.setCurrentEffect(effect);
+                this.data.put(entry.getKey(), d);
+            }
+        }, 20);
     }
 
     public void loadEffects() {
@@ -332,6 +336,8 @@ public class EffectManager implements DataHolder {
                 ComponentLogger.log("Couldn't load effect: " + key, e);
             }
         }
+
+        loadStatics();
     }
 
     public void registerReader(DefaultReader<?> reader, String... aliases) {
