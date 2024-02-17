@@ -148,7 +148,7 @@ public class MainCommand extends BaseCommand {
     @Subcommand("static start")
     @CommandCompletion("<id> @static_effects")
     @CommandPermission(Permissions.COMMAND_ADMIN)
-    public void startStaticEffect(Player player, String id, @Name("%effect") String key) {
+    public void startStaticEffect(Player player, String id, @Single @Name("%effect") String key) {
         if (effectManager.getData().containsKey(id)) {
             MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_EXISTS);
             return;
@@ -215,7 +215,7 @@ public class MainCommand extends BaseCommand {
     @Subcommand("static update")
     @CommandCompletion("@static_ids @static_effects")
     @CommandPermission(Permissions.COMMAND_ADMIN)
-    public void updateStaticEffect(Player player, String id, @Name("%effect") String key) {
+    public void updateStaticEffect(Player player, String id, @Single @Name("%effect") String key) {
         var d = effectManager.getData().get(id);
         if (!(d instanceof LocationEffectData data)) {
             MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_UNKNOWN);

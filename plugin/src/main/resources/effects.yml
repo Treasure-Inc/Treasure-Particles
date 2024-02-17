@@ -255,6 +255,10 @@ effects:
         event: STANDING
         scripts:
           - multi-spiral [effect=minecraft:dust,vertical=true,steps=45,size=2,spirals=3,radius=1.25,pos={y=1},origin=feet,color={name=rainbow;revert=true;speed=0.75}]
+      static:
+        event: STATIC
+        scripts:
+          - multi-spiral [effect=minecraft:dust,directional=true,vertical=true,steps=45,size=2,spirals=3,radius=1.25,pos={y=1},origin=feet,color={name=rainbow;revert=true;speed=0.75}]
   rainbow-atom:
     display-name: "%rainbow-atom%"
     color-animation: "rainbow"
