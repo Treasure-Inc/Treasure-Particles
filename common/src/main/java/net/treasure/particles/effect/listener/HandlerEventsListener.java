@@ -17,8 +17,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.metadata.FixedMetadataValue;
 
 @AllArgsConstructor
@@ -39,6 +41,23 @@ public class HandlerEventsListener implements Listener {
         if (!effect.isOnlyElytra()) return;
         data.setCurrentEffect(null);
     }
+
+    @EventHandler
+    public void on(EntityToggleGlideEvent event) {
+        if (event.isGliding() || !(event.getEntity() instanceof Player player)) return;
+
+        var data = playerManager.getEffectData(player);
+        if (data == null) return;
+
+        var effect = data.getCurrentEffect();
+        if (effect == null) return;
+
+        if (!effect.isOnlyElytra()) return;
+        var chestplate = player.getInventory().getChestplate();
+        if (chestplate == null || chestplate.getType() != Material.ELYTRA || (chestplate instanceof Damageable damageable && damageable.getDamage() >= chestplate.getType().getMaxDurability()))
+            data.setCurrentEffect(null);
+    }
+
 
     @EventHandler
     public void on(EntityDamageEvent event) {
