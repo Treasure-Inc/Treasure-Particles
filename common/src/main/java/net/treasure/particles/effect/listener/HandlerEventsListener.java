@@ -1,5 +1,6 @@
 package net.treasure.particles.effect.listener;
 
+import com.jeff_media.armorequipevent.ArmorEquipEvent;
 import lombok.AllArgsConstructor;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.constants.Keys;
@@ -26,6 +27,20 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class HandlerEventsListener implements Listener {
 
     private final PlayerManager playerManager;
+
+    @EventHandler
+    public void on(ArmorEquipEvent event) {
+        if (event.getOldArmorPiece() == null || event.getOldArmorPiece().getType() != Material.ELYTRA) return;
+
+        var data = playerManager.getEffectData(event.getPlayer());
+        if (data == null) return;
+
+        var effect = data.getCurrentEffect();
+        if (effect == null) return;
+
+        if (!effect.isOnlyElytra()) return;
+        data.setCurrentEffect(null);
+    }
 
     @EventHandler
     public void on(EntityToggleGlideEvent event) {
