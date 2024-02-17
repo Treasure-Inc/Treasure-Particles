@@ -76,7 +76,8 @@ public class PlayerEffectData extends EffectData {
     }
 
     public boolean checkElytra(Effect effect) {
-        return effect == null || !effect.isOnlyElytra() || (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType() == Material.ELYTRA);
+        var chestplate = player.getInventory().getChestplate();
+        return effect == null || !effect.isOnlyElytra() || (chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() < Material.ELYTRA.getMaxDurability() - 1);
     }
 
     // Moving
