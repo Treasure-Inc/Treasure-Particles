@@ -142,7 +142,6 @@ public class EffectManager implements DataHolder {
             if (!presets.initialize()) return false;
             var config = generator.generate();
             if (config == null) return false;
-            staticEffects.loadAll();
         } catch (Exception e) {
             ComponentLogger.log("Couldn't load/create effects.yml", e);
             return false;
