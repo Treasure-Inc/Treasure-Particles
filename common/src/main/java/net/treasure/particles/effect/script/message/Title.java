@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.util.message.MessageUtils;
-import org.bukkit.entity.Player;
 
 @AllArgsConstructor
 @Builder
@@ -18,8 +18,9 @@ public class Title extends Script {
     private int fadeIn, stay, fadeOut;
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        MessageUtils.sendTitleParsed(player, data.replaceVariables(effect, title), data.replaceVariables(effect, subtitle), fadeIn, stay, fadeOut);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        if (data instanceof PlayerEffectData playerEffectData)
+            MessageUtils.sendTitleParsed(playerEffectData.player, data.replaceVariables(effect, title), data.replaceVariables(effect, subtitle), fadeIn, stay, fadeOut);
         return TickResult.NORMAL;
     }
 

@@ -50,11 +50,15 @@ public class GUIElements {
             if (section == null) return defaultValue;
             //noinspection ConstantConditions
             var material = Material.getMaterial(section.getString("material", "AIR").toUpperCase(Locale.ENGLISH));
+            var playerHeadName = section.getString("player-head-name");
+            var playerHeadTexture = section.getString("player-head-texture");
             var customModelData = section.getInt("custom-model-data", 0);
             var amount = section.getInt("amount", 1);
             var glow = section.getBoolean("glow", false);
             return new CustomItem(material)
                     .setAmount(amount)
+                    .setPlayerHeadName(playerHeadName)
+                    .setPlayerHeadTexture(playerHeadTexture)
                     .setCustomModelData(customModelData)
                     .glow(glow)
                     .build();

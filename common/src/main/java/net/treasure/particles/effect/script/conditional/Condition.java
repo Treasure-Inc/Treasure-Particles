@@ -5,7 +5,6 @@ import lombok.ToString;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.util.math.MathUtils;
-import org.bukkit.entity.Player;
 
 @Getter
 @ToString
@@ -28,7 +27,7 @@ public class Condition implements Predicate {
     }
 
     @Override
-    public boolean test(Player player, Effect effect, EffectData data) {
+    public boolean test(Effect effect, EffectData data) {
         if (data == null)
             return defaultValue;
         double current;

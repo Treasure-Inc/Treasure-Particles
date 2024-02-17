@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.treasure.particles.color.data.ColorData;
 import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
@@ -55,37 +56,39 @@ public class Parkour extends Script {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        if (!(data instanceof PlayerEffectData playerEffectData)) return TickResult.NORMAL;
+        var player = playerEffectData.player;
         if (lastSpawned == -5) {
-            var interval = this.interval.get(player, this, data);
+            var interval = this.interval.get(this, data);
             if (!TimeKeeper.isElapsed(interval)) return TickResult.NORMAL;
             if (configure != null)
-                configure.tick(player, data, event, times);
+                configure.tick(data, event, times);
             lastSpawned = System.currentTimeMillis();
             style.colorData(standby);
-            context = style.sendParticles(player, data, event, p -> p.equals(player));
+            context = style.sendParticles(data, event, p -> p.equals(player));
             if (context == null) return TickResult.NORMAL;
             if (whenSpawned != null)
-                whenSpawned.tick(player, data, event, times);
+                whenSpawned.tick(data, event, times);
             if (freshStart && whenStarted != null)
-                whenStarted.tick(player, data, event, times);
+                whenStarted.tick(data, event, times);
             freshStart = false;
             return TickResult.NORMAL;
         }
 
         if (context == null) return TickResult.NORMAL;
 
-        var duration = this.duration.get(player, this, data);
+        var duration = this.duration.get(this, data);
         var timeLeft = duration * 1000L - (System.currentTimeMillis() - lastSpawned);
 
         if (timeLeft < 0) {
             if (!completed && timeLeft > -5000L) {
                 if (!scriptExecuted && whenFailed != null) {
                     scriptExecuted = true;
-                    whenFailed.tick(player, data, event, times);
+                    whenFailed.tick(data, event, times);
                 }
                 style.colorData(fail);
-                style.sendParticles(player, data, context);
+                style.sendParticles(data, context);
                 return TickResult.NORMAL;
             }
             freshStart = true;
@@ -93,13 +96,13 @@ public class Parkour extends Script {
             return TickResult.NORMAL;
         }
 
-        var radius = style.radius().get(player, this, data);
+        var radius = style.radius().get(this, data);
         if (!completed && isOnCircle(player, radius)) {
             style.colorData(success);
             if (!completed && whenSucceeded != null) {
-                whenSucceeded.tick(player, data, event, times);
+                whenSucceeded.tick(data, event, times);
                 if (immediate) {
-                    style.sendParticles(player, data, context);
+                    style.sendParticles(data, context);
                     reset();
                     return TickResult.NORMAL;
                 }
@@ -107,7 +110,7 @@ public class Parkour extends Script {
             completed = true;
         }
 
-        style.sendParticles(player, data, context);
+        style.sendParticles(data, context);
         return TickResult.NORMAL;
     }
 

@@ -5,7 +5,6 @@ import lombok.Getter;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.Script;
-import org.bukkit.entity.Player;
 
 @AllArgsConstructor
 @Getter
@@ -15,12 +14,12 @@ public class ConditionalScript extends Script {
     private Script firstExpression, secondExpression;
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        boolean success = parent.test(player, effect, data);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        boolean success = parent.test(effect, data);
         if (success)
-            return firstExpression.tick(player, data, event, times);
+            return firstExpression.tick(data, event, times);
         else
-            return secondExpression.tick(player, data, event, times);
+            return secondExpression.tick(data, event, times);
     }
 
     @Override

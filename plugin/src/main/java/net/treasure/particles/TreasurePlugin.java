@@ -6,6 +6,7 @@ import net.treasure.particles.command.MainCommand;
 import net.treasure.particles.database.DatabaseManager;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.EffectManager;
+import net.treasure.particles.effect.data.LocationEffectData;
 import net.treasure.particles.integration.Expansions;
 import net.treasure.particles.locale.Translations;
 import org.bstats.bukkit.Metrics;
@@ -40,11 +41,13 @@ public class TreasurePlugin extends AbstractTreasurePlugin {
         commandManager.registerCommand(new MainCommand(this));
         var completions = commandManager.getCommandCompletions();
         completions.registerAsyncCompletion("effects", context -> TreasureParticles.getEffectManager().getEffects().stream().map(Effect::getKey).toList());
-        completions.registerAsyncCompletion("groupColors", context -> {
+        completions.registerAsyncCompletion("static_effects", context -> TreasureParticles.getEffectManager().getEffects().stream().filter(Effect::isStaticSupported).map(Effect::getKey).toList());
+        completions.registerAsyncCompletion("group_colors", context -> {
             var key = context.getContextValue(String.class, 1);
             var effect = TreasureParticles.getEffectManager().get(key);
             return effect == null || effect.getColorGroup() == null ? Collections.emptyList() : effect.getColorGroup().getAvailableOptions().stream().map(option -> option.colorScheme().getKey()).toList();
         });
+        completions.registerAsyncCompletion("static_ids", context -> TreasureParticles.getEffectManager().getData().entrySet().stream().filter(entry -> entry.getValue() instanceof LocationEffectData).map(Map.Entry::getKey).toList());
         commandManager.usePerIssuerLocale(false, false);
     }
 

@@ -6,6 +6,7 @@ import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.group.ColorGroup;
 import net.treasure.particles.constants.Patterns;
 import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.EmptyEffectData;
 import net.treasure.particles.effect.exception.ReaderException;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.handler.TickHandler;
@@ -51,6 +52,7 @@ public class Effect {
     private final ColorGroup colorGroup;
 
     private final EnumSet<HandlerEvent> events;
+    private boolean staticSupported;
 
     public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup) {
         this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup);
@@ -78,6 +80,9 @@ public class Effect {
             this.tickHandlers.add(handler);
             if (handler.event != null)
                 events.add(handler.event);
+
+            if (handler.event == null || handler.event == HandlerEvent.STATIC)
+                staticSupported = true;
         }
     }
 
@@ -116,7 +121,7 @@ public class Effect {
         }
 
         var translations = TreasureParticles.getTranslations();
-
+        var events = this.events.stream().filter(event -> event != HandlerEvent.STATIC).toList();
         if (events.isEmpty()) return;
         var old = this.description;
 
@@ -145,7 +150,7 @@ public class Effect {
     }
 
     public void preTick() {
-        var data = new EffectData(new ArrayList<>(variables));
+        var data = new EmptyEffectData(new ArrayList<>(variables));
 
         for (var tickHandler : tickHandlers) {
             int index = 0;
@@ -208,7 +213,7 @@ public class Effect {
         }
     }
 
-    public void doTick(Player player, EffectData data) {
+    public void doTick(EffectData data) {
         if (interval > 1 && !TimeKeeper.isElapsed(interval)) return;
         var event = data.getCurrentEvent();
         TickHandler last = null;
@@ -229,7 +234,7 @@ public class Effect {
                 for (int i = 0; i < tickHandler.times; i++) {
                     ip.y((double) i);
                     for (var script : tickHandler.lines) {
-                        var result = script.doTick(player, data, event, i);
+                        var result = script.doTick(data, event, i);
                         if (result == TickResult.BREAK)
                             break;
                         else if (result == TickResult.BREAK_HANDLER)

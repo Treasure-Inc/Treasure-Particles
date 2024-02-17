@@ -2,7 +2,7 @@ package net.treasure.particles.gui.type.mixer;
 
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.ColorManager;
-import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.mix.MixData;
 import net.treasure.particles.gui.GUIManager;
 import net.treasure.particles.gui.config.ElementType;
@@ -229,7 +229,7 @@ public class MixerGUI extends GUI {
         if (holder.hasAnimation()) GUITask.getPlayers().add(player);
     }
 
-    private static List<ResponseAction> confirmName(EffectData data, StateSnapshot stateSnapshot, MixerHolder holder) {
+    private static List<ResponseAction> confirmName(PlayerEffectData data, StateSnapshot stateSnapshot, MixerHolder holder) {
         if (holder.needsColorGroup()) {
             MessageUtils.sendParsed(data.player, Translations.MIX_FAILED);
             return Collections.singletonList(ResponseAction.close());

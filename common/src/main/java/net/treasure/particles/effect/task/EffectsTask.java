@@ -1,40 +1,47 @@
 package net.treasure.particles.effect.task;
 
 import lombok.AllArgsConstructor;
+import net.treasure.particles.effect.EffectManager;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
-import net.treasure.particles.player.PlayerManager;
 import net.treasure.particles.util.TimeKeeper;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @AllArgsConstructor
 public class EffectsTask extends BukkitRunnable {
 
-    private final PlayerManager playerManager;
+    private final EffectManager effectManager;
 
     @Override
     public void run() {
         TimeKeeper.increaseTime();
-        var iterator = playerManager.getData().entrySet().iterator();
+        var iterator = effectManager.getData().entrySet().iterator();
         while (iterator.hasNext()) {
-            var set = iterator.next();
+            var entry = iterator.next();
+            var data = entry.getValue();
 
-            var data = set.getValue();
-
-            var player = data.player;
-            if (player == null) {
+            var location = data.getLocation();
+            if (location == null) {
                 iterator.remove();
                 continue;
             }
 
             var current = data.getCurrentEffect();
-            if (current == null)
+            if (current == null) {
+                iterator.remove();
                 continue;
+            }
 
             var event = data.getCurrentEvent();
-            if (event == null || !event.isSpecial())
-                data.setCurrentEvent(player.isGliding() ? HandlerEvent.ELYTRA : (player.isSneaking() ? HandlerEvent.SNEAKING : (data.isMoving() ? HandlerEvent.MOVING : HandlerEvent.STANDING)));
-
-            current.doTick(player, data);
+            if (data instanceof PlayerEffectData playerEffectData && (event == null || !event.isSpecial())) {
+                var player = playerEffectData.player;
+                if (player == null) {
+                    iterator.remove();
+                    continue;
+                }
+                data.setCurrentEvent(player.isGliding() ? HandlerEvent.ELYTRA : (player.isSneaking() ? HandlerEvent.SNEAKING : (playerEffectData.isMoving() ? HandlerEvent.MOVING : HandlerEvent.STANDING)));
+            }
+            current.doTick(data);
         }
     }
 }

@@ -7,7 +7,6 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.variable.Variable;
-import org.bukkit.entity.Player;
 
 @AllArgsConstructor
 public class FloatArgument implements ScriptArgument<Float> {
@@ -40,7 +39,7 @@ public class FloatArgument implements ScriptArgument<Float> {
     }
 
     @Override
-    public Float get(Player player, Script script, EffectData data) {
+    public Float get(Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Float f) return f;
         else if (value instanceof String s) return data.getVariable(script.getEffect(), s).y().floatValue();

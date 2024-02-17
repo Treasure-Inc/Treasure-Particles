@@ -10,6 +10,7 @@ import net.treasure.particles.color.data.ColorData;
 import net.treasure.particles.color.data.RandomNoteColorData;
 import net.treasure.particles.color.data.duo.DuoImpl;
 import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
@@ -50,29 +51,40 @@ public class ParticleSpawner extends Script {
     protected boolean longDistance = false;
 
     @Nullable
-    public ParticleContext tick(Player player, EffectData data, HandlerEvent event, boolean configureOffset, boolean rotatePos) {
+    public ParticleContext tick(EffectData data, HandlerEvent event, boolean configureOffset, boolean rotatePos) {
+        Location origin = null;
+        var player = data instanceof PlayerEffectData playerEffectData ? playerEffectData.player : null;
+
         var entity = switch (event) {
+            case STATIC -> {
+                origin = data.getLocation().clone();
+                yield null;
+            }
             case ELYTRA, STANDING, MOVING, SNEAKING, TAKE_DAMAGE -> player;
-            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE -> data.getTargetEntity();
+            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE ->
+                    data instanceof PlayerEffectData playerEffectData ? playerEffectData.getTargetEntity() : null;
         };
-        if (entity == null) return null;
-        var origin = switch (this.origin) {
-            case HEAD -> entity instanceof Player p ? p.getEyeLocation() : entity.getLocation();
-            case FEET -> entity.getLocation();
-            case WORLD -> new Location(entity.getWorld(), 0, 0, 0);
-        };
+        if (entity == null && origin == null) return null;
+
+        if (origin == null)
+            origin = switch (this.origin) {
+                case HEAD -> entity instanceof Player p ? p.getEyeLocation() : entity.getLocation();
+                case FEET -> entity.getLocation();
+                case WORLD -> new Location(entity.getWorld(), 0, 0, 0);
+            };
+
         var direction = origin.getDirection();
 
         if (multiplier != null)
-            origin.add(direction.clone().multiply(multiplier.get(player, this, data)));
+            origin.add(direction.clone().multiply(multiplier.get(this, data)));
 
         var builder = new ParticleBuilder(particle);
 
         if (amount != null)
-            builder.amount(amount.get(player, this, data));
+            builder.amount(amount.get(this, data));
 
         if (speed != null)
-            builder.speed(speed.get(player, this, data));
+            builder.speed(speed.get(this, data));
 
         builder.longDistance(longDistance);
 
@@ -86,7 +98,7 @@ public class ParticleSpawner extends Script {
         var sinY = MathUtils.sin(angleY);
 
         // Position
-        var pos = this.position != null ? this.position.get(player, this, data) : new Vector(0, 0, 0);
+        var pos = this.position != null ? this.position.get(this, data) : new Vector(0, 0, 0);
         if (rotatePos)
             origin.add(rotate(direction, pos, cosP, sinP, cosY, sinY));
         else
@@ -94,7 +106,7 @@ public class ParticleSpawner extends Script {
 
         // Offset
         if (configureOffset) {
-            var offset = this.offset != null ? this.offset.get(player, this, data) : null;
+            var offset = this.offset != null ? this.offset.get(this, data) : null;
             if (offset != null) offset.add(rotate(direction, offset, cosP, sinP, cosY, sinY));
             if (offset != null)
                 builder.offset(offset);
@@ -110,7 +122,7 @@ public class ParticleSpawner extends Script {
         return new ParticleContext(builder, origin, direction, cosP, sinP, cosY, sinY);
     }
 
-    public void updateParticleData(ParticleBuilder builder, Player player, EffectData data) {
+    public void updateParticleData(ParticleBuilder builder, EffectData data) {
         if (particleData != null) {
             builder.data(particleData);
             return;
@@ -123,7 +135,7 @@ public class ParticleSpawner extends Script {
         }
 
         if (particle.hasProperty(ParticleEffect.Property.DUST)) {
-            var size = this.size != null ? this.size.get(player, this, data) : 1;
+            var size = this.size != null ? this.size.get(this, data) : 1;
             if (particle.equals(ParticleEffect.DUST_COLOR_TRANSITION))
                 if (colorData instanceof DuoImpl duo) {
                     var pair = duo.nextDuo();
@@ -170,7 +182,7 @@ public class ParticleSpawner extends Script {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
         return null;
     }
 

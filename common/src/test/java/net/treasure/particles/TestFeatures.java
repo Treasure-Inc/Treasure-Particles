@@ -3,6 +3,7 @@ package net.treasure.particles;
 import com.google.gson.GsonBuilder;
 import net.treasure.particles.constants.Patterns;
 import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.EmptyEffectData;
 import net.treasure.particles.effect.script.conditional.Condition;
 import net.treasure.particles.effect.script.conditional.ConditionGroup;
 import net.treasure.particles.effect.script.conditional.reader.ConditionReader;
@@ -43,7 +44,7 @@ public class TestFeatures {
 //        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
 //        var parent = reader.read(null,"((p==1 && q==1) || (r==0 && s==0))");
         var parent = reader.read(null, null, "({p}/10==15)");
-        System.out.println("Test Result: " + parent.test(null, null, new EffectData(variables)));
+        System.out.println("Test Result: " + parent.test(null, new EmptyEffectData(variables)));
         System.out.println("-----RESULTS " + parent.inner.size());
         var gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(gson.toJson(parent));
@@ -57,7 +58,7 @@ public class TestFeatures {
         parent.conditions.add(new Condition(true));
         parent.conditions.add(new Condition(false));
         parent.operators.add(ConditionGroup.Operator.AND);
-        System.out.println("Result: " + parent.test(null, null, null));
+        System.out.println("Result: " + parent.test(null, null));
     }
 
     @Test
@@ -80,7 +81,7 @@ public class TestFeatures {
         g2.operators.add(ConditionGroup.Operator.OR);
         parent.inner.add(g2);
 
-        System.out.println("-----Result: " + parent.test(null, null, null));
+        System.out.println("-----Result: " + parent.test(null, null));
     }
 
     @Test
@@ -103,7 +104,7 @@ public class TestFeatures {
     public void testReplace() {
         final List<Triplet<String, Double, String>> variables = new ArrayList<>();
         variables.add(new Triplet<>("phase", 150.0547789798, null));
-        EffectData data = new EffectData(variables);
+        EffectData data = new EmptyEffectData(variables);
         System.out.println("Result: " + data.replaceVariables(null, "actionbar {#.##:phase}"));
     }
 

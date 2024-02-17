@@ -9,7 +9,6 @@ import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.type.DoubleArgument;
-import org.bukkit.entity.Player;
 
 @Getter
 @Setter
@@ -26,15 +25,15 @@ public class VariableCycle extends Script {
     boolean forward = true;
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
         var pair = data.getVariable(effect, variable);
         if (pair == null) return TickResult.NORMAL;
 
         var current = pair.y();
 
-        var step = this.step.get(player, this, data);
-        var min = this.min.get(player, this, data);
-        var max = this.max.get(player, this, data);
+        var step = this.step.get(this, data);
+        var min = this.min.get(this, data);
+        var max = this.max.get(this, data);
 
         current += forward ? (step) : (-step);
         if (forward ? current >= max : current <= min) {

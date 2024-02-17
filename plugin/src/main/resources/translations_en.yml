@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.0"
+version: "1.2.1"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -83,6 +83,14 @@ commands:
   mix-selected-other: "<prefix> <green>Mix selected ({0}):<reset> {1}"
   unknown-color-scheme: "<prefix> <red>Unknown color scheme."
   color-scheme-selected: "<prefix> <green>Selected color scheme {0}<green> for the {1}<green> effect."
+  effect-static-start: "<prefix> <green>Started static effect {0}:<reset> {1}"
+  effect-static-not-supported: "<prefix> <red>This effect does not support static."
+  effect-static-exists: "<prefix> <red>There is already a static effect with this id, please type a different id."
+  effect-static-unknown: "<prefix> <red>Unknown static effect id."
+  effect-static-stop: "<prefix> <gray>Stopped static effect {0}."
+  effect-static-tp: "<prefix> <green>Teleported to the static effect {0}."
+  effect-static-tphere: "<prefix> <green>Teleported the static effect {0} to your location."
+  effect-static-update: "<prefix> <gray>Updated static effect {0}:<reset> {1}"
   notifications-toggle: "<prefix> <gray>Notifications: {0}"
   reloading: "<prefix> <yellow>Reloading TreasureParticles"
   reloaded: "<prefix> <green>Reloaded!"
@@ -97,6 +105,7 @@ commands:
     arg-mix-name: "mix-name"
 # Event Names
 events:
+  static: "Static"
   elytra: "Elytra"
   moving: "Moving"
   standing: "Standing"

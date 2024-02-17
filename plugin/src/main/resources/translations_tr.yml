@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.2.0"
+version: "1.2.1"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -83,11 +83,19 @@ commands:
   mix-selected-other: "<prefix> <green>Mix seçildi ({0}):<reset> {1}"
   unknown-color-scheme: "<prefix> <red>Bilinmeyen renk şeması."
   color-scheme-selected: "<prefix> <green>{1}<green> efekti için {0}<green> renk şeması seçildi."
+  effect-static-start: "<prefix> <green>Statik efekt {0} başlatıldı:<reset> {1}"
+  effect-static-not-supported: "<prefix> <red>Bu efekt statik desteklemiyor."
+  effect-static-exists: "<prefix> <red>Bu id ile oluşturulmuş bir statik efekt bulunuyor, lütfen başka bir id gir."
+  effect-static-unknown: "<prefix> <red>Bu isimde bir statik efekt bulunamadı."
+  effect-static-stop: "<prefix> <gray>Statik efekt {0} durduruldu."
+  effect-static-tp: "<prefix> <green>Statik efekt {0}'a ışınlandın."
+  effect-static-tphere: "<prefix> <green>Statik efekt {0} konumuna ışınlandırıldı."
+  effect-static-update: "<prefix> <gray>Static efekt {0} güncellendi:<reset> {1}"
   notifications-toggle: "<prefix> <gray>Bildirimler: {0}"
   reloading: "<prefix> <yellow>TreasureParticles yenileniyor"
   reloaded: "<prefix> <green>Başarıyla yenilendi!"
   args:
-    must-be-a-number: "<prefix> <red>{0} bir sayı değil, lütfen bir sayı girin."
+    must-be-a-number: "<prefix> <red>{0} bir sayı değil, lütfen bir sayı gir."
     username-too-short: "<prefix> <red>Kullanıcı ismi çok kısa, en az 3 karakter olmalı."
     not-a-valid-name: "<prefix> <red>{0} geçerli bir kullanıcı ismi değil."
     no-player-found-server: "<prefix> <red>Sunucuya daha önceden {0} ismiyle eşleşen bir oyuncu katılmamış."
@@ -97,6 +105,7 @@ commands:
     arg-mix-name: "mix-ismi"
 # Event İsimleri
 events:
+  static: "Statik"
   elytra: "Elitra"
   moving: "Hareket Etme"
   standing: "Hareketsiz Durma"
@@ -187,8 +196,8 @@ descriptions:
   christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Yılbaşının harikulade renkleriyle ışılda!"
 # Renk İsimleri
 colors:
-  rainbow: "<rainbow>Rainbow"
-  gradient: "<gradient:#E3DFFF:#937666>Degrade"
+  rainbow: "<rainbow>Rengarenk"
+  gradient: "<gradient:#E3DFFF:#937666>Gradyan"
   red-blue: "<gradient:#FC5C7D:#6A82FB>Kırmızı > Mavi"
   red-yellow-blue: "<gradient:#A23E48:#FF8C42:#6699CC>Kırmızı > Sarı > Mavi"
   red-gold: "<gradient:#d13636:#d16536>Kırmızı > Altın"

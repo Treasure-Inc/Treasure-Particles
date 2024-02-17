@@ -16,6 +16,7 @@ import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.TreasurePlugin;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.EffectManager;
+import net.treasure.particles.effect.data.LocationEffectData;
 import net.treasure.particles.gui.GUIManager;
 import net.treasure.particles.gui.task.GUITask;
 import net.treasure.particles.locale.Locale;
@@ -50,7 +51,7 @@ public class MainCommand extends BaseCommand {
     @CommandPermission(Permissions.COMMAND_BASE)
     public void menu(Player player, @Default("0") @Name("%page") int page) {
         page = Math.max(0, page - 1);
-        int maxPage =  effectManager.getEffects().size() / (guiManager.effectsGUI().getMaxEffects() + 1);
+        int maxPage = effectManager.getEffects().size() / (guiManager.effectsGUI().getMaxEffects() + 1);
         if (page >= maxPage)
             page = maxPage;
         guiManager.effectsGUI().open(player, page);
@@ -140,9 +141,100 @@ public class MainCommand extends BaseCommand {
             MessageUtils.sendParsed(sender, Translations.EFFECT_SELECTED_OTHER, player.getName(), effect.getDisplayName());
     }
 
+    @Subcommand("static start")
+    @CommandCompletion("<id> @static_effects")
+    @CommandPermission(Permissions.COMMAND_ADMIN)
+    public void startStaticEffect(Player player, String id, @Name("%effect") String key) {
+        if (effectManager.getData().containsKey(id)) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_EXISTS);
+            return;
+        }
+
+        var effect = effectManager.get(key);
+        if (effect == null) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_UNKNOWN, key);
+            return;
+        }
+        if (!effect.isStaticSupported()) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_NOT_SUPPORTED, key);
+            return;
+        }
+
+        var data = new LocationEffectData(id, player.getLocation());
+        data.setCurrentEffect(effect);
+
+        MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_START, id, effect.getDisplayName());
+    }
+
+    @Subcommand("static stop")
+    @CommandCompletion("@static_ids")
+    @CommandPermission(Permissions.COMMAND_ADMIN)
+    public void stopStaticEffect(Player player, @Single String id) {
+        var d = effectManager.getData().get(id);
+        if (!(d instanceof LocationEffectData data)) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_UNKNOWN);
+            return;
+        }
+
+        data.stop();
+        MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_STOP, id);
+    }
+
+    @Subcommand("static tp")
+    @CommandCompletion("@static_ids")
+    @CommandPermission(Permissions.COMMAND_ADMIN)
+    public void tpStaticEffect(Player player, @Single String id) {
+        var d = effectManager.getData().get(id);
+        if (!(d instanceof LocationEffectData data)) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_UNKNOWN);
+            return;
+        }
+
+        player.teleport(data.getLocation());
+        MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_TP, id);
+    }
+
+    @Subcommand("static tphere")
+    @CommandCompletion("@static_ids")
+    @CommandPermission(Permissions.COMMAND_ADMIN)
+    public void tphereStaticEffect(Player player, @Single String id) {
+        var d = effectManager.getData().get(id);
+        if (!(d instanceof LocationEffectData data)) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_UNKNOWN);
+            return;
+        }
+
+        data.setLocation(player.getLocation());
+        MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_TPHERE, id);
+    }
+
+    @Subcommand("static update")
+    @CommandCompletion("@static_ids @static_effects")
+    @CommandPermission(Permissions.COMMAND_ADMIN)
+    public void updateStaticEffect(Player player, String id, @Name("%effect") String key) {
+        var d = effectManager.getData().get(id);
+        if (!(d instanceof LocationEffectData data)) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_UNKNOWN);
+            return;
+        }
+
+        var effect = effectManager.get(key);
+        if (effect == null) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_UNKNOWN, key);
+            return;
+        }
+        if (!effect.isStaticSupported()) {
+            MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_NOT_SUPPORTED, key);
+            return;
+        }
+
+        data.setCurrentEffect(effect);
+        MessageUtils.sendParsed(player, Translations.EFFECT_STATIC_UPDATE, id, effect.getDisplayName());
+    }
+
     @Subcommand("random")
-    @CommandPermission(Permissions.COMMAND_BASE)
     @CommandCompletion("* true|false")
+    @CommandPermission(Permissions.COMMAND_BASE)
     public void randomEffect(CommandSender sender, @Optional @CommandPermission(Permissions.COMMAND_ADMIN) OnlinePlayer select, @Optional @Default("false") boolean all) {
         boolean self = select == null || select.player.equals(sender);
         if (self && !(sender instanceof Player)) {
@@ -183,7 +275,7 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("color")
-    @CommandCompletion("@effects @groupColors")
+    @CommandCompletion("@effects @group_colors")
     @CommandPermission(Permissions.COMMAND_BASE)
     public void selectGroupColor(Player player, @Name("%effect") String key, @Single String color) {
         var effect = effectManager.get(key);

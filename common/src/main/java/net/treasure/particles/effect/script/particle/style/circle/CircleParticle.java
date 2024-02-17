@@ -11,8 +11,8 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleContext;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -49,30 +49,30 @@ public class CircleParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        sendParticles(player, data, event, null);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        sendParticles(data, event, null);
         return TickResult.NORMAL;
     }
 
     @Nullable
-    public ParticleContext sendParticles(Player player, EffectData data, HandlerEvent event, Predicate<Player> viewers) {
-        var context = tick(player, data, event, true, false);
+    public ParticleContext sendParticles(EffectData data, HandlerEvent event, Predicate<Player> viewers) {
+        var context = tick(data, event, true, false);
         if (context == null) return null;
 
         if (viewers != null)
             context.builder.viewers(viewers);
 
-        sendParticles(player, data, context);
+        sendParticles(data, context);
         return context;
     }
 
-    public void sendParticles(Player player, EffectData data, ParticleContext context) {
+    public void sendParticles(EffectData data, ParticleContext context) {
         var builder = context.builder;
 
-        var particles = this.particles.get(player, this, data);
-        var radius = this.radius.get(player, this, data);
+        var particles = this.particles.get(this, data);
+        var radius = this.radius.get(this, data);
 
-        updateParticleData(builder, player, data);
+        updateParticleData(builder, data);
 
         List<ParticleBuilder> builders = new ArrayList<>();
 
@@ -81,7 +81,7 @@ public class CircleParticle extends ParticleSpawner {
             var r = s * i;
             builders.add(builder.copy().location(location(context, r, radius, vertical)));
             if (tickData)
-                updateParticleData(builder, player, data);
+                updateParticleData(builder, data);
         }
 
         Particles.send(builders);

@@ -42,10 +42,19 @@ public class ConfigurationGenerator {
     }
 
     public YamlConfiguration generate() {
+        return generate(true);
+    }
+
+    public YamlConfiguration generate(boolean embedded) {
         var file = new File(plugin.getDataFolder(), directory);
         try {
             if (!file.exists())
-                saveResource(false);
+                if (embedded) {
+                    saveResource(false);
+                } else {
+                    file.createNewFile();
+                }
+
             if (!file.exists()) {
                 this.configuration = null;
                 return null;
@@ -55,6 +64,15 @@ public class ConfigurationGenerator {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void save() {
+        if (configuration == null) return;
+        try {
+            configuration.save(new File(plugin.getDataFolder(), fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void reset() {

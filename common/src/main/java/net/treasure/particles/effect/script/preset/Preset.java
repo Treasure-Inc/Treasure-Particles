@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.Script;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -14,9 +13,9 @@ public class Preset extends Script {
     private List<Script> scripts;
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
         for (var script : scripts) {
-            var result = script.tick(player, data, event, times);
+            var result = script.tick(data, event, times);
             if (result != TickResult.NORMAL)
                 return result;
         }

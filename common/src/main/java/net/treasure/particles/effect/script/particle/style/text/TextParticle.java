@@ -10,14 +10,13 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.awt.*;
@@ -71,13 +70,13 @@ public class TextParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var context = tick(player, data, event, true, true);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        var context = tick(data, event, true, true);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
 
-        updateParticleData(builder, player, data);
+        updateParticleData(builder, data);
 
         boolean rY = rotateY != null, rX = rotateX != null;
 
@@ -90,7 +89,7 @@ public class TextParticle extends ParticleSpawner {
             builders.add(builder.copy().location(context.origin.clone().add(v)));
 
             if (tickData)
-                updateParticleData(builder, player, data);
+                updateParticleData(builder, data);
         }
         Particles.send(builders);
         return TickResult.NORMAL;

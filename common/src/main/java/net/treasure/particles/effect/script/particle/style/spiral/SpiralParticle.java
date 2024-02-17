@@ -10,12 +10,11 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
-import org.bukkit.entity.Player;
 
 @Getter
 @Setter
@@ -45,19 +44,19 @@ public class SpiralParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var context = tick(player, data, event, true, false);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        var context = tick(data, event, true, false);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
 
-        var radius = this.radius.get(player, this, data);
-        var steps = this.steps.get(player, this, data);
+        var radius = this.radius.get(this, data);
+        var steps = this.steps.get(this, data);
 
         var r = reverse * (step / steps) * MathUtils.PI2;
         builder.location(location(context, r, radius, vertical));
 
-        updateParticleData(builder, player, data);
+        updateParticleData(builder, data);
 
         step++;
 

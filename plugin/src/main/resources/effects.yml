@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.0"
+version: "1.2.1"
 effects:
   rainbow-circle:
     display-name: "%rainbow-circle%"
@@ -400,9 +400,9 @@ effects:
           - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "var y=({stepY} / {maxStepY}) * 1.5"
           - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
-          - "conditional (playerYaw<45 && playerYaw>-45) ? preset swap-y-z : none"
-          - "conditional ((playerYaw<180 && playerYaw>135) || (playerYaw>-180 && playerYaw<-135)) ? preset swap-y-z : none"
-          - "conditional (playerPitch==-90 || playerPitch==90) ? preset swap-x-y : none"
+          - "conditional (locationYaw<45 && locationYaw>-45) ? preset swap-y-z : none"
+          - "conditional ((locationYaw<180 && locationYaw>135) || (locationYaw>-180 && locationYaw<-135)) ? preset swap-y-z : none"
+          - "conditional (locationPitch==-90 || locationPitch==90) ? preset swap-x-y : none"
           - "particle [effect=minecraft:end_rod,pos={x={y};y={x};z={z}},amount=0,origin=head]"
       standing:
         event: STANDING

@@ -6,7 +6,7 @@ import lombok.Getter;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.scheme.ColorScheme;
 import net.treasure.particles.database.DatabaseManager;
-import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.player.listener.JoinQuitListener;
 import org.bukkit.Bukkit;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class PlayerManager {
 
     @Getter
-    private final ConcurrentHashMap<UUID, EffectData> data;
+    private final ConcurrentHashMap<UUID, PlayerEffectData> data;
     private final Gson gson;
 
     public PlayerManager() {
@@ -35,13 +35,13 @@ public class PlayerManager {
         this.initializePlayer(player, null);
     }
 
-    public void initializePlayer(Player player, Consumer<EffectData> callback) {
+    public void initializePlayer(Player player, Consumer<PlayerEffectData> callback) {
         Bukkit.getScheduler().runTaskAsynchronously(TreasureParticles.getPlugin(), () -> {
             var effectManager = TreasureParticles.getEffectManager();
             var colorManager = TreasureParticles.getColorManager();
             var database = TreasureParticles.getDatabase();
 
-            var data = new EffectData(player);
+            var data = new PlayerEffectData(player);
             this.data.put(player.getUniqueId(), data);
 
             PlayerData playerData = database.get("SELECT `data` FROM `" + DatabaseManager.TABLE + "` WHERE `uuid`=?", rs -> {
@@ -84,11 +84,11 @@ public class PlayerManager {
         });
     }
 
-    public EffectData getEffectData(Player player) {
+    public PlayerEffectData getEffectData(Player player) {
         return getEffectData(player.getUniqueId());
     }
 
-    public EffectData getEffectData(UUID uuid) {
+    public PlayerEffectData getEffectData(UUID uuid) {
         return data.get(uuid);
     }
 
@@ -97,7 +97,7 @@ public class PlayerManager {
         Bukkit.getScheduler().runTaskAsynchronously(TreasureParticles.getPlugin(), () -> save(player, data));
     }
 
-    public void save(Player player, EffectData data) {
+    public void save(Player player, PlayerEffectData data) {
         if (data == null) return;
         Map<String, String> colorPreferences = data.getColorPreferences().entrySet()
                 .stream()

@@ -7,7 +7,6 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.variable.Variable;
 import net.treasure.particles.util.logging.ComponentLogger;
-import org.bukkit.entity.Player;
 
 public class RangeArgument extends FloatArgument {
 
@@ -71,8 +70,8 @@ public class RangeArgument extends FloatArgument {
     }
 
     @Override
-    public Float get(Player player, Script script, EffectData data) {
-        var result = super.get(player, script, data);
+    public Float get(Script script, EffectData data) {
+        var result = super.get(script, data);
         if (max != null && result > max) return max;
         else if (min != null && result < min) return min;
         else return result;

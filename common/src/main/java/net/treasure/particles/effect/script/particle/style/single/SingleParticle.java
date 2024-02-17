@@ -10,11 +10,10 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
-import org.bukkit.entity.Player;
 
 @Getter
 @Setter
@@ -31,14 +30,14 @@ public class SingleParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var context = tick(player, data, event, true, true);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        var context = tick(data, event, true, true);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
         builder.location(context.origin);
 
-        updateParticleData(builder, player, data);
+        updateParticleData(builder, data);
 
         Particles.send(builder);
         return TickResult.NORMAL;

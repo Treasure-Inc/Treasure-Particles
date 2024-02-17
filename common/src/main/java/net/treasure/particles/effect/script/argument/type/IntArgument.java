@@ -7,7 +7,6 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.variable.Variable;
-import org.bukkit.entity.Player;
 
 @AllArgsConstructor
 public class IntArgument implements ScriptArgument<Integer> {
@@ -35,7 +34,7 @@ public class IntArgument implements ScriptArgument<Integer> {
     }
 
     @Override
-    public Integer get(Player player, Script script, EffectData data) {
+    public Integer get(Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Integer i) return i;
         else if (value instanceof String s) return data.getVariable(script.getEffect(), s).y().intValue();

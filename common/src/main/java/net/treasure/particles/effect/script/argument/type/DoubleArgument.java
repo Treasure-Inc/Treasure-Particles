@@ -7,7 +7,6 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.variable.Variable;
-import org.bukkit.entity.Player;
 
 @AllArgsConstructor
 public class DoubleArgument implements ScriptArgument<Double> {
@@ -40,7 +39,7 @@ public class DoubleArgument implements ScriptArgument<Double> {
     }
 
     @Override
-    public Double get(Player player, Script script, EffectData data) {
+    public Double get(Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Double d) return d;
         else if (value instanceof String s) return data.getVariable(script.getEffect(), s).y();

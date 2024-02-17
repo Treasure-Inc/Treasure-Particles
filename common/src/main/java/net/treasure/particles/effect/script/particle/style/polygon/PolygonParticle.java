@@ -10,14 +10,13 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -57,22 +56,22 @@ public class PolygonParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var context = tick(player, data, event, true, false);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        var context = tick(data, event, true, false);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
 
-        var radius = this.radius.get(player, this, data);
+        var radius = this.radius.get(this, data);
 
-        var rotation = this.rotation != null ? this.rotation.get(player, this, data) : null;
+        var rotation = this.rotation != null ? this.rotation.get(this, data) : null;
         var hasRotation = rotation != null;
 
         var angle = hasRotation ? Math.toRadians(rotation) : null;
         var cos = hasRotation ? MathUtils.cos(angle) : null;
         var sin = hasRotation ? MathUtils.sin(angle) : null;
 
-        updateParticleData(builder, player, data);
+        updateParticleData(builder, data);
 
         List<ParticleBuilder> builders = new ArrayList<>();
 
@@ -88,7 +87,7 @@ public class PolygonParticle extends ParticleSpawner {
             builders.add(builder.copy().location(location));
 
             if (tickData)
-                updateParticleData(builder, player, data);
+                updateParticleData(builder, data);
         }
 
         Particles.send(builders);

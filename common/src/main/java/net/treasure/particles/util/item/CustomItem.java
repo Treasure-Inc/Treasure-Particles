@@ -1,5 +1,7 @@
 package net.treasure.particles.util.item;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -7,10 +9,13 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CustomItem {
@@ -148,6 +153,36 @@ public class CustomItem {
         this.i.setItemMeta(meta);
         return this;
     }
+
+    public CustomItem setPlayerHeadName(String name) {
+        if (name == null) return this;
+        var meta = this.i.getItemMeta();
+        if (!(meta instanceof SkullMeta skullMeta)) return this;
+        try {
+            skullMeta.setOwner(name);
+        } catch (Exception ignored) {
+        }
+        this.i.setItemMeta(skullMeta);
+        return this;
+    }
+
+    public CustomItem setPlayerHeadTexture(String texture) {
+        if (texture == null) return this;
+        var meta = this.i.getItemMeta();
+        if (!(meta instanceof SkullMeta skullMeta)) return this;
+        GameProfile profile = new GameProfile(UUID.randomUUID(), "PLAYER");
+        profile.getProperties().put("textures", new Property("textures", texture));
+        try {
+            var setProfile = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
+            setProfile.setAccessible(true);
+            setProfile.invoke(skullMeta, profile);
+        } catch (RuntimeException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException ignored) {
+        }
+        this.i.setItemMeta(skullMeta);
+        return this;
+    }
+
 
     public ItemStack build() {
         return this.i;

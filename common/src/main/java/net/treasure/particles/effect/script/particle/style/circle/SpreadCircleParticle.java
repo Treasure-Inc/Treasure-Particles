@@ -15,7 +15,6 @@ import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -41,21 +40,21 @@ public class SpreadCircleParticle extends CircleParticle {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var context = tick(player, data, event, false, false);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        var context = tick(data, event, false, false);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
 
         // Circle Particle Variables
-        var particles = this.particles.get(player, this, data);
-        var radius = this.radius.get(player, this, data);
+        var particles = this.particles.get(this, data);
+        var radius = this.radius.get(this, data);
 
-        updateParticleData(builder, player, data);
+        updateParticleData(builder, data);
 
         // Spread
-        var offset = this.offset != null ? this.offset.get(player, this, data) : new Vector(0, 0, 0);
-        var spread = this.spread != null ? this.spread.get(player, this, data) : null;
+        var offset = this.offset != null ? this.offset.get(this, data) : new Vector(0, 0, 0);
+        var spread = this.spread != null ? this.spread.get(this, data) : null;
 
         List<ParticleBuilder> builders = new ArrayList<>();
         var p = MathUtils.PI2 / particles;
@@ -79,7 +78,7 @@ public class SpreadCircleParticle extends CircleParticle {
             builders.add(copy);
 
             if (tickData)
-                updateParticleData(builder, player, data);
+                updateParticleData(builder, data);
         }
 
         Particles.send(builders);

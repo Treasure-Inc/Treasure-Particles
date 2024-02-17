@@ -1,15 +1,13 @@
 package net.treasure.particles.effect.handler;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import net.treasure.particles.effect.mix.MixerOptions;
 import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.mix.MixerOptions;
 import net.treasure.particles.effect.script.Script;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class TickHandler {
     // Generic
@@ -28,6 +26,20 @@ public class TickHandler {
 
     // Scripts
     public List<Script> lines;
+
+    public TickHandler(String key, String displayName, int interval, int times, MixerOptions mixerOptions, int maxExecuted, boolean resetEvent, HandlerEvent event) {
+        this.key = key;
+        this.displayName = displayName;
+        this.interval = interval;
+        this.times = times;
+        this.mixerOptions = mixerOptions;
+        this.maxExecuted = maxExecuted;
+        this.resetEvent = resetEvent;
+        this.event = event;
+
+        if (event != null && event.onlyStatic())
+            mixerOptions.isPrivate = true;
+    }
 
     public TickHandler clone() {
         List<Script> copy = new ArrayList<>();

@@ -10,13 +10,12 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
+import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,17 +52,17 @@ public class MultiSpiralParticle extends ParticleSpawner {
     }
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
-        var context = tick(player, data, event, true, false);
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
+        var context = tick(data, event, true, false);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
 
-        var spirals = this.spirals.get(player, this, data);
-        var radius = this.radius.get(player, this, data);
-        var steps = this.steps.get(player, this, data);
+        var spirals = this.spirals.get(this, data);
+        var radius = this.radius.get(this, data);
+        var steps = this.steps.get(this, data);
 
-        updateParticleData(builder, player, data);
+        updateParticleData(builder, data);
 
         List<ParticleBuilder> builders = new ArrayList<>();
 
@@ -74,7 +73,7 @@ public class MultiSpiralParticle extends ParticleSpawner {
             builders.add(builder.copy().location(location(context, r, radius, vertical)));
 
             if (tickData)
-                updateParticleData(builder, player, data);
+                updateParticleData(builder, data);
         }
 
         step++;

@@ -5,6 +5,8 @@ import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.configuration.ConfigurationGenerator;
 import net.treasure.particles.configuration.DataHolder;
 import net.treasure.particles.constants.Patterns;
+import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.LocationEffectData;
 import net.treasure.particles.effect.exception.ReaderException;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.handler.TickHandler;
@@ -50,24 +52,32 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class EffectManager implements DataHolder {
 
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.2.1";
+
+    private final ConcurrentHashMap<String, EffectData> data;
 
     private final ConfigurationGenerator generator;
     private final List<Effect> effects;
-    private final Presets presets;
     private final HashMap<String, DefaultReader<?>> readers;
+
+    private final Presets presets;
+    private final StaticEffects staticEffects;
 
     private int effectsTaskId = -5;
 
     public EffectManager() {
         this.generator = new ConfigurationGenerator("effects.yml");
         this.effects = new ArrayList<>();
-        this.presets = new Presets();
         this.readers = new HashMap<>();
+        this.data = new ConcurrentHashMap<>();
+
+        this.presets = new Presets();
+        this.staticEffects = new StaticEffects();
 
         // Register listeners
         var pm = Bukkit.getPluginManager();
@@ -130,6 +140,7 @@ public class EffectManager implements DataHolder {
             if (!presets.initialize()) return false;
             var config = generator.generate();
             if (config == null) return false;
+            staticEffects.loadAll();
         } catch (Exception e) {
             ComponentLogger.log("Couldn't load/create effects.yml", e);
             return false;
@@ -139,15 +150,33 @@ public class EffectManager implements DataHolder {
 
     @Override
     public void reload() {
+        data.values().removeIf(d -> d instanceof LocationEffectData);
         effects.clear();
         if (initialize()) {
             loadEffects();
             runTask();
         }
+        Bukkit.getScheduler().runTaskLater(TreasureParticles.getPlugin(), () -> {
+            var data = staticEffects.loadAll();
+            for (var entry : data.entrySet()) {
+                var effect = get(entry.getValue().getKey());
+                if (effect == null) {
+                    ComponentLogger.error(staticEffects.getGenerator(), "Unknown static(" + entry.getKey() + ") effect: " + entry.getValue().getKey());
+                    continue;
+                }
+                if (!effect.isStaticSupported()) {
+                    ComponentLogger.error(staticEffects.getGenerator(), "This effect does not support static(" + entry.getKey() + "): " + entry.getValue().getKey());
+                    continue;
+                }
+                var d = new LocationEffectData(entry.getKey(), entry.getValue().getValue());
+                d.setCurrentEffect(effect);
+                this.data.put(entry.getKey(), d);
+            }
+        }, 20);
     }
 
     public void runTask() {
-        var task = new EffectsTask(TreasureParticles.getPlayerManager());
+        var task = new EffectsTask(this);
         task.runTaskTimerAsynchronously(TreasureParticles.getPlugin(), 5, 1);
         effectsTaskId = task.getTaskId();
     }

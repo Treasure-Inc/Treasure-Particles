@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Translations implements DataHolder {
 
     public static String LOCALE;
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.2.1";
 
     private FileConfiguration config;
     @Getter
@@ -110,6 +110,14 @@ public class Translations implements DataHolder {
             MIX_SELECTED_OTHER,
             UNKNOWN_COLOR_SCHEME,
             COLOR_SCHEME_SELECTED,
+            EFFECT_STATIC_START,
+            EFFECT_STATIC_NOT_SUPPORTED,
+            EFFECT_STATIC_EXISTS,
+            EFFECT_STATIC_UNKNOWN,
+            EFFECT_STATIC_STOP,
+            EFFECT_STATIC_TP,
+            EFFECT_STATIC_TPHERE,
+            EFFECT_STATIC_UPDATE,
             NOTIFICATIONS_TOGGLE,
             RELOADING,
             RELOADED;
@@ -265,10 +273,19 @@ public class Translations implements DataHolder {
         MIX_SELECTED_OTHER = load("commands.mix-selected-other", "<prefix> <green>Mix selected ({0}):<reset> {1}");
         UNKNOWN_COLOR_SCHEME = load("commands.unknown-color-scheme", "<prefix> <red>Unknown color scheme.");
         COLOR_SCHEME_SELECTED = load("commands.color-scheme-selected", "<prefix> <green>Selected color scheme {0} for the {1} effect.");
+        //-Static Effects
+        EFFECT_STATIC_START = load("commands.effect-static-start", "<prefix> <green>Started static effect {0}:<reset> {1}");
+        EFFECT_STATIC_NOT_SUPPORTED = load("commands.effect-static-not-supported", "<prefix> <red>This effect does not support static.");
+        EFFECT_STATIC_EXISTS = load("commands.effect-static-exists", "<prefix> <red>There is already a static effect with this id, please type a different id.");
+        EFFECT_STATIC_UNKNOWN = load("commands.effect-static-unknown", "<prefix> <red>Unknown static effect id.");
+        EFFECT_STATIC_STOP = load("commands.effect-static-stop", "<prefix> <gray>Stopped static effect {0}.");
+        EFFECT_STATIC_TP = load("commands.effect-static-tp", "<prefix> <green>Teleported to the static effect {0}.");
+        EFFECT_STATIC_TPHERE = load("commands.effect-static-tphere", "<prefix> <green>Teleported the static effect {0} to your location.");
+        EFFECT_STATIC_UPDATE = load("commands.effect-static-update", "<prefix> <gray>Updated static effect {0}:<reset> {1}");
         NOTIFICATIONS_TOGGLE = load("commands.notifications-toggle", "<prefix> <gray>Notifications: {0}");
         RELOADING = load("commands.reloading", "<prefix> <yellow>Reloading TreasureParticles");
         RELOADED = load("commands.reloaded", "<prefix> <green>Reloaded!");
-        // Args
+        //-Args
         ARGS_MUST_BE_A_NUMBER = load("commands.args.must-be-a-number", "<prefix> <red>{0} must be a number.");
         ARGS_USERNAME_TOO_SHORT = load("commands.args.username-too-short", "<prefix> <red>Username too short, must be at least three characters.");
         ARGS_NOT_A_VALID_NAME = load("commands.args.not-a-valid-name", "<prefix> <red>{0} is not a valid username.");

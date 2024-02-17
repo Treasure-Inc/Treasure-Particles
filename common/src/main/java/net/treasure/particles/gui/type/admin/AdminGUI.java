@@ -47,7 +47,17 @@ public class AdminGUI extends GUI {
         var maxEffects = effectSlots.length;
 
         // Effects
-        var effects = effectManager.getEffects().stream().filter(effect -> filterCategory == null || ((filterEvent == null || effect.getEvents().contains(filterEvent)) && (filterCategory == FilterCategory.SUPPORTED_EVENTS || (filterCategory == FilterCategory.HAS_PERMISSION && effect.getPermission() != null) || (filterCategory == FilterCategory.NO_PERMISSION && effect.getPermission() == null)))).toList();
+        var effects = effectManager.getEffects()
+                .stream()
+                .filter(effect -> filterCategory == null || (
+                                (filterEvent == null || effect.getEvents().contains(filterEvent)) && (
+                                        filterCategory == FilterCategory.SUPPORTED_EVENTS ||
+                                                (filterCategory == FilterCategory.HAS_PERMISSION && effect.getPermission() != null) ||
+                                                (filterCategory == FilterCategory.NO_PERMISSION && effect.getPermission() == null) ||
+                                                (filterCategory == FilterCategory.STATIC_SUPPORTED && effect.isStaticSupported())
+                                )
+                        )
+                ).toList();
 
         // Create inventory
         var holder = new AdminHolder(filterCategory, filterEvent);
@@ -112,7 +122,8 @@ public class AdminGUI extends GUI {
                     .addLore(
                             MessageUtils.gui("<gray>Permission: <yellow>" + (effect.getPermission() == null ? "None" : effect.getPermission())),
                             MessageUtils.gui("<gray>Caching: <yellow>" + (effect.isCachingEnabled() ? "Enabled" : "Disabled")),
-                            MessageUtils.gui("<gray>Interval: <yellow>" + effect.getInterval())
+                            MessageUtils.gui("<gray>Interval: <yellow>" + effect.getInterval()),
+                            MessageUtils.gui("<gray>Static Supported: <yellow>" + effect.isStaticSupported())
                     )
                     .addLore(colorGroup != null ? MessageUtils.gui("<gray>Color Group: <yellow>" + colorGroup.getKey()) : null)
                     .changeArmorColor(color)

@@ -28,7 +28,7 @@ public class Variable extends Script implements Cached {
     protected final String eval;
 
     @Override
-    public TickResult tick(Player player, EffectData data, HandlerEvent event, int times) {
+    public TickResult tick(EffectData data, HandlerEvent event, int times) {
         var pair = data.getVariable(effect, variable);
         if (pair == null) return TickResult.NORMAL;
         if (effect.isCachingEnabled()) {

@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 public enum FilterCategory {
     HAS_PERMISSION("Has Permission"),
     NO_PERMISSION("No Permission"),
-    SUPPORTED_EVENTS("Supported Events");
+    SUPPORTED_EVENTS("Supported Events"),
+    STATIC_SUPPORTED("Static Supported");
     private final String translation;
 }

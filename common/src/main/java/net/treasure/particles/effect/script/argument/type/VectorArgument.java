@@ -8,7 +8,6 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.util.logging.ComponentLogger;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @AllArgsConstructor
@@ -41,7 +40,7 @@ public class VectorArgument implements ScriptArgument<Vector> {
     }
 
     @Override
-    public Vector get(Player player, Script script, EffectData data) {
+    public Vector get(Script script, EffectData data) {
         double x = 0, y = 0, z = 0;
 
         var effect = script.getEffect();

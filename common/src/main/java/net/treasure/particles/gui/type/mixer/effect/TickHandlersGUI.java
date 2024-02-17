@@ -2,7 +2,7 @@ package net.treasure.particles.gui.type.mixer.effect;
 
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.effect.Effect;
-import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.gui.GUIManager;
 import net.treasure.particles.gui.config.GUIElements;
@@ -38,7 +38,7 @@ public class TickHandlersGUI {
         }
     }
 
-    public static void open(EffectData data, MixerHolder mixerHolder, Effect effect) {
+    public static void open(PlayerEffectData data, MixerHolder mixerHolder, Effect effect) {
         // Variables
         var player = data.player;
         var handlers = effect.mixerCompatibleTickHandlers(mixerHolder);
