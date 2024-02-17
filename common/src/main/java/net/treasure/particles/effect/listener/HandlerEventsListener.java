@@ -54,7 +54,7 @@ public class HandlerEventsListener implements Listener {
 
         if (!effect.isOnlyElytra()) return;
         var chestplate = player.getInventory().getChestplate();
-        if (chestplate == null || chestplate.getType() != Material.ELYTRA || (chestplate instanceof Damageable damageable && damageable.getDamage() >= chestplate.getType().getMaxDurability()))
+        if (chestplate == null || chestplate.getType() != Material.ELYTRA || (chestplate instanceof Damageable damageable && damageable.getDamage() >= chestplate.getType().getMaxDurability() - 1))
             data.setCurrentEffect(null);
     }
 
