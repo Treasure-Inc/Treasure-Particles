@@ -1,6 +1,5 @@
 package net.treasure.particles.effect;
 
-import com.jeff_media.armorequipevent.ArmorEquipEvent;
 import lombok.Getter;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.configuration.ConfigurationGenerator;
@@ -81,7 +80,6 @@ public class EffectManager implements DataHolder {
         this.staticEffects = new StaticEffects();
 
         // Register listeners
-        ArmorEquipEvent.registerListener(TreasureParticles.getPlugin());
         var pm = Bukkit.getPluginManager();
         pm.registerEvents(new HandlerEventsListener(TreasureParticles.getPlayerManager()), TreasureParticles.getPlugin());
         if (TreasureParticles.isPaper())

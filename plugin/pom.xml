@@ -73,10 +73,6 @@
                             <pattern>net.wesjd.anvilgui</pattern>
                             <shadedPattern>net.treasure.shaded.anvilgui</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>com.jeff_media.armorequipevent</pattern>
-                            <shadedPattern>net.treasure.shaded.armorequipevent</shadedPattern>
-                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
