@@ -108,7 +108,7 @@ effects:
       static:
         event: STATIC
         scripts:
-          - spiral [effect=minecraft:dust,steps=60,size=2,radius=0.75,origin=head,color={name=rainbow;revert=true;speed=0.5}]
+          - spiral [effect=minecraft:dust,steps=40,size=2,origin=head,color={name=rainbow;revert=true;speed=0.5}]
   rainbow-trig:
     display-name: "%rainbow-trig%"
     color-animation: "rainbow"
