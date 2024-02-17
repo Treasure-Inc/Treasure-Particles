@@ -45,7 +45,7 @@ public abstract class EffectData {
         return currentEffect != null;
     }
 
-    public void setCurrentEffect(Effect currentEffect) {
+    public boolean setCurrentEffect(Effect currentEffect) {
         this.resetEvent();
 
         this.currentEffect = currentEffect;
@@ -53,7 +53,7 @@ public abstract class EffectData {
         if (currentEffect == null) {
             this.variables = null;
             this.tickHandlers = null;
-            return;
+            return true;
         }
 
         if (currentEffect.getColorGroup() != null && getColorPreference(currentEffect) == null)
@@ -61,6 +61,7 @@ public abstract class EffectData {
         currentEffect.initialize(this);
 
         TreasureParticles.getEffectManager().getData().put(getId(), this);
+        return true;
     }
 
     public void setColorPreference(Effect effect, ColorScheme scheme) {

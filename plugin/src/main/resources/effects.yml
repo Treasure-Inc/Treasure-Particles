@@ -30,6 +30,11 @@ effects:
           private: true
         scripts:
           - var y=0
+      static:
+        event: STATIC
+        scripts:
+          - circle [effect=minecraft:dust,directional=false,vertical=false,origin=feet,pos={y={y}},color={name=rainbow;speed=0.75}]
+          - var-c [variable=y,max=1.75,min=0,step=0.1]
   rainbow-circle-transition:
     display-name: "%rainbow-circle-transition%"
     color-animation: "rainbow"
@@ -100,6 +105,10 @@ effects:
         event: STANDING
         scripts:
           - spiral [effect=minecraft:dust,steps=60,size=2,radius=0.75,origin=head,color={name=rainbow;revert=true;speed=0.5}]
+      static:
+        event: STATIC
+        scripts:
+          - spiral [effect=minecraft:dust,steps=60,size=2,radius=0.75,origin=head,color={name=rainbow;revert=true;speed=0.5}]
   rainbow-trig:
     display-name: "%rainbow-trig%"
     color-animation: "rainbow"
@@ -131,6 +140,10 @@ effects:
           private: true
         scripts:
           - var-c [variable=r,min=0,max=360,step=2,revert=false]
+      static:
+        event: STATIC
+        scripts:
+          - polygon [effect=minecraft:dust,vertical=false,rotation={r},step=0.2,points=3,radius=1.5,origin=feet,color={name=rainbow;speed=0.25}]
   rainbow-rect:
     display-name: "%rainbow-rect%"
     color-animation: "rainbow"
@@ -162,6 +175,10 @@ effects:
           private: true
         scripts:
           - var-c [variable=r,min=0,max=360,step=4,revert=false]
+      static:
+        event: STATIC
+        scripts:
+          - polygon [effect=minecraft:dust,rotation={r},step=0.2,points=4,radius=1.5,origin=feet,color={name=rainbow;speed=0.25}]
   rainbow-dots:
     display-name: "%rainbow-dots%"
     color-animation: "rainbow"
@@ -216,6 +233,10 @@ effects:
         event: MOVING
         scripts:
           - particle [effect=minecraft:note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=head,pos={y=0.75}]
+      static:
+        event: STATIC
+        scripts:
+          - particle [effect=minecraft:note,color={name=rainbow;speed=0.5;note=true},amount=0,origin=feet]
   rainbow-wreath:
     display-name: "%rainbow-wreath%"
     color-animation: "rainbow"
@@ -260,6 +281,10 @@ effects:
         scripts:
           - var-c [variable=x,min=-1,max=1,step=0.15]
           - var-c [variable=z,min=-1,max=1,step=0.15]
+      static:
+        event: STATIC
+        scripts:
+          - multi-spiral [effect=minecraft:dust,size=1.5,spirals=5,steps=30,pos={x={x};y=0.25;z={z}},origin=feet,color={name=rainbow;speed=0.5}]
   gradient-circle:
     display-name: "%gradient-circle%"
     color-group: "gradients"
@@ -422,6 +447,14 @@ effects:
           - "conditional (stepX>=80) ? var stepX=0 : var stepX+=1"
           - "conditional (reverse==1) ? preset helix-reverse : none"
           - "conditional (reverse==0) ? preset helix-normal : none"
+      static:
+        event: STATIC
+        times: 8
+        scripts:
+          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
+          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "particle [effect=minecraft:end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
   galaxy:
     display-name: "%galaxy%"
     color-animation: "galaxy"
@@ -490,6 +523,11 @@ effects:
           private: true
         scripts:
           - var-c [variable=r,step=0.1,min=0.65,max=1]
+      static:
+        event: STATIC
+        scripts:
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.5},radius={r},amount=3,speed=0,origin=feet]
+          - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.5},radius={r},amount=3,speed=0,reverse=true,origin=feet]
   triangles:
     display-name: "%triangles%"
     color-animation: "triangles"
@@ -526,6 +564,11 @@ effects:
         scripts:
           - var-c [variable=r1,min=0,max=360,step=1]
           - var-c [variable=r2,min=0,max=360,step=1]
+      static:
+        event: STATIC
+        scripts:
+          - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r1},origin=feet,color={name=triangles;speed=0.1;revert=true}]
+          - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r2},origin=feet,color={name=triangles;speed=0.1;revert=true}]
   smoke:
     display-name: "%smoke%"
     color-animation: "smoke"
@@ -540,6 +583,12 @@ effects:
           - single [effect=minecraft:large_smoke,speed=0,pos={y=0.5},origin=head] ~2
       standing:
         event: STANDING
+        scripts:
+          - spiral [effect=minecraft:flame,speed=0,steps=12,radius=0.45,vertical=false,directional=false,pos={y=0.25},origin=head]
+          - spiral [effect=minecraft:small_flame,speed=0,steps=12,radius=0.25,vertical=false,directional=false,pos={y=0.4},origin=head]
+          - single [effect=minecraft:large_smoke,speed=0,pos={y=0.5},origin=head] ~2
+      static:
+        event: STATIC
         scripts:
           - spiral [effect=minecraft:flame,speed=0,steps=12,radius=0.45,vertical=false,directional=false,pos={y=0.25},origin=head]
           - spiral [effect=minecraft:small_flame,speed=0,steps=12,radius=0.25,vertical=false,directional=false,pos={y=0.4},origin=head]
@@ -583,6 +632,10 @@ effects:
         event: STANDING
         scripts:
           - multi-spiral [effect=minecraft:dust,amount=10,tick=true,pos={y=1.5},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
+      static:
+        event: STATIC
+        scripts:
+          - multi-spiral [effect=minecraft:dust,amount=10,tick=true,pos={y=1.5},origin=feet,color={name=gradient-red-yellow-blue;revert=true;speed=0.15}]
   triple-line:
     display-name: "%triple-line%"
     color-animation: "gradient-red-blue"
@@ -613,6 +666,10 @@ effects:
           - full-spiral [effect=minecraft:dust,gap=0.25,vertical=true,direction=true,amount=5,origin=head,color={name=whirl;revert=true;speed=0.05}]
       standing:
         event: STANDING
+        scripts:
+          - full-spiral [effect=minecraft:dust,gap=2,pos={y=1},amount=5,origin=feet,color={name=whirl;revert=true;speed=0.05}]
+      static:
+        event: STATIC
         scripts:
           - full-spiral [effect=minecraft:dust,gap=2,pos={y=1},amount=5,origin=feet,color={name=whirl;revert=true;speed=0.05}]
   tear:
@@ -695,6 +752,11 @@ effects:
         scripts:
           - var-c [variable=size,step=0.25,min=3,max=10]
           - particle [effect=minecraft:sweep_attack,amount=0,speed=1,offset={x={size}},pos={y=0.5},origin=feet]
+      static:
+        event: STATIC
+        scripts:
+          - var-c [variable=size,step=0.1,min=2,max=3]
+          - particle [effect=minecraft:sweep_attack,amount=0,speed=1,offset={x={size}},pos={y=0.5},origin=feet]
   beam:
     display-name: "%beam%"
     color-animation: "#ffd86b"
@@ -755,6 +817,11 @@ effects:
         scripts:
           - circle [effect=minecraft:cloud,radius=0.25,particles=6,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
           - spread [effect=minecraft:falling_water,spread=1,radius=0.25,particles=3,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+      static:
+        event: STATIC
+        scripts:
+          - circle [effect=minecraft:cloud,radius=0.25,particles=6,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+          - spread [effect=minecraft:falling_water,spread=1,radius=0.25,particles=3,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
   snow:
     display-name: "%snow%"
     color-animation: "#ffffff"
@@ -776,6 +843,10 @@ effects:
           - spread [effect=minecraft:snowflake,radius=0.25,particles=12,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
       standing:
         event: STANDING
+        scripts:
+          - spread [effect=minecraft:snowflake,radius=0.25,particles=12,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
+      static:
+        event: STATIC
         scripts:
           - spread [effect=minecraft:snowflake,radius=0.25,particles=12,pos={y=1},amount=0,origin=head,vertical=false,directional=false]
   pulse:
@@ -881,6 +952,21 @@ effects:
           - particle [effect=minecraft:heart,direction=true,origin=feet]
           - particle [effect=minecraft:heart,direction=true,origin=feet,pos={y=-2.25}]
           - var x=-2
+      static:
+        event: STATIC
+        times: 19
+        scripts:
+          - var x+=0.2
+          - var y1=1.75*(1-(abs({x})-1)^2)^1/2
+          - particle [effect=minecraft:heart,direction=true,pos={x={x};y={y1}},origin=feet]
+          - var y2=acos(1-abs({x}))-{PI}+0.55
+          - particle [effect=minecraft:heart,direction=true,pos={x={x};y={y2}},origin=feet]
+      static-check:
+        event: STATIC
+        scripts:
+          - particle [effect=minecraft:heart,direction=true,origin=feet]
+          - particle [effect=minecraft:heart,direction=true,origin=feet,pos={y=-2.25}]
+          - var x=-2
   love-you:
     display-name: "%love-you%"
     color-animation: "heart"
@@ -891,6 +977,10 @@ effects:
         event: ELYTRA
         scripts:
           - text [effect=minecraft:heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=false]
+      static:
+        event: STATIC
+        scripts:
+          - text [effect=minecraft:heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=true]
   red-tail:
     display-name: "%red-tail%"
     color-animation: "#a83252"

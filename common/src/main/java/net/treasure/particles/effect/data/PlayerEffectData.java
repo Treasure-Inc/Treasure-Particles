@@ -3,14 +3,17 @@ package net.treasure.particles.effect.data;
 import lombok.Getter;
 import lombok.Setter;
 import net.treasure.particles.constants.Keys;
+import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.mix.MixData;
 import net.treasure.particles.permission.Permissions;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Setter
 public class PlayerEffectData extends EffectData {
 
+    @NotNull
     public final Player player;
     private boolean notificationsEnabled, effectsEnabled = true;
 
@@ -36,7 +40,7 @@ public class PlayerEffectData extends EffectData {
     // Effect Mix Data
     private List<MixData> mixData = new ArrayList<>();
 
-    public PlayerEffectData(Player player) {
+    public PlayerEffectData(@NotNull Player player) {
         this.player = player;
     }
 
@@ -47,7 +51,7 @@ public class PlayerEffectData extends EffectData {
 
     @Override
     public Location getLocation() {
-        return player == null ? null : player.getLocation();
+        return player.getLocation();
     }
 
     @Override
@@ -55,13 +59,24 @@ public class PlayerEffectData extends EffectData {
         return switch (variable) {
             case "isMoving" -> moving ? 1D : 0D;
             case "isStanding" -> !moving ? 1D : 0D;
-            case "velocityX" -> player == null ? 0 : player.getVelocity().getX();
-            case "velocityY" -> player == null ? 0 : player.getVelocity().getY();
-            case "velocityZ" -> player == null ? 0 : player.getVelocity().getZ();
-            case "velocityLength" -> player == null ? 0 : player.getVelocity().lengthSquared();
+            case "velocityX" -> player.getVelocity().getX();
+            case "velocityY" -> player.getVelocity().getY();
+            case "velocityZ" -> player.getVelocity().getZ();
+            case "velocityLength" -> player.getVelocity().lengthSquared();
             case "lastBoostMillis", "LBM" -> (double) lastBoostMillis;
             default -> null;
         };
+    }
+
+    @Override
+    public boolean setCurrentEffect(Effect currentEffect) {
+        if (!checkElytra(currentEffect))
+            return false;
+        return super.setCurrentEffect(currentEffect);
+    }
+
+    public boolean checkElytra(Effect effect) {
+        return effect == null || !effect.isOnlyElytra() || (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType() == Material.ELYTRA);
     }
 
     // Moving
@@ -100,7 +115,7 @@ public class PlayerEffectData extends EffectData {
 
     // Permissions
     public boolean canSeeEffects() {
-        return player != null && effectsEnabled && (!Permissions.EFFECTS_VISIBILITY_PERMISSION || player.hasPermission(Permissions.CAN_SEE_EFFECTS));
+        return effectsEnabled && (!Permissions.EFFECTS_VISIBILITY_PERMISSION || player.hasPermission(Permissions.CAN_SEE_EFFECTS));
     }
 
     public int getMixLimit() {
@@ -118,7 +133,6 @@ public class PlayerEffectData extends EffectData {
     }
 
     private int getMax(String permission) {
-        if (player == null) return 0;
         if (player.isOp())
             return -1;
 

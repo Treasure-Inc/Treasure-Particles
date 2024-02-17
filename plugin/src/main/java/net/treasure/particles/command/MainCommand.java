@@ -134,7 +134,11 @@ public class MainCommand extends BaseCommand {
             return;
         }
 
-        playerManager.getEffectData(player).setCurrentEffect(effect);
+        if (!playerManager.getEffectData(player).setCurrentEffect(effect)) {
+            MessageUtils.sendParsed(sender, self ? Translations.CANNOT_USE_ONLY_ELYTRA : Translations.CANNOT_USE_ONLY_ELYTRA_OTHER);
+            return;
+        }
+
         MessageUtils.sendParsed(player, Translations.EFFECT_SELECTED, effect.getDisplayName());
 
         if (!self)
@@ -242,15 +246,20 @@ public class MainCommand extends BaseCommand {
             return;
         }
         var player = self ? (Player) sender : select.player;
+        var data = playerManager.getEffectData(player);
 
-        var effects = effectManager.getEffects().stream().filter(effect -> all || effect.canUse(player)).toList();
+        var effects = effectManager.getEffects().stream()
+                .filter(effect -> all || effect.canUse(player))
+                .filter(data::checkElytra)
+                .toList();
+
         if (effects.isEmpty()) {
             MessageUtils.sendParsed(sender, self ? Translations.CANNOT_USE_ANY_EFFECT : Translations.CANNOT_USE_ANY_EFFECT_OTHER);
             return;
         }
 
         var effect = effects.get(new Random().nextInt(effects.size()));
-        playerManager.getEffectData(player).setCurrentEffect(effect);
+        data.setCurrentEffect(effect);
         MessageUtils.sendParsed(player, Translations.EFFECT_SELECTED, effect.getDisplayName());
 
         if (!self)

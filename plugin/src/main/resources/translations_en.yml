@@ -24,6 +24,7 @@ gui:
     reset-effect: "<yellow>Reset Effect"
     current-effect: "<gray>Current Effect: <gold>{0}"
     color-selection-available: "<gray>[Right-Click] You can change the colors of this effect."
+    only-elytra: "<gold>Only works when Elytra is equipped."
     event-type: "<dark_gray>Event Type: {0}"
     event-types: "<dark_gray>Event Types: {0}"
     mixer: "<dark_green>Effect Mixer"
@@ -78,6 +79,8 @@ commands:
   effect-reset-other: "<prefix> <gray>Effects ({0}): <red>OFF"
   cannot-use-any-effect: "<prefix> <red>You cannot use any effect."
   cannot-use-any-effect-other: "<prefix> <red>That player cannot use any effect."
+  cannot-use-only-elytra: "<prefix> <red>You can only use this effect when Elytra is equipped."
+  cannot-use-only-elytra-other: "<prefix> <red>They can only use this effect when Elytra is equipped."
   mix-unknown: "<prefix> <red>Could not find any mix with name {0}.<br><i>You can try typing the mix name without adding spaces. Example: <st>My Mix</st> <b>></b> MyMix"
   mix-selected: "<prefix> <green>Mix selected:<reset> {0}"
   mix-selected-other: "<prefix> <green>Mix selected ({0}):<reset> {1}"
@@ -184,15 +187,10 @@ effects:
   purple-tail: "<#7134eb>Purple Tail"
   blue-tail: "<#2658ad>Blue Tail"
   rainbow-tail: "<rainbow>Rainbow Tail"
-  # Christmas
-  christmas-line: "<#1B512D>Christmas / Line"
-  christmas-circle: "<#6F1D1B>Christmas / Circle"
-  christmas-spiral: "<#e1fce8>Christmas / Spiral"
 # Effects Descriptions
 descriptions:
   seasonal-effect: "<gray>Seasonal Effect"
   featured-behavior: "<gray>Featured Behavior"
-  christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Shine with New Year's colors."
   elytra-boost: "<#ffbc33>Effect changes when boosting elytra with fireworks."
 # Color Names
 colors:

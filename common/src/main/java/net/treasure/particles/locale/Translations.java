@@ -47,6 +47,7 @@ public class Translations implements DataHolder {
             EFFECTS_GUI_RANDOM,
             EFFECTS_GUI_RESET,
             EFFECTS_GUI_CURRENT,
+            EFFECTS_GUI_ONLY_ELYTRA,
             COLOR_SELECTION_AVAILABLE,
             EFFECTS_GUI_EVENT_TYPE,
             EFFECTS_GUI_EVENT_TYPES,
@@ -105,6 +106,8 @@ public class Translations implements DataHolder {
             EFFECT_RESET_OTHER,
             CANNOT_USE_ANY_EFFECT,
             CANNOT_USE_ANY_EFFECT_OTHER,
+            CANNOT_USE_ONLY_ELYTRA,
+            CANNOT_USE_ONLY_ELYTRA_OTHER,
             MIX_UNKNOWN,
             MIX_SELECTED,
             MIX_SELECTED_OTHER,
@@ -210,6 +213,7 @@ public class Translations implements DataHolder {
         EFFECTS_GUI_RANDOM = load("gui.effects-gui.random-effect", "<#87FF65>❤ Select Random Effect");
         EFFECTS_GUI_RESET = load("gui.effects-gui.reset-effect", "<yellow>Reset Effect");
         EFFECTS_GUI_CURRENT = load("gui.effects-gui.current-effect", "<gray>Current Effect: <gold>{0}");
+        EFFECTS_GUI_ONLY_ELYTRA = load("gui.effects-gui.only-elytra", "<gold>Only works when Elytra is equipped.");
         COLOR_SELECTION_AVAILABLE = load("gui.effects-gui.color-selection-available", "<gray>[Right-Click] You can change the colors of this effect.");
         EFFECTS_GUI_EVENT_TYPE = load("gui.effects-gui.event-type", "<dark_gray>Event Type: {0}");
         EFFECTS_GUI_EVENT_TYPES = load("gui.effects-gui.event-types", "<dark_gray>Event Types: {0}");
@@ -268,6 +272,8 @@ public class Translations implements DataHolder {
         EFFECT_RESET_OTHER = load("commands.effect-reset-other", "<prefix> <gray>Effects ({0}): <red>OFF");
         CANNOT_USE_ANY_EFFECT = load("commands.cannot-use-any-effect", "<prefix> <red>You cannot use any effect.");
         CANNOT_USE_ANY_EFFECT_OTHER = load("commands.cannot-use-any-effect-other", "<prefix> <red>That player cannot use any effect.");
+        CANNOT_USE_ONLY_ELYTRA = load("commands.cannot-use-only-elytra", "<prefix> <red>You can only use this effect when Elytra is equipped.");
+        CANNOT_USE_ONLY_ELYTRA_OTHER = load("commands.cannot-use-only-elytra", "<prefix> <red>They can only use this effect when Elytra is equipped.");
         MIX_UNKNOWN = load("commands.mix-unknown", "<prefix> <red>Could not find any mix with name {0}.<br><i>You can try typing the mix name without adding spaces. Example: <st>My Mix</st> <b>></b> MyMix");
         MIX_SELECTED = load("commands.mix-selected", "<prefix> <green>Mix selected:<reset> {0}");
         MIX_SELECTED_OTHER = load("commands.mix-selected-other", "<prefix> <green>Mix selected ({0}):<reset> {1}");

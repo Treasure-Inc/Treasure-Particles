@@ -1,5 +1,6 @@
 package net.treasure.particles.effect;
 
+import com.jeff_media.armorequipevent.ArmorEquipEvent;
 import lombok.Getter;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.configuration.ConfigurationGenerator;
@@ -80,6 +81,7 @@ public class EffectManager implements DataHolder {
         this.staticEffects = new StaticEffects();
 
         // Register listeners
+        ArmorEquipEvent.registerListener(TreasureParticles.getPlugin());
         var pm = Bukkit.getPluginManager();
         pm.registerEvents(new HandlerEventsListener(TreasureParticles.getPlayerManager()), TreasureParticles.getPlugin());
         if (TreasureParticles.isPaper())
@@ -320,7 +322,8 @@ public class EffectManager implements DataHolder {
                         interval,
                         path.getBoolean("enable-caching", false),
                         tickHandlers,
-                        TreasureParticles.getColorManager().getColorGroup(path.getString("color-group"))
+                        TreasureParticles.getColorManager().getColorGroup(path.getString("color-group")),
+                        path.getBoolean("only-elytra", false)
                 );
                 effect.configure();
 

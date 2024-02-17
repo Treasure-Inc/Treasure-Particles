@@ -24,6 +24,7 @@ gui:
     reset-effect: "<yellow>Efekti Sıfırla"
     current-effect: "<gray>Seçili Efekt: <gold>{0}"
     color-selection-available: "<gray>[Sağ-Tıkla] Bu efektin renklerini değiştirebilirsin."
+    only-elytra: "<gold>Sadece Elitra giyili iken çalışır."
     event-type: "<dark_gray>Çalışma türü: {0}"
     event-types: "<dark_gray>Çalışma türü: {0}"
     mixer: "<dark_green>Efekt Mix'leyici"
@@ -78,6 +79,8 @@ commands:
   effect-reset-other: "<prefix> <gray>{0} adlı oyuncunun efektleri sıfırlandı."
   cannot-use-any-effect: "<prefix> <red>Hiçbir efekti kullanamazsın."
   cannot-use-any-effect-other: "<prefix> <red>Bu oyuncu hiçbir efekti kullanamaz."
+  cannot-use-only-elytra: "<prefix> <red>Bu efekti sadece Elitra giyili iken kullanabilirsin."
+  cannot-use-only-elytra-other: "<prefix> <red>Bu oyuncu bu efekti sadece Elitra giyili iken kullanabilir."
   mix-unknown: "<prefix> <red>Bu isimde bir mix bulunamadı.<br><i>Mix ismini boşluk koymadan yazmayı deneyebilirsiniz. Örneğin: <st>Efekt Mixim</st> <b>></b> EfektMixim"
   mix-selected: "<prefix> <green>Mix seçildi:<reset> {0}"
   mix-selected-other: "<prefix> <green>Mix seçildi ({0}):<reset> {1}"
@@ -184,16 +187,11 @@ effects:
   purple-tail: "<#7134eb>Mor Kuyruk"
   blue-tail: "<#2658ad>Mavi Kuyruk"
   rainbow-tail: "<rainbow>Rengarenk Kuyruk"
-  # Yılbaşı Özel
-  christmas-line: "<#1B512D>Yılbaşı Özel / Çizgi"
-  christmas-circle: "<#6F1D1B>Yılbaşı Özel / Dairesel"
-  christmas-spiral: "<#e1fce8>Yılbaşı Özel / Spiral"
 # Efekt Açıklamaları
 descriptions:
   seasonal-effect: "<gray>Dönemsel Efekt"
   featured-behavior: "<gray>Has Özellik"
   elytra-boost: "<#ffbc33>Havai fişek ile elitranı hızlandırdığında efekt değişir."
-  christmas: "<gradient:#A7C957:#F2E8CF:#BC4749>Yılbaşının harikulade renkleriyle ışılda!"
 # Renk İsimleri
 colors:
   rainbow: "<rainbow>Rengarenk"

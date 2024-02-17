@@ -56,7 +56,7 @@ public class PlayerManager {
 
             if (playerData == null) return;
             var effect = effectManager.get(playerData.effectName);
-            if (effect != null && (!Permissions.ALWAYS_CHECK_PERMISSION || effect.canUse(player)))
+            if (effect != null && (!Permissions.ALWAYS_CHECK_PERMISSION || effect.canUse(player)) && data.checkElytra(effect))
                 data.setCurrentEffect(effect);
 
             for (var entry : playerData.colorPreferences.entrySet()) {
@@ -137,7 +137,7 @@ public class PlayerManager {
 
             var effect = effectManager.get(data.getCurrentEffect().getKey());
             data.setCurrentEffect(null);
-            if (effect != null && (!Permissions.ALWAYS_CHECK_PERMISSION || effect.canUse(player)))
+            if (effect != null && (!Permissions.ALWAYS_CHECK_PERMISSION || effect.canUse(player)) && data.checkElytra(effect))
                 data.setCurrentEffect(effect);
 
             if (Permissions.MIX_LIMIT_ENABLED) {

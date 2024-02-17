@@ -121,7 +121,7 @@ public class EffectsGUI extends GUI {
                 holder.setItem(slot,
                         new CustomItem(RANDOM_EFFECT.item()).setDisplayName(MessageUtils.gui(Translations.EFFECTS_GUI_RANDOM)),
                         event -> {
-                            var effect = effects.get(new Random().nextInt(effects.size()));
+                            var effect = effects.stream().filter(data::checkElytra).toList().get(new Random().nextInt(effects.size()));
                             data.setCurrentEffect(effect);
                             MessageUtils.sendParsed(player, Translations.EFFECT_SELECTED, effect.getDisplayName());
                             player.closeInventory();
@@ -210,11 +210,14 @@ public class EffectsGUI extends GUI {
                     MessageUtils.sendParsed(player, Translations.EFFECTS_GUI_MIX_REMOVED);
                     return;
                 }
-                if (event.isRightClick() && canUseAny) {
+                if (event.isRightClick() && canUseAny && data.checkElytra(effect)) {
                     manager.colorsGUI().open(player, effect, 0);
                     return;
                 }
-                data.setCurrentEffect(effect);
+                if (!data.setCurrentEffect(effect)) {
+                    MessageUtils.sendParsed(player, Translations.CANNOT_USE_ONLY_ELYTRA);
+                    return;
+                }
                 MessageUtils.sendParsed(player, Translations.EFFECT_SELECTED, effect.getDisplayName());
                 player.closeInventory();
                 GUISounds.play(player, GUISounds.SELECT_EFFECT);

@@ -86,7 +86,8 @@ public class MixData {
                 interval,
                 false,
                 tickHandlers,
-                colorGroup
+                colorGroup,
+                false
         );
     }
 

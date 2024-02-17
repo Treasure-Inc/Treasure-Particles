@@ -54,8 +54,10 @@ public class Effect {
     private final EnumSet<HandlerEvent> events;
     private boolean staticSupported;
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup) {
-        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup);
+    private final boolean onlyElytra;
+
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup, boolean onlyElytra) {
+        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup, onlyElytra);
 
         this.variables = new ArrayList<>();
         for (var variable : variables) {
@@ -86,8 +88,8 @@ public class Effect {
         }
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<Triplet<String, Double, String>> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup) {
-        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup);
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<Triplet<String, Double, String>> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup, boolean onlyElytra) {
+        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup, onlyElytra);
         this.variables = variables;
 
         this.tickHandlers = tickHandlers;
@@ -99,7 +101,7 @@ public class Effect {
         addVariable(Variable.TIMES, null);
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, int interval, boolean cachingEnabled, ColorGroup colorGroup) {
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, int interval, boolean cachingEnabled, ColorGroup colorGroup, boolean onlyElytra) {
         this.key = key;
         this.displayName = displayName;
         this.description = description;
@@ -110,6 +112,7 @@ public class Effect {
         this.interval = interval;
         this.cachingEnabled = cachingEnabled;
         this.colorGroup = colorGroup;
+        this.onlyElytra = onlyElytra;
 
         this.events = EnumSet.noneOf(HandlerEvent.class);
     }
@@ -120,13 +123,22 @@ public class Effect {
             preTick();
         }
 
-        var translations = TreasureParticles.getTranslations();
-        var events = this.events.stream().filter(event -> event != HandlerEvent.STATIC).toList();
-        if (events.isEmpty()) return;
         var old = this.description;
-
         this.description = new String[old == null ? 1 : old.length + 2];
-        this.description[0] = MessageUtils.gui(events.size() > 1 ? Translations.EFFECTS_GUI_EVENT_TYPES : Translations.EFFECTS_GUI_EVENT_TYPE, events.stream().map(event -> translations.get("events." + event.translationKey())).collect(Collectors.joining(", ")));
+        var translations = TreasureParticles.getTranslations();
+
+        if (onlyElytra)
+            this.description[0] = MessageUtils.gui(Translations.EFFECTS_GUI_ONLY_ELYTRA);
+        else {
+            var events = this.events.stream().filter(event -> event != HandlerEvent.STATIC).toList();
+            if (events.isEmpty()) {
+                this.description = old;
+                return;
+            }
+            this.description[0] = MessageUtils.gui(events.size() > 1 ? Translations.EFFECTS_GUI_EVENT_TYPES : Translations.EFFECTS_GUI_EVENT_TYPE, events.stream().map(event -> translations.get("events." + event.translationKey())).collect(Collectors.joining(", ")));
+        }
+
+
         if (old == null) return;
         this.description[1] = "";
         System.arraycopy(old, 0, this.description, 2, old.length);

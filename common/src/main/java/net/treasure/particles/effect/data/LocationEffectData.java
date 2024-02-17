@@ -29,9 +29,11 @@ public class LocationEffectData extends EffectData {
     }
 
     @Override
-    public void setCurrentEffect(Effect currentEffect) {
-        super.setCurrentEffect(currentEffect);
-        TreasureParticles.getEffectManager().getStaticEffects().set(id, currentEffect == null ? null : currentEffect.getKey(), location);
+    public boolean setCurrentEffect(Effect currentEffect) {
+        var success = super.setCurrentEffect(currentEffect);
+        if (success)
+            TreasureParticles.getEffectManager().getStaticEffects().set(id, currentEffect == null ? null : currentEffect.getKey(), location);
+        return success;
     }
 
     public void setLocation(Location location) {
