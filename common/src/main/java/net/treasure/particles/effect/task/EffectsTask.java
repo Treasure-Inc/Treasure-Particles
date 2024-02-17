@@ -35,10 +35,6 @@ public class EffectsTask extends BukkitRunnable {
             var event = data.getCurrentEvent();
             if (data instanceof PlayerEffectData playerEffectData && (event == null || !event.isSpecial())) {
                 var player = playerEffectData.player;
-                if (player == null) {
-                    iterator.remove();
-                    continue;
-                }
                 data.setCurrentEvent(player.isGliding() ? HandlerEvent.ELYTRA : (player.isSneaking() ? HandlerEvent.SNEAKING : (playerEffectData.isMoving() ? HandlerEvent.MOVING : HandlerEvent.STANDING)));
             }
             current.doTick(data);
