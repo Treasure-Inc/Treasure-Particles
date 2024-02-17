@@ -909,23 +909,6 @@ effects:
         event: ELYTRA
         scripts:
           - spread [effect=minecraft:sculk_soul,spread=1,speed=0.1,amount=0,origin=head*-1.25]
-  rocket:
-    display-name: "%rocket%"
-    color-animation: "rocket"
-    permission: "%special%"
-    description:
-      - "%featured-behavior%"
-      - "%elytra-boost%"
-    variables: [ 'x', 'y' ]
-    interval: 1
-    on-tick:
-      elytra:
-        event: ELYTRA
-        times: 24
-        scripts:
-          - var x={RANDOM}-0.5
-          - var y={RANDOM}-0.5
-          - "conditional ({CTM} - {LBM} > 2000) ? particle [effect=minecraft:dust,direction=true,pos={x={x};y={y}},amount=1,origin=head*-2.5,color={name=rocket}] : particle [effect=minecraft:dust,size=3,direction=true,pos={x={x};y={y}},amount=0,origin=head*-2.5,color={name=rocket}]"
   heart:
     display-name: "%heart%"
     color-animation: "heart"
@@ -981,6 +964,23 @@ effects:
         event: STATIC
         scripts:
           - text [effect=minecraft:heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=true]
+  rocket:
+    display-name: "%rocket%"
+    color-animation: "rocket"
+    permission: "%special%"
+    description:
+      - "%featured-behavior%"
+      - "%elytra-boost%"
+    variables: [ 'x', 'y' ]
+    interval: 1
+    on-tick:
+      elytra:
+        event: ELYTRA
+        times: 24
+        scripts:
+          - var x={RANDOM}-0.5
+          - var y={RANDOM}-0.5
+          - "conditional ({CTM} - {LBM} > 2000) ? particle [effect=minecraft:dust,direction=true,pos={x={x};y={y}},amount=1,origin=head*-2.5,color={name=rocket}] : particle [effect=minecraft:dust,size=3,direction=true,pos={x={x};y={y}},amount=0,origin=head*-2.5,color={name=rocket}]"
   red-tail:
     display-name: "%red-tail%"
     color-animation: "#a83252"
