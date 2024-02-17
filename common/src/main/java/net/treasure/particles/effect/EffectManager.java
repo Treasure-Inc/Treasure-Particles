@@ -158,7 +158,6 @@ public class EffectManager implements DataHolder {
             loadEffects();
             runTask();
         }
-        loadStatics();
     }
 
     public void runTask() {
