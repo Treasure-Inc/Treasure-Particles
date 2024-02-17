@@ -86,7 +86,7 @@ effects:
       projectile:
         event: PROJECTILE
         scripts:
-          - particle [effect=minecraft:dust,size=5,origin=head,color={name=rainbow;speed=0.1;revert=false},long-distance=true]
+          - particle [effect=minecraft:dust,size=5,origin=head,color={name=rainbow;speed=1;revert=false},long-distance=true]
   rainbow-spiral:
     display-name: "%rainbow-spiral%"
     color-animation: "rainbow"
@@ -332,7 +332,7 @@ effects:
       projectile:
         event: PROJECTILE
         scripts:
-          - particle [effect=minecraft:dust,size=5,origin=feet,color={dynamic=true;speed=0.1;revert=true},long-distance=true]
+          - particle [effect=minecraft:dust,size=5,origin=feet,color={dynamic=true;speed=1;revert=true},long-distance=true]
   gradient-spiral:
     display-name: "%gradient-spiral%"
     color-group: "gradients"
