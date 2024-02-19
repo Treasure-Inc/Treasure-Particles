@@ -145,8 +145,8 @@ public class ParticleSpawner extends Script {
             else
                 builder.data(Particles.NMS.getDustData(colorData.next(data), size));
         } else if (particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR)) {
+            builder.data(Particles.NMS.getParticleParam(particle));
             if (particle == ParticleEffect.NOTE && colorData.isNote()) {
-                builder.data(Particles.NMS.getParticleParam(particle));
                 builder.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
             } else
                 builder.offsetColor(colorData.next(data));
