@@ -168,6 +168,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
     public boolean validate(Context<T> context) throws ReaderException {
         var script = context.script();
         var particle = script.particle();
+        if (particle == null) return false;
+        
         if (script.origin() == null) {
             error(context.effect(), context.type(), context.line(), "You must define an 'origin' value (" + Stream.of(ParticleOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
             return false;
