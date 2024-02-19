@@ -722,8 +722,12 @@ effects:
     permission: "%basic%"
     interval: 2
     on-tick:
-      standing:
+      elytra:
         event: ELYTRA
+        scripts:
+          - single [effect=minecraft:gust,origin=feet]
+      projectile:
+        event: PROJECTILE
         scripts:
           - single [effect=minecraft:gust,origin=feet]
   tear:

@@ -40,18 +40,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
             ParticleEffect particle;
             if (args.length == 2) {
-                particle = ParticleEffect.MINECRAFT_KEYS.get(args[1]);
-
-                if (particle == null) {
-                    try {
-                        var p = ParticleEffect.valueOf(args[1].toUpperCase());
-                        if (p.getFieldName().equals("NONE")) {
-                            error(c, "Particle '" + c.value() + "' is not supported on your server version", "You can safely delete this effect from effects.yml, or consider updating your server version.");
-                            return;
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
+                particle = ParticleEffect.MINECRAFT_KEYS.get(args[1].toLowerCase(Locale.ENGLISH));
             } else {
                 particle = StaticArgument.asEnum(c, ParticleEffect.class);
             }
