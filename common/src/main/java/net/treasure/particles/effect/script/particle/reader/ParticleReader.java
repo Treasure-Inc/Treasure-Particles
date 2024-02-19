@@ -46,10 +46,6 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
             }
 
             if (particle == null || particle.bukkit() == null) {
-                if (c.value().equalsIgnoreCase("vibration")) {
-                    error(c, "Vibration effect is not supported");
-                    return;
-                }
                 error(c, "Unknown particle effect: " + c.value());
                 return;
             }
@@ -84,7 +80,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> {
             var particle = c.script().particle();
             if (particle != null && !particle.hasProperty(ParticleEffect.Property.CAN_BE_COLORED)) {
-                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.getFieldName());
+                error(c, "You cannot use '" + c.key() + "' with this particle effect: minecraft:" + particle.getFieldName());
                 return;
             }
             c.script().colorData(ColorData.fromString(c));
@@ -111,7 +107,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> {
             var particle = c.script().particle();
             if (particle != null && !particle.hasProperty(ParticleEffect.Property.REQUIRES_ITEM)) {
-                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.getFieldName());
+                error(c, "You cannot use '" + c.key() + "' with this particle effect: minecraft:" + particle.getFieldName());
                 return;
             }
             var item = ItemStackArgument.read(c);
@@ -122,7 +118,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> {
             var particle = c.script().particle();
             if (particle != null && !particle.hasProperty(ParticleEffect.Property.REQUIRES_BLOCK)) {
-                error(c, "You cannot use '" + c.key() + "' with this particle effect: " + particle.getFieldName());
+                error(c, "You cannot use '" + c.key() + "' with this particle effect: minecraft:" + particle.getFieldName());
                 return;
             }
             var item = ItemStackArgument.read(c);
@@ -132,8 +128,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
         addValidArgument(c -> {
             var particle = c.script().particle();
-            if (particle != null && !particle.equals(ParticleEffect.SHRIEK)) {
-                error(c, "You can only use '" + c.key() + "' with SHRIEK particle effect.");
+            if (particle != null && particle != ParticleEffect.SHRIEK) {
+                error(c, "You can only use '" + c.key() + "' with 'minecraft:shriek' particle effect.");
                 return;
             }
             try {
@@ -147,8 +143,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
         addValidArgument(c -> {
             var particle = c.script().particle();
-            if (particle != null && !particle.equals(ParticleEffect.SCULK_CHARGE)) {
-                error(c, "You can only use '" + c.key() + "' with SCULK_CHARGE particle effect.");
+            if (particle != null && particle != ParticleEffect.SCULK_CHARGE) {
+                error(c, "You can only use '" + c.key() + "' with 'minecraft:sculk_charge' particle effect.");
                 return;
             }
             try {

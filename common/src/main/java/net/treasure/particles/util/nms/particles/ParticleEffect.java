@@ -11,23 +11,33 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.CAN_BE_COLORED;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.DIRECTIONAL;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.DUST;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.OFFSET_COLOR;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_BLOCK;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_ITEM;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_WATER;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.RESIZEABLE;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.*;
 
-/**
- * @author <a href="https://github.com/ByteZ1337">ByteZ1337</a>
- */
 @Getter
 public enum ParticleEffect {
     /**
-     * In vanilla, this particle is randomly displayed in the
-     * basalt deltas nether biomes.
+     * Emitted by entities with effects from a beacon or a conduit.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: colored swirl.</li>
+     * <li>Speed value: Represents the lightness of the color.</li>
+     * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
+     * </ul>
+     */
+    AMBIENT_ENTITY_EFFECT(version -> "ambient_entity_effect", OFFSET_COLOR, CAN_BE_COLORED),
+    /**
+     * Produced when hitting villagers or when villagers fail to breed.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Gray cloud with a lightning.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    ANGRY_VILLAGER(version -> "angry_villager"),
+    /**
+     * Floats throughout the atmosphere in the soul sand valley biome.
      * <p>
      * The movement of this particle is handled completely clientside
      * and can therefore not be influenced.
@@ -36,15 +46,14 @@ public enum ParticleEffect {
      * <ul>
      * <li>Appearance: Gray/White square</li>
      * <li>Speed value: Doesn't influence the particle.</li>
-     * <li>Extra: This Particle gets a random velocity while falling down.</li>
+     * <li>Extra: This particle gets a random velocity while falling down.</li>
      * </ul>
      */
-    ASH(version -> version < 16 ? "NONE" : "ash"),
+    ASH(version -> "ash"),
     /**
      * <b>REPLACED BY {@link #BLOCK_MARKER} SINCE 1.18</b>
      * <p>
-     * In vanilla, this particle is displayed by barrier blocks
-     * when a player holds a barrier item in the main or off hand.
+     * Appears when a player holds a barrier item in the main or off hand.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -54,9 +63,9 @@ public enum ParticleEffect {
      */
     BARRIER(version -> version < 8 || version > 17 ? "NONE" : (version < 13 ? "BARRIER" : "barrier")),
     /**
-     * In vanilla, this particle is displayed when a player breaks
-     * a block or sprints. It's also displayed by iron golems while
-     * walking.
+     * Produced when blocks are broken, flakes off blocks being brushed, produced when iron golems walk,
+     * produced when entities fall a long distance, produced when players sprint,
+     * displayed when armor stands are broken, appears when sheep eat grass.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -65,10 +74,10 @@ public enum ParticleEffect {
      * <li>Extra: This particle needs a block texture in order to work.</li>
      * </ul>
      */
-    BLOCK_CRACK(version -> version < 8 ? "NONE" : (version < 13 ? "BLOCK_CRACK" : "block"), REQUIRES_BLOCK),
+    BLOCK(version -> "block", REQUIRES_BLOCK),
     /**
-     * In vanilla, this particle is displayed by barrier blocks when a player
-     * holds a barrier item in the main- or off-hand or by the light block.
+     * Marks the position of barriers and light blocks
+     * when they are held in the main hand.
      * <p>
      * <p>
      * <b>Information</b>:
@@ -80,8 +89,19 @@ public enum ParticleEffect {
      */
     BLOCK_MARKER(version -> version < 18 ? "NONE" : "block_marker", REQUIRES_BLOCK),
     /**
-     * In vanilla, this particle is displayed when an entity hits the ground
-     * after falling. It's also displayed when an armor-stand is broken.
+     * Appears around entities splashing in water, emitted by guardian lasers,
+     * produced by guardians moving, appears by the fishing bobber and along the path of a fish,
+     * trails behind projectiles and eyes of ender underwater.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Bubble with blue outline.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    BUBBLE(version -> "bubble", DIRECTIONAL, REQUIRES_WATER),
+    /**
+     * Represents upwards bubble columns.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -91,10 +111,9 @@ public enum ParticleEffect {
      * <li> This particle needs a block texture in order to work.</li></ul></li>
      * </ul>
      */
-    BUBBLE_COLUMN_UP(version -> version < 13 ? "NONE" : "bubble_column_up", DIRECTIONAL),
+    BUBBLE_COLUMN_UP(version -> "bubble_column_up", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed at the top of
-     * bubble columns.
+     * Unused
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -103,9 +122,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    BUBBLE_POP(version -> version < 13 ? "NONE" : "bubble_pop", DIRECTIONAL),
+    BUBBLE_POP(version -> "bubble_pop", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by campfires.
+     * Floats off the top of campfires and soul campfires.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -114,10 +133,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    CAMPFIRE_COSY_SMOKE(version -> version < 14 ? "NONE" : "campfire_cosy_smoke", DIRECTIONAL),
+    CAMPFIRE_COSY_SMOKE(version -> "campfire_cosy_smoke", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by campfires with
-     * a hay bale placed under them.
+     * Floats off the top of campfires and soul campfires above hay bales.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -126,13 +144,14 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    CAMPFIRE_SIGNAL_SMOKE(version -> version < 14 ? "NONE" : "campfire_signal_smoke", DIRECTIONAL),
+    CAMPFIRE_SIGNAL_SMOKE(version -> "campfire_signal_smoke", DIRECTIONAL),
     /**
-     * Falling petals from the cherry leaves.
+     * Falls off the bottom of cherry leaves.
      */
     CHERRY_LEAVES(version -> version < 20 ? "NONE" : "cherry_leaves"),
     /**
-     * In vanilla, this particle is displayed when an entity dies.
+     * Appears when placing wet sponges in the Nether,
+     * shown when entering a village with the Bad Omen effect.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -141,10 +160,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    CLOUD(version -> version < 8 ? "NONE" : (version < 13 ? "CLOUD" : "cloud"), DIRECTIONAL),
+    CLOUD(version -> "cloud", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when a composter
-     * is used by a player.
+     * Produced when placing items in a composter.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -152,22 +170,21 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    COMPOSTER(version -> version < 14 ? "NONE" : "composter"),
+    COMPOSTER(version -> "composter"),
     /**
-     * In vanilla, this particle is displayed in the crimson forest
-     * nether biomes.
+     * Floats throughout the atmosphere in the crimson forest biome.
      * <p>
      * <b>Information</b>:
      * <ul>
      * <li>Appearance: Pink square.</li>
      * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * <li>Extra: This Particle gets a random velocity up.</li>
+     * <li>Extra: This particle gets a random velocity up.</li>
      * </ul>
      */
-    CRIMSON_SPORE(version -> version < 16 ? "NONE" : "crimson_spore"),
+    CRIMSON_SPORE(version -> "crimson_spore"),
     /**
-     * In vanilla, this particle is displayed when a player lands
-     * a critical hit on an entity or an  arrow is launched with full power.
+     * Trails behind crossbow shots and fully charged bow shots,
+     * produced by evoker fangs, appears when landing a critical hit on an entity.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -175,20 +192,9 @@ public enum ParticleEffect {
      * <li>Speed value: Influences the velocity at which the particle flies off.</li>
      * </ul>
      */
-    CRIT(version -> version < 8 ? "NONE" : (version < 13 ? "CRIT" : "crit"), DIRECTIONAL),
+    CRIT(version -> "crit", DIRECTIONAL),
     /**
-     * In vanilla, this particle  is displayed when a player hits
-     * an entity with a sharpness sword.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Cyan star.</li>
-     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * </ul>
-     */
-    CRIT_MAGIC(version -> version < 8 ? "NONE" : (version < 13 ? "CRIT_MAGIC" : "enchanted_hit"), DIRECTIONAL),
-    /**
-     * In vanilla, this particle is displayed by magma blocks underwater.
+     * Represents downwards bubble columns.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -196,10 +202,9 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    CURRENT_DOWN(version -> version < 13 ? "NONE" : "current_down"),
+    CURRENT_DOWN(version -> "current_down"),
     /**
-     * In vanilla, this particle is displayed when a Player hits
-     * an Entity by melee attack.
+     * Appears when a melee attack damages an entity.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -208,10 +213,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    DAMAGE_INDICATOR(version -> version < 9 ? "NONE" : (version < 13 ? "DAMAGE_INDICATOR" : "damage_indicator"), DIRECTIONAL),
+    DAMAGE_INDICATOR(version -> "damage_indicator", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed as a trail of
-     * dolphins.
+     * Trails behind dolphins.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -219,10 +223,10 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    DOLPHIN(version -> version < 13 ? "NONE" : "dolphin"),
+    DOLPHIN(version -> "dolphin"),
     /**
-     * In vanilla, this particle is displayed by the ender dragons
-     * breath and ender fireballs.
+     * Spit out by the ender dragon, trails behind dragon fireballs,
+     * emitted by clouds of dragon's breath, produced when dragon fireballs explode.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -231,10 +235,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    DRAGON_BREATH(version -> version < 9 ? "NONE" : (version < 13 ? "DRAGON_BREATH" : "dragon_breath"), DIRECTIONAL),
+    DRAGON_BREATH(version -> "dragon_breath", DIRECTIONAL),
     /**
-     * In vanilla, this particle is shown dripping from the
-     * tip of pointed dripstones.
+     * Represents lava drips collected on pointed dripstone with lava above that have not yet dripped down.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -244,8 +247,7 @@ public enum ParticleEffect {
      */
     DRIPPING_DRIPSTONE_LAVA(version -> version < 17 ? "NONE" : "dripping_dripstone_lava"),
     /**
-     * In vanilla, this particle is shown dripping from the
-     * tip of pointed dripstones.
+     * Represents water drips collected on pointed dripstone with water or nothing above that have not yet dripped down.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -255,9 +257,7 @@ public enum ParticleEffect {
      */
     DRIPPING_DRIPSTONE_WATER(version -> version < 17 ? "NONE" : "dripping_dripstone_water"),
     /**
-     * In vanilla, this particle is displayed by beehives filled
-     * with honey. As opposed to the {@link #FALLING_HONEY} particles,
-     * this particle floats in the air before falling to the ground.
+     * Represents honey drips collected on the bottom of full bee nests or beehives that have not yet dripped down.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -266,9 +266,18 @@ public enum ParticleEffect {
      * <li>Extra: Spawns a {@link #LANDING_HONEY} particle after landing on a block.</li>
      * </ul>
      */
-    DRIPPING_HONEY(version -> version < 15 ? "NONE" : "dripping_honey"),
+    DRIPPING_HONEY(version -> "dripping_honey"),
     /**
-     * In vanilla, this particle is displayed by crying obsidian.
+     * Represents lava drips collected on the bottom of blocks with lava above that have not yet dripped down.
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Orange drop.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    DRIPPING_LAVA(version -> "dripping_lava"),
+    /**
+     * Represents tears collected on the sides or bottom of crying obsidian that have not yet dripped down.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -277,20 +286,9 @@ public enum ParticleEffect {
      * <li>Extra: Spawns a {@link #LANDING_OBSIDIAN_TEAR} particle after landing on a block.</li>
      * </ul>
      */
-    DRIPPING_OBSIDIAN_TEAR(version -> version < 16 ? "NONE" : "dripping_obsidian_tear"),
+    DRIPPING_OBSIDIAN_TEAR(version -> "dripping_obsidian_tear"),
     /**
-     * In vanilla, this particle is displayed randomly when a
-     * lava block is above a block.
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Orange drop.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    DRIP_LAVA(version -> version < 8 ? "NONE" : (version < 13 ? "DRIP_LAVA" : "dripping_lava")),
-    /**
-     * In vanilla, this particle is displayed randomly when a
-     * water block is above a block.
+     * Represents water drips collected on the bottom of leaves in rain and blocks with water above or the bottom and sides of wet sponges that have not yet dripped down.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -298,9 +296,21 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    DRIP_WATER(version -> version < 8 ? "NONE" : (version < 13 ? "DRIP_WATER" : "dripping_water")),
+    DRIPPING_WATER(version -> "dripping_water"),
     /**
-     * In vanilla, this particle is displayed when a sculk sensor is triggered.
+     * Emitted by powered redstone torches, powered levers,
+     * redstone ore, powered redstone dust, and powered redstone repeaters.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Tiny colored cloud.</li>
+     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
+     * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
+     * </ul>
+     */
+    DUST(version -> "dust", CAN_BE_COLORED, Property.DUST),
+    /**
+     * Emitted by activated sculk sensors.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -310,10 +320,51 @@ public enum ParticleEffect {
      * supports a custom size.
      * </ul>
      */
-    DUST_COLOR_TRANSITION(version -> version < 17 ? "NONE" : "dust_color_transition", CAN_BE_COLORED, DUST),
+    DUST_COLOR_TRANSITION(version -> version < 17 ? "NONE" : "dust_color_transition", CAN_BE_COLORED, Property.DUST),
     /**
-     * In vanilla, this particle appears when a lightning bolt hits
-     * copper blocks.
+     * Shown when adding items to decorated pots.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: A gray dust.</li>
+     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
+     * </ul>
+     */
+    DUST_PLUME(version -> version < 20 ? "NONE" : "dust_plume"),
+    /**
+     * Produced by splash potions.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: White swirl.</li>
+     * <li>Speed value: Causes the particle to only fly up when set to 0.</li>
+     * <li>Extra: Only the motion on the y-axis can be controlled, the motion on the x- and z-axis are multiplied by 0.1 when setting the values to 0</li>
+     * </ul>
+     */
+    EFFECT(version -> "effect"),
+    /**
+     * Appears when sniffer eggs are placed on moss blocks,
+     * appears when sniffer eggs crack.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: A green star.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    EGG_CRACK(version -> version < 20 ? "NONE" : "egg_crack"),
+    /**
+     * Displayed when elder guardians inflict Mining Fatigue.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: A elder guardian.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    ELDER_GUARDIAN(version -> "elder_guardian"),
+    /**
+     * Emitted by lightning rods during thunderstorms, produced when lightning hits copper.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -324,8 +375,7 @@ public enum ParticleEffect {
      */
     ELECTRIC_SPARK(version -> version < 17 ? "NONE" : "electric_spark", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by bookshelves near
-     * an enchanting table.
+     * Floats from bookshelves to enchanting tables.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -334,10 +384,20 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    ENCHANTMENT_TABLE(version -> version < 8 ? "NONE" : (version < 13 ? "ENCHANTMENT_TABLE" : "enchant"), DIRECTIONAL),
+    ENCHANT(version -> "enchant", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by end rods and
-     * shulker bullets.
+     * Appears when hitting entities with a sword or an axe
+     * enchanted with Sharpness, Bane of Arthropods, or Smite.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Cyan star.</li>
+     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
+     * </ul>
+     */
+    ENCHANTED_HIT(version -> "enchanted_hit", DIRECTIONAL),
+    /**
+     * Emitted by end rods, trails behind shulker bullets.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -346,10 +406,25 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    END_ROD(version -> version < 9 ? "NONE" : (version < 13 ? "END_ROD" : "end_rod"), DIRECTIONAL),
+    END_ROD(version -> "end_rod", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when tnt or creeper
-     * explodes.
+     * Emitted by tipped arrows, produced by ravagers when stunned,
+     * produced when lingering potions break open, emitted by area effect clouds,
+     * produced when evokers cast spells, emitted by the wither as it charges up and when its health is below half,
+     * produced by entities with effects from sources other than conduits or beacons.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: colored swirl.</li>
+     * <li>Speed value: Represents the lightness of the color.</li>
+     * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
+     * </ul>
+     */
+    ENTITY_EFFECT(version -> "entity_effect", OFFSET_COLOR, CAN_BE_COLORED),
+    /**
+     * Produced by explosion_emitter particles, shown when shearing mushrooms,
+     * appears when shulker bullets hit the ground, emitted by the ender dragon as it dies,
+     * shown when the ender dragon breaks blocks.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -357,10 +432,9 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    EXPLOSION_HUGE(version -> version < 8 ? "NONE" : (version < 13 ? "EXPLOSION_HUGE" : "explosion_emitter")),
+    EXPLOSION(version -> "explosion"),
     /**
-     * In vanilla, this particle is displayed when a fireball
-     * explodes or a wither skull hits a block/entity.
+     * Produced by explosions.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -368,21 +442,9 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    EXPLOSION_LARGE(version -> version < 8 ? "NONE" : (version < 13 ? "EXPLOSION_LARGE" : "explosion")),
+    EXPLOSION_EMITTER(version -> "explosion_emitter"),
     /**
-     * In vanilla, this particle is displayed when either a creeper or
-     * a tnt explodes.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: White smoke.</li>
-     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * </ul>
-     */
-    EXPLOSION_NORMAL(version -> version < 8 ? "NONE" : (version < 13 ? "EXPLOSION_NORMAL" : "poof"), DIRECTIONAL),
-    /**
-     * In vanilla, this particle is displayed after {@link #DRIPPING_DRIPSTONE_LAVA}
-     * starts falling from pointed dripstones.
+     * Drips off pointed dripstone with lava above.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -392,8 +454,7 @@ public enum ParticleEffect {
      */
     FALLING_DRIPSTONE_LAVA(version -> version < 17 ? "NONE" : "falling_dripstone_lava"),
     /**
-     * In vanilla, this particle is displayed after {@link #DRIPPING_DRIPSTONE_WATER}
-     * starts falling from pointed dripstones.
+     * Drips off pointed dripstone with nothing or water above.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -403,8 +464,7 @@ public enum ParticleEffect {
      */
     FALLING_DRIPSTONE_WATER(version -> version < 17 ? "NONE" : "falling_dripstone_water"),
     /**
-     * In vanilla, this particle is displayed randomly by floating sand
-     * and gravel.
+     * Falls off the bottom of floating blocks affected by gravity.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -413,23 +473,27 @@ public enum ParticleEffect {
      * <li>Extra: This particle needs a block texture in order to work.</li>
      * </ul>
      */
-    FALLING_DUST(version -> version < 10 ? "NONE" : (version < 13 ? "FALLING_DUST" : "falling_dust"), REQUIRES_BLOCK),
+    FALLING_DUST(version -> "falling_dust", REQUIRES_BLOCK),
     /**
-     * In vanilla, this particle is displayed below beehives filled
-     * with honey. As opposed to the {@link #DRIPPING_HONEY} particles,
-     * this particle falls instantly.
+     * Drips off beehives and bee nests that are full of honey.
      * <p>
      * <b>Information</b>:
      * <ul>
      * <li>Appearance: A rectangular honey drop.</li>
      * <li>Speed value: Doesn't influence the particle.</li>
-     * <li>Extra: Spawns a {@link #LANDING_HONEY} after landing on a block.</li>
      * </ul>
      */
-    FALLING_HONEY(version -> version < 15 ? "NONE" : "falling_honey"),
+    FALLING_HONEY(version -> "falling_honey"),
     /**
-     * In vanilla, this particle is displayed by bees that have pollen
-     * and are on their way to the beehive.
+     * Drips off the bottom of blocks with lava above.
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: A lava drop.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     */
+    FALLING_LAVA(version -> "falling_lava"),
+    /**
+     * Falls off bees that have collected pollen.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -437,10 +501,9 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    FALLING_NECTAR(version -> version < 15 ? "NONE" : "falling_nectar"),
+    FALLING_NECTAR(version -> "falling_nectar"),
     /**
-     * In vanilla, this particle is displayed below crying obsidian
-     * blocks.
+     * Drips off crying obsidian.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -448,9 +511,9 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    FALLING_OBSIDIAN_TEAR(version -> version < 16 ? "NONE" : "falling_obsidian_tear"),
+    FALLING_OBSIDIAN_TEAR(version -> "falling_obsidian_tear"),
     /**
-     * In vanilla, this particle is displayed below spore blossoms.
+     * Drips off of spore blossoms.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -460,7 +523,8 @@ public enum ParticleEffect {
      */
     FALLING_SPORE_BLOSSOM(version -> version < 17 ? "NONE" : "falling_spore_blossom"),
     /**
-     * Falling water
+     * Drips off of the bottom of blocks with water above,
+     * drips off the bottom of leaves during rain, drips off of wet sponges.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -470,8 +534,7 @@ public enum ParticleEffect {
      */
     FALLING_WATER(version -> version < 17 ? "NONE" : "falling_water"),
     /**
-     * In vanilla, this particle is displayed when a firework is
-     * launched.
+     * Trails behind fireworks, produced when fireworks crafted with firework stars explode.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -479,10 +542,20 @@ public enum ParticleEffect {
      * <li>Speed value: Influences the velocity at which the particle flies off.</li>
      * </ul>
      */
-    FIREWORKS_SPARK(version -> version < 8 ? "NONE" : (version < 13 ? "FIREWORKS_SPARK" : "firework"), DIRECTIONAL),
+    FIREWORK(version -> "firework", DIRECTIONAL),
     /**
-     * In vanilla, this particle is randomly displayed by torches,
-     * active furnaces,spawners and magma cubes.
+     * Represents the fish trail when fishing.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Tiny blue square.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    FISHING(version -> "fishing", DIRECTIONAL),
+    /**
+     * Appears inside of monster spawners, produced by magma cubes,
+     * represents the flame of torches, emitted by furnaces.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -491,9 +564,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    FLAME(version -> version < 8 ? "NONE" : (version < 13 ? "FLAME" : "flame"), DIRECTIONAL),
+    FLAME(version -> "flame", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by exploding fireworks
+     * Shown when fireworks with crafted with firework stars explode.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -502,19 +575,9 @@ public enum ParticleEffect {
      * <li>Extra: The color of this flash can't be set since it's only set clientside.</li>
      * </ul>
      */
-    FLASH(version -> version < 14 ? "NONE" : "flash"),
+    FLASH(version -> "flash"),
     /**
-     * This particle is unused and is removed in the version 1.13.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Low opacity gray square.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    FOOTSTEP(version -> version > 8 && version < 13 ? "FOOTSTEP" : "NONE"),
-    /**
-     * In vanilla, this particle is displayed by a glow squid.
+     * Emitted by glow squid.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -526,7 +589,7 @@ public enum ParticleEffect {
      */
     GLOW(version -> version < 17 ? "NONE" : "glow", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by a glow squid when it gets hurt.
+     * Produced by glow squid when hit.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -537,8 +600,33 @@ public enum ParticleEffect {
      */
     GLOW_SQUID_INK(version -> version < 17 ? "NONE" : "glow_squid_ink", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when taming or
-     * breeding animals.
+     * Created when a wind charge hits a block.
+     */
+    GUST(version -> version < 20 ? "NONE" : "gust"),
+    /**
+     * Unknown
+     */
+    GUST_DUST(version -> version < 20 ? "NONE" : "gust_dust"),
+    /**
+     * Created when a wind charge hits a block. Spawns a number of gust particles.
+     */
+    GUST_EMITTER(version -> version < 20 ? "NONE" : "gust_emitter"),
+    /**
+     * Shown when using bone meal on plants, appears when trading with villagers,
+     * appears when feeding baby animals or dolphins, emitted by villagers upon claiming a job site block or a bed,
+     * shown when bees pollinate crops, appears when turtle eggs are placed on sand, appears when turtle eggs hatch.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Green star.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
+     * </ul>
+     */
+    HAPPY_VILLAGER(version -> "happy_villager", DIRECTIONAL),
+    /**
+     * Appears when taming mobs, emitted by breeding mobs,
+     * feeding mobs, appears when allays duplicate.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -546,11 +634,21 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    HEART(version -> version < 8 ? "NONE" : (version < 13 ? "HEART" : "heart")),
+    HEART(version -> "heart"),
     /**
-     * In vanilla, this particle is displayed when a tool is
-     * broken, an egg or a splash potion hits an entity or a block, It is
-     * also displayed when a player eats or an eye of ender breaks.
+     * Produced when splash potions or lingering potions of Instant Health or Instant Damage break.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: White swirl.</li>
+     * <li>Speed value: Causes the particle to only fly up when set to 0.</li>
+     * <li>Extra: Only the motion on the y-axis can be controlled, the motion on the x- and z-axis are multiplied by 0.1 when setting the values to 0</li>
+     * </ul>
+     */
+    INSTANT_EFFECT(version -> "instant_effect"),
+    /**
+     * Produced when tools break, produced when eating food,
+     * produced when splash potions or lingering potions break, shown when eyes of ender break.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -560,33 +658,73 @@ public enum ParticleEffect {
      * <li> This particle needs a item texture in order to work.</li></ul></li>
      * </ul>
      */
-    ITEM_CRACK(version -> version < 8 ? "NONE" : (version < 13 ? "ITEM_CRACK" : "item"), DIRECTIONAL, REQUIRES_ITEM),
+    ITEM(version -> "item", DIRECTIONAL, REQUIRES_ITEM),
     /**
-     * In vanilla, this particle is displayed after a falling or
-     * dripping Honey particle reaches a block.
+     * Shown when slimes jump
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Tiny part of the slimeball icon.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    ITEM_SLIME(version -> "item_slime"),
+    /**
+     * Produced when thrown snowballs break.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Little peace of the snowball texture.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * </ul>
+     */
+    ITEM_SNOWBALL(version -> "item_snowball"),
+    /**
+     * Created when falling_honey particles hit the ground.
      * <p>
      * <b>Information</b>:
      * <ul>
      * <li>Appearance: Honey colored lines.</li>
      * <li>Speed value: Doesn't influence the particle.</li>
-     * <li>Extra: This Particle stays on the ground and doesn't instantly despawn.</li>
+     * <li>Extra: This particle stays on the ground and doesn't instantly de-spawn.</li>
      * </ul>
      */
-    LANDING_HONEY(version -> version < 15 ? "NONE" : "landing_honey"),
+    LANDING_HONEY(version -> "landing_honey"),
     /**
-     * In vanilla, this particle is displayed after a falling or
-     * dripping obsidian tear reaches a block.
+     * Created when falling_lava or falling_dripstone_lava particles hit the ground.
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Lava colored lines.</li>
+     * <li>Speed value: Doesn't influence the particle.</li>
+     * <li>Extra: This particle stays on the ground and doesn't instantly de-spawn.</li>
+     * </ul>
+     */
+    LANDING_LAVA(version -> "landing_lava"),
+    /**
+     * Created when falling_obsidian_tear particles hit the ground.
      * <p>
      * <b>Information</b>:
      * <ul>
      * <li>Appearance: Purple colored lines.</li>
      * <li>Speed value: Doesn't influence the particle.</li>
-     * <li>Extra: This Particle stays on the ground and doesn't instantly despawn.</li>
+     * <li>Extra: This particle stays on the ground and doesn't instantly de-spawn.</li>
      * </ul>
      */
-    LANDING_OBSIDIAN_TEAR(version -> version < 16 ? "NONE" : "landing_obsidian_tear"),
+    LANDING_OBSIDIAN_TEAR(version -> "landing_obsidian_tear"),
     /**
-     * In vanilla, this particle is randomly displayed by lava.
+     * Floats off the top of fire, produced by blazes,
+     * appears when trying to place water in the Nether,
+     * appears when obsidian, stone, or cobblestone is created by lava and water.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Large gray cloud.</li>
+     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
+     * </ul>
+     */
+    LARGE_SMOKE(version -> "large_smoke", DIRECTIONAL),
+    /**
+     * Produced by campfires, produced by lava.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -594,7 +732,7 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    LAVA(version -> version < 8 ? "NONE" : (version < 13 ? "LAVA" : "lava")),
+    LAVA(version -> "lava"),
     /**
      * <b>REPLACED BY {@link #BLOCK_MARKER} SINCE 1.18</b>
      * <p>
@@ -602,23 +740,24 @@ public enum ParticleEffect {
      * <p>
      * <b>Information</b>:
      * <ul>
-     * <li>Appearance: 1.17: four yellow stars. Since 1.18: A lightbulb</li>
+     * <li>Appearance: 1.17: four yellow stars. Since 1.18: A light-bulb</li>
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
     LIGHT(version -> version != 17 ? "NONE" : "light"),
     /**
-     * In vanilla, this particle is displayed by elder guardians.
+     * Appears above mycelium, trails behind the wings of phantoms.
      * <p>
      * <b>Information</b>:
      * <ul>
-     * <li>Appearance: A elder guardian.</li>
+     * <li>Appearance: Tiny gray square.</li>
      * <li>Speed value: Doesn't influence the particle.</li>
+     * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    MOB_APPEARANCE(version -> version < 8 ? "NONE" : (version < 13 ? "MOB_APPEARANCE" : "elder_guardian")),
+    MYCELIUM(version -> "mycelium", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by active conduits.
+     * Appears and floats toward conduits, appears and floats towards mobs being attacked by a conduit.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -627,10 +766,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    NAUTILUS(version -> version < 13 ? "NONE" : "nautilus", DIRECTIONAL),
+    NAUTILUS(version -> "nautilus", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when rightclicking
-     * or activating a note block.
+     * Produced by jukeboxes, produced by note blocks.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -639,13 +777,24 @@ public enum ParticleEffect {
      * <li>Extra: the offsetX parameter represents which note should be displayed. The amount has to be 0 or the color won't work.</li>
      * </ul>
      */
-    NOTE(version -> version < 8 ? "NONE" : (version < 13 ? "NOTE" : "note"), OFFSET_COLOR, CAN_BE_COLORED),
+    NOTE(version -> "note", OFFSET_COLOR, CAN_BE_COLORED),
     /**
-     * In vanilla, this particle is randomly displayed by nether
-     * portal, endermen, ender chests, dragon eggs, endermites and end
-     * gateway portals. It is also displayed when an ender pearl hits
-     * a block or an entity, when an eye of ender beaks or when the player eats
-     * a chorus fruit.
+     * Appears when mobs die, shown when ravagers roar after being stunned,
+     * produced when silverfish enter stone, appear around mobs spawned by spawners,
+     * shown when zombies trample turtle eggs, created when fireworks crafted without stars expire.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: White smoke.</li>
+     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
+     * </ul>
+     */
+    POOF(version -> "poof", DIRECTIONAL),
+    /**
+     * Trails behind eyes of ender, shown when eyes of ender break,
+     * floats toward where ender pearls break, points toward where dragon eggs teleport,
+     * floats toward where players teleport with chorus fruit, appears and floats toward nether portals,
+     * appears and floats toward end gateway portals, appears and floats toward ender chests, emitted by endermen, appears and floats toward endermites.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -654,26 +803,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    PORTAL(version -> version < 8 ? "NONE" : (version < 13 ? "PORTAL" : "portal"), DIRECTIONAL),
+    PORTAL(version -> "portal", DIRECTIONAL),
     /**
-     * In vanilla, this particle is randomly displayed by active
-     * redstone ore, active redstone, active redstone repeater and
-     * active redstone torches. Since 1.13 it is also displayed when
-     * pressing a button, activating a lever or stepping onto a pressure
-     * plate
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Tiny colored cloud.</li>
-     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
-     * </ul>
-     */
-    REDSTONE(version -> version < 8 ? "NONE" : (version < 13 ? "REDSTONE" : "dust"), CAN_BE_COLORED, DUST),
-    /**
-     * Currently Unused in vanilla. It's pretty much the same as the normal portal
-     * particle but instead of flying to the original location it flies away at the specified
-     * velocity.
+     * Floats off the top of respawn anchors.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -682,9 +814,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    REVERSE_PORTAL(version -> version < 16 ? "NONE" : "reverse_portal", DIRECTIONAL),
+    REVERSE_PORTAL(version -> "reverse_portal", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when oxidation is scraped off a copper block.
+     * Shown when scraping oxidization off copper.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -695,6 +827,7 @@ public enum ParticleEffect {
      */
     SCRAPE(version -> version < 17 ? "NONE" : "scrape", DIRECTIONAL),
     /**
+     * Marks the path of a sculk charge.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -706,6 +839,7 @@ public enum ParticleEffect {
      */
     SCULK_CHARGE(version -> version < 19 ? "NONE" : "sculk_charge", DIRECTIONAL),
     /**
+     * Appears when a sculk charge ends.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -716,6 +850,7 @@ public enum ParticleEffect {
      */
     SCULK_CHARGE_POP(version -> version < 19 ? "NONE" : "sculk_charge_pop", DIRECTIONAL),
     /**
+     * Appears above sculk catalysts when activated.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -726,6 +861,7 @@ public enum ParticleEffect {
      */
     SCULK_SOUL(version -> version < 19 ? "NONE" : "sculk_soul", DIRECTIONAL),
     /**
+     * Emitted by activated sculk shriekers.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -736,18 +872,7 @@ public enum ParticleEffect {
      */
     SHRIEK(version -> version < 19 ? "NONE" : "shriek"),
     /**
-     * In vanilla, this particle is displayed by jumping slimes.
-     * <p>
-     * The particle originates from the nms EntitySlime class.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Tiny part of the slimeball icon.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    SLIME(version -> version < 8 ? "NONE" : (version < 13 ? "SLIME" : "item_slime")),
-    /**
+     * Represents the flame of candles.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -758,25 +883,14 @@ public enum ParticleEffect {
      */
     SMALL_FLAME(version -> version < 17 ? "NONE" : "small_flame", DIRECTIONAL),
     /**
-     * In vanilla, this particle is randomly displayed by fire, furnace
-     * minecarts and blazes. It's also displayed when trying to place water
-     * in the nether.
-     * <p>
-     * The particle originates from the nms ItemBucket, EntityBlaze
-     * BlockFluids and EntityMinecart classes.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Large gray cloud.</li>
-     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * </ul>
-     */
-    SMOKE_LARGE(version -> version < 8 ? "NONE" : (version < 13 ? "SMOKE_LARGE" : "large_smoke"), DIRECTIONAL),
-    /**
-     * In vanilla, this particle is randomly displayed by primed
-     * tnt, torches, end portals, active brewing stands, monster
-     * spawners or when either a dropper or dispenser gets triggered. It's
-     * also displayed when taming a wild animal or an explosion occurs.
+     * Floats off the top of monster spawners, represents the smoke from candles,
+     * appears when tnt is primed, floats off the top of wither roses, floats off the top of brewing stands,
+     * represents the smoke of torches and soul torches, trails behind ghast fireballs, emitted by withers,
+     * trails behind wither skulls, produced when dispensers or droppers fire, trails behind blaze fireballs,
+     * emitted by lava and campfires during rain, emitted by furnaces, emitted by blast furnaces, emitted by smokers,
+     * produced when placing eyes of ender in an end portal frame, emitted by end portals, produced when redstone torches burn out,
+     * floats off the top of food placed on a campfire, shown when campfires and soul campfires are extinguished,
+     * shown when failing to tame a mob, trails behind lava particles.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -784,9 +898,9 @@ public enum ParticleEffect {
      * <li>Speed value: Influences the velocity at which the particle flies off.</li>
      * </ul>
      */
-    SMOKE_NORMAL(version -> version < 8 ? "NONE" : (version < 13 ? "SMOKE_NORMAL" : "smoke"), DIRECTIONAL),
+    SMOKE(version -> "smoke", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by sneezing baby pandas.
+     * Sneezed out by pandas.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -795,20 +909,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    SNEEZE(version -> version < 14 ? "NONE" : "sneeze", DIRECTIONAL),
+    SNEEZE(version -> "sneeze", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when a snowball
-     * hits an entity or a block.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Little peace of the snowball texture.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    SNOWBALL(version -> version < 8 ? "NONE" : (version < 13 ? "SNOWBALL" : "item_snowball")),
-    /**
-     * In vanilla, this particle is displayed when a player sinks in powder snow.
+     * Created by entities in powder snow.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -819,6 +922,7 @@ public enum ParticleEffect {
      */
     SNOWFLAKE(version -> version < 17 ? "NONE" : "snowflake", DIRECTIONAL),
     /**
+     * Produced by the warden during its sonic boom attack.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -828,8 +932,7 @@ public enum ParticleEffect {
      */
     SONIC_BOOM(version -> version < 19 ? "NONE" : "sonic_boom"),
     /**
-     * In vanilla, this particle is displayed when a player walks
-     * on soulsand with the soul speed enchantment.
+     * Created by players with Soul Speed boots running on soul sand or soul soil.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -838,9 +941,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    SOUL(version -> version < 16 ? "NONE" : "soul", DIRECTIONAL),
+    SOUL(version -> "soul", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed by soul torches
+     * Represents the flame of soul torches.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -849,70 +952,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    SOUL_FIRE_FLAME(version -> version < 16 ? "NONE" : "soul_fire_flame", DIRECTIONAL),
+    SOUL_FIRE_FLAME(version -> "soul_fire_flame", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when a splash potion or
-     * an experience bottle hits a block or an entity. It's also displayed by
-     * evokers.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: White swirl.</li>
-     * <li>Speed value: Causes the particle to only fly up when set to 0.</li>
-     * <li>Extra: Only the motion on the y-axis can be controlled, the motion on the x- and z-axis are multiplied by 0.1 when setting the values to 0</li>
-     * </ul>
-     */
-    SPELL(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL" : "effect")),
-    /**
-     * In vanilla, this particle is displayed when an instant splash
-     * potion (e.g. instant health) hits a block or an entity.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: White swirl.</li>
-     * <li>Speed value: Causes the particle to only fly up when set to 0.</li>
-     * <li>Extra: Only the motion on the y-axis can be controlled, the motion on the x- and z-axis are multiplied by 0.1 when setting the values to 0</li>
-     * </ul>
-     */
-    SPELL_INSTANT(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_INSTANT" : "instant_effect")),
-    /**
-     * In vanilla, this particle is displayed when an entity has
-     * an active potion effect with the "ShowParticles" tag set to 1.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: colored swirl.</li>
-     * <li>Speed value: Represents the lightness of the color.</li>
-     * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
-     * </ul>
-     */
-    SPELL_MOB(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_MOB" : "entity_effect"), OFFSET_COLOR, CAN_BE_COLORED),
-    /**
-     * In vanilla, this particle is displayed when an entity has
-     * an active potion effect from a nearby beacon.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: colored swirl.</li>
-     * <li>Speed value: Represents the lightness of the color.</li>
-     * <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle. The amount has to be 0 or the color won't work.</li>
-     * </ul>
-     */
-    SPELL_MOB_AMBIENT(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_MOB_AMBIENT" : "ambient_entity_effect"), OFFSET_COLOR, CAN_BE_COLORED),
-    /**
-     * In vanilla, this particle is displayed randomly by witches.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Purple cross.</li>
-     * <li>Speed value: Causes the particle to only fly up when set to 0.</li>
-     * <li>Extra: Only the motion on the y-axis can be controlled, the motion on the x- and z-axis are multiplied by 0.1 when setting the values to 0</li>
-     * </ul>
-     */
-    SPELL_WITCH(version -> version < 8 ? "NONE" : (version < 13 ? "SPELL_WITCH" : "witch")),
-    /**
-     * In vanilla, this particle is displayed by llamas while
-     * attacking an entity.
+     * Spit out by llamas.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -921,9 +963,21 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    SPIT(version -> version < 11 ? "NONE" : (version < 13 ? "SPIT" : "spit")),
+    SPIT(version -> "spit"),
     /**
-     * In vanilla, this particle is emitted around spore blossoms.
+     * Produced by entities splashing in water, produced by villagers sweating during a raid,
+     * appears above the surface of the water when fishing, created when falling_water or falling_dripstone_water particles hit the ground,
+     * shaken off by wolves after exiting water.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Blue droplet.</li>
+     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
+     * </ul>
+     */
+    SPLASH(version -> "splash", DIRECTIONAL),
+    /**
+     * Floats in the atmosphere around spore blossoms.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -933,8 +987,7 @@ public enum ParticleEffect {
      */
     SPORE_BLOSSOM_AIR(version -> version < 17 ? "NONE" : "spore_blossom_air"),
     /**
-     * In vanilla, this particle is displayed when a squid gets
-     * damaged.
+     * Produced by squid when hit.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -943,31 +996,9 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    SQUID_INK(version -> version < 13 ? "NONE" : "squid_ink", DIRECTIONAL),
+    SQUID_INK(version -> "squid_ink", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed randomly in water.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Tiny blue square.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    SUSPENDED(version -> version < 8 ? "NONE" : (version < 13 ? "SUSPENDED" : "underwater"), REQUIRES_WATER),
-    /**
-     * In vanilla, this particle is displayed when a player is close
-     * to bedrock or the void.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Tiny gray square.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    SUSPENDED_DEPTH(version -> version > 8 && version < 13 ? "SUSPENDED_DEPTH" : "NONE", DIRECTIONAL),
-    /**
-     * In vanilla, this particle is displayed when a Player hits
-     * multiple entities at once with a sword.
+     * Appears when a sweeping attack is performed.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -976,10 +1007,9 @@ public enum ParticleEffect {
      * <li>Extra: The size of this particle can be set in the offsetX parameter. The amount has to be 0 and the speed has to be 1.</li>
      * </ul>
      */
-    SWEEP_ATTACK(version -> version < 9 ? "NONE" : (version < 13 ? "SWEEP_ATTACK" : "sweep_attack"), RESIZEABLE),
+    SWEEP_ATTACK(version -> "sweep_attack", RESIZEABLE),
     /**
-     * In vanilla, this particle is displayed when a totem of
-     * undying is used.
+     * Produced when a totem of undying is used.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -988,90 +1018,19 @@ public enum ParticleEffect {
      * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
      * </ul>
      */
-    TOTEM(version -> version < 11 ? "NONE" : (version < 13 ? "TOTEM" : "totem_of_undying"), DIRECTIONAL),
+    TOTEM_OF_UNDYING(version -> "totem_of_undying", DIRECTIONAL),
     /**
-     * In vanilla, this particle is randomly displayed by mycelium
-     * blocks.
+     * Produced when a Trial Spawner is activated.
      * <p>
      * <b>Information</b>:
      * <ul>
-     * <li>Appearance: Tiny gray square.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
-     * </ul>
-     */
-    TOWN_AURA(version -> version < 8 ? "NONE" : (version < 13 ? "TOWN_AURA" : "mycelium"), DIRECTIONAL),
-    /**
-     * In vanilla, this particle is displayed when attacking a village.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Gray cloud with a lightning.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    VILLAGER_ANGRY(version -> version < 8 ? "NONE" : (version < 13 ? "VILLAGER_ANGRY" : "angry_villager")),
-    /**
-     * In vanilla, this particle is displayed when trading with a
-     * villager, using bone meal on crops, feeding baby animals or walking on
-     * turtle eggs.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Green star.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * <li>Extra: The velocity of this particle can be set. The amount has to be 0.</li>
-     * </ul>
-     */
-    VILLAGER_HAPPY(version -> version < 8 ? "NONE" : (version < 13 ? "VILLAGER_HAPPY" : "happy_villager"), DIRECTIONAL),
-    /**
-     * In vanilla, this particle is displayed in the warped forest
-     * nether biome.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Blue square.</li>
-     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
-     * <li>Extra: This Particle gets a random velocity up.</li>
-     * </ul>
-     */
-    WARPED_SPORE(version -> version < 16 ? "NONE" : "warped_spore"),
-    /**
-     * In vanilla, this particle is displayed when an Entity is
-     * swimming in water, a projectile flies into the water or a fish
-     * bites onto the bait.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Bubble with blue outline.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    WATER_BUBBLE(version -> version < 8 ? "NONE" : (version < 13 ? "WATER_BUBBLE" : "bubble"), DIRECTIONAL, REQUIRES_WATER),
-    /**
-     * In vanilla, this particle is displayed when rain hits the ground.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Blue droplet.</li>
-     * <li>Speed value: Doesn't influence the particle.</li>
-     * </ul>
-     */
-    WATER_DROP(version -> version > 8 && version < 13 ? "WATER_DROP" : "NONE"),
-    /**
-     * In vanilla, this particle is displayed when an Entity is
-     * swimming in water, wolves shaking  off after swimming or boats.
-     * <p>
-     * <b>Information</b>:
-     * <ul>
-     * <li>Appearance: Blue droplet.</li>
+     * <li>Appearance: Tiny gold line.</li>
      * <li>Speed value: Influences the velocity at which the particle flies off.</li>
      * </ul>
      */
-    WATER_SPLASH(version -> version < 8 ? "NONE" : (version < 13 ? "WATER_SPLASH" : "splash"), DIRECTIONAL),
+    TRIAL_SPAWNER_DETECTION(version -> version < 20 ? "NONE" : "trial_spawner_detection"),
     /**
-     * In vanilla, this particle is displayed when a fish bites
-     * onto the bait of a fishing rod.
+     * Floats in the atmosphere underwater.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -1079,9 +1038,21 @@ public enum ParticleEffect {
      * <li>Speed value: Doesn't influence the particle.</li>
      * </ul>
      */
-    WATER_WAKE(version -> version < 8 ? "NONE" : (version < 13 ? "WATER_WAKE" : "fishing"), DIRECTIONAL),
+    UNDERWATER(version -> "underwater", REQUIRES_WATER),
+    VIBRATION(version -> version < 19 ? "NONE" : "vibration"),
     /**
-     * In vanilla, this particle is displayed when wax is removed from a copper block.
+     * Floats in the atmosphere in warped forest biomes.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Blue square.</li>
+     * <li>Speed value: Influences the velocity at which the particle flies off.</li>
+     * <li>Extra: This particle gets a random velocity up.</li>
+     * </ul>
+     */
+    WARPED_SPORE(version -> "warped_spore"),
+    /**
+     * Produced when scraping wax off copper.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -1092,7 +1063,7 @@ public enum ParticleEffect {
      */
     WAX_OFF(version -> version < 17 ? "NONE" : "wax_off", DIRECTIONAL),
     /**
-     * In vanilla, this particle is displayed when wax is applied to a copper block.
+     * Produced when using honeycomb on copper.
      * <p>
      * <b>Information</b>:
      * <ul>
@@ -1103,8 +1074,7 @@ public enum ParticleEffect {
      */
     WAX_ON(version -> version < 17 ? "NONE" : "wax_on", DIRECTIONAL),
     /**
-     * In vanilla, this particle is randomly displayed in the
-     * basalt deltas nether biomes.
+     * Floats in the atmosphere in basalt delta biomes.
      * <p>
      * The movement of this particle is handled completely clientside
      * and can therefore not be influenced.
@@ -1113,10 +1083,25 @@ public enum ParticleEffect {
      * <ul>
      * <li>Appearance: White square</li>
      * <li>Speed value: Doesn't influence the particle.</li>
-     * <li>Extra: This Particle gets a random velocity in the -x and -z direction while falling down.</li>
+     * <li>Extra: This particle gets a random velocity in the -x and -z direction while falling down.</li>
      * </ul>
      */
-    WHITE_ASH(version -> version < 16 ? "NONE" : "white_ash");
+    WHITE_ASH(version -> "white_ash"),
+    /**
+     * Unknown
+     */
+    WHITE_SMOKE(version -> version < 20 ? "NONE" : "white_smoke"),
+    /**
+     * Emitted by witches.
+     * <p>
+     * <b>Information</b>:
+     * <ul>
+     * <li>Appearance: Purple cross.</li>
+     * <li>Speed value: Causes the particle to only fly up when set to 0.</li>
+     * <li>Extra: Only the motion on the y-axis can be controlled, the motion on the x- and z-axis are multiplied by 0.1 when setting the values to 0</li>
+     * </ul>
+     */
+    WITCH(version -> "witch");
 
     public static final List<ParticleEffect> VALUES = List.of(values());
     public static final Map<String, ParticleEffect> MINECRAFT_KEYS;
@@ -1130,9 +1115,9 @@ public enum ParticleEffect {
         );
     }
 
-    final DoubleFunction<String> fieldNameMapper;
-    final List<Property> properties;
-    Particle particle;
+    private final DoubleFunction<String> fieldNameMapper;
+    private final List<Property> properties;
+    private Particle particle;
 
     ParticleEffect(DoubleFunction<String> fieldNameMapper, Property... properties) {
         this.fieldNameMapper = fieldNameMapper;

@@ -1,7 +1,7 @@
 package net.treasure.particles.util.nms;
 
-import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
+import net.treasure.particles.util.nms.particles.ParticleEffect;
 import org.bukkit.Color;
 
 import java.util.List;

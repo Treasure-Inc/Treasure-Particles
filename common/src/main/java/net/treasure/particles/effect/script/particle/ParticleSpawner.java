@@ -136,7 +136,7 @@ public class ParticleSpawner extends Script {
 
         if (particle.hasProperty(ParticleEffect.Property.DUST)) {
             var size = this.size != null ? this.size.get(this, data) : 1;
-            if (particle.equals(ParticleEffect.DUST_COLOR_TRANSITION))
+            if (particle == ParticleEffect.DUST_COLOR_TRANSITION)
                 if (colorData instanceof DuoImpl duo) {
                     var pair = duo.nextDuo();
                     builder.data(Particles.NMS.getColorTransitionData(pair.getKey(), pair.getValue(), size));
@@ -145,7 +145,7 @@ public class ParticleSpawner extends Script {
             else
                 builder.data(Particles.NMS.getDustData(colorData.next(data), size));
         } else if (particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR)) {
-            if (particle.equals(ParticleEffect.NOTE) && colorData.isNote()) {
+            if (particle == ParticleEffect.NOTE && colorData.isNote()) {
                 builder.data(Particles.NMS.getParticleParam(particle));
                 builder.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
             } else
