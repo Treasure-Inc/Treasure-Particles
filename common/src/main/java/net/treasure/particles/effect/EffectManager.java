@@ -30,6 +30,7 @@ import net.treasure.particles.effect.script.particle.reader.circle.CircleParticl
 import net.treasure.particles.effect.script.particle.reader.circle.SpreadCircleParticleReader;
 import net.treasure.particles.effect.script.particle.reader.polygon.PolygonParticleReader;
 import net.treasure.particles.effect.script.particle.reader.single.SingleParticleReader;
+import net.treasure.particles.effect.script.particle.reader.sphere.SphereParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.FullSpiralParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.MultiSpiralParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.SpiralParticleReader;
@@ -58,7 +59,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class EffectManager implements DataHolder {
 
-    public static final String VERSION = "1.2.1";
+    public static final String VERSION = "1.2.2";
 
     private final ConcurrentHashMap<String, EffectData> data;
 
@@ -111,6 +112,8 @@ public class EffectManager implements DataHolder {
         registerReader(new SpiralParticleReader(), "spiral");
         registerReader(new MultiSpiralParticleReader(), "multi-spiral");
         registerReader(new FullSpiralParticleReader(), "full-spiral");
+        //- Sphere
+        registerReader(new SphereParticleReader(), "sphere");
 
         // Messages
         registerReader(new BasicScriptReader<>(ChatMessage::new), "chat");

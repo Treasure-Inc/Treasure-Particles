@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.1"
+version: "1.2.2"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -157,14 +157,18 @@ effects:
   spores: "<b>Spores"
   twinkle: "<b>Twinkle"
   triangles: "<b>Triangles"
+  shield: "<b>Shield"
   smoke: "<b>Smoke"
+  rocket: "<gray>Rocket"
+  heart: "<#f54242>Heart"
+  # Text Effects
+  love-you: "<#f54242>Love You"
+  # Basic
+  gust: "<gray>Gust"
+  sonic: "<#65f5fc>Sonic"
   sweeping: "<gray>Sweeping"
   beam: "<gray>Beam"
-  rocket: "<gray>Rocket"
   plane: "<#b58500>Plane"
-  heart: "<#f54242>Heart"
-  love-you: "<#f54242>Love You"
-  sonic: "<#65f5fc>Sonic"
   # Death Effects
   blood: "<#a8324a>Blood"
   tear: "<#c2979e>Tear"

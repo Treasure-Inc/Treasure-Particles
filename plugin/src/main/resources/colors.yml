@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.0"
+version: "1.2.2"
 rainbow-colors-size: 25
 schemes:
   # Gradient Color Schemes
@@ -91,6 +91,9 @@ schemes:
   smoke:
     values: [ "#fee440", "#9e2a2b", "#540b0e" ]
     size: 20
+  shield:
+    values: [ "#eb6b34", "#edac91" ]
+    size: 15
   # Christmas
   christmas:
     name: "%christmas%"

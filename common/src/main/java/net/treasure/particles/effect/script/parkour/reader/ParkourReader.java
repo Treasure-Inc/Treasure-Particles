@@ -44,6 +44,7 @@ public class ParkourReader extends ScriptReader<ParkourReader.Context, Parkour> 
 
     @Override
     public boolean validate(Context c) throws ReaderException {
+        if (!super.validate(c)) return false;
         var s = c.script();
 
         if (s.style().particle().hasProperty(ParticleEffect.Property.DUST)) {

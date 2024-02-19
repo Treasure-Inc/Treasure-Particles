@@ -25,6 +25,7 @@ public class TextParticleReader extends ParticleReader<TextParticle> {
 
     @Override
     public boolean validate(ParticleReader.Context<TextParticle> context) throws ReaderException {
+        if (!super.validate(context)) return false;
         context.script().initialize();
         return true;
     }

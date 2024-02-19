@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.2.1"
+version: "1.2.2"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -152,19 +152,23 @@ effects:
   planner: "<gradient:green:dark_green>Planör"
   # Özel
   helix: "<b>Sarmal"
-  complementary: "<b><gradient:#8A1BE4:#75E41B:#E01F5A:#1FE0A5>Tamamlayıcı"
+  complementary: "<b>Tamamlayıcı"
   galaxy: "<b>Galaksi"
   spores: "<b>Sporlar"
   twinkle: "<b>Pırıltı"
   triangles: "<b>Üçgenler"
+  shield: "<b>Kalkan"
   smoke: "<b>Duman"
+  rocket: "<#33ff8b>Roket"
+  heart: "<#f54242>Kalp"
+  # Yazı Efektleri
+  love-you: "<#f54242>Seni Seviyorum"
+  # Basit
+  gust: "<gray>Gust"
+  sonic: "<#65f5fc>Sonik"
   sweeping: "<gray>Süpürme"
   beam: "<gray>Işın"
-  rocket: "<#33ff8b>Roket"
   plane: "<#b58500>Uçak"
-  heart: "<#f54242>Kalp"
-  love-you: "<#f54242>Seni Seviyorum"
-  sonic: "<#65f5fc>Sonik"
   # Ölüm Efektleri
   blood: "<#a8324a>Kan"
   tear: "<#c2979e>Gözyaşı"

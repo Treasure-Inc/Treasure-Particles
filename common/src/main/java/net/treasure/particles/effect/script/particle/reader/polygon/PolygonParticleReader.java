@@ -27,6 +27,7 @@ public class PolygonParticleReader extends ParticleReader<PolygonParticle> {
 
     @Override
     public boolean validate(ParticleReader.Context<PolygonParticle> context) throws ReaderException {
+        if (!super.validate(context)) return false;
         if (context.script().step() <= 0) {
             error(context.effect(), context.type(), context.line(), "'step' value must be greater than 0");
             return false;

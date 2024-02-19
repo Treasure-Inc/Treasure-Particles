@@ -1,6 +1,7 @@
 package net.treasure.particles.util.math;
 
 import lombok.SneakyThrows;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -210,5 +211,28 @@ public class MathUtils {
 
     public static int generateRandomInteger(int minimum, int maximum) {
         return minimum + (int) (new Random().nextDouble() * ((maximum - minimum) + 1));
+    }
+
+    public static Vector getRandomVector() {
+        var random = new Random();
+
+        var u = random.nextDouble();
+        var v = random.nextDouble();
+
+        var theta = u * PI2;
+        var phi = Math.acos(2 * v - 1);
+
+        var sinTheta = sin(theta);
+        var cosTheta = cos(theta);
+        var sinPhi = sin(phi);
+        var cosPhi = cos(phi);
+
+        var x = sinPhi * cosTheta;
+        var y = sinPhi * sinTheta;
+        var z = cosPhi;
+
+        // Going to take it on faith from the math gods that
+        // this is always a normal vector
+        return new Vector(x, y, z);
     }
 }

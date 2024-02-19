@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.1"
+version: "1.2.2"
 effects:
   rainbow-circle:
     display-name: "%rainbow-circle%"
@@ -426,9 +426,9 @@ effects:
           depend: [ 'conditions' ]
         times: 8
         scripts:
-          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var x=cos(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "var y=({stepY} / {maxStepY}) * 1.5"
-          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var z=sin(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "conditional (locationYaw<45 && locationYaw>-45) ? preset swap-y-z : none"
           - "conditional ((locationYaw<180 && locationYaw>135) || (locationYaw>-180 && locationYaw<-135)) ? preset swap-y-z : none"
           - "conditional (locationPitch==-90 || locationPitch==90) ? preset swap-x-y : none"
@@ -439,9 +439,9 @@ effects:
           depend: [ 'conditions' ]
         times: 8
         scripts:
-          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var x=cos(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
-          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var z=sin(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "particle [effect=minecraft:end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
       conditions:
         event: NONE
@@ -455,9 +455,9 @@ effects:
         event: STATIC
         times: 8
         scripts:
-          - "var x=-(cos(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var x=cos(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "var y=({stepY} / {maxStepY}) * 1.5 - 0.25"
-          - "var z=-(sin(({stepX}/{maxStepX}) * {PI} * 2 + ((({PI} * 2) / 8) * {i}))) * (({maxStepY} - abs({stepY})) / {maxStepY})"
+          - "var z=sin(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
           - "particle [effect=minecraft:end_rod,pos={y={y};x={x};z={z}},amount=0,origin=head]"
   galaxy:
     display-name: "%galaxy%"
@@ -573,6 +573,32 @@ effects:
         scripts:
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r1},origin=feet,color={name=triangles;speed=0.1;revert=true}]
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r2},origin=feet,color={name=triangles;speed=0.1;revert=true}]
+  shield:
+    display-name: "%shield%"
+    color-animation: "shield"
+    name-color-animation: true
+    permission: "%special%"
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection,radius=0.5,particles=8,origin=feet,amount=0]
+      moving:
+        event: MOVING
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      sneaking:
+        event: SNEAKING
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      standing:
+        event: STANDING
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      static:
+        event: STATIC
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
   smoke:
     display-name: "%smoke%"
     color-animation: "smoke"
@@ -676,6 +702,30 @@ effects:
         event: STATIC
         scripts:
           - full-spiral [effect=minecraft:dust,gap=2,pos={y=1},amount=5,origin=feet,color={name=whirl;revert=true;speed=0.05}]
+  sonic:
+    display-name: "%sonic%"
+    color-animation: "#65f5fc"
+    permission: "%basic%"
+    interval: 3
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - particle [effect=minecraft:sonic_boom,origin=head]
+      projectile:
+        event: PROJECTILE
+        scripts:
+          - particle [effect=minecraft:sonic_boom,origin=head]
+  gust:
+    display-name: "%gust%"
+    color-animation: "#faded2"
+    permission: "%basic%"
+    interval: 2
+    on-tick:
+      standing:
+        event: ELYTRA
+        scripts:
+          - single [effect=minecraft:gust,origin=feet]
   tear:
     display-name: "%tear%"
     color-animation: "tear"
@@ -730,7 +780,7 @@ effects:
   blood:
     display-name: "%blood%"
     color-animation: "#a8324a"
-    permission: "%basic%"
+    permission: "%death-effects%"
     variables: [ 'x=0', 't=0' ]
     interval: 1
     on-tick:
@@ -771,20 +821,6 @@ effects:
         event: ELYTRA
         scripts:
           - circle [effect=minecraft:electric_spark,particles=16,origin=feet,amount=0]
-  sonic:
-    display-name: "%sonic%"
-    color-animation: "#65f5fc"
-    permission: "%basic%"
-    interval: 3
-    on-tick:
-      elytra:
-        event: ELYTRA
-        scripts:
-          - particle [effect=minecraft:sonic_boom,origin=head]
-      projectile:
-        event: PROJECTILE
-        scripts:
-          - particle [effect=minecraft:sonic_boom,origin=head]
   plane:
     display-name: "%plane%"
     color-animation: "#b58500"
