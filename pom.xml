@@ -89,9 +89,8 @@
 
     <distributionManagement>
         <repository>
-            <id>dev</id>
-            <name>Local repository</name>
-            <url>file://${user.home}/.m2/repository</url>
+            <id>treas-repo</id>
+            <url>http://34.141.26.145/releases/</url>
         </repository>
     </distributionManagement>
 </project>
