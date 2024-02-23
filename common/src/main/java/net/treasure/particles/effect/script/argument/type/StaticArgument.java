@@ -69,7 +69,7 @@ public class StaticArgument<T> {
     }
 
     public static float asFloat(ReaderContext<?> context) throws ReaderException {
-        return asFloat(context.value(), Float.MIN_VALUE, Float.MAX_VALUE);
+        return asFloat(context.value(), -Float.MIN_VALUE, Float.MAX_VALUE);
     }
 
     public static float asFloat(ReaderContext<?> context, float min) throws ReaderException {
