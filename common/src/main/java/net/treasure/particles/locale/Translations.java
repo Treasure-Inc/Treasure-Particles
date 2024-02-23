@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Translations implements DataHolder {
 
     public static String LOCALE;
-    public static final String VERSION = "1.2.2";
+    public static final String VERSION = "1.2.3";
 
     private FileConfiguration config;
     @Getter
@@ -69,8 +69,10 @@ public class Translations implements DataHolder {
             MIXER_GUI_ALL_SELECTED,
             MIXER_GUI_SELECT_ALL,
             MIXER_GUI_SELECTED_ALL,
+            MIXER_GUI_SELECTED_HANDLER,
             MIXER_GUI_UNSELECT_ALL,
             MIXER_GUI_UNSELECTED_ALL,
+            MIXER_GUI_UNSELECTED_HANDLER,
             MIXER_GUI_SELECT_HANDLERS,
             MIXER_GUI_HAS_DYNAMIC_COLOR,
             MIXER_GUI_PREFER_COLOR_GROUP,
@@ -122,6 +124,7 @@ public class Translations implements DataHolder {
             EFFECT_STATIC_TPHERE,
             EFFECT_STATIC_UPDATE,
             NOTIFICATIONS_TOGGLE,
+            NOTIFICATIONS_DISABLED,
             RELOADING,
             RELOADED;
 
@@ -235,8 +238,10 @@ public class Translations implements DataHolder {
         MIXER_GUI_ALL_SELECTED = load("gui.mixer-gui.all-selected", "<green>All handlers selected!");
         MIXER_GUI_SELECT_ALL = load("gui.mixer-gui.select-all", "<#87FF65>❤ Click to select this effect!");
         MIXER_GUI_SELECTED_ALL = load("gui.mixer-gui.selected-all", "<prefix> <green>Selected:<reset> {0}");
+        MIXER_GUI_SELECTED_HANDLER = load("gui.mixer-gui.selected-handler", "<prefix> <green>Selected Handler:<reset> {0} <reset>- {1}");
         MIXER_GUI_UNSELECT_ALL = load("gui.mixer-gui.unselect-all", "<red>[Middle-Click] Unselect all handlers of this effect.");
         MIXER_GUI_UNSELECTED_ALL = load("gui.mixer-gui.unselected-all", "<prefix> <yellow>Unselected:<reset> {0}");
+        MIXER_GUI_UNSELECTED_HANDLER = load("gui.mixer-gui.unselected-handler", "<prefix> <yellow>Unselected Handler:<reset> {0} <reset>- {1}");
         MIXER_GUI_SELECT_HANDLERS = load("gui.mixer-gui.select-handlers", "<gray>[Right-Click] You can select handlers individually.");
         MIXER_GUI_HAS_DYNAMIC_COLOR = load("gui.mixer-gui.has-dynamic-color", "<gray>• This effect has dynamic colors.");
         MIXER_GUI_PREFER_COLOR_GROUP = load("gui.mixer-gui.prefer-color-group", "<gray>  <yellow>Shift-right-click</yellow> to use this effect's color group.");
@@ -288,7 +293,10 @@ public class Translations implements DataHolder {
         EFFECT_STATIC_TP = load("commands.effect-static-tp", "<prefix> <green>Teleported to the static effect {0}.");
         EFFECT_STATIC_TPHERE = load("commands.effect-static-tphere", "<prefix> <green>Teleported the static effect {0} to your location.");
         EFFECT_STATIC_UPDATE = load("commands.effect-static-update", "<prefix> <gray>Updated static effect {0}:<reset> {1}");
+        //-Notifications
         NOTIFICATIONS_TOGGLE = load("commands.notifications-toggle", "<prefix> <gray>Notifications: {0}");
+        NOTIFICATIONS_DISABLED = load("commands.notifications-disabled", "<prefix> <red>Notifications are disabled.");
+        //-Reload
         RELOADING = load("commands.reloading", "<prefix> <yellow>Reloading TreasureParticles");
         RELOADED = load("commands.reloaded", "<prefix> <green>Reloaded!");
         //-Args

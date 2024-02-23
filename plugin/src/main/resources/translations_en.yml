@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.2"
+version: "1.2.3"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -42,9 +42,11 @@ gui:
     title: "Effect Mixer"
     all-selected: "<green>All handlers selected!"
     select-all: "<#87FF65>❤ Click to select this effect!"
-    selected-all: "<prefix> <green>Selected:<reset> {0}"
+    selected-all: "<prefix> <green>Selected:<reset> {0}" # Chat message
+    selected-handler: "<prefix> <green>Selected Handler:<reset> {0} <reset>- {1}" # Chat message
     unselect-all: "<red>[Middle-Click] Unselect all handlers of this effect."
     unselected-all: "<prefix> <yellow>Unselected:<reset> {0}" # Chat message
+    unselected-handler: "<prefix> <yellow>Unselected Handler:<reset> {0} <reset>- {1}" # Chat message
     select-handlers: "<gray>[Right-Click] You can select handlers individually."
     has-dynamic-color: "<gray>• This effect has dynamic colors."
     prefer-color-group: "<gray>  <yellow>Shift-right-click</yellow> to use this effect's color group."
@@ -95,6 +97,7 @@ commands:
   effect-static-tphere: "<prefix> <green>Teleported the static effect {0} to your location."
   effect-static-update: "<prefix> <gray>Updated static effect {0}:<reset> {1}"
   notifications-toggle: "<prefix> <gray>Notifications: {0}"
+  notifications-disabled: "<prefix> <red>Notifications are disabled."
   reloading: "<prefix> <yellow>Reloading TreasureParticles"
   reloaded: "<prefix> <green>Reloaded!"
   args:

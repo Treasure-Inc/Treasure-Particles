@@ -357,6 +357,10 @@ public class MainCommand extends BaseCommand {
     @Subcommand("notifications")
     @CommandPermission(Permissions.COMMAND_ADMIN)
     public void toggleNotifications(Player player) {
+        if (!TreasureParticles.isNotificationsEnabled()) {
+            MessageUtils.sendParsed(player, Translations.NOTIFICATIONS_DISABLED);
+            return;
+        }
         var data = playerManager.getEffectData(player);
         data.setNotificationsEnabled(!data.isNotificationsEnabled());
         MessageUtils.sendParsed(player, Translations.NOTIFICATIONS_TOGGLE, data.isNotificationsEnabled() ? Translations.ENABLED : Translations.DISABLED);

@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.ColorManager;
 import net.treasure.particles.effect.Effect;
+import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.gui.GUIManager;
 import net.treasure.particles.gui.config.ElementType;
 import net.treasure.particles.gui.config.GUIElements;
@@ -92,7 +93,13 @@ public class EffectsGUI extends GUI {
         var inventory = Bukkit.createInventory(holder, layout.getSize(), MessageUtils.parseLegacy(Translations.EFFECTS_GUI_TITLE));
         holder.setInventory(inventory);
 
-        holder.setAvailableFilters(effectManager.getEffects().stream().filter(effect -> effect.canUse(player)).flatMap(effect -> effect.getEvents().stream()).distinct().toList());
+        holder.setAvailableFilters(effectManager.getEffects()
+                .stream()
+                .filter(effect -> effect.canUse(player))
+                .flatMap(effect -> effect.getEvents().stream().filter(event -> event != HandlerEvent.STATIC))
+                .distinct()
+                .toList()
+        );
 
         super.commonItems(player, holder)
                 .pageItems(player, holder, (page + 1) * maxEffects < effects.size(), () -> open(player, holder, effects))

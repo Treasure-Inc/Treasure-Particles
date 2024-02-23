@@ -19,6 +19,7 @@ public class GUISounds {
     public static Pair<String, float[]> BACK = new Pair<>("minecraft:item.book.page_turn", new float[]{1, 1});
     // Mixer GUI
     public static Pair<String, float[]> MIXER_SELECT_EFFECT = new Pair<>("minecraft:ui.button.click", new float[]{0.1f, 1.5f});
+    public static Pair<String, float[]> MIXER_UNSELECT_EFFECT = new Pair<>("minecraft:ui.button.click", new float[]{0.1f, 1.5f});
     public static Pair<String, float[]> CONFIRM = new Pair<>("minecraft:block.note_block.pling", new float[]{1, 2});
     // Handlers GUI
     public static Pair<String, float[]> SELECT_HANDLER = new Pair<>("minecraft:ui.button.click", new float[]{0.1f, 1.5f});
@@ -47,6 +48,7 @@ public class GUISounds {
         BACK = getSound("colors-gui.back", BACK);
         // Mixer GUI
         MIXER_SELECT_EFFECT = getSound("mixer-gui.select-effect", MIXER_SELECT_EFFECT);
+        MIXER_UNSELECT_EFFECT = getSound("mixer-gui.unselect-effect", MIXER_UNSELECT_EFFECT);
         CONFIRM = getSound("mixer-gui.confirm", CONFIRM);
         // Handlers GUI
         SELECT_HANDLER = getSound("handlers-gui.select-handler", SELECT_HANDLER);

@@ -2,6 +2,7 @@ package net.treasure.particles.player.listener;
 
 import lombok.AllArgsConstructor;
 import net.treasure.particles.TreasureParticles;
+import net.treasure.particles.effect.EffectManager;
 import net.treasure.particles.locale.Translations;
 import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.player.PlayerManager;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class JoinQuitListener implements Listener {
 
     private final PlayerManager playerManager;
+    private final EffectManager effectManager;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on(PlayerJoinEvent event) {
@@ -33,5 +35,6 @@ public class JoinQuitListener implements Listener {
     @EventHandler
     public void on(PlayerQuitEvent event) {
         playerManager.remove(event.getPlayer());
+        effectManager.getData().remove(event.getPlayer().getUniqueId().toString());
     }
 }

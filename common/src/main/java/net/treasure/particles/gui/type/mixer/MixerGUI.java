@@ -3,6 +3,7 @@ package net.treasure.particles.gui.type.mixer;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.color.ColorManager;
 import net.treasure.particles.effect.data.PlayerEffectData;
+import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.mix.MixData;
 import net.treasure.particles.gui.GUIManager;
 import net.treasure.particles.gui.config.ElementType;
@@ -99,7 +100,13 @@ public class MixerGUI extends GUI {
                 .sorted((o1, o2) -> Boolean.compare(holder.isSelected(o2), holder.isSelected(o1)))
                 .toList();
 
-        holder.setAvailableFilters(effectManager.getEffects().stream().filter(effect -> effect.canUse(player) && !effect.mixerCompatibleTickHandlers(holder).isEmpty()).flatMap(effect -> effect.getEvents().stream()).distinct().toList());
+        holder.setAvailableFilters(effectManager.getEffects()
+                .stream()
+                .filter(effect -> effect.canUse(player) && !effect.mixerCompatibleTickHandlers(holder).isEmpty())
+                .flatMap(effect -> effect.getEvents().stream().filter(event -> event != HandlerEvent.STATIC))
+                .distinct()
+                .toList()
+        );
 
         super.commonItems(player, holder)
                 .pageItems(player, holder, (page + 1) * maxEffects < effects.size(), () -> open(player, holder))
@@ -199,6 +206,7 @@ public class MixerGUI extends GUI {
                 if (event.getClick() == ClickType.MIDDLE) {
                     holder.remove(effect);
                     MessageUtils.sendParsed(player, Translations.MIXER_GUI_UNSELECTED_ALL, effect.getDisplayName());
+                    GUISounds.play(player, GUISounds.MIXER_UNSELECT_EFFECT);
                     open(player, holder);
                     return;
                 }

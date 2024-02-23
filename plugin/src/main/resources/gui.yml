@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.1.0"
+version: "1.2.3"
 # GUI options
 animation: # GUI animations
   enabled: true
@@ -19,6 +19,7 @@ sounds: # GUI sounds (SOUND VOLUME PITCH) (Leave it blank if you don't want it t
     back: "minecraft:item.book.page_turn 1 1"
   mixer-gui:
     select-effect: "minecraft:ui.button.click 0.1 1.5"
+    unselect-effect: "minecraft:ui.button.click 0.1 1.5"
     confirm: "minecraft:block.note_block.pling 1 2"
   handlers-gui:
     select-handler: "minecraft:ui.button.click 0.1 1.5"

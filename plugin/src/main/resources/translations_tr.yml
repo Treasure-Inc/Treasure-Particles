@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.2.2"
+version: "1.2.3"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -42,9 +42,11 @@ gui:
     title: "Efekt Mix'leyici"
     all-selected: "<green>Tüm işleyiciler seçili!"
     select-all: "<#87FF65>❤ Tıkla ve efekti seç!"
-    selected-all: "<prefix> <green>Efekt seçildi:<reset> {0}"
+    selected-all: "<prefix> <green>Efekt seçildi:<reset> {0}" # Sohbet mesajı
+    selected-handler: "<prefix> <green>İşleyicis seçildi:<reset> {0} <reset>- {1}" # Sohbet mesajı
     unselect-all: "<red>[Orta-Tıkla] Bu efektin tüm işleyicilerinin seçimini kaldır."
     unselected-all: "<prefix> <yellow>Seçim kaldırıldı:<reset> {0}" # Sohbet mesajı
+    unselected-handler: "<prefix> <yellow>Seçim kaldırıldı:<reset> {0} <reset>- {1}" # Sohbet mesajı
     select-handlers: "<gray>[Sağ-Tıkla] İşleyicileri tek tek seçebilirsin."
     has-dynamic-color: "<gray>• Bu efekt dinamik renklere sahip."
     prefer-color-group: "<gray>  Bu efektin renk grubunu kullanmak için <yellow>shift-sağ-tıkla</yellow>."
@@ -95,6 +97,7 @@ commands:
   effect-static-tphere: "<prefix> <green>Statik efekt {0} konumuna ışınlandırıldı."
   effect-static-update: "<prefix> <gray>Static efekt {0} güncellendi:<reset> {1}"
   notifications-toggle: "<prefix> <gray>Bildirimler: {0}"
+  notifications-disabled: "<prefix> <red>Bildirimler devre dışı."
   reloading: "<prefix> <yellow>TreasureParticles yenileniyor"
   reloaded: "<prefix> <green>Başarıyla yenilendi!"
   args:
