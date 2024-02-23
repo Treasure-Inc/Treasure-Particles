@@ -72,14 +72,14 @@ public class TickHandlersGUI {
                     holder.lockCloseListener = true;
                     open(data, mixerHolder, effect);
                     GUISounds.play(player, GUISounds.UNSELECT_HANDLER);
-                    MessageUtils.sendParsed(player, Translations.MIXER_GUI_UNSELECTED_HANDLER);
+                    MessageUtils.sendParsed(player, Translations.MIXER_GUI_UNSELECTED_HANDLER, effect.getDisplayName(), handler.displayName);
                     return;
                 }
                 mixerHolder.add(effect, handler);
                 holder.lockCloseListener = true;
                 open(data, mixerHolder, effect);
                 GUISounds.play(player, GUISounds.SELECT_HANDLER);
-                MessageUtils.sendParsed(player, Translations.MIXER_GUI_SELECTED_HANDLER);
+                MessageUtils.sendParsed(player, Translations.MIXER_GUI_SELECTED_HANDLER, effect.getDisplayName(), handler.displayName);
             });
         }
 

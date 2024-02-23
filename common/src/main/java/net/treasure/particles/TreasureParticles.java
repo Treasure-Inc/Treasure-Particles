@@ -15,6 +15,7 @@ import net.treasure.particles.gui.GUIManager;
 import net.treasure.particles.locale.Translations;
 import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.player.PlayerManager;
+import net.treasure.particles.player.listener.JoinQuitListener;
 import net.treasure.particles.util.logging.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -133,6 +134,7 @@ public class TreasureParticles {
         }, 5);
 
         // Initialize players
+        Bukkit.getPluginManager().registerEvents(new JoinQuitListener(playerManager, effectManager), plugin);
         for (var player : Bukkit.getOnlinePlayers())
             playerManager.initializePlayer(player);
     }

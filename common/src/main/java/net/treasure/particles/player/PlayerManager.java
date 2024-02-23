@@ -28,7 +28,6 @@ public class PlayerManager {
     public PlayerManager() {
         data = new ConcurrentHashMap<>();
         gson = new Gson();
-        Bukkit.getPluginManager().registerEvents(new JoinQuitListener(this, TreasureParticles.getEffectManager()), TreasureParticles.getPlugin());
     }
 
     public void initializePlayer(Player player) {

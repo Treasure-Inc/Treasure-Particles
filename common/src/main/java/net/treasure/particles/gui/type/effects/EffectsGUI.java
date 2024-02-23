@@ -154,6 +154,7 @@ public class EffectsGUI extends GUI {
                         event -> {
                             if (event.isRightClick() && canCreateAnotherMix) {
                                 manager.mixerGUI().open(player);
+                                GUISounds.play(player, GUISounds.OPEN_MIXER_GUI);
                                 return;
                             }
                             if (!hasMix) return;
@@ -175,6 +176,7 @@ public class EffectsGUI extends GUI {
                             var newHolder = new EffectsHolder();
                             newHolder.setPlayerMixGUI(true);
                             open(player, newHolder, mixEffects);
+                            GUISounds.play(player, GUISounds.OPEN_MIXER_GUI);
                         });
         else if ((holder.isPlayerMixGUI() || MIXER.isEnabled()) && BORDERS.isEnabled())
             for (int slot : MIXER.slots())

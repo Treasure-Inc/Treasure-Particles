@@ -13,6 +13,7 @@ sounds: # GUI sounds (SOUND VOLUME PITCH) (Leave it blank if you don't want it t
   effects-gui:
     select-effect: "minecraft:block.note_block.pling 1 2"
     random-effect: "minecraft:block.note_block.pling 1 2"
+    open-mixer-gui: "minecraft:ui.button.click 0.1 1.5"
   colors-gui:
     select-color: "minecraft:block.note_block.pling 1 2"
     random-color: "minecraft:block.note_block.pling 1 2"

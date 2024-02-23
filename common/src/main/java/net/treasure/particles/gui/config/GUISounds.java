@@ -2,6 +2,7 @@ package net.treasure.particles.gui.config;
 
 import net.treasure.particles.constants.Patterns;
 import net.treasure.particles.gui.GUIManager;
+import net.treasure.particles.util.logging.ComponentLogger;
 import net.treasure.particles.util.tuples.Pair;
 import org.bukkit.entity.Player;
 
@@ -11,8 +12,10 @@ public class GUISounds {
     public static Pair<String, float[]> PREVIOUS_PAGE = new Pair<>("minecraft:item.book.page_turn", new float[]{1, 1});
     public static Pair<String, float[]> RESET = new Pair<>("", new float[]{1, 1});
     public static Pair<String, float[]> FILTER = new Pair<>("minecraft:ui.button.click", new float[]{0.1f, 1.5f});
+    // Effects GUI
     public static Pair<String, float[]> SELECT_EFFECT = new Pair<>("minecraft:block.note_block.pling", new float[]{1, 2});
     public static Pair<String, float[]> RANDOM_EFFECT = new Pair<>("minecraft:block.note_block.pling", new float[]{1, 2});
+    public static Pair<String, float[]> OPEN_MIXER_GUI = new Pair<>("minecraft:ui.button.click", new float[]{0.1f, 1.5f});
     // Colors GUI
     public static Pair<String, float[]> SELECT_COLOR = new Pair<>("minecraft:block.note_block.pling", new float[]{1, 2});
     public static Pair<String, float[]> RANDOM_COLOR = new Pair<>("minecraft:block.note_block.pling", new float[]{1, 2});
@@ -42,6 +45,7 @@ public class GUISounds {
         // Effects GUI
         SELECT_EFFECT = getSound("effects-gui.select-effect", SELECT_EFFECT);
         RANDOM_EFFECT = getSound("effects-gui.random-effect", RANDOM_EFFECT);
+        OPEN_MIXER_GUI = getSound("effects-gui.open-mixer-gui", OPEN_MIXER_GUI);
         // Colors GUI
         SELECT_COLOR = getSound("colors-gui.select-color", SELECT_COLOR);
         RANDOM_COLOR = getSound("colors-gui.random-color", RANDOM_COLOR);
@@ -56,8 +60,13 @@ public class GUISounds {
     }
 
     private Pair<String, float[]> getSound(String key, Pair<String, float[]> defaultValue) {
+        var raw = manager.getConfig().getString("sounds." + key);
+        if (raw == null) {
+            ComponentLogger.error(manager.getGenerator(), "There is no sound for \"" + key + "\"");
+            return defaultValue;
+        }
         try {
-            var args = Patterns.SPACE.split(manager.getConfig().getString("sounds." + key));
+            var args = Patterns.SPACE.split(raw);
             var sound = args[0];
             var volume = Float.parseFloat(args[1]);
             var pitch = Float.parseFloat(args[2]);
