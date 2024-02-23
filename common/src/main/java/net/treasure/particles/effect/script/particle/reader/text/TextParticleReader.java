@@ -19,8 +19,8 @@ public class TextParticleReader extends ParticleReader<TextParticle> {
         addValidArgument(c -> c.script().fontName(StaticArgument.asString(c)), "font");
         addValidArgument(c -> c.script().text(StaticArgument.asString(c)), true, "text");
 
-        addValidArgument(c -> c.script().rotateX(StaticArgument.asFloat(c)), "rotate-x");
-        addValidArgument(c -> c.script().rotateY(StaticArgument.asFloat(c)), "rotate-y");
+        addValidArgument(c -> c.script().rotateX(StaticArgument.asFloat(c, 0, 360)), "rotate-x");
+        addValidArgument(c -> c.script().rotateY(StaticArgument.asFloat(c, 0, 360)), "rotate-y");
     }
 
     @Override

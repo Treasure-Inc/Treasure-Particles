@@ -44,11 +44,10 @@ public class TextParticle extends ParticleSpawner {
     private Float rotateY;
 
     private Vector[] cache;
-    private double cosRx, sinRx, cosRy, sinRy;
 
     public TextParticle(ParticleEffect effect, ParticleOrigin origin,
                         int stepX, int stepY, float scale, boolean tickData, boolean vertical, Float rotateX, Float rotateY,
-                        Vector[] cache, double cosRx, double sinRx, double cosRy, double sinRy,
+                        Vector[] cache,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
                         IntArgument amount, RangeArgument speed, RangeArgument size,
@@ -63,10 +62,6 @@ public class TextParticle extends ParticleSpawner {
         this.rotateY = rotateY;
 
         this.cache = cache;
-        this.cosRx = cosRx;
-        this.sinRx = sinRx;
-        this.cosRy = cosRy;
-        this.sinRy = sinRy;
     }
 
     @Override
@@ -78,13 +73,12 @@ public class TextParticle extends ParticleSpawner {
 
         updateParticleData(builder, data);
 
-        boolean rY = rotateY != null, rX = rotateX != null;
-
         List<ParticleBuilder> builders = new ArrayList<>();
         for (var v : cache) {
-            Vectors.rotateAroundAxisY(v, rY ? cosRy : context.cosY, rY ? sinRy : context.sinY);
-            if (rX)
-                Vectors.rotateAroundAxisX(v, cosRx, sinRx);
+            if (directionalX)
+                Vectors.rotateAroundAxisX(v, context.cosP, context.sinP);
+            if (directionalY)
+                Vectors.rotateAroundAxisY(v, context.cosY, context.sinY);
 
             builders.add(builder.copy().location(context.origin.clone().add(v)));
 
@@ -96,6 +90,21 @@ public class TextParticle extends ParticleSpawner {
     }
 
     public void initialize() {
+        boolean rX = rotateX != null, rY = rotateY != null;
+        double cosRx = 0, sinRx = 0, cosRy = 0, sinRy = 0;
+
+        if (rX) {
+            var angleRx = Math.toRadians(rotateX);
+            cosRx = MathUtils.cos(angleRx);
+            sinRx = MathUtils.sin(angleRx);
+        }
+
+        if (rY) {
+            var angleRy = Math.toRadians(-rotateY);
+            cosRy = MathUtils.cos(angleRy);
+            sinRy = MathUtils.sin(angleRy);
+        }
+
         var image = stringToBufferedImage(new Font(fontName, Font.PLAIN, 16), text);
         List<Vector> cache = new ArrayList<>();
         for (int y = image.getHeight() - 1; y >= 0; y -= stepY) {
@@ -106,22 +115,16 @@ public class TextParticle extends ParticleSpawner {
                         new Vector((float) image.getWidth() / 2 - x, (float) image.getHeight() / 2 - y, 0) :
                         new Vector((float) image.getHeight() / 2 - y, 0, (float) image.getWidth() / 2 - x)
                 ).multiply(scale);
+
+                if (rX)
+                    Vectors.rotateAroundAxisX(v, cosRx, sinRx);
+                if (rY)
+                    Vectors.rotateAroundAxisY(v, cosRy, sinRy);
+
                 cache.add(v);
             }
         }
         this.cache = cache.toArray(Vector[]::new);
-
-        if (rotateX != null) {
-            var angleRx = Math.toRadians(rotateX);
-            this.cosRx = MathUtils.cos(angleRx);
-            this.sinRx = MathUtils.sin(angleRx);
-        }
-
-        if (rotateY != null) {
-            var angleRy = Math.toRadians(-rotateY);
-            this.cosRy = MathUtils.cos(angleRy);
-            this.sinRy = MathUtils.sin(angleRy);
-        }
     }
 
     public static BufferedImage stringToBufferedImage(Font font, String s) {
@@ -153,7 +156,7 @@ public class TextParticle extends ParticleSpawner {
         return new TextParticle(
                 particle, origin,
                 stepX, stepY, scale, tickData, vertical, rotateX, rotateY,
-                cache, cosRx, sinRx, cosRy, sinRy,
+                cache,
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
