@@ -130,14 +130,13 @@ public class PlayerEffectData extends EffectData {
     }
 
     public int getMixEffectLimit() {
-        return getMax(Keys.NAMESPACE + ".mix_effect_limit.");
+        return !Permissions.MIX_EFFECT_LIMIT_ENABLED ? -1 : getMax(Keys.NAMESPACE + ".mix_effect_limit.");
     }
 
     private int getMax(String permission) {
-        if (player.isOp())
-            return -1;
+        if (player.isOp()) return -1;
 
-        final AtomicInteger max = new AtomicInteger();
+        var max = new AtomicInteger();
 
         player.getEffectivePermissions().stream().map(PermissionAttachmentInfo::getPermission).map(String::toLowerCase).filter(value -> value.startsWith(permission)).map(value -> value.replace(permission, "")).forEach(value -> {
             if (value.equalsIgnoreCase("*")) {
