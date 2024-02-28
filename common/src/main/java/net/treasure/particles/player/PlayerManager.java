@@ -8,7 +8,6 @@ import net.treasure.particles.color.scheme.ColorScheme;
 import net.treasure.particles.database.DatabaseManager;
 import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.permission.Permissions;
-import net.treasure.particles.player.listener.JoinQuitListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -24,10 +23,13 @@ public class PlayerManager {
     @Getter
     private final ConcurrentHashMap<UUID, PlayerEffectData> data;
     private final Gson gson;
+    private int taskId;
 
     public PlayerManager() {
         data = new ConcurrentHashMap<>();
         gson = new Gson();
+
+        startTask();
     }
 
     public void initializePlayer(Player player) {
@@ -108,7 +110,19 @@ public class PlayerManager {
         TreasureParticles.getDatabase().update("REPLACE INTO `" + DatabaseManager.TABLE + "` (`uuid`, `data`) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
     }
 
+    private void startTask() {
+        var autoSaveInterval = TreasureParticles.getConfig().getInt("auto-save-interval", 10);
+        if (autoSaveInterval <= 0) {
+            taskId = -5;
+            return;
+        }
+        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(TreasureParticles.getPlugin(), () -> Bukkit.getOnlinePlayers().forEach(player -> save(player, getEffectData(player))), 0, 20L * 60 * autoSaveInterval).getTaskId();
+    }
+
     public void reload() {
+        if (taskId != -5)
+            Bukkit.getScheduler().cancelTask(taskId);
+
         var effectManager = TreasureParticles.getEffectManager();
         var colorManager = TreasureParticles.getColorManager();
 
@@ -149,5 +163,7 @@ public class PlayerManager {
 
             data.resetMixDataCache();
         }
+
+        startTask();
     }
 }

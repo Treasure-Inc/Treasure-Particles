@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.0"
+version: "1.2.3"
 
 # Translations locale (default=EN)
 locale: EN
@@ -13,6 +13,10 @@ notifications: false
 # Disable this setting if you don't want your configurations to update automatically
 # If you set 'auto-update-configurations' to true, outdated files will automatically back up and be replaced with newer versions of it
 auto-update-configurations: true
+
+# Interval of auto-saving players data (default=10)
+# Set this setting to 0 if you want to disable auto-saving players data
+auto-save-interval: 10 # Minutes
 
 # Toggle effect permission check (default=true)
 # If this setting is enabled, players will be checked when the following events occur whether they have permission when they're using the TrParticles effects
