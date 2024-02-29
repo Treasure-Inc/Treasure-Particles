@@ -116,7 +116,7 @@ public class PlayerManager {
             taskId = -5;
             return;
         }
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(TreasureParticles.getPlugin(), () -> Bukkit.getOnlinePlayers().forEach(player -> save(player, getEffectData(player))), 0, 20L * 60 * autoSaveInterval).getTaskId();
+        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(TreasureParticles.getPlugin(), () -> Bukkit.getOnlinePlayers().forEach(player -> save(player, getEffectData(player.getUniqueId()))), 20L * 60 * autoSaveInterval, 20L * 60 * autoSaveInterval).getTaskId();
     }
 
     public void reload() {

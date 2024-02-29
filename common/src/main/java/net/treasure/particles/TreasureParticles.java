@@ -124,19 +124,20 @@ public class TreasureParticles {
         GUIManager = new GUIManager();
         dataHolders.add(GUIManager);
 
-        // Load translations > GUI > colors > effects
+        // Load translations > GUI > colors > effects > players
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             translations.loadTranslations();
             GUIManager.initialize();
 
             colorManager.loadColors();
             effectManager.loadEffects();
+
+            for (var player : Bukkit.getOnlinePlayers())
+                playerManager.initializePlayer(player);
         }, 5);
 
-        // Initialize players
+        // Register listeners
         Bukkit.getPluginManager().registerEvents(new JoinQuitListener(playerManager, effectManager), plugin);
-        for (var player : Bukkit.getOnlinePlayers())
-            playerManager.initializePlayer(player);
     }
 
     public static void reload(CommandSender sender) {
