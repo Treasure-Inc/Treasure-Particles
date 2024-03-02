@@ -71,7 +71,7 @@ public class PlayerManager {
             data.setMixData(playerData.mixData);
             if (Permissions.MIX_LIMIT_ENABLED) {
                 var mixLimit = data.getMixLimit();
-                if (data.getMixData().size() > mixLimit) {
+                if (mixLimit != -1 && data.getMixData().size() > mixLimit) {
                     data.setMixData(data.getMixData().subList(0, mixLimit));
                     data.setCurrentEffect(null);
                 }
@@ -155,7 +155,7 @@ public class PlayerManager {
 
             if (Permissions.MIX_LIMIT_ENABLED) {
                 var mixLimit = data.getMixLimit();
-                if (data.getMixData().size() > mixLimit) {
+                if (mixLimit != -1 && data.getMixData().size() > mixLimit) {
                     data.setMixData(data.getMixData().subList(0, mixLimit));
                     data.setCurrentEffect(null);
                 }
