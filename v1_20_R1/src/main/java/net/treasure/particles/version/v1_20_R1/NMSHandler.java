@@ -4,15 +4,15 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.network.protocol.game.PacketListenerPlayOut;
 import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
-import net.treasure.particles.version.v1_20_R1.data.color.NMSDustData;
-import net.treasure.particles.version.v1_20_R1.data.color.NMSDustTransitionData;
 import net.treasure.particles.util.nms.AbstractNMSHandler;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.version.v1_20_R1.data.NMSGenericData;
+import net.treasure.particles.version.v1_20_R1.data.color.NMSDustData;
+import net.treasure.particles.version.v1_20_R1.data.color.NMSDustTransitionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.craftbukkit.v1_20_R1.CraftParticle;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -24,9 +24,11 @@ public class NMSHandler extends AbstractNMSHandler {
 
     @Override
     public void sendParticle(ParticleBuilder builder) {
-        var filter = builder.viewers();
-
         var location = builder.location();
+
+        var world = location.getWorld();
+        if (world == null) return;
+
         var packet = new PacketPlayOutWorldParticles(
                 builder.data(),
                 builder.longDistance(),
@@ -39,8 +41,10 @@ public class NMSHandler extends AbstractNMSHandler {
                 builder.speed(),
                 builder.amount());
 
+        var filter = builder.viewers();
         for (var player : Bukkit.getOnlinePlayers()) {
             if (filter != null && !filter.test(player)) continue;
+            if (!player.getWorld().equals(world)) continue;
 
             ((CraftPlayer) player).getHandle().c.a(packet);
         }
@@ -50,11 +54,15 @@ public class NMSHandler extends AbstractNMSHandler {
     public void sendParticles(List<ParticleBuilder> builders) {
         List<Packet<PacketListenerPlayOut>> packets = new ArrayList<>();
         Predicate<Player> filter = null;
+        World world = null;
 
         for (var builder : builders) {
             filter = builder.viewers();
 
             var location = builder.location();
+            world = location.getWorld();
+            if (world == null) return;
+
             var packet = new PacketPlayOutWorldParticles(
                     builder.data(),
                     builder.longDistance(),
@@ -73,6 +81,7 @@ public class NMSHandler extends AbstractNMSHandler {
 
         for (var player : Bukkit.getOnlinePlayers()) {
             if (filter != null && !filter.test(player)) continue;
+            if (!player.getWorld().equals(world)) continue;
 
             ((CraftPlayer) player).getHandle().c.a(bundle);
         }
@@ -80,8 +89,7 @@ public class NMSHandler extends AbstractNMSHandler {
 
     @Override
     public Object getParticleParam(ParticleEffect effect) {
-        var bukkit = effect.bukkit();
-        return bukkit == null ? null : CraftParticle.toNMS(bukkit);
+        return getGenericData(effect, null);
     }
 
     @Override

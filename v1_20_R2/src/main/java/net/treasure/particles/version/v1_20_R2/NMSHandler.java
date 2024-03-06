@@ -12,6 +12,7 @@ import net.treasure.particles.version.v1_20_R2.data.color.NMSDustData;
 import net.treasure.particles.version.v1_20_R2.data.color.NMSDustTransitionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -23,9 +24,11 @@ public class NMSHandler extends AbstractNMSHandler {
 
     @Override
     public void sendParticle(ParticleBuilder builder) {
-        var filter = builder.viewers();
-
         var location = builder.location();
+
+        var world = location.getWorld();
+        if (world == null) return;
+
         var packet = new PacketPlayOutWorldParticles(
                 builder.data(),
                 builder.longDistance(),
@@ -38,8 +41,10 @@ public class NMSHandler extends AbstractNMSHandler {
                 builder.speed(),
                 builder.amount());
 
+        var filter = builder.viewers();
         for (var player : Bukkit.getOnlinePlayers()) {
             if (filter != null && !filter.test(player)) continue;
+            if (!player.getWorld().equals(world)) continue;
 
             ((CraftPlayer) player).getHandle().c.b(packet);
         }
@@ -49,11 +54,15 @@ public class NMSHandler extends AbstractNMSHandler {
     public void sendParticles(List<ParticleBuilder> builders) {
         List<Packet<PacketListenerPlayOut>> packets = new ArrayList<>();
         Predicate<Player> filter = null;
+        World world = null;
 
         for (var builder : builders) {
             filter = builder.viewers();
 
             var location = builder.location();
+            world = location.getWorld();
+            if (world == null) return;
+
             var packet = new PacketPlayOutWorldParticles(
                     builder.data(),
                     builder.longDistance(),
@@ -72,6 +81,7 @@ public class NMSHandler extends AbstractNMSHandler {
 
         for (var player : Bukkit.getOnlinePlayers()) {
             if (filter != null && !filter.test(player)) continue;
+            if (!player.getWorld().equals(world)) continue;
 
             ((CraftPlayer) player).getHandle().c.b(bundle);
         }
