@@ -90,7 +90,7 @@
     <distributionManagement>
         <repository>
             <id>treas-repo</id>
-            <url>http://34.141.26.145/releases/</url>
+            <url>http://45.94.171.201:8080/releases/</url>
         </repository>
     </distributionManagement>
 </project>
