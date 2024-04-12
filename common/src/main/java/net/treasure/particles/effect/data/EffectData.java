@@ -103,6 +103,7 @@ public abstract class EffectData {
                 case "TICK" -> (double) TimeKeeper.getTimeElapsed();
                 case "PI" -> Math.PI;
                 case "2PI" -> MathUtils.PI2;
+                case "currentEvent" -> currentEvent == null ? -1D : currentEvent.ordinal();
                 default -> null;
             };
 

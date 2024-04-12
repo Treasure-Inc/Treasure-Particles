@@ -14,12 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 @AllArgsConstructor
@@ -134,5 +131,32 @@ public class HandlerEventsListener implements Listener {
         } catch (Exception ignored) {
         }
         event.getEntity().removeMetadata(Keys.NAMESPACE, TreasureParticles.getPlugin());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void on(VehicleEnterEvent event) {
+        if (!(event.getEntered() instanceof Player player)) return;
+
+        var data = playerManager.getEffectData(player);
+        if (data == null) return;
+
+        var effect = data.getCurrentEffect();
+        if (effect == null) return;
+
+        if (!effect.getEvents().contains(HandlerEvent.RIDE_VEHICLE)) return;
+
+        data.setCurrentEvent(HandlerEvent.RIDE_VEHICLE);
+        data.setTargetEntity(event.getVehicle());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void on(VehicleExitEvent event) {
+        if (!(event.getExited() instanceof Player player)) return;
+
+        var data = playerManager.getEffectData(player);
+        if (data == null) return;
+
+        if (data.getCurrentEvent() != HandlerEvent.RIDE_VEHICLE) return;
+        data.resetEvent();
     }
 }

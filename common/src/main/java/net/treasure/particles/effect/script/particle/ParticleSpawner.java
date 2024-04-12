@@ -23,7 +23,7 @@ import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,14 +61,14 @@ public class ParticleSpawner extends Script {
                 yield null;
             }
             case ELYTRA, STANDING, MOVING, SNEAKING, TAKE_DAMAGE -> player;
-            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE ->
+            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE, RIDE_VEHICLE ->
                     data instanceof PlayerEffectData playerEffectData ? playerEffectData.getTargetEntity() : null;
         };
         if (entity == null && origin == null) return null;
 
         if (origin == null)
             origin = switch (this.origin) {
-                case HEAD -> entity instanceof Player p ? p.getEyeLocation() : entity.getLocation();
+                case HEAD -> entity instanceof LivingEntity livingEntity ? livingEntity.getEyeLocation() : entity.getLocation();
                 case FEET -> entity.getLocation();
                 case WORLD -> new Location(entity.getWorld(), 0, 0, 0);
             };

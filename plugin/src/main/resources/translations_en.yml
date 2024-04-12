@@ -122,6 +122,7 @@ events:
   player-kill: "Killing Player"
   player-damage: "Damaging Player"
   take-damage: "Taking Damage"
+  ride-vehicle: "Riding Vehicle"
 # Effect Names
 effects:
   # Rainbow

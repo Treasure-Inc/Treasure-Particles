@@ -28,7 +28,9 @@ public enum HandlerEvent {
 
     PLAYER_DAMAGE("player-damage"),
 
-    TAKE_DAMAGE("take-damage");
+    TAKE_DAMAGE("take-damage"),
+
+    RIDE_VEHICLE("ride-vehicle");
 
     private final String translationKey;
     private final boolean isSpecial;

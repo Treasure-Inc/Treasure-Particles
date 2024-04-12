@@ -122,6 +122,7 @@ events:
   player-kill: "Oyuncu Öldürme"
   player-damage: "Oyuncuya Hasar Verme"
   take-damage: "Hasar Alma"
+  ride-vehicle: "Binilebilir Sürme"
 # Efekt İsimleri
 effects:
   # Rengarenk
