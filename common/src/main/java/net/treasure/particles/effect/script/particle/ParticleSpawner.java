@@ -16,7 +16,7 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 public class ParticleSpawner extends Script {
 
     protected ParticleEffect particle;
-    protected ParticleOrigin origin;
+    protected LocationOrigin origin;
 
     protected VectorArgument position;
     protected VectorArgument offset;
@@ -69,11 +69,7 @@ public class ParticleSpawner extends Script {
         if (entity == null && origin == null) return null;
 
         if (origin == null)
-            origin = switch (this.origin) {
-                case HEAD -> entity instanceof LivingEntity livingEntity ? livingEntity.getEyeLocation() : entity.getLocation();
-                case FEET -> entity.getLocation();
-                case WORLD -> new Location(entity.getWorld(), 0, 0, 0);
-            };
+            origin = this.origin.getLocation(entity);
 
         var direction = origin.getDirection();
 

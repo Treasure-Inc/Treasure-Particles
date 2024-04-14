@@ -12,7 +12,7 @@ import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleContext;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -35,7 +35,7 @@ public class CircleParticle extends ParticleSpawner {
     protected boolean tickData = false;
     protected boolean vertical = true;
 
-    public CircleParticle(ParticleEffect particle, ParticleOrigin origin,
+    public CircleParticle(ParticleEffect particle, LocationOrigin origin,
                           IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
                           VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                           ColorData colorData, Object particleData,

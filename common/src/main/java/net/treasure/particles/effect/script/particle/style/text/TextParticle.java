@@ -11,7 +11,7 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
@@ -45,7 +45,7 @@ public class TextParticle extends ParticleSpawner {
 
     private Vector[] cache;
 
-    public TextParticle(ParticleEffect effect, ParticleOrigin origin,
+    public TextParticle(ParticleEffect effect, LocationOrigin origin,
                         int stepX, int stepY, float scale, boolean tickData, boolean vertical, Float rotateX, Float rotateY,
                         Vector[] cache,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,

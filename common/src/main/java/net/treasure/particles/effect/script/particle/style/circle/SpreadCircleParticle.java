@@ -10,7 +10,7 @@ import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -28,7 +28,7 @@ public class SpreadCircleParticle extends CircleParticle {
 
     RangeArgument spread = null;
 
-    public SpreadCircleParticle(ParticleEffect particle, ParticleOrigin origin,
+    public SpreadCircleParticle(ParticleEffect particle, LocationOrigin origin,
                                 RangeArgument spread,
                                 IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
                                 VectorArgument position, VectorArgument offset, VectorArgument multiplier,

@@ -11,7 +11,7 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
@@ -37,7 +37,7 @@ public class PolygonParticle extends ParticleSpawner {
 
     private Vector[] cache;
 
-    public PolygonParticle(ParticleEffect effect, ParticleOrigin origin,
+    public PolygonParticle(ParticleEffect effect, LocationOrigin origin,
                            RangeArgument radius, RangeArgument rotation, int points, float step,
                            boolean tickData, boolean vertical,
                            Vector[] cache,

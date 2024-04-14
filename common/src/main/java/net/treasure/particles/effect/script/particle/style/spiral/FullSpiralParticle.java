@@ -12,7 +12,7 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -37,7 +37,7 @@ public class FullSpiralParticle extends ParticleSpawner {
 
     private double stepX;
 
-    public FullSpiralParticle(ParticleEffect effect, ParticleOrigin origin,
+    public FullSpiralParticle(ParticleEffect effect, LocationOrigin origin,
                               RangeArgument radius, IntArgument spirals, IntArgument steps, DoubleArgument gap,
                               boolean tickData, boolean vertical,
                               VectorArgument position, VectorArgument offset, VectorArgument multiplier,

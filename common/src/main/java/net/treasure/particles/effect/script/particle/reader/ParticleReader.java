@@ -13,7 +13,7 @@ import net.treasure.particles.effect.script.argument.type.StaticArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.effect.script.particle.config.Billboard;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.reader.ScriptReader;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -55,7 +55,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
         addValidArgument(c -> {
             var args = Patterns.ASTERISK.split(c.value());
-            var origin = StaticArgument.asEnumArgument(c, ParticleOrigin.class).get(args[0]);
+            var origin = StaticArgument.asEnumArgument(c, LocationOrigin.class).get(args[0]);
             c.script().origin(origin);
 
             if (args.length == 2) {
@@ -171,7 +171,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         if (particle == null) return false;
 
         if (script.origin() == null) {
-            error(context.effect(), context.type(), context.line(), "You must define an 'origin' value (" + Stream.of(ParticleOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
+            error(context.effect(), context.type(), context.line(), "You must define an 'origin' value (" + Stream.of(LocationOrigin.values()).map(e -> e.name().toLowerCase(Locale.ENGLISH)).collect(Collectors.joining(",")) + ")");
             return false;
         }
 

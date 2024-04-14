@@ -11,7 +11,7 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
@@ -29,7 +29,7 @@ public class SpiralParticle extends ParticleSpawner {
 
     private double step;
 
-    public SpiralParticle(ParticleEffect effect, ParticleOrigin origin,
+    public SpiralParticle(ParticleEffect effect, LocationOrigin origin,
                           RangeArgument radius, IntArgument steps,
                           boolean vertical, int reverse,
                           VectorArgument position, VectorArgument offset, VectorArgument multiplier,

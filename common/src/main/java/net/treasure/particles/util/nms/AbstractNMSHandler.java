@@ -3,8 +3,11 @@ package net.treasure.particles.util.nms;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public abstract class AbstractNMSHandler {
 
@@ -23,4 +26,6 @@ public abstract class AbstractNMSHandler {
     public abstract Object getColorTransitionData(Color color, Color transition, float size);
 
     public abstract Object getGenericData(ParticleEffect effect, Object data);
+
+    public abstract void strikeLightning(Location location, Predicate<Player> filter);
 }

@@ -40,6 +40,7 @@ import net.treasure.particles.effect.script.reader.DefaultReader;
 import net.treasure.particles.effect.script.sound.reader.SoundReader;
 import net.treasure.particles.effect.script.variable.reader.VariableCycleReader;
 import net.treasure.particles.effect.script.variable.reader.VariableReader;
+import net.treasure.particles.effect.script.visual.reader.LightningReader;
 import net.treasure.particles.effect.task.EffectsTask;
 import net.treasure.particles.effect.task.MovementCheck;
 import net.treasure.particles.gui.config.GUIElements;
@@ -122,6 +123,9 @@ public class EffectManager implements DataHolder {
 
         // Sound
         registerReader(new SoundReader(), "play-sound", "sound");
+
+        // Visual
+        registerReader(new LightningReader(), "lightning");
 
         // Others
         registerReader(new PresetReader(), "preset");

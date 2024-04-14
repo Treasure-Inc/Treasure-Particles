@@ -11,7 +11,7 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
-import net.treasure.particles.effect.script.particle.config.ParticleOrigin;
+import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
 
@@ -21,7 +21,7 @@ import net.treasure.particles.util.nms.particles.Particles;
 @NoArgsConstructor
 public class SingleParticle extends ParticleSpawner {
 
-    public SingleParticle(ParticleEffect effect, ParticleOrigin origin,
+    public SingleParticle(ParticleEffect effect, LocationOrigin origin,
                           VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                           ColorData colorData, Object particleData,
                           IntArgument amount, RangeArgument speed, RangeArgument size,

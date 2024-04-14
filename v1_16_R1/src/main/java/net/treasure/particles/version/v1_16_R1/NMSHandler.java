@@ -1,8 +1,6 @@
 package net.treasure.particles.version.v1_16_R1;
 
-import net.minecraft.server.v1_16_R1.Packet;
-import net.minecraft.server.v1_16_R1.PacketListenerPlayOut;
-import net.minecraft.server.v1_16_R1.PacketPlayOutWorldParticles;
+import net.minecraft.server.v1_16_R1.*;
 import net.treasure.particles.util.nms.AbstractNMSHandler;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -11,8 +9,10 @@ import net.treasure.particles.version.v1_16_R1.data.color.NMSDustData;
 import net.treasure.particles.version.v1_16_R1.data.color.NMSDustTransitionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_16_R1.CraftParticle;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -107,5 +107,23 @@ public class NMSHandler extends AbstractNMSHandler {
     @Override
     public Object getGenericData(ParticleEffect effect, Object object) {
         return new NMSGenericData(effect, object).toNMS();
+    }
+
+    @Override
+    public void strikeLightning(Location location, Predicate<Player> filter) {
+        var world = location.getWorld();
+        if (world == null) return;
+
+        var lightning = new EntityLightning(EntityTypes.LIGHTNING_BOLT, ((CraftWorld) location.getWorld()).getHandle());
+        lightning.setPosition(location.getX(), location.getY(), location.getZ());
+        lightning.setEffect(true);
+        lightning.isSilent = true;
+
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            if (filter != null && !filter.test(player)) return;
+            if (!player.getWorld().equals(world)) return;
+
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnEntity(lightning));
+        });
     }
 }
