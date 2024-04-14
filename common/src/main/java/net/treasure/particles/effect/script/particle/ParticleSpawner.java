@@ -22,6 +22,7 @@ import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
@@ -54,6 +55,7 @@ public class ParticleSpawner extends Script {
     public ParticleContext tick(EffectData data, HandlerEvent event, boolean configureOffset, boolean rotatePos) {
         Location origin = null;
         var player = data instanceof PlayerEffectData playerEffectData ? playerEffectData.player : null;
+        if (player != null && player.getGameMode() == GameMode.SPECTATOR) return null;
 
         var entity = switch (event) {
             case STATIC -> {
@@ -116,7 +118,7 @@ public class ParticleSpawner extends Script {
         var playerManager = TreasureParticles.getPlayerManager();
         builder.viewers(viewer -> {
             var d = playerManager.getEffectData(viewer);
-            return d != null && d.canSeeEffects();
+            return d != null && d.canSeeEffects() && (player == null || viewer.canSee(player));
         });
 
         return new ParticleContext(builder, origin, direction, cosP, sinP, cosY, sinY);
