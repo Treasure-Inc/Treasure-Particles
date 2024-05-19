@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PlayerManager {
@@ -165,5 +166,12 @@ public class PlayerManager {
         }
 
         startTask();
+    }
+
+    public Predicate<Player> defaultFilter(Player player) {
+        return viewer -> {
+            var d = getEffectData(viewer);
+            return d != null && d.canSeeEffects() && (player == null || viewer.canSee(player));
+        };
     }
 }

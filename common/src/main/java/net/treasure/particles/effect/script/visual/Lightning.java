@@ -15,9 +15,6 @@ import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
-import java.util.function.Predicate;
 
 @Getter
 @Setter
@@ -52,13 +49,7 @@ public class Lightning extends Script {
         if (this.position != null)
             origin.add(this.position.get(this, data));
 
-        var playerManager = TreasureParticles.getPlayerManager();
-        Predicate<Player> filter = viewer -> {
-            var d = playerManager.getEffectData(viewer);
-            return d != null && d.canSeeEffects() && (player == null || viewer.canSee(player));
-        };
-
-        Particles.NMS.strikeLightning(origin, filter);
+        Particles.NMS.strikeLightning(origin, TreasureParticles.getPlayerManager().defaultFilter(player));
         return TickResult.NORMAL;
     }
 

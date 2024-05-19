@@ -6,6 +6,7 @@ import org.bukkit.Particle;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.DoubleFunction;
 import java.util.function.Function;
@@ -15,6 +16,15 @@ import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.
 
 @Getter
 public enum ParticleEffect {
+    DUST_PILLAR(version -> version < 20.4 ? "NONE" : "dust_pillar", REQUIRES_BLOCK),
+    INFESTED(version -> version < 20.5 ? "NONE" : "infested"),
+    ITEM_COBWEB(version -> version < 20.5 ? "NONE" : "item_cobweb"),
+    SMALL_GUST(version -> version < 20.5 ? "NONE" : "small_gust"),
+    RAID_OMEN(version -> version < 20.5 ? "NONE" : "raid_omen"),
+    TRIAL_OMEN(version -> version < 20.5 ? "NONE" : "trial_omen"),
+    TRIAL_SPAWNER_DETECTION_OMINOUS(version -> version < 20.5 ? "NONE" : "trial_spawner_detection_ominous"),
+    OMINOUS_SPAWNING(version -> version < 20.5 ? "NONE" : "ominous_spawning"),
+    VAULT_CONNECTION(version -> version < 20.5 ? "NONE" : "vault_connection"),
     /**
      * Floats throughout the atmosphere in the soul sand valley biome.
      * <p>
@@ -1134,7 +1144,7 @@ public enum ParticleEffect {
     public Particle bukkit() {
         if (this.particle != null) return particle;
         try {
-            return particle = Particle.valueOf(this.name());
+            return particle = Particle.valueOf(ReflectionUtils.MINECRAFT_VERSION >= 20.5 ? getFieldName().toUpperCase(Locale.ENGLISH) : name());
         } catch (Exception e) {
             return null;
         }
@@ -1144,6 +1154,7 @@ public enum ParticleEffect {
         DIRECTIONAL,
         CAN_BE_COLORED,
         OFFSET_COLOR,
+        PARAM_COLOR,
         REQUIRES_BLOCK,
         REQUIRES_ITEM,
         REQUIRES_WATER,

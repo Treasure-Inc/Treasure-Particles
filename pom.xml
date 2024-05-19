@@ -23,6 +23,7 @@
         <module>v1_16_R3</module>
         <module>v1_16_R2</module>
         <module>v1_16_R1</module>
+        <module>v1_20_R4</module>
     </modules>
 
     <properties>
@@ -39,7 +40,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
 

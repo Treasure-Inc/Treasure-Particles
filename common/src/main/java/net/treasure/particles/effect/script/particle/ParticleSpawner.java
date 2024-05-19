@@ -24,7 +24,6 @@ import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,11 +110,7 @@ public class ParticleSpawner extends Script {
         }
 
         // Viewers
-        var playerManager = TreasureParticles.getPlayerManager();
-        builder.viewers(viewer -> {
-            var d = playerManager.getEffectData(viewer);
-            return d != null && d.canSeeEffects() && (player == null || viewer.canSee(player));
-        });
+        builder.viewers(TreasureParticles.getPlayerManager().defaultFilter(player));
 
         return new ParticleContext(builder, origin, direction, cosP, sinP, cosY, sinY);
     }
