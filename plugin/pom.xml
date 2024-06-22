@@ -100,9 +100,15 @@
 
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <artifactId>spigot</artifactId>
             <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.treasure.particles</groupId>
+            <artifactId>v1_21</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
