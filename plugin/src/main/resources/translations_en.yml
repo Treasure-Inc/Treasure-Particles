@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.3"
+version: "1.3.0"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -161,7 +161,10 @@ effects:
   spores: "<b>Spores"
   twinkle: "<b>Twinkle"
   triangles: "<b>Triangles"
+  infested: "<b>Infested"
   shield: "<b>Shield"
+  blue-shield: "<b>Blue Shield"
+  footprint: "<b>Footprint"
   smoke: "<b>Smoke"
   rocket: "<gray>Rocket"
   heart: "<#f54242>Heart"
@@ -174,6 +177,7 @@ effects:
   beam: "<gray>Beam"
   plane: "<#b58500>Plane"
   # Death Effects
+  skull-crusher: "<#bd4b40>Skull Crusher"
   blood: "<#a8324a>Blood"
   tear: "<#c2979e>Tear"
   cherry-death: "<#ffa3e3>Cherry Death"

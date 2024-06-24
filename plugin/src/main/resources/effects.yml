@@ -1,11 +1,11 @@
 # Do not change!
-version: "1.2.2"
+version: "1.3.0"
 effects:
   rainbow-circle:
     display-name: "%rainbow-circle%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
-    variables: [ 'y=0' ]
+    variables: [ "y=0" ]
     interval: 1
     on-tick:
       elytra:
@@ -19,7 +19,7 @@ effects:
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'reset-y' ]
+          depend: [ "reset-y" ]
         scripts:
           - circle [effect=minecraft:dust,directional=false,vertical=false,origin=feet,pos={y={y}},color={name=rainbow;speed=0.75}]
           - var-c [variable=y,max=1.75,min=0,step=0.1]
@@ -573,6 +573,21 @@ effects:
         scripts:
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r1},origin=feet,color={name=triangles;speed=0.1;revert=true}]
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r2},origin=feet,color={name=triangles;speed=0.1;revert=true}]
+  infested:
+    display-name: "%infested%"
+    name-color-animation: true
+    color-animation: "infested"
+    permission: "%special%"
+    interval: 2
+    on-tick:
+      standing:
+        event: STANDING
+        scripts:
+          - sphere [effect=infested,origin=feet,pos={y=1},speed=0,particles=20]
+      moving:
+        event: MOVING
+        scripts:
+          - sphere [effect=infested,origin=feet,pos={y=1},speed=1,particles=20]
   shield:
     display-name: "%shield%"
     color-animation: "shield"
@@ -599,6 +614,59 @@ effects:
         event: STATIC
         scripts:
           - circle [effect=minecraft:trial_spawner_detection,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+  blue-shield:
+    display-name: "%blue-shield%"
+    color-animation: "blue-shield"
+    name-color-animation: true
+    permission: "%special%"
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection_ominous,radius=0.5,particles=8,origin=feet,amount=0]
+      moving:
+        event: MOVING
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection_ominous,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      sneaking:
+        event: SNEAKING
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection_ominous,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      standing:
+        event: STANDING
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection_ominous,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      static:
+        event: STATIC
+        scripts:
+          - circle [effect=minecraft:trial_spawner_detection_ominous,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+  footprint:
+    display-name: "%footprint%"
+    color-animation: "footprint"
+    name-color-animation: true
+    permission: "%special%"
+    interval: 2
+    on-tick:
+      elytra:
+        event: ELYTRA
+        scripts:
+          - circle [effect=minecraft:ominous_spawning,radius=0.5,particles=8,origin=feet,amount=0]
+      moving:
+        event: MOVING
+        scripts:
+          - circle [effect=minecraft:ominous_spawning,radius=0.5,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      sneaking:
+        event: SNEAKING
+        scripts:
+          - circle [effect=minecraft:ominous_spawning,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      standing:
+        event: STANDING
+        scripts:
+          - circle [effect=minecraft:ominous_spawning,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
+      static:
+        event: STATIC
+        scripts:
+          - circle [effect=minecraft:ominous_spawning,radius=0.75,particles=16,origin=feet,amount=0,vertical=false,directional=false]
   smoke:
     display-name: "%smoke%"
     color-animation: "smoke"
@@ -730,6 +798,34 @@ effects:
         event: PROJECTILE
         scripts:
           - single [effect=minecraft:gust,origin=feet]
+  skull-crusher:
+    display-name: "%skull-crusher%"
+    color-animation: "gradient-red-blue"
+    permission: "%death-effects%"
+    variables: [ "t" ]
+    interval: 1
+    on-tick:
+      reset-timer:
+        event: MOB_KILL
+        reset-event: false
+        max-executed: 1
+        scripts:
+          - "var t=0"
+      spiral-vertical:
+        event: MOB_KILL
+        max-executed:
+        scripts:
+          - "spiral [effect=raid_omen,radius=0.75,steps=15,vertical=true,pos={y=1},origin=feet,speed=0]"
+      spiral-horizontal:
+        event: MOB_KILL
+        scripts:
+          - "conditional (t > 5) ? none : break-handler"
+          - "spiral [effect=trial_omen,radius=0.75,steps=10,pos={y=1},origin=feet,speed=0]"
+      timer:
+        event: MOB_KILL
+        max-executed: 20
+        scripts:
+          - "var t+=1"
   tear:
     display-name: "%tear%"
     color-animation: "tear"

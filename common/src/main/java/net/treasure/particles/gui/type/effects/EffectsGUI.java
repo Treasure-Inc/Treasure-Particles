@@ -210,7 +210,7 @@ public class EffectsGUI extends GUI {
                     .addLore(holder.isPlayerMixGUI() ? MessageUtils.gui(Translations.EFFECTS_GUI_REMOVE_MIX) : null)
                     .changeArmorColor(color)
                     .glow(currentEffect)
-                    .addItemFlags(ItemFlag.values()), event -> {
+                    .addItemFlags(ItemFlag.HIDE_ATTRIBUTES), event -> {
                 if (event.getClick() == ClickType.MIDDLE && holder.isPlayerMixGUI()) {
                     data.getMixData().removeIf(mixData -> effect.getKey().equals(player.getName() + "/" + mixData.name()));
                     if (currentEffect)

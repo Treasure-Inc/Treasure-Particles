@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.2.3"
+version: "1.3.0"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -161,7 +161,10 @@ effects:
   spores: "<b>Sporlar"
   twinkle: "<b>Pırıltı"
   triangles: "<b>Üçgenler"
+  infested: "<b>İstila"
   shield: "<b>Kalkan"
+  blue-shield: "<b>Mavi Kalkan"
+  footprint: "<b>Ayakizi"
   smoke: "<b>Duman"
   rocket: "<#33ff8b>Roket"
   heart: "<#f54242>Kalp"
@@ -174,6 +177,7 @@ effects:
   beam: "<gray>Işın"
   plane: "<#b58500>Uçak"
   # Ölüm Efektleri
+  skull-crusher: "<#bd4b40>Kafatası Ezici"
   blood: "<#a8324a>Kan"
   tear: "<#c2979e>Gözyaşı"
   cherry-death: "<#ffa3e3>Yapraklı Ölüm"
