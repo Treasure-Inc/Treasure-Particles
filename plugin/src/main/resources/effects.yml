@@ -7,6 +7,8 @@ effects:
     permission: "%rainbow-effects%"
     variables: [ "y=0" ]
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
@@ -40,6 +42,8 @@ effects:
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       handler:
         event: ELYTRA
@@ -50,6 +54,8 @@ effects:
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       handler:
         event: ELYTRA
@@ -59,8 +65,10 @@ effects:
     display-name: "%rainbow-circle-radius%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
-    variables: [ 'radius=0.25',  'speed=0.05' ]
+    variables: [ "radius=0.25",  "speed=0.05" ]
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       handler:
         event: ELYTRA
@@ -73,6 +81,8 @@ effects:
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
@@ -92,6 +102,8 @@ effects:
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
@@ -113,25 +125,27 @@ effects:
     display-name: "%rainbow-trig%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
-    variables: [ 'r' ]
+    variables: [ "r" ]
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=3,radius=1.5,origin=feet*-1.1,color={name=rainbow;speed=0.25}]
       moving:
         event: MOVING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,vertical=true,billboard=vertical,rotation={r},step=0.2,points=3,origin=feet*-1.1,pos={y=1},color={name=rainbow;speed=0.25}]
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,vertical=false,rotation={r},step=0.2,points=3,radius=1.5,origin=feet,color={name=rainbow;speed=0.25}]
       rotation:
@@ -148,25 +162,27 @@ effects:
     display-name: "%rainbow-rect%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
-    variables: [ 'r' ]
+    variables: [ "r" ]
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,vertical=true,size=2,direction=true,rotation={r},step=0.2,points=4,radius=1.5,origin=feet*-1.1,color={name=rainbow;speed=0.25}]
       moving:
         event: MOVING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,vertical=true,billboard=vertical,rotation={r},step=0.2,points=4,pos={y=1},origin=feet*-1.1,color={name=rainbow;speed=0.25}]
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,rotation={r},step=0.2,points=4,radius=1.5,origin=feet,color={name=rainbow;speed=0.25}]
       rotation:
@@ -184,6 +200,8 @@ effects:
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       handler:
         event: ELYTRA
@@ -193,9 +211,11 @@ effects:
     display-name: "%rainbow-random%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
-    variables: [ 'r', 'x', 'y' ]
+    variables: [ "r", "x", "y" ]
     enable-caching: true
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       handler:
         event: ELYTRA
@@ -209,9 +229,11 @@ effects:
     display-name: "%rainbow-flag%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
-    variables: [ 'r', 'x' ]
+    variables: [ "r", "x" ]
     enable-caching: true
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       handler:
         event: ELYTRA
@@ -224,6 +246,8 @@ effects:
     display-name: "%rainbow-note%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
@@ -242,6 +266,8 @@ effects:
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
@@ -263,19 +289,21 @@ effects:
     display-name: "%rainbow-atom%"
     color-animation: "rainbow"
     permission: "%rainbow-effects%"
-    variables: [ 'x=-1', 'z=0' ]
+    variables: [ "x=-1", "z=0" ]
     interval: 1
+    icon:
+      material: FILLED_MAP
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'x-z' ]
+          depend: [ "x-z" ]
         scripts:
           - multi-spiral [effect=minecraft:dust,size=1.5,spirals=5,steps=30,pos={x={x};y=0.25;z={z}},origin=feet,color={name=rainbow;speed=0.5},direction=true,vertical=true]
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'x-z' ]
+          depend: [ "x-z" ]
         scripts:
           - multi-spiral [effect=minecraft:dust,size=1.5,spirals=5,steps=30,pos={x={x};y=0.25;z={z}},origin=feet,color={name=rainbow;speed=0.5}]
       x-z:
@@ -293,8 +321,10 @@ effects:
     display-name: "%gradient-circle%"
     color-group: "gradients"
     permission: "%gradient-effects%"
-    variables: [ 'y=0' ]
+    variables: [ "y=0" ]
     interval: 1
+    icon:
+      material: TIPPED_ARROW
     on-tick:
       elytra:
         event: ELYTRA
@@ -307,7 +337,7 @@ effects:
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'reset-y' ]
+          depend: [ "reset-y" ]
         scripts:
           - circle [effect=minecraft:dust,directional=false,vertical=false,pos={y={y}},origin=feet,color={dynamic=true;revert=true;speed=0.25}]
           - var-c [variable=y,max=1.75,min=0,step=0.1]
@@ -323,6 +353,8 @@ effects:
     color-group: "gradients"
     permission: "%gradient-effects%"
     interval: 1
+    icon:
+      material: TIPPED_ARROW
     on-tick:
       elytra:
         event: ELYTRA
@@ -342,6 +374,8 @@ effects:
     color-group: "gradients"
     permission: "%gradient-effects%"
     interval: 1
+    icon:
+      material: TIPPED_ARROW
     on-tick:
       elytra:
         event: ELYTRA
@@ -359,7 +393,7 @@ effects:
     display-name: "%parkour-easy%"
     color-animation: "#ffffff"
     permission: "%parkour%"
-    variables: [ 'radius=1.5', 'particles=48' ]
+    variables: [ "radius=1.5", "particles=48" ]
     interval: 1
     on-tick:
       handler:
@@ -370,7 +404,7 @@ effects:
     display-name: "%parkour-normal%"
     color-animation: "#ffffff"
     permission: "%parkour%"
-    variables: [ 'radius=1', 'particles=32' ]
+    variables: [ "radius=1", "particles=32" ]
     interval: 1
     on-tick:
       handler:
@@ -381,7 +415,7 @@ effects:
     display-name: "%parkour-hard%"
     color-animation: "#ffffff"
     permission: "%parkour%"
-    variables: [ 'radius=0.65', 'particles=24' ]
+    variables: [ "radius=0.65", "particles=24" ]
     interval: 1
     on-tick:
       handler:
@@ -392,7 +426,7 @@ effects:
     display-name: "%parkour-fast%"
     color-animation: "#ffffff"
     permission: "%parkour%"
-    variables: [ 'm', 'radius=1', 'particles=32', 'streak=0' ]
+    variables: [ "m", "radius=1", "particles=32", "streak=0" ]
     interval: 1
     on-tick:
       handler:
@@ -405,7 +439,7 @@ effects:
     color-animation: "complementary1-1"
     name-color-animation: true
     permission: "%special%"
-    variables: [ 'radius=1', 'particles=32' ]
+    variables: [ "radius=1", "particles=32" ]
     interval: 8
     on-tick:
       handler:
@@ -417,13 +451,13 @@ effects:
     color-animation: "gradient-white-gray"
     name-color-animation: true
     permission: "%special%"
-    variables: [ 'maxStepX=80', 'maxStepY=60', 'stepX', 'stepY', 'temp', 'x', 'y', 'z', 'reverse=0' ]
+    variables: [ "maxStepX=80", "maxStepY=60", "stepX", "stepY", "temp", "x", "y", "z", "reverse=0" ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'conditions' ]
+          depend: [ "conditions" ]
         times: 8
         scripts:
           - "var x=cos(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
@@ -436,7 +470,7 @@ effects:
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'conditions' ]
+          depend: [ "conditions" ]
         times: 8
         scripts:
           - "var x=cos(({stepX}/{maxStepX}) * {2PI} + (({2PI} / 8) * {i})) * (({maxStepY} - abs({stepY})) / {maxStepY})"
@@ -497,27 +531,27 @@ effects:
     color-animation: "twinkle"
     name-color-animation: true
     permission: "%special%"
-    variables: [ 'r=0.65' ]
+    variables: [ "r=0.65" ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,radius={r},amount=3,speed=0,vertical=true,directional=true,origin=feet]
           - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,radius={r},amount=3,speed=0,vertical=true,directional=true,reverse=true,origin=feet]
       moving:
         event: MOVING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.25},radius={r},amount=3,speed=0,origin=feet]
           - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.25},radius={r},amount=3,speed=0,reverse=true,origin=feet]
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.5},radius={r},amount=3,speed=0,origin=feet]
           - multi-spiral [effect=minecraft:enchanted_hit,spirals=5,steps=60,pos={y=0.5},radius={r},amount=3,speed=0,reverse=true,origin=feet]
@@ -537,27 +571,27 @@ effects:
     color-animation: "triangles"
     name-color-animation: true
     permission: "%special%"
-    variables: [ 'r1', 'r2=45' ]
+    variables: [ "r1", "r2=45" ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,points=3,vertical=true,directional=true,size=0.75,rotation={r1},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
           - polygon [effect=minecraft:dust,points=3,vertical=true,directional=true,size=0.75,rotation={r2},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
       moving:
         event: MOVING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,points=3,vertical=true,billboard=vertical,size=0.75,rotation={r1},pos={y=1},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
           - polygon [effect=minecraft:dust,points=3,vertical=true,billboard=vertical,size=0.75,rotation={r2},pos={y=1},origin=feet*-1.1,color={name=triangles;speed=0.1;revert=true}]
       standing:
         event: STANDING
         mixer-options:
-          depend: [ 'rotation' ]
+          depend: [ "rotation" ]
         scripts:
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r1},origin=feet,color={name=triangles;speed=0.1;revert=true}]
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r2},origin=feet,color={name=triangles;speed=0.1;revert=true}]
@@ -695,13 +729,13 @@ effects:
     display-name: "%planner%"
     color-animation: "#32a852"
     permission: "%spinning%"
-    variables: [ 'step', 'x', 'z', 'angle', 'xAng', 'zAng' ]
+    variables: [ "step", "x", "z", "angle", "xAng", "zAng" ]
     interval: 1
     on-tick:
       elytra:
         event: ELYTRA
         mixer-options:
-          depend: [ 'step' ]
+          depend: [ "step" ]
         times: 3
         scripts:
           - var x=cos({step} + ({2PI} * ({i} / 3)))
@@ -738,7 +772,7 @@ effects:
     display-name: "%triple-line%"
     color-animation: "gradient-red-blue"
     permission: "%spinning%"
-    variables: [ 'r', 'x1', 'y1', 'x2', 'y2', 'z' ]
+    variables: [ "r", "x1", "y1", "x2", "y2", "z" ]
     interval: 1
     on-tick:
       elytra:
@@ -809,28 +843,35 @@ effects:
         event: MOB_KILL
         reset-event: false
         max-executed: 1
+        mixer-options:
+          private: true
         scripts:
           - "var t=0"
       spiral-vertical:
         event: MOB_KILL
-        max-executed:
+        mixer-options:
+          depend: [ "reset-timer", "timer" ]
         scripts:
           - "spiral [effect=minecraft:raid_omen,radius=0.75,steps=15,vertical=true,pos={y=1},origin=feet,speed=0]"
       spiral-horizontal:
         event: MOB_KILL
+        mixer-options:
+          depend: [ "reset-timer", "timer" ]
         scripts:
           - "conditional (t > 5) ? none : break-handler"
           - "spiral [effect=minecraft:trial_omen,radius=0.75,steps=10,pos={y=1},origin=feet,speed=0]"
       timer:
         event: MOB_KILL
         max-executed: 20
+        mixer-options:
+          private: true
         scripts:
           - "var t+=1"
   tear:
     display-name: "%tear%"
     color-animation: "tear"
     permission: "%death-effects%"
-    variables: [ 't=0', 'y=0', 'random=0' ]
+    variables: [ "t=0", "y=0", "random=0" ]
     interval: 1
     on-tick:
       reset-variables:
@@ -847,7 +888,7 @@ effects:
         event: MOB_KILL
         max-executed: 21
         mixer-options:
-          depend: [ 'reset-variables' ]
+          depend: [ "reset-variables" ]
         scripts:
           - var t+=1
           - "conditional (t<11) ? return : none"
@@ -881,7 +922,7 @@ effects:
     display-name: "%blood%"
     color-animation: "#a8324a"
     permission: "%death-effects%"
-    variables: [ 'x=0', 't=0' ]
+    variables: [ "x=0", "t=0" ]
     interval: 1
     on-tick:
       take-damage:
@@ -898,7 +939,7 @@ effects:
     display-name: "%sweeping%"
     color-animation: "#ffffff"
     permission: "%basic%"
-    variables: [ 'size=1' ]
+    variables: [ "size=1" ]
     interval: 1
     on-tick:
       elytra:
@@ -936,7 +977,7 @@ effects:
     display-name: "%rain%"
     color-animation: "#345eeb"
     permission: "%weather%"
-    variables: [ 'r', 'x', 'z' ]
+    variables: [ "r", "x", "z" ]
     interval: 3
     on-tick:
       elytra:
@@ -966,7 +1007,7 @@ effects:
     display-name: "%snow%"
     color-animation: "#ffffff"
     permission: "%weather%"
-    variables: [ 'r', 'x', 'z' ]
+    variables: [ "r", "x", "z" ]
     interval: 3
     on-tick:
       elytra:
@@ -1053,13 +1094,13 @@ effects:
     display-name: "%heart%"
     color-animation: "heart"
     permission: "%special%"
-    variables: [ 'x=-2', 'y1', 'y2' ]
+    variables: [ "x=-2", "y1", "y2" ]
     interval: 15
     on-tick:
       effect:
         event: ELYTRA
         mixer-options:
-          depend: [ 'check' ]
+          depend: [ "check" ]
         times: 19
         scripts:
           - var x+=0.2
@@ -1111,7 +1152,7 @@ effects:
     description:
       - "%featured-behavior%"
       - "%elytra-boost%"
-    variables: [ 'x', 'y' ]
+    variables: [ "x", "y" ]
     interval: 1
     on-tick:
       elytra:
@@ -1175,7 +1216,7 @@ effects:
     display-name: "%rainbow-tail%"
     color-animation: "rainbow"
     permission: "%tail-effects%"
-    variables: [ 'step' ]
+    variables: [ "step" ]
     interval: 1
     on-tick:
       elytra:
