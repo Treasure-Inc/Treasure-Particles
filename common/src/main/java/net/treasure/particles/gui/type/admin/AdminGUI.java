@@ -126,7 +126,7 @@ public class AdminGUI extends GUI {
                             MessageUtils.gui("<gray>Static Supported: <yellow>" + effect.isStaticSupported())
                     )
                     .addLore(colorGroup != null ? MessageUtils.gui("<gray>Color Group: <yellow>" + colorGroup.getKey()) : null)
-                    .changeArmorColor(color)
+                    .changeColor(color)
                     .glow(effect.equals(data.getCurrentEffect()))
                     .addItemFlags(ItemFlag.values()), null, colorData, effect.isNameColorAnimationEnabled() ? effect.getDisplayName() : null);
             index += 1;

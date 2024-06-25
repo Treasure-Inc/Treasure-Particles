@@ -200,7 +200,7 @@ public class MixerGUI extends GUI {
                     .addLore(hasCompatibleSelection && canSelectAnotherEffect ? MessageUtils.gui(Translations.MIXER_GUI_SELECT_ALL) : null)
                     .addLore(anySelected || canSelectAnotherEffect ? MessageUtils.gui(Translations.MIXER_GUI_SELECT_HANDLERS) : null)
                     .addLore(anySelected ? MessageUtils.gui(Translations.MIXER_GUI_UNSELECT_ALL) : null)
-                    .changeArmorColor(color)
+                    .changeColor(color)
                     .glow(anySelected)
                     .addItemFlags(ItemFlag.values()), event -> {
                 if (event.getClick() == ClickType.MIDDLE) {

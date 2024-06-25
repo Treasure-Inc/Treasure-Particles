@@ -41,14 +41,14 @@ public class GUIHolder implements InventoryHolder {
 
     public void setItem(int where, CustomItem item, ClickListener listener, RGBColorData colorData, String name) {
         inventory.setItem(where, item.build());
-        slotData.put(where, new SlotData(listener, colorData, name));
+        slotData.put(where, new SlotData(listener, item, colorData, name));
         if (colorData != null)
             hasAnimation = true;
     }
 
     public void setItem(int where, CustomItem item, ClickListener listener) {
         inventory.setItem(where, item.build());
-        slotData.put(where, new SlotData(listener, null, null));
+        slotData.put(where, new SlotData(listener, item, null, null));
     }
 
     public void setItem(int where, CustomItem item) {

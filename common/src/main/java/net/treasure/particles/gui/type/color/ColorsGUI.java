@@ -115,7 +115,7 @@ public class ColorsGUI extends GUI {
                     .setDisplayName(ChatColor.WHITE + MessageUtils.gui(scheme.getDisplayName()))
                     .addLore(MessageUtils.gui(scheme.equals(preference) ? Translations.COLORS_GUI_SCHEME_SELECTED : Translations.COLORS_GUI_SELECT_SCHEME))
                     .addLore(scheme.equals(preference) ? null : MessageUtils.gui(Translations.COLORS_GUI_SAVE_SCHEME))
-                    .changeArmorColor(color)
+                    .changeColor(color)
                     .addItemFlags(ItemFlag.values()), event -> {
                 if (!option.canUse(player)) {
                     player.closeInventory();

@@ -9,6 +9,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.InvocationTargetException;
@@ -116,11 +118,17 @@ public class CustomItem {
         return this;
     }
 
-    public CustomItem changeArmorColor(Color color) {
+    public CustomItem changeColor(Color color) {
         if (color == null) return this;
-        if (this.i.getItemMeta() != null && this.i.getItemMeta() instanceof LeatherArmorMeta lam) {
-            lam.setColor(color);
-            this.i.setItemMeta(lam);
+        if (this.i.getItemMeta() instanceof LeatherArmorMeta meta) {
+            meta.setColor(color);
+            this.i.setItemMeta(meta);
+        } else if (this.i.getItemMeta() instanceof PotionMeta meta) {
+            meta.setColor(color);
+            this.i.setItemMeta(meta);
+        } else if (this.i.getItemMeta() instanceof MapMeta meta) {
+            meta.setColor(color);
+            this.i.setItemMeta(meta);
         }
         return this;
     }
