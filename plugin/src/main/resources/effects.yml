@@ -583,11 +583,11 @@ effects:
       standing:
         event: STANDING
         scripts:
-          - sphere [effect=infested,origin=feet,pos={y=1},speed=0,particles=20]
+          - sphere [effect=minecraft:infested,origin=feet,pos={y=1},speed=0,particles=20]
       moving:
         event: MOVING
         scripts:
-          - sphere [effect=infested,origin=feet,pos={y=1},speed=1,particles=20]
+          - sphere [effect=minecraft:infested,origin=feet,pos={y=1},speed=1,particles=20]
   shield:
     display-name: "%shield%"
     color-animation: "shield"
@@ -815,12 +815,12 @@ effects:
         event: MOB_KILL
         max-executed:
         scripts:
-          - "spiral [effect=raid_omen,radius=0.75,steps=15,vertical=true,pos={y=1},origin=feet,speed=0]"
+          - "spiral [effect=minecraft:raid_omen,radius=0.75,steps=15,vertical=true,pos={y=1},origin=feet,speed=0]"
       spiral-horizontal:
         event: MOB_KILL
         scripts:
           - "conditional (t > 5) ? none : break-handler"
-          - "spiral [effect=trial_omen,radius=0.75,steps=10,pos={y=1},origin=feet,speed=0]"
+          - "spiral [effect=minecraft:trial_omen,radius=0.75,steps=10,pos={y=1},origin=feet,speed=0]"
       timer:
         event: MOB_KILL
         max-executed: 20

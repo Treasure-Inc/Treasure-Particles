@@ -1133,7 +1133,8 @@ public enum ParticleEffect {
 
         ALL_MINECRAFT_KEYS = Collections.unmodifiableMap(
                 VALUES.stream()
-                        .collect(Collectors.toMap(ParticleEffect::getFieldName, Function.identity()))
+                        .filter(effect -> !"NONE".equals(effect.getLatestFieldName()))
+                        .collect(Collectors.toMap(ParticleEffect::getLatestFieldName, Function.identity()))
         );
     }
 
@@ -1152,6 +1153,10 @@ public enum ParticleEffect {
 
     public String getFieldName() {
         return fieldNameMapper.apply(ReflectionUtils.MINECRAFT_VERSION);
+    }
+
+    public String getLatestFieldName() {
+        return fieldNameMapper.apply(ReflectionUtils.LATEST_SUPPORTED_VERSION);
     }
 
     public Particle bukkit() {

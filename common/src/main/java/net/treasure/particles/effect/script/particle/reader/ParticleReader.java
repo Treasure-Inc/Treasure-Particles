@@ -29,19 +29,21 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
     public ParticleReader() {
         addValidArgument(c -> {
             var args = Patterns.COLON.split(c.value());
-            if (args.length != 2) {
+            if (args.length > 2) {
                 error(c, "Incorrect particle effect input: " + c.value());
                 return;
             }
-            if (!args[0].equals("minecraft")) {
+            if (args.length == 2 && !args[0].equals("minecraft")) {
                 error(c, "Unknown effect namespace: " + c.value());
                 return;
             }
 
-            ParticleEffect particle = ParticleEffect.MINECRAFT_KEYS.get(args[1].toLowerCase(Locale.ENGLISH));
+            var key = (args.length == 2 ? args[1] : args[0]).toLowerCase(Locale.ENGLISH);
+
+            ParticleEffect particle = ParticleEffect.MINECRAFT_KEYS.get(key);
 
             if (particle == null) {
-                particle = ParticleEffect.ALL_MINECRAFT_KEYS.get(args[1].toLowerCase(Locale.ENGLISH));
+                particle = ParticleEffect.ALL_MINECRAFT_KEYS.get(key);
                 if (particle == null) {
                     error(c, "Unknown particle effect: " + c.value());
                 } else {
