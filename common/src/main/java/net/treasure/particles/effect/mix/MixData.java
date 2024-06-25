@@ -74,10 +74,15 @@ public class MixData {
                 effects.put(effect, tickHandler.event);
         }
 
+        var details = effects.asMap().entrySet().stream().map(entry -> MessageUtils.gui("<gray>•</gray> " + entry.getKey().getDisplayName() + "<!b><gray>: " + entry.getValue().stream().map(e -> translations.get("events." + e.translationKey())).collect(Collectors.joining(", ")))).toArray(String[]::new);
+        var description = new String[1 + details.length];
+        description[0] = MessageUtils.gui("<dark_gray>Custom Mix");
+        if (details.length - 1 >= 0) System.arraycopy(details, 0, description, 1, details.length - 1);
+
         return cache = new Effect(
                 player.getName() + "/" + name,
-                name,
-                effects.asMap().entrySet().stream().map(entry -> MessageUtils.gui("<gray>•</gray> " + entry.getKey().getDisplayName() + "<gray>: " + entry.getValue().stream().map(e -> translations.get("events." + e.translationKey())).collect(Collectors.joining(", ")))).toArray(String[]::new),
+                "<gold>" + name,
+                description,
                 EffectsGUI.DEFAULT_ICON.item(),
                 null,
                 null,
