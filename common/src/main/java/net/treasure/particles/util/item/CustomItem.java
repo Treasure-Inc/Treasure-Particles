@@ -40,6 +40,13 @@ public class CustomItem {
         this.i = itemStack.clone();
     }
 
+    public CustomItem(ItemStack itemStack, boolean clone) {
+        if (clone)
+            this.i = itemStack.clone();
+        else
+            this.i = itemStack;
+    }
+
     public CustomItem addItemFlags(ItemFlag... flag) {
         var meta = this.i.getItemMeta();
         if (meta == null) return this;
