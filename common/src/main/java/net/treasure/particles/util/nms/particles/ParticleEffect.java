@@ -12,7 +12,13 @@ import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.*;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.CAN_BE_COLORED;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.DIRECTIONAL;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.OFFSET_COLOR;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_BLOCK;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_ITEM;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_WATER;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.RESIZEABLE;
 
 @Getter
 public enum ParticleEffect {
@@ -1115,11 +1121,18 @@ public enum ParticleEffect {
     public static final List<ParticleEffect> VALUES = List.of(values());
     public static final Map<String, ParticleEffect> MINECRAFT_KEYS;
 
+    public static final Map<String, ParticleEffect> ALL_MINECRAFT_KEYS;
+
     static {
         //noinspection ConstantConditions
         MINECRAFT_KEYS = Collections.unmodifiableMap(
                 VALUES.stream()
                         .filter(effect -> !"NONE".equals(effect.getFieldName()))
+                        .collect(Collectors.toMap(ParticleEffect::getFieldName, Function.identity()))
+        );
+
+        ALL_MINECRAFT_KEYS = Collections.unmodifiableMap(
+                VALUES.stream()
                         .collect(Collectors.toMap(ParticleEffect::getFieldName, Function.identity()))
         );
     }

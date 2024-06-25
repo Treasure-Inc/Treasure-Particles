@@ -29,24 +29,35 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
     public ParticleReader() {
         addValidArgument(c -> {
             var args = Patterns.COLON.split(c.value());
-            if (args.length > 2) {
+            if (args.length != 2) {
                 error(c, "Incorrect particle effect input: " + c.value());
                 return;
             }
-            if (args.length == 2 && !args[0].equals("minecraft")) {
-                error(c, "Incorrect particle effect input: " + c.value());
+            if (!args[0].equals("minecraft")) {
+                error(c, "Unknown effect namespace: " + c.value());
                 return;
             }
 
-            ParticleEffect particle;
-            if (args.length == 2) {
-                particle = ParticleEffect.MINECRAFT_KEYS.get(args[1].toLowerCase(Locale.ENGLISH));
-            } else {
-                particle = StaticArgument.asEnum(c, ParticleEffect.class);
+            ParticleEffect particle = ParticleEffect.MINECRAFT_KEYS.get(args[1].toLowerCase(Locale.ENGLISH));
+
+            if (particle == null) {
+                particle = ParticleEffect.ALL_MINECRAFT_KEYS.get(args[1].toLowerCase(Locale.ENGLISH));
+                if (particle == null) {
+                    error(c, "Unknown particle effect: " + c.value());
+                } else {
+                    error(c, "Unsupported particle effect: " + c.value(),
+                            "This effect won't work properly on your server version",
+                            "You can remove this effect from effects.yml"
+                    );
+                }
+                return;
             }
 
-            if (particle == null || particle.bukkit() == null) {
-                error(c, "Unknown particle effect: " + c.value());
+            if (particle.bukkit() == null) {
+                error(c, "Unsupported particle effect: " + c.value(),
+                        "This effect won't work properly on your server version",
+                        "You can remove this effect from effects.yml"
+                );
                 return;
             }
 
