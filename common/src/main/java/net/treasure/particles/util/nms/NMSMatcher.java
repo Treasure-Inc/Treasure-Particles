@@ -27,7 +27,7 @@ public class NMSMatcher {
         put("v1_20_R2", "20.2", "20.3");
         put("v1_20_R3", "20.4");
         put("v1_20_R4", "20.5", "20.6");
-        put("v1_21", "21");
+        put("v1_21", "21", "21.1");
     }
 
     private static void put(String plugin, String... versions) {
