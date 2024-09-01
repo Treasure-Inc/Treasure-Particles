@@ -45,14 +45,15 @@ public class TextParticle extends ParticleSpawner {
 
     private Vector[] cache;
 
-    public TextParticle(ParticleEffect effect, LocationOrigin origin,
+    public TextParticle(ParticleEffect particle, LocationOrigin origin,
                         int stepX, int stepY, float scale, boolean tickData, boolean vertical, Float rotateX, Float rotateY,
                         Vector[] cache,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
                         IntArgument amount, RangeArgument speed, RangeArgument size,
-                        boolean directionalX, boolean directionalY, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
+                        boolean directionalX, boolean directionalY, boolean longDistance,
+                        boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
         this.stepX = stepX;
         this.stepY = stepY;
         this.scale = scale;
@@ -160,7 +161,8 @@ public class TextParticle extends ParticleSpawner {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directionalX, directionalY, longDistance
+                directionalX, directionalY, longDistance,
+                spawnEffectOnPlayer
         );
     }
 }

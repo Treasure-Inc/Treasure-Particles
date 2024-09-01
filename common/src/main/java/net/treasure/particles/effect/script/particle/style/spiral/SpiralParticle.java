@@ -29,14 +29,15 @@ public class SpiralParticle extends ParticleSpawner {
 
     private double step;
 
-    public SpiralParticle(ParticleEffect effect, LocationOrigin origin,
+    public SpiralParticle(ParticleEffect particle, LocationOrigin origin,
                           RangeArgument radius, IntArgument steps,
                           boolean vertical, int reverse,
                           VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                           ColorData colorData, Object particleData,
                           IntArgument amount, RangeArgument speed, RangeArgument size,
-                          boolean directionalX, boolean directionalY, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
+                          boolean directionalX, boolean directionalY, boolean longDistance,
+                          boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
         this.radius = radius;
         this.steps = steps;
         this.vertical = vertical;
@@ -76,7 +77,8 @@ public class SpiralParticle extends ParticleSpawner {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directionalX, directionalY, longDistance
+                directionalX, directionalY, longDistance,
+                spawnEffectOnPlayer
         );
     }
 }

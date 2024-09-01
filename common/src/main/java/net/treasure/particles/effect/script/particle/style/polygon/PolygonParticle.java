@@ -37,15 +37,16 @@ public class PolygonParticle extends ParticleSpawner {
 
     private Vector[] cache;
 
-    public PolygonParticle(ParticleEffect effect, LocationOrigin origin,
+    public PolygonParticle(ParticleEffect particle, LocationOrigin origin,
                            RangeArgument radius, RangeArgument rotation, int points, float step,
                            boolean tickData, boolean vertical,
                            Vector[] cache,
                            VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                            ColorData colorData, Object particleData,
                            IntArgument amount, RangeArgument speed, RangeArgument size,
-                           boolean directionalX, boolean directionalY, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
+                           boolean directionalX, boolean directionalY, boolean longDistance,
+                           boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
         this.radius = radius;
         this.rotation = rotation;
         this.points = points;
@@ -125,7 +126,8 @@ public class PolygonParticle extends ParticleSpawner {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directionalX, directionalY, longDistance
+                directionalX, directionalY, longDistance,
+                spawnEffectOnPlayer
         );
     }
 }

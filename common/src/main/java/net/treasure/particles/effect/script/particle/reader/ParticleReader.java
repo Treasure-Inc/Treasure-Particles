@@ -111,6 +111,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
         addValidArgument(c -> c.script().longDistance(StaticArgument.asBoolean(c)), "long-distance", "long");
 
+        addValidArgument(c -> c.script().spawnEffectOnPlayer(StaticArgument.asBoolean(c)), "spawn-effect-on-player");
+
         addValidArgument(c -> c.script().amount(IntArgument.read(c)), "amount");
 
         addValidArgument(c -> c.script().speed(RangeArgument.read(c)), "speed");

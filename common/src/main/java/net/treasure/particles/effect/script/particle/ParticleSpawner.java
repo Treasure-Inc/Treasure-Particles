@@ -50,6 +50,8 @@ public class ParticleSpawner extends Script {
 
     protected boolean longDistance = false;
 
+    protected boolean spawnEffectOnPlayer;
+
     @Nullable
     public ParticleContext tick(EffectData data, HandlerEvent event, boolean configureOffset, boolean rotatePos) {
         Location origin = null;
@@ -63,7 +65,7 @@ public class ParticleSpawner extends Script {
             }
             case ELYTRA, STANDING, MOVING, SNEAKING, TAKE_DAMAGE -> player;
             case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE, RIDE_VEHICLE ->
-                    data instanceof PlayerEffectData playerEffectData ? playerEffectData.getTargetEntity() : null;
+                    data instanceof PlayerEffectData playerEffectData ? (spawnEffectOnPlayer ? player : playerEffectData.getTargetEntity()) : null;
         };
         if (entity == null && origin == null) return null;
 

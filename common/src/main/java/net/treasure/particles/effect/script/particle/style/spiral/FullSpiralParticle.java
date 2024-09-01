@@ -37,14 +37,15 @@ public class FullSpiralParticle extends ParticleSpawner {
 
     private double stepX;
 
-    public FullSpiralParticle(ParticleEffect effect, LocationOrigin origin,
+    public FullSpiralParticle(ParticleEffect particle, LocationOrigin origin,
                               RangeArgument radius, IntArgument spirals, IntArgument steps, DoubleArgument gap,
                               boolean tickData, boolean vertical,
                               VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                               ColorData colorData, Object particleData,
                               IntArgument amount, RangeArgument speed, RangeArgument size,
-                              boolean directionalX, boolean directionalY, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
+                              boolean directionalX, boolean directionalY, boolean longDistance,
+                              boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
         this.radius = radius;
         this.spirals = spirals;
         this.steps = steps;
@@ -93,7 +94,8 @@ public class FullSpiralParticle extends ParticleSpawner {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directionalX, directionalY, longDistance
+                directionalX, directionalY, longDistance,
+                spawnEffectOnPlayer
         );
     }
 }

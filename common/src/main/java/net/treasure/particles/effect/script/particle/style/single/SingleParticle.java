@@ -21,12 +21,13 @@ import net.treasure.particles.util.nms.particles.Particles;
 @NoArgsConstructor
 public class SingleParticle extends ParticleSpawner {
 
-    public SingleParticle(ParticleEffect effect, LocationOrigin origin,
+    public SingleParticle(ParticleEffect particle, LocationOrigin origin,
                           VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                           ColorData colorData, Object particleData,
                           IntArgument amount, RangeArgument speed, RangeArgument size,
-                          boolean directionalX, boolean directionalY, boolean longDistance) {
-        super(effect, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance);
+                          boolean directionalX, boolean directionalY, boolean longDistance,
+                          boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
     }
 
     @Override
@@ -50,7 +51,8 @@ public class SingleParticle extends ParticleSpawner {
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
-                directionalX, directionalY, longDistance
+                directionalX, directionalY, longDistance,
+                spawnEffectOnPlayer
         );
     }
 }
