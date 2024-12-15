@@ -39,15 +39,7 @@ public class Presets implements DataHolder {
     }
 
     public void load() {
-        if (!checkVersion()) {
-            if (!TreasureParticles.isAutoUpdateEnabled()) {
-                TreasureParticles.newVersionInfo(this);
-            } else {
-                generator.reset();
-                configuration = generator.getConfiguration();
-                TreasureParticles.generatedNewFile(this);
-            }
-        }
+        configuration = getConfiguration();
     }
 
     public void reset() {

@@ -18,10 +18,11 @@ import java.util.logging.Level;
 @RequiredArgsConstructor
 public class ConfigurationGenerator {
 
+    private final Plugin plugin;
+
     private final String fileName;
     private final String directory;
     private YamlConfiguration configuration;
-    private final Plugin plugin;
 
     public ConfigurationGenerator(String fileName) {
         this.fileName = fileName;
@@ -101,7 +102,7 @@ public class ConfigurationGenerator {
         var lastIndex = directory.lastIndexOf('/');
         var outDir = new File(plugin.getDataFolder(), directory.substring(0, Math.max(lastIndex, 0)));
 
-        boolean exists = outDir.exists();
+        var exists = outDir.exists();
         if (!exists)
             exists = outDir.mkdirs();
         if (!exists) {
@@ -114,7 +115,7 @@ public class ConfigurationGenerator {
                 return;
 
             var out = new FileOutputStream(outFile);
-            byte[] buf = new byte[1024];
+            var buf = new byte[1024];
 
             int len;
             while ((len = in.read(buf)) > 0) {

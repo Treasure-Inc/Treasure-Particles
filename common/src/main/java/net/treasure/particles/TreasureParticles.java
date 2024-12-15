@@ -17,6 +17,7 @@ import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.player.PlayerManager;
 import net.treasure.particles.player.listener.JoinQuitListener;
 import net.treasure.particles.util.logging.ComponentLogger;
+import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -183,14 +184,6 @@ public class TreasureParticles {
 
         ComponentLogger.setColored(config.getBoolean("colored-error-logs", true));
         ComponentLogger.setChatLogsEnabled(config.getBoolean("chat-logs", true));
-    }
-
-    public static void newVersionInfo(DataHolder holder) {
-        ComponentLogger.error(holder.getGenerator(), "New version available (v" + holder.getVersion() + ")");
-    }
-
-    public static void generatedNewFile(DataHolder holder) {
-        ComponentLogger.error(holder.getGenerator(), "Generated new file (v" + holder.getVersion() + ")");
     }
 
     public static File getDataFolder() {

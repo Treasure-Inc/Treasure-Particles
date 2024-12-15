@@ -9,6 +9,7 @@ import net.treasure.particles.color.scheme.ColorScheme;
 import net.treasure.particles.color.scheme.GradientColorScheme;
 import net.treasure.particles.configuration.ConfigurationGenerator;
 import net.treasure.particles.configuration.DataHolder;
+import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.util.logging.ComponentLogger;
 import org.bukkit.Color;
 
@@ -62,23 +63,10 @@ public class ColorManager implements DataHolder {
     }
 
     public void loadColors() {
-        var config = generator.getConfiguration();
-        if (config == null)
-            return;
-
-        if (!checkVersion()) {
-            if (!TreasureParticles.isAutoUpdateEnabled()) {
-                TreasureParticles.newVersionInfo(this);
-            } else {
-                generator.reset();
-                config = generator.generate();
-                TreasureParticles.generatedNewFile(this);
-            }
-        }
+        var config = getConfiguration();
 
         var section = config.getConfigurationSection("schemes");
-        if (section == null)
-            return;
+        if (section == null) return;
 
         var translations = TreasureParticles.getTranslations();
 
@@ -87,20 +75,24 @@ public class ColorManager implements DataHolder {
                 ComponentLogger.error(generator, "You cannot use '" + key + "' for color scheme name");
                 continue;
             }
+
             var tempSection = section.getConfigurationSection(key);
             if (tempSection == null) continue;
+
             if (!tempSection.contains("values")) {
                 ComponentLogger.error(generator, "Please define color values for color scheme '" + key + "'");
                 continue;
             }
+
             if (!tempSection.contains("size")) {
                 ComponentLogger.error(generator, "Please define a size value for color scheme '" + key + "'");
                 continue;
             }
+
             var displayName = tempSection.getString("name");
             displayName = translations.translate("colors", displayName);
 
-            GradientColorScheme color = new GradientColorScheme(
+            var color = new GradientColorScheme(
                     key,
                     displayName,
                     tempSection.getInt("size"),
@@ -109,7 +101,7 @@ public class ColorManager implements DataHolder {
             colors.add(color);
         }
 
-        ColorScheme rainbow = new ColorScheme("rainbow", "%rainbow%");
+        var rainbow = new ColorScheme("rainbow", "%rainbow%");
         rainbow.getColors().addAll(Arrays.asList(new Rainbow().colors(config.getInt("rainbow-colors-size", 25))));
         colors.add(rainbow);
 
@@ -119,14 +111,14 @@ public class ColorManager implements DataHolder {
     private void loadColorGroups() {
         var config = generator.getConfiguration();
         var section = config.getConfigurationSection("groups");
-        if (section == null)
-            return;
+        if (section == null) return;
 
         var permissions = TreasureParticles.getPermissions();
 
         for (var key : section.getKeys(false)) {
             var tempSection = section.getConfigurationSection(key);
             if (tempSection == null) continue;
+
             var values = tempSection.getValues(false);
             if (values.isEmpty()) continue;
             ColorGroup group = new ColorGroup(
@@ -135,7 +127,7 @@ public class ColorManager implements DataHolder {
                             .stream()
                             .map(e -> {
                                 var permission = permissions.replace(String.valueOf(e.getValue()));
-                                return new ColorGroup.Option(getColorScheme(e.getKey()), permission.equals("none") ? null : permission);
+                                return new ColorGroup.Option(getColorScheme(e.getKey()), permission.equals(Permissions.NONE_PERMISSION) ? null : permission);
                             })
                             .filter(o -> o.colorScheme() != null)
                             .toList()

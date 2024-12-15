@@ -165,15 +165,9 @@ public class Translations implements DataHolder {
 
                 generator = new ConfigurationGenerator("translations_" + LOCALE + ".yml", "translations");
                 config = generator.generate();
-                TreasureParticles.generatedNewFile(this);
+                logGeneratedNewFile();
             } else if (!checkVersion()) {
-                if (!TreasureParticles.isAutoUpdateEnabled()) {
-                    TreasureParticles.newVersionInfo(this);
-                } else {
-                    generator.reset();
-                    config = generator.getConfiguration();
-                    TreasureParticles.generatedNewFile(this);
-                }
+                config = getConfiguration();
             }
 
             if (config == null)
@@ -357,11 +351,11 @@ public class Translations implements DataHolder {
     public String translate(String path, String message) {
         if (message == null) return null;
 
-        StringBuilder output = new StringBuilder();
+        var output = new StringBuilder();
 
         var array = message.toCharArray();
-        int startPos = -1;
-        StringBuilder sb = new StringBuilder();
+        var startPos = -1;
+        var sb = new StringBuilder();
 
         for (int pos = 0; pos < array.length; pos++) {
             var c = array[pos];

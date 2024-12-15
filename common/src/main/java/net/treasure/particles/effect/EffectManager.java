@@ -205,18 +205,7 @@ public class EffectManager implements DataHolder {
     }
 
     public void loadEffects() {
-        var config = generator.getConfiguration();
-        if (config == null) return;
-
-        if (!checkVersion()) {
-            if (!TreasureParticles.isAutoUpdateEnabled()) {
-                TreasureParticles.newVersionInfo(this);
-            } else {
-                generator.reset();
-                config = generator.getConfiguration();
-                TreasureParticles.generatedNewFile(this);
-            }
-        }
+        var config = getConfiguration();
         presets.load();
 
         var section = config.getConfigurationSection("effects");

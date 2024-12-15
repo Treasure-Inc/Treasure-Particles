@@ -66,16 +66,7 @@ public class GUIManager implements DataHolder {
 
     @Override
     public boolean initialize() {
-        this.config = generator.generate();
-        if (!checkVersion()) {
-            if (!TreasureParticles.isAutoUpdateEnabled()) {
-                TreasureParticles.newVersionInfo(this);
-            } else {
-                generator.reset();
-                config = generator.getConfiguration();
-                TreasureParticles.generatedNewFile(this);
-            }
-        }
+        this.config = getConfiguration();
 
         interval = config.getInt("animation.interval", interval);
         colorCycleSpeed = (float) config.getDouble("animation.color-cycle-speed", getColorCycleSpeed());
