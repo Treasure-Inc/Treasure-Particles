@@ -12,6 +12,6 @@ public class NMSDustData extends ParticleDustData {
 
     @Override
     public Object toNMS() {
-        return new ParticleParamRedstone(getRed(), getGreen(), getBlue(), size);
+        return new ParticleParamRedstone(red, green, blue, size);
     }
 }

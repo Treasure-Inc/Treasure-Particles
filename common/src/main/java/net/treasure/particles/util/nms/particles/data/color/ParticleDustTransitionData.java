@@ -5,6 +5,8 @@ import org.bukkit.Color;
 
 @Getter
 public abstract class ParticleDustTransitionData extends ParticleDustData {
+
+    protected int transitionAsRGB;
     protected float transitionRed, transitionGreen, transitionBlue;
 
     public ParticleDustTransitionData(Color color, Color transition) {
@@ -13,6 +15,7 @@ public abstract class ParticleDustTransitionData extends ParticleDustData {
 
     public ParticleDustTransitionData(Color color, Color transition, float size) {
         super(color, size);
+        transitionAsRGB = transition.asRGB();
         this.transitionRed = transition.getRed() / 255f;
         this.transitionGreen = transition.getGreen() / 255f;
         this.transitionBlue = transition.getBlue() / 255f;
