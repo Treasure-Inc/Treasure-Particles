@@ -77,9 +77,9 @@ public class CircleParticle extends ParticleSpawner {
 
         List<ParticleBuilder> builders = new ArrayList<>();
 
-        var s = MathUtils.PI2 / particles;
+        var constant = MathUtils.PI2 / particles;
         for (int i = 0; i < particles; i++) {
-            var r = s * i;
+            var r = constant * i;
             builders.add(builder.copy().location(location(context, r, radius, vertical)));
             if (tickData)
                 updateParticleData(builder, data);

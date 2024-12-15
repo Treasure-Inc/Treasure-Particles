@@ -26,7 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SpreadCircleParticle extends CircleParticle {
 
-    RangeArgument spread = null;
+    protected RangeArgument spread = null;
 
     public SpreadCircleParticle(ParticleEffect particle, LocationOrigin origin,
                                 RangeArgument spread,

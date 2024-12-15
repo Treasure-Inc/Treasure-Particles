@@ -11,11 +11,14 @@ public class CircleParticleReader extends ParticleReader<CircleParticle> {
 
     public CircleParticleReader() {
         super();
+        addValidArguments(this);
+    }
 
-        addValidArgument(c -> c.script().tickData(StaticArgument.asBoolean(c)), "tick-data", "tick");
-        addValidArgument(c -> c.script().particles(IntArgument.read(c, 1)), "particles");
-        addValidArgument(c -> c.script().radius(RangeArgument.read(c)), "radius");
-        addValidArgument(c -> c.script().vertical(StaticArgument.asBoolean(c)), "vertical");
+    public static void addValidArguments(ParticleReader<? extends CircleParticle> reader) {
+        reader.addValidArgument(c -> c.script().tickData(StaticArgument.asBoolean(c)), "tick-data", "tick");
+        reader.addValidArgument(c -> c.script().particles(IntArgument.read(c, 1)), "particles");
+        reader.addValidArgument(c -> c.script().radius(RangeArgument.read(c)), "radius");
+        reader.addValidArgument(c -> c.script().vertical(StaticArgument.asBoolean(c)), "vertical");
     }
 
     @Override
