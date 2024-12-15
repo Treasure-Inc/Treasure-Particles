@@ -298,16 +298,11 @@ public class Effect {
     public boolean isPredefinedVariable(String variableName) {
         return switch (variableName) {
             case Variable.I, Variable.TIMES,
-                    "2PI", "PI", "TICK", "RANDOM", "RANDOM-",
-                    "currentTimeMillis", "CTM",
-                    "lastBoostMillis", "LBM",
-                    "isMoving", "isStanding",
-                    "playerYaw", "playerPitch", "playerX", "playerY", "playerZ",
-                    "velocityLength", "velocityX", "velocityY", "velocityZ" -> true;
                  "2PI", "PI", "TICK", "RANDOM", "RANDOM-",
                  "currentTimeMillis", "CTM",
                  "lastBoostMillis", "LBM",
                  "isMoving", "isStanding",
+                 "locationYaw", "locationPitch", "locationX", "locationY", "locationZ",
                  "velocityLength", "velocityX", "velocityY", "velocityZ" -> true;
             default -> false;
         };
