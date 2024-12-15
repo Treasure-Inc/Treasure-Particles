@@ -10,21 +10,20 @@ import java.util.List;
 
 @AllArgsConstructor
 public class TickHandler {
-    // Generic
+
     public final String key;
     public final String displayName;
+
     public final int interval;
     public final int times;
-    // Mixer Options
+
     public final MixerOptions mixerOptions;
-    // Event Exclusive
     public final int maxExecuted;
     public final boolean resetEvent;
     public final HandlerEvent event;
-    // Non-final
+
     public int executed;
 
-    // Scripts
     public List<Script> lines;
 
     public TickHandler(String key, String displayName, int interval, int times, MixerOptions mixerOptions, int maxExecuted, boolean resetEvent, HandlerEvent event) {
