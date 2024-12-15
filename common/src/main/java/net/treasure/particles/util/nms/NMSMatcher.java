@@ -43,10 +43,12 @@ public class NMSMatcher {
             return (AbstractNMSHandler) constructor.newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
                  InvocationTargetException exception) {
-            throw new IllegalStateException("Failed to instantiate NMS Handler for version " + serverVersion, exception);
+            Bukkit.getLogger().log(Level.WARNING, "Bukkit version: " + Bukkit.getBukkitVersion() + " (Found: " + ReflectionUtils.MINECRAFT_VERSION_CONVERTED + ")");
+            Bukkit.getLogger().warning("Failed to instantiate NMS Handler for version " + ReflectionUtils.MINECRAFT_VERSION_CONVERTED);
         } catch (ClassNotFoundException exception) {
             Bukkit.getLogger().log(Level.WARNING, "Bukkit version: " + Bukkit.getBukkitVersion() + " (Found: " + ReflectionUtils.MINECRAFT_VERSION_CONVERTED + ")");
-            throw new IllegalStateException("TreasureParticles does not support server version " + serverVersion, exception);
+            Bukkit.getLogger().warning("TreasureParticles does not support server version " + ReflectionUtils.MINECRAFT_VERSION_CONVERTED);
         }
+        return null;
     }
 }

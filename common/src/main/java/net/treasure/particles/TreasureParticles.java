@@ -76,6 +76,11 @@ public class TreasureParticles {
     }
 
     private static void initialize() {
+        if (!Particles.initialize()) {
+            plugin.disable();
+            return;
+        }
+
         commandManager = new BukkitCommandManager(plugin);
         adventure = BukkitAudiences.create(plugin);
 

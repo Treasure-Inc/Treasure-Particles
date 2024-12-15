@@ -7,7 +7,12 @@ import java.util.List;
 
 public class Particles {
 
-    public static final AbstractNMSHandler NMS = NMSMatcher.match();
+    public static AbstractNMSHandler NMS;
+
+    public static boolean initialize() {
+        NMS = NMSMatcher.match();
+        return NMS != null;
+    }
 
     public static void send(ParticleBuilder builder) {
         NMS.sendParticle(builder);
