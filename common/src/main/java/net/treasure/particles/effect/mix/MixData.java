@@ -10,10 +10,10 @@ import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.handler.TickHandler;
 import net.treasure.particles.effect.script.variable.Variable;
+import net.treasure.particles.effect.script.variable.data.VariableData;
 import net.treasure.particles.gui.type.effects.EffectsGUI;
 import net.treasure.particles.util.message.MessageUtils;
 import net.treasure.particles.util.tuples.Pair;
-import net.treasure.particles.util.tuples.Triplet;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -41,7 +41,7 @@ public class MixData {
         var translations = TreasureParticles.getTranslations();
 
         var interval = Integer.MAX_VALUE;
-        List<Triplet<String, Double, String>> variables = new ArrayList<>();
+        List<VariableData> variables = new ArrayList<>();
         List<TickHandler> tickHandlers = new ArrayList<>();
 
         Set<Effect> ready = new HashSet<>();
@@ -67,7 +67,12 @@ public class MixData {
                 interval = effect.getInterval();
 
             if (!ready.contains(effect))
-                variables.addAll(effect.getVariables().stream().filter(triplet -> !triplet.x().equals(Variable.I) && !triplet.x().equals(Variable.TIMES)).map(triplet -> triplet.z(effectKey)).toList());
+                variables.addAll(effect.getVariables().stream()
+                        .filter(data -> !data.getName().equals(Variable.I) && !data.getName().equals(Variable.TIMES))
+                        .map(data -> data.setEffect(effectKey))
+                        .toList()
+                );
+
             tickHandlers.add(tickHandler);
 
             ready.add(effect);

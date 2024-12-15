@@ -8,9 +8,9 @@ import net.treasure.particles.color.scheme.ColorScheme;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.effect.handler.TickHandler;
+import net.treasure.particles.effect.script.variable.data.VariableData;
 import net.treasure.particles.util.TimeKeeper;
 import net.treasure.particles.util.math.MathUtils;
-import net.treasure.particles.util.tuples.Triplet;
 import org.bukkit.Location;
 
 import java.text.DecimalFormat;
@@ -30,7 +30,7 @@ public abstract class EffectData {
 
     // Fields for current effect
     protected Effect currentEffect;
-    protected List<Triplet<String, Double, String>> variables;
+    protected List<VariableData> variables;
     private List<TickHandler> tickHandlers;
 
     // Handler Event
@@ -78,12 +78,12 @@ public abstract class EffectData {
 
     public abstract Double getVariable(String variable);
 
-    public Triplet<String, Double, String> getVariable(Effect effect, String variable) {
+    public VariableData getVariable(Effect effect, String variable) {
         if (variable == null) return null;
 
-        for (var triplet : variables)
-            if (triplet.x().equals(variable) && (triplet.z() == null || triplet.z().equals(effect.getKey())))
-                return triplet;
+        for (var data : variables)
+            if (data.getName().equals(variable) && (data.getEffect() == null || data.getEffect().equals(effect.getKey())))
+                return data;
 
         Double value;
 
@@ -107,16 +107,18 @@ public abstract class EffectData {
                 default -> null;
             };
 
-        return value == null ? null : new Triplet<>(variable, value, null);
+        return value == null ? null : new VariableData(null, variable, value);
     }
 
     public String replaceVariables(Effect effect, String line) {
-        StringBuilder builder = new StringBuilder();
+        var result = new StringBuilder();
 
         var array = line.toCharArray();
         int startPos = -1;
-        StringBuilder variable = new StringBuilder();
-        StringBuilder format = new StringBuilder();
+
+        var variable = new StringBuilder();
+        var format = new StringBuilder();
+
         for (int pos = 0; pos < array.length; pos++) {
             var c = array[pos];
             switch (c) {
@@ -127,15 +129,14 @@ public abstract class EffectData {
                 case '}' -> {
                     if (startPos == -1) return null;
 
-                    var result = variable.toString();
-                    var p = getVariable(effect, result);
-                    if (p == null) break;
-                    var value = p.y();
+                    var data = getVariable(effect, variable.toString());
+                    if (data == null) break;
 
-                    if (!format.isEmpty())
-                        builder.append(new DecimalFormat(format.toString(), new DecimalFormatSymbols(Locale.ENGLISH)).format(value));
-                    else
-                        builder.append(value);
+                    var value = data.getValue();
+                    result.append((!format.isEmpty() ?
+                            new DecimalFormat(format.toString(), new DecimalFormatSymbols(Locale.ENGLISH)) :
+                            MathUtils.DF).format(value)
+                    );
 
                     startPos = -1;
                     variable = new StringBuilder();
@@ -146,17 +147,17 @@ public abstract class EffectData {
                         format = variable;
                         variable = new StringBuilder();
                     } else
-                        builder.append(c);
+                        result.append(c);
                 }
                 default -> {
                     if (startPos != -1)
                         variable.append(c);
                     else
-                        builder.append(c);
+                        result.append(c);
                 }
             }
         }
-        return builder.toString();
+        return result.toString();
     }
 
     // Handler Event

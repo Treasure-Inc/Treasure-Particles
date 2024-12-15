@@ -29,7 +29,7 @@ public class VariableCycle extends Script {
         var pair = data.getVariable(effect, variable);
         if (pair == null) return TickResult.NORMAL;
 
-        var current = pair.y();
+        var current = pair.getValue();
 
         var step = this.step.get(this, data);
         var min = this.min.get(this, data);
@@ -41,7 +41,7 @@ public class VariableCycle extends Script {
             forward = revertWhenDone != forward;
         }
 
-        pair.y(current);
+        pair.setValue(current);
         return TickResult.NORMAL;
     }
 

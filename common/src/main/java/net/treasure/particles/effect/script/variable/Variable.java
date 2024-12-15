@@ -11,7 +11,6 @@ import net.treasure.particles.effect.script.Cached;
 import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.util.logging.ComponentLogger;
 import net.treasure.particles.util.math.MathUtils;
-import org.bukkit.entity.Player;
 
 @Getter
 @AllArgsConstructor
@@ -32,7 +31,7 @@ public class Variable extends Script implements Cached {
         var pair = data.getVariable(effect, variable);
         if (pair == null) return TickResult.NORMAL;
         if (effect.isCachingEnabled()) {
-            pair.y(effect.getCache().get(tickHandler.key)[times][index]);
+            pair.setValue(effect.getCache().get(tickHandler.key)[times][index]);
             return TickResult.NORMAL;
         }
         double val;
@@ -44,11 +43,11 @@ public class Variable extends Script implements Cached {
             return TickResult.NORMAL;
         }
         switch (operator) {
-            case EQUAL -> pair.y(val);
-            case ADD -> pair.y(pair.y() + val);
-            case SUBTRACT -> pair.y(pair.y() - val);
-            case MULTIPLY -> pair.y(pair.y() * val);
-            case DIVIDE -> pair.y(pair.y() / val);
+            case SET -> pair.setValue(val);
+            case ADD -> pair.setValue(pair.getValue() + val);
+            case SUBTRACT -> pair.setValue(pair.getValue() - val);
+            case MULTIPLY -> pair.setValue(pair.getValue() * val);
+            case DIVIDE -> pair.setValue(pair.getValue() / val);
         }
         return TickResult.NORMAL;
     }
@@ -65,14 +64,14 @@ public class Variable extends Script implements Cached {
             return;
         }
 
-        pair.y(switch (operator) {
-            case EQUAL -> val;
-            case ADD -> pair.y() + val;
-            case SUBTRACT -> pair.y() - val;
-            case MULTIPLY -> pair.y() * val;
-            case DIVIDE -> pair.y() / val;
+        pair.setValue(switch (operator) {
+            case SET -> val;
+            case ADD -> pair.getValue() + val;
+            case SUBTRACT -> pair.getValue() - val;
+            case MULTIPLY -> pair.getValue() * val;
+            case DIVIDE -> pair.getValue() / val;
         });
-        effect.getCache().get(tickHandler.key)[times][index] = pair.y();
+        effect.getCache().get(tickHandler.key)[times][index] = pair.getValue();
     }
 
     @Override
@@ -81,7 +80,7 @@ public class Variable extends Script implements Cached {
     }
 
     public enum Operator {
-        EQUAL,
+        SET,
         ADD,
         SUBTRACT,
         MULTIPLY,

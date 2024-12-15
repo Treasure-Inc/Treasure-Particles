@@ -15,6 +15,7 @@ import net.treasure.particles.effect.script.Script;
 import net.treasure.particles.effect.script.Script.TickResult;
 import net.treasure.particles.effect.script.conditional.ConditionalScript;
 import net.treasure.particles.effect.script.variable.Variable;
+import net.treasure.particles.effect.script.variable.data.VariableData;
 import net.treasure.particles.gui.type.mixer.MixerHolder;
 import net.treasure.particles.locale.Translations;
 import net.treasure.particles.permission.Permissions;
@@ -22,7 +23,6 @@ import net.treasure.particles.util.TimeKeeper;
 import net.treasure.particles.util.logging.ComponentLogger;
 import net.treasure.particles.util.message.MessageUtils;
 import net.treasure.particles.util.tuples.Pair;
-import net.treasure.particles.util.tuples.Triplet;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,10 +42,11 @@ public class Effect {
 
     private String[] description;
     private final ItemStack icon;
-    private final int interval;
 
+    private final int interval;
     private List<TickHandler> tickHandlers;
-    private List<Triplet<String, Double, String>> variables;
+
+    private List<VariableData> variables;
     private final boolean cachingEnabled;
 
     private HashMap<String, double[][]> cache;
@@ -88,7 +89,7 @@ public class Effect {
         }
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<Triplet<String, Double, String>> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup, boolean onlyElytra) {
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<VariableData> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup, boolean onlyElytra) {
         this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup, onlyElytra);
         this.variables = variables;
 
@@ -150,8 +151,8 @@ public class Effect {
 
     public void initialize(EffectData data) {
         // Clone variables
-        List<Triplet<String, Double, String>> variables = new ArrayList<>();
-        for (var triplet : this.variables) variables.add(triplet.clone());
+        List<VariableData> variables = new ArrayList<>();
+        for (var variableData : this.variables) variables.add(variableData.clone());
         data.setVariables(variables);
 
         // Clone tick handlers and their scripts
@@ -199,23 +200,23 @@ public class Effect {
         }
 
         // Get variable 'i'
-        var ip = data.getVariable(this, Variable.I);
-        if (ip == null) {
+        var indexData = data.getVariable(this, Variable.I);
+        if (indexData == null) {
             ComponentLogger.error(this, "Couldn't pre-tick effect (Null variable: i)");
             return;
         }
 
         // Get variable 'times'
-        var tp = data.getVariable(this, Variable.TIMES);
-        if (tp == null) {
+        var timesData = data.getVariable(this, Variable.TIMES);
+        if (timesData == null) {
             ComponentLogger.error(this, "Couldn't pre-tick effect (Null variable: TIMES)");
             return;
         }
 
         for (var tickHandler : tickHandlers) {
-            tp.y((double) tickHandler.times);
+            timesData.setValue(tickHandler.times);
             for (int i = 0; i < tickHandler.times; i++) {
-                ip.y((double) i);
+                indexData.setValue(i);
                 for (var script : tickHandler.lines) {
                     if (script instanceof Cached cached) {
                         cached.preTick(this, data, i);
@@ -230,21 +231,22 @@ public class Effect {
         var event = data.getCurrentEvent();
         TickHandler last = null;
         try {
-            var ip = data.getVariable(this, Variable.I);
-            var tp = data.getVariable(this, Variable.TIMES);
-            if (ip == null || tp == null) {
-                ComponentLogger.error(this, "Couldn't tick effect (Null variable: i or TIMES)");
+            var indexData = data.getVariable(this, Variable.I);
+            var timesData = data.getVariable(this, Variable.TIMES);
+            if (indexData == null || timesData == null) {
+                ComponentLogger.error(this, "Couldn't tick effect (Null variable data)");
                 return;
             }
+
             for (var tickHandler : data.getTickHandlers()) {
                 if (tickHandler.interval > 1 && !TimeKeeper.isElapsed(tickHandler.interval)) continue;
                 last = tickHandler;
-                tp.y((double) tickHandler.times);
+                timesData.setValue(tickHandler.times);
 
                 if (!tickHandler.execute(data, event)) continue;
                 tickHandlerLoop:
                 for (int i = 0; i < tickHandler.times; i++) {
-                    ip.y((double) i);
+                    indexData.setValue(i);
                     for (var script : tickHandler.lines) {
                         var result = script.doTick(data, event, i);
                         if (result == TickResult.BREAK)
@@ -271,30 +273,30 @@ public class Effect {
             String key = matcher.group("name");
             try {
                 double value = Double.parseDouble(matcher.group("default"));
-                this.variables.add(new Triplet<>(key, value, effectKey));
+                this.variables.add(new VariableData(effectKey, key, value));
             } catch (NumberFormatException e) {
-                this.getVariables().add(new Triplet<>(key, 0d, effectKey));
+                this.getVariables().add(new VariableData(effectKey, key, 0d));
             }
         } else
-            this.getVariables().add(new Triplet<>(var, 0d, effectKey));
+            this.getVariables().add(new VariableData(effectKey, var, 0d));
     }
 
-    public boolean hasVariable(String var) {
+    public boolean hasVariable(String variableName) {
         for (var pair : variables)
-            if (pair.x().equals(var))
+            if (pair.getName().equals(variableName))
                 return true;
         return false;
     }
 
-    public boolean isValidVariable(String var) {
+    public boolean isValidVariable(String variableName) {
         for (var pair : variables)
-            if (pair.x().equals(var))
+            if (pair.getName().equals(variableName))
                 return true;
-        return isPredefinedVariable(var);
+        return isPredefinedVariable(variableName);
     }
 
-    public boolean isPredefinedVariable(String var) {
-        return switch (var) {
+    public boolean isPredefinedVariable(String variableName) {
+        return switch (variableName) {
             case Variable.I, Variable.TIMES,
                     "2PI", "PI", "TICK", "RANDOM", "RANDOM-",
                     "currentTimeMillis", "CTM",
@@ -302,6 +304,11 @@ public class Effect {
                     "isMoving", "isStanding",
                     "playerYaw", "playerPitch", "playerX", "playerY", "playerZ",
                     "velocityLength", "velocityX", "velocityY", "velocityZ" -> true;
+                 "2PI", "PI", "TICK", "RANDOM", "RANDOM-",
+                 "currentTimeMillis", "CTM",
+                 "lastBoostMillis", "LBM",
+                 "isMoving", "isStanding",
+                 "velocityLength", "velocityX", "velocityY", "velocityZ" -> true;
             default -> false;
         };
     }

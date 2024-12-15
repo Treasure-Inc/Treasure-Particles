@@ -33,7 +33,7 @@ public class Condition implements Predicate {
         double current;
         if (hasEquation) {
             current = MathUtils.eval(data.replaceVariables(effect, variable));
-        } else current = data.getVariable(effect, variable).y();
+        } else current = data.getVariable(effect, variable).getValue();
         return switch (operator) {
             case EQUAL -> current == value;
             case NOT_EQUAL -> current != value;
