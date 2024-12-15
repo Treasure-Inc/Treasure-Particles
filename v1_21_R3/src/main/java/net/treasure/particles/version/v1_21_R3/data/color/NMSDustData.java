@@ -1,9 +1,8 @@
-package net.treasure.particles.version.v1_21.data.color;
+package net.treasure.particles.version.v1_21_R3.data.color;
 
 import net.minecraft.core.particles.ParticleParamRedstone;
 import net.treasure.particles.util.nms.particles.data.color.ParticleDustData;
 import org.bukkit.Color;
-import org.joml.Vector3f;
 
 public class NMSDustData extends ParticleDustData {
 
@@ -13,6 +12,6 @@ public class NMSDustData extends ParticleDustData {
 
     @Override
     public Object toNMS() {
-        return new ParticleParamRedstone(new Vector3f(getRed(), getGreen(), getBlue()), size);
+        return new ParticleParamRedstone(asRGB, size);
     }
 }

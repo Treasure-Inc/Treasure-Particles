@@ -1,6 +1,7 @@
-package net.treasure.particles.version.v1_21_R1;
+package net.treasure.particles.version.v1_21_R2;
 
 import net.minecraft.core.BlockPosition;
+import net.minecraft.core.particles.TargetColorParticleOption;
 import net.minecraft.core.particles.VibrationParticleOption;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
@@ -10,19 +11,20 @@ import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
 import net.minecraft.world.entity.EntityLightning;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.minecraft.world.phys.Vec3D;
 import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.util.nms.AbstractNMSHandler;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
-import net.treasure.particles.version.v1_21_R1.data.NMSGenericData;
-import net.treasure.particles.version.v1_21_R1.data.color.NMSDustData;
-import net.treasure.particles.version.v1_21_R1.data.color.NMSDustTransitionData;
+import net.treasure.particles.version.v1_21_R2.data.NMSGenericData;
+import net.treasure.particles.version.v1_21_R2.data.color.NMSDustData;
+import net.treasure.particles.version.v1_21_R2.data.color.NMSDustTransitionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class NMSHandler extends AbstractNMSHandler {
             if (filter != null && !filter.test(player)) continue;
             if (!player.getWorld().equals(world)) continue;
 
-            ((CraftPlayer) player).getHandle().c.b(packet);
+            ((CraftPlayer) player).getHandle().f.b(packet);
         }
     }
 
@@ -92,7 +94,7 @@ public class NMSHandler extends AbstractNMSHandler {
             if (filter != null && !filter.test(player)) continue;
             if (!player.getWorld().equals(world)) continue;
 
-            ((CraftPlayer) player).getHandle().c.b(bundle);
+            ((CraftPlayer) player).getHandle().f.b(bundle);
         }
     }
 
@@ -121,7 +123,7 @@ public class NMSHandler extends AbstractNMSHandler {
         var world = location.getWorld();
         if (world == null) return;
 
-        var lightning = new EntityLightning(EntityTypes.am, ((CraftWorld) location.getWorld()).getHandle());
+        var lightning = new EntityLightning(EntityTypes.ax, ((CraftWorld) location.getWorld()).getHandle());
         lightning.a_(location.getX(), location.getY(), location.getZ());
         lightning.a(true);
 
@@ -129,16 +131,21 @@ public class NMSHandler extends AbstractNMSHandler {
             if (filter != null && !filter.test(player)) return;
             if (!player.getWorld().equals(world)) return;
 
-            ((CraftPlayer) player).getHandle().c.b(new PacketPlayOutSpawnEntity(lightning, 0, BlockPosition.a(location.getX(), location.getY(), location.getZ())));
+            ((CraftPlayer) player).getHandle().f.b(new PacketPlayOutSpawnEntity(lightning, 0, BlockPosition.a(location.getX(), location.getY(), location.getZ())));
         });
     }
 
     @Override
     public Object getTargetData(ParticleEffect effect, EffectData effectData, Color color, Location target, int duration) {
-        if (effect != ParticleEffect.VIBRATION) return super.getTargetData(effect, effectData, color, target, duration);
-        return new VibrationParticleOption(
-                new BlockPositionSource(new BlockPosition(target.getBlockX(), target.getBlockY(), target.getBlockZ())),
-                duration
-        );
+        return switch (effect) {
+            case TRAIL -> new TargetColorParticleOption(
+                    new Vec3D(target.getX(), target.getY(), target.getZ()),
+                    color.asRGB());
+            case VIBRATION -> new VibrationParticleOption(
+                    new BlockPositionSource(new BlockPosition(target.getBlockX(), target.getBlockY(), target.getBlockZ())),
+                    duration
+            );
+            default -> super.getTargetData(effect, effectData, color, target, duration);
+        };
     }
 }
