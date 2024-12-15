@@ -25,6 +25,7 @@ public class LocationEffectData extends EffectData {
         this.id = id;
         this.location = location;
         this.currentEvent = HandlerEvent.STATIC;
+        this.persistent = persistent;
     }
 
     @Override
