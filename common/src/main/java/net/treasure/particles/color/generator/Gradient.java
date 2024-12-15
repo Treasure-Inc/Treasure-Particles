@@ -20,13 +20,13 @@ public class Gradient {
     }
 
     public Color[] colors(int size) {
-        Color[] c = new Color[size];
-        final int sectorLength = size / (this.colors.length - 1);
+        var c = new Color[size];
+        final var sectorLength = size / (this.colors.length - 1);
         this.factorStep = 1.0f / (sectorLength + this.index);
         this.phase = this.phase * sectorLength;
         this.index = 0;
 
-        for (int i = 0; i < size; i++) {
+        for (var i = 0; i < size; i++) {
             c[i] = this.color();
         }
         return c;
@@ -38,7 +38,7 @@ public class Gradient {
             this.index = 0;
         }
 
-        float factor = this.factorStep * (this.index++ + this.phase);
+        var factor = this.factorStep * (this.index++ + this.phase);
         if (factor > 1) {
             factor = 1 - (factor - 1);
         }
