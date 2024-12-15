@@ -6,6 +6,8 @@ import net.treasure.particles.effect.script.argument.type.StaticArgument;
 import net.treasure.particles.effect.script.particle.reader.ParticleReader;
 import net.treasure.particles.effect.script.particle.style.text.TextParticle;
 
+import java.awt.Font;
+
 public class TextParticleReader extends ParticleReader<TextParticle> {
 
     public TextParticleReader() {
@@ -24,9 +26,17 @@ public class TextParticleReader extends ParticleReader<TextParticle> {
     }
 
     @Override
-    public boolean validate(ParticleReader.Context<TextParticle> context) throws ReaderException {
-        if (!super.validate(context)) return false;
-        context.script().initialize();
+    public boolean validate(ParticleReader.Context<TextParticle> c) throws ReaderException {
+        if (!super.validate(c)) return false;
+        var script = c.script();
+
+        var font = new Font(script.fontName(), Font.PLAIN, 16);
+        if (font.canDisplayUpTo(script.text()) != script.text().length()) {
+            error(c.effect(), c.type(), c.line(), "This text cannot be displayed properly with '" + script.fontName() + "' font");
+            return false;
+        }
+
+        c.script().initialize();
         return true;
     }
 

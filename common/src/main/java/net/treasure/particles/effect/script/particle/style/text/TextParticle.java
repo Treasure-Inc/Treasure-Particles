@@ -19,7 +19,8 @@ import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.util.Vector;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +44,12 @@ public class TextParticle extends ParticleSpawner {
     private Float rotateX;
     private Float rotateY;
 
+    private int width, height;
     private Vector[] cache;
 
     public TextParticle(ParticleEffect particle, LocationOrigin origin,
                         int stepX, int stepY, float scale, boolean tickData, boolean vertical, Float rotateX, Float rotateY,
-                        Vector[] cache,
+                        int width, int height, Vector[] cache,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
                         IntArgument amount, RangeArgument speed, RangeArgument size,
@@ -62,6 +64,8 @@ public class TextParticle extends ParticleSpawner {
         this.rotateX = rotateX;
         this.rotateY = rotateY;
 
+        this.width = width;
+        this.height = height;
         this.cache = cache;
     }
 
@@ -106,15 +110,19 @@ public class TextParticle extends ParticleSpawner {
             sinRy = MathUtils.sin(angleRy);
         }
 
-        var image = stringToBufferedImage(new Font(fontName, Font.PLAIN, 16), text);
+        var image = stringToBufferedImage();
         List<Vector> cache = new ArrayList<>();
-        for (int y = image.getHeight() - 1; y >= 0; y -= stepY) {
-            for (int x = image.getWidth() - 1; x >= 0; x -= stepX) {
+
+        width = image.getWidth();
+        height = image.getHeight();
+
+        for (int y = height - 1; y >= 0; y -= stepY) {
+            for (int x = width - 1; x >= 0; x -= stepX) {
                 if (BLACK != image.getRGB(x, y)) continue;
 
                 var v = (vertical ?
-                        new Vector((float) image.getWidth() / 2 - x, (float) image.getHeight() / 2 - y, 0) :
-                        new Vector((float) image.getHeight() / 2 - y, 0, (float) image.getWidth() / 2 - x)
+                        new Vector((float) width / 2 - x, (float) height / 2 - y, 0) :
+                        new Vector((float) height / 2 - y, 0, (float) width / 2 - x)
                 ).multiply(scale);
 
                 if (rX)
@@ -128,13 +136,15 @@ public class TextParticle extends ParticleSpawner {
         this.cache = cache.toArray(Vector[]::new);
     }
 
-    public static BufferedImage stringToBufferedImage(Font font, String s) {
+    public BufferedImage stringToBufferedImage() {
+        var font = new Font(fontName, Font.PLAIN, 16);
+
         var img = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
         var graphics = img.createGraphics();
         graphics.setFont(font);
 
         var frc = graphics.getFontMetrics().getFontRenderContext();
-        var rect = font.getStringBounds(s, frc);
+        var rect = font.getStringBounds(text, frc);
         graphics.dispose();
 
         img = new BufferedImage((int) Math.ceil(rect.getWidth()), (int) Math.ceil(rect.getHeight()), BufferedImage.TYPE_4BYTE_ABGR);
@@ -142,11 +152,11 @@ public class TextParticle extends ParticleSpawner {
         graphics.setColor(Color.black);
         graphics.setFont(font);
 
-        FontMetrics fm = graphics.getFontMetrics();
+        var fm = graphics.getFontMetrics();
         int x = 0;
         int y = fm.getAscent();
 
-        graphics.drawString(s, x, y);
+        graphics.drawString(text, x, y);
         graphics.dispose();
 
         return img;
@@ -157,7 +167,7 @@ public class TextParticle extends ParticleSpawner {
         return new TextParticle(
                 particle, origin,
                 stepX, stepY, scale, tickData, vertical, rotateX, rotateY,
-                cache,
+                width, height, cache,
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
