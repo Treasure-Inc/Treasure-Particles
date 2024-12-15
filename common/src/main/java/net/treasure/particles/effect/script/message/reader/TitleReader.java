@@ -1,6 +1,5 @@
 package net.treasure.particles.effect.script.message.reader;
 
-import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.script.message.Title;
 import net.treasure.particles.effect.script.reader.ReaderContext;
