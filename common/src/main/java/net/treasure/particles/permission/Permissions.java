@@ -9,15 +9,17 @@ import net.treasure.particles.util.logging.ComponentLogger;
 
 public class Permissions implements DataHolder {
 
+    public static final String NONE_PERMISSION = "none";
+
+    public static final String COMMAND_BASE = "%base",
+            COMMAND_MIXER = "%mixer",
+            COMMAND_ADMIN = "%admin";
+
     public static String BASE,
             MIXER,
             ADMIN,
             CAN_SEE_EFFECTS,
             ACCESS_ALL_EFFECTS;
-
-    public static final String COMMAND_BASE = "%base",
-            COMMAND_MIXER = "%mixer",
-            COMMAND_ADMIN = "%admin";
 
     public static boolean
             MIX_LIMIT_ENABLED = false,
