@@ -1,13 +1,13 @@
 package net.treasure.particles.effect.data;
 
-import net.treasure.particles.util.tuples.Triplet;
+import net.treasure.particles.effect.script.variable.data.VariableData;
 import org.bukkit.Location;
 
 import java.util.List;
 
 public class EmptyEffectData extends EffectData {
 
-    public EmptyEffectData(List<Triplet<String, Double, String>> variables) {
+    public EmptyEffectData(List<VariableData> variables) {
         this.variables = variables;
     }
 
