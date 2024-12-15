@@ -21,6 +21,7 @@ import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
+import net.treasure.particles.util.nms.particles.ParticleEffect.Property;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -88,13 +89,13 @@ public class ParticleSpawner extends Script {
         builder.longDistance(longDistance);
 
         // Rotations
-        var angleP = Math.toRadians(origin.getPitch());
-        var cosP = MathUtils.cos(angleP);
-        var sinP = MathUtils.sin(angleP);
+        var pitchToRadians = Math.toRadians(origin.getPitch());
+        var cosP = MathUtils.cos(pitchToRadians);
+        var sinP = MathUtils.sin(pitchToRadians);
 
-        var angleY = Math.toRadians(-origin.getYaw());
-        var cosY = MathUtils.cos(angleY);
-        var sinY = MathUtils.sin(angleY);
+        var yawToRadians = Math.toRadians(-origin.getYaw());
+        var cosY = MathUtils.cos(yawToRadians);
+        var sinY = MathUtils.sin(yawToRadians);
 
         // Position
         var pos = this.position != null ? this.position.get(this, data) : new Vector(0, 0, 0);
@@ -129,7 +130,7 @@ public class ParticleSpawner extends Script {
             return;
         }
 
-        if (particle.hasProperty(ParticleEffect.Property.DUST)) {
+        if (particle.hasProperty(Property.DUST)) {
             var size = this.size != null ? this.size.get(this, data) : 1;
             if (particle == ParticleEffect.DUST_COLOR_TRANSITION)
                 if (colorData instanceof DuoImpl duo) {
@@ -139,7 +140,7 @@ public class ParticleSpawner extends Script {
                     builder.data(Particles.NMS.getColorTransitionData(colorData.next(data), colorData.tempNext(data), size));
             else
                 builder.data(Particles.NMS.getDustData(colorData.next(data), size));
-        } else if (particle.hasProperty(ParticleEffect.Property.OFFSET_COLOR)) {
+        } else if (particle.hasProperty(Property.OFFSET_COLOR)) {
             builder.data(Particles.NMS.getParticleParam(particle));
             if (particle == ParticleEffect.NOTE && colorData.isNote()) {
                 builder.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
