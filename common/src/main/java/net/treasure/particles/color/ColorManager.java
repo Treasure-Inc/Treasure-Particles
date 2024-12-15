@@ -120,8 +120,12 @@ public class ColorManager implements DataHolder {
             if (tempSection == null) continue;
 
             var values = tempSection.getValues(false);
-            if (values.isEmpty()) continue;
-            ColorGroup group = new ColorGroup(
+            if (values.isEmpty()) {
+                ComponentLogger.error(generator, "Please define color values for color group '" + key + "'");
+                continue;
+            }
+
+            var group = new ColorGroup(
                     key,
                     values.entrySet()
                             .stream()
