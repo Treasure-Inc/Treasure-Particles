@@ -1,5 +1,7 @@
 package net.treasure.particles.version.v1_20_R1;
 
+import net.minecraft.core.BlockPosition;
+import net.minecraft.core.particles.VibrationParticleOption;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.network.protocol.game.PacketListenerPlayOut;
@@ -7,13 +9,18 @@ import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
 import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
 import net.minecraft.world.entity.EntityLightning;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.util.nms.AbstractNMSHandler;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.version.v1_20_R1.data.NMSGenericData;
 import net.treasure.particles.version.v1_20_R1.data.color.NMSDustData;
 import net.treasure.particles.version.v1_20_R1.data.color.NMSDustTransitionData;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -124,5 +131,14 @@ public class NMSHandler extends AbstractNMSHandler {
 
             ((CraftPlayer) player).getHandle().c.a(new PacketPlayOutSpawnEntity(lightning));
         });
+    }
+
+    @Override
+    public Object getTargetData(ParticleEffect effect, EffectData effectData, Color color, Location target, int duration) {
+        if (effect != ParticleEffect.VIBRATION) return super.getTargetData(effect, effectData, color, target, duration);
+        return new VibrationParticleOption(
+                new BlockPositionSource(new BlockPosition(target.getBlockX(), target.getBlockY(), target.getBlockZ())),
+                duration
+        );
     }
 }

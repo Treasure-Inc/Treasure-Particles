@@ -1,5 +1,7 @@
 package net.treasure.particles.version.v1_20_R3;
 
+import net.minecraft.core.BlockPosition;
+import net.minecraft.core.particles.VibrationParticleOption;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.network.protocol.game.PacketListenerPlayOut;
@@ -7,6 +9,8 @@ import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
 import net.minecraft.network.protocol.game.PacketPlayOutWorldParticles;
 import net.minecraft.world.entity.EntityLightning;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.treasure.particles.effect.data.EffectData;
 import net.treasure.particles.util.nms.AbstractNMSHandler;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -127,5 +131,14 @@ public class NMSHandler extends AbstractNMSHandler {
 
             ((CraftPlayer) player).getHandle().c.b(new PacketPlayOutSpawnEntity(lightning));
         });
+    }
+
+    @Override
+    public Object getTargetData(ParticleEffect effect, EffectData effectData, Color color, Location target, int duration) {
+        if (effect != ParticleEffect.VIBRATION) return super.getTargetData(effect, effectData, color, target, duration);
+        return new VibrationParticleOption(
+                new BlockPositionSource(new BlockPosition(target.getBlockX(), target.getBlockY(), target.getBlockZ())),
+                duration
+        );
     }
 }
