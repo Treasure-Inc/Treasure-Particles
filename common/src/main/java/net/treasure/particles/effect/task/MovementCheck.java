@@ -11,20 +11,12 @@ public class MovementCheck implements Runnable {
 
     @Override
     public void run() {
-        var iterator = playerManager.getData().entrySet().iterator();
-        while (iterator.hasNext()) {
-            var set = iterator.next();
-
+        for (var set : playerManager.getData().entrySet()) {
             var data = set.getValue();
 
             var player = data.player;
-            if (player == null) {
-                iterator.remove();
-                continue;
-            }
 
-            if (data.getCurrentEffect() == null)
-                continue;
+            if (data.getCurrentEffect() == null) continue;
 
             var location = player.getLocation();
             var last = data.getLastVector();
@@ -32,9 +24,9 @@ public class MovementCheck implements Runnable {
             data.setLastVector(current);
 
             if (!current.equals(last)) {
-                data.resetInterval();
+                data.resetMovingInterval();
             } else {
-                data.increaseInterval();
+                data.increaseMovingInterval();
             }
         }
     }

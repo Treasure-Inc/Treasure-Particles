@@ -81,13 +81,13 @@ public class PlayerEffectData extends EffectData {
     }
 
     // Moving
-    public void increaseInterval() {
+    public void increaseMovingInterval() {
         this.notMovingInterval += 5;
         if (this.notMovingInterval > 20)
             this.moving = false;
     }
 
-    public void resetInterval() {
+    public void resetMovingInterval() {
         this.notMovingInterval = 0;
         this.moving = true;
     }
@@ -120,7 +120,7 @@ public class PlayerEffectData extends EffectData {
     }
 
     public int getMixLimit() {
-        return getMax(Keys.NAMESPACE + ".mix_limit.");
+        return getMaxPermissionValue(Keys.NAMESPACE + ".mix_limit.");
     }
 
     public boolean canCreateAnotherMix() {
@@ -130,16 +130,16 @@ public class PlayerEffectData extends EffectData {
     }
 
     public int getMixEffectLimit() {
-        return !Permissions.MIX_EFFECT_LIMIT_ENABLED ? -1 : getMax(Keys.NAMESPACE + ".mix_effect_limit.");
+        return !Permissions.MIX_EFFECT_LIMIT_ENABLED ? -1 : getMaxPermissionValue(Keys.NAMESPACE + ".mix_effect_limit.");
     }
 
-    private int getMax(String permission) {
+    private int getMaxPermissionValue(String permission) {
         if (player.isOp()) return -1;
 
         var max = new AtomicInteger();
 
         player.getEffectivePermissions().stream().map(PermissionAttachmentInfo::getPermission).map(String::toLowerCase).filter(value -> value.startsWith(permission)).map(value -> value.replace(permission, "")).forEach(value -> {
-            if (value.equalsIgnoreCase("*")) {
+            if (value.equals("*")) {
                 max.set(-1);
                 return;
             }
