@@ -2,6 +2,7 @@ package net.treasure.particles.effect.script.argument.type;
 
 import lombok.AllArgsConstructor;
 import net.treasure.particles.effect.exception.ReaderException;
+import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.util.unsafe.UnsafeFunction;
 
@@ -13,7 +14,7 @@ public class StaticArgument<T> {
 
     private final UnsafeFunction<String, T> function;
 
-    public static <E extends Enum<E>> StaticArgument<E> asEnumArgument(ReaderContext<?> context, Class<E> enumClazz) throws ReaderException {
+    public static <E extends Enum<E>> StaticArgument<E> asEnumArgument(ReaderContext<?> context, Class<E> enumClazz) {
         return new StaticArgument<>(s -> {
             try {
                 return Enum.valueOf(enumClazz, s.toUpperCase(Locale.ENGLISH));
@@ -39,7 +40,7 @@ public class StaticArgument<T> {
         try {
             return value.substring(1, value.length() - 1);
         } catch (Exception e) {
-            throw new ReaderException("Valid values for Static String argument: \"text\"");
+            throw ScriptArgument.invalidValues("Static String", "\"text\"");
         }
     }
 
@@ -64,7 +65,7 @@ public class StaticArgument<T> {
         } catch (ReaderException e) {
             throw e;
         } catch (Exception e) {
-            throw new ReaderException("Valid values for Static Integer argument: integers");
+            throw ScriptArgument.invalidValues("Static Integer", "integers");
         }
     }
 
@@ -93,7 +94,7 @@ public class StaticArgument<T> {
         } catch (ReaderException e) {
             throw e;
         } catch (Exception e) {
-            throw new ReaderException("Valid values for Static Float argument: decimals");
+            throw ScriptArgument.invalidValues("Static Float", "decimals");
         }
     }
 
@@ -105,7 +106,7 @@ public class StaticArgument<T> {
         if (arg.equals("true") || arg.equals("false"))
             return Boolean.parseBoolean(arg);
         else
-            throw new ReaderException("Valid values for Static Boolean argument: true, false");
+            throw ScriptArgument.invalidValues("Static Boolean", "true", "false");
     }
 
     public T get(String value) throws ReaderException {

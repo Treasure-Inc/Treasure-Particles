@@ -6,7 +6,7 @@ import net.treasure.particles.util.unsafe.UnsafeConsumer;
 
 @AllArgsConstructor
 public class ValidArgument<C extends ReaderContext<T>, T extends Script> {
-    String key;
-    UnsafeConsumer<C> reader;
-    boolean required;
+    protected String key;
+    protected UnsafeConsumer<C> reader;
+    protected boolean required;
 }

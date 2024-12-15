@@ -12,12 +12,12 @@ public class ItemStackArgument {
 
     public static ItemStack read(ReaderContext<?> context) {
         Material material = null;
-        int data = 0;
+        var data = 0;
         var matcher = Patterns.INNER_SCRIPT.matcher(context.value());
 
         while (matcher.find()) {
-            String type = matcher.group("type");
-            String value = matcher.group("value");
+            var type = matcher.group("type");
+            var value = matcher.group("value");
             try {
                 switch (type) {
                     case "material" -> material = Material.valueOf(value.toUpperCase(Locale.ENGLISH));

@@ -8,10 +8,22 @@ import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.variable.Variable;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class BooleanArgument implements ScriptArgument<Boolean> {
 
     private Object value;
+
+    @Override
+    public String getName() {
+        return "Dynamic Boolean";
+    }
+
+    @Override
+    public List<String> getExamples() {
+        return List.of("true", "false", variableExample());
+    }
 
     public static BooleanArgument read(ReaderContext<?> context) throws ReaderException {
         var arg = context.value();
@@ -26,7 +38,7 @@ public class BooleanArgument implements ScriptArgument<Boolean> {
         if (value == null) return null;
         else if (value instanceof Boolean b) return b;
         else if (value instanceof String s) {
-            var i = data.getVariable(script.getEffect(), s).y().intValue();
+            var i = data.getVariable(script.getEffect(), s).getValue();
             return i != 1 && i != 0 ? null : i == 1;
         } else return null;
     }
@@ -38,6 +50,6 @@ public class BooleanArgument implements ScriptArgument<Boolean> {
         if (context.effect().isValidVariable(arg))
             return new BooleanArgument(arg);
         else
-            throw new ReaderException("Valid values for Boolean argument: true, false, {variable}");
+            throw invalidValues();
     }
 }

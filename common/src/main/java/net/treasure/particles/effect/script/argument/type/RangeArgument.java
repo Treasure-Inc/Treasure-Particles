@@ -12,6 +12,11 @@ public class RangeArgument extends FloatArgument {
 
     private Float min, max;
 
+    @Override
+    public String getName() {
+        return "Dynamic Range";
+    }
+
     public static RangeArgument read(ReaderContext<?> context) throws ReaderException {
         Float min = null;
         Float max = null;
@@ -41,7 +46,7 @@ public class RangeArgument extends FloatArgument {
                 arg = Variable.replace(arg);
                 if (context.effect().isValidVariable(arg))
                     return new RangeArgument(arg);
-                throw new ReaderException("Valid values for Float argument: decimals, {variable}");
+                throw new FloatArgument(null).invalidValues();
             }
         }
 
@@ -54,8 +59,7 @@ public class RangeArgument extends FloatArgument {
             strVal = Variable.replace(strVal);
             if (context.effect().isValidVariable(strVal))
                 return new RangeArgument(strVal, min, max);
-            throw new ReaderException("Valid values for Range argument: decimals, {variable}");
-
+            throw new RangeArgument(null).invalidValues();
         }
     }
 

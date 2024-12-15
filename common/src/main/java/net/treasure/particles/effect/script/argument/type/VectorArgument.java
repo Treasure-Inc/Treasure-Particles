@@ -10,10 +10,22 @@ import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.util.logging.ComponentLogger;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class VectorArgument implements ScriptArgument<Vector> {
 
     private Object x, y, z;
+
+    @Override
+    public String getName() {
+        return "Dynamic Vector";
+    }
+
+    @Override
+    public List<String> getExamples() {
+        return List.of("vectors");
+    }
 
     public static VectorArgument read(ReaderContext<?> context) throws ReaderException {
         return read(context, context.value());
@@ -23,8 +35,8 @@ public class VectorArgument implements ScriptArgument<Vector> {
         Object x = null, y = null, z = null;
         var offsetMatcher = Patterns.INNER_SCRIPT.matcher(arg);
         while (offsetMatcher.find()) {
-            String type = offsetMatcher.group("type");
-            String value = offsetMatcher.group("value");
+            var type = offsetMatcher.group("type");
+            var value = offsetMatcher.group("value");
             try {
                 switch (type) {
                     case "x" -> x = DoubleArgument.read(value).validate(context).value;
@@ -41,24 +53,24 @@ public class VectorArgument implements ScriptArgument<Vector> {
 
     @Override
     public Vector get(Script script, EffectData data) {
-        double x = 0, y = 0, z = 0;
+        double x = 0D, y = 0D, z = 0D;
 
         var effect = script.getEffect();
 
         if (this.x instanceof Double d)
             x = d;
         else if (this.x instanceof String s)
-            x = data.getVariable(effect, s).y();
+            x = data.getVariable(effect, s).getValue();
 
         if (this.y instanceof Double d)
             y = d;
         else if (this.y instanceof String s)
-            y = data.getVariable(effect, s).y();
+            y = data.getVariable(effect, s).getValue();
 
         if (this.z instanceof Double d)
             z = d;
         else if (this.z instanceof String s)
-            z = data.getVariable(effect, s).y();
+            z = data.getVariable(effect, s).getValue();
 
         return new Vector(x, y, z);
     }

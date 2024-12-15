@@ -8,10 +8,22 @@ import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.variable.Variable;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class DoubleArgument implements ScriptArgument<Double> {
 
     public Object value;
+
+    @Override
+    public String getName() {
+        return "Dynamic Double";
+    }
+
+    @Override
+    public List<String> getExamples() {
+        return List.of("decimals", variableExample());
+    }
 
     public static DoubleArgument read(String arg) {
         try {
@@ -42,7 +54,7 @@ public class DoubleArgument implements ScriptArgument<Double> {
     public Double get(Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Double d) return d;
-        else if (value instanceof String s) return data.getVariable(script.getEffect(), s).y();
+        else if (value instanceof String s) return data.getVariable(script.getEffect(), s).getValue();
         else return null;
     }
 
@@ -58,9 +70,9 @@ public class DoubleArgument implements ScriptArgument<Double> {
                 if (context.effect().isValidVariable(arg))
                     return new DoubleArgument(arg);
                 else
-                    throw new ReaderException("Valid values for Double argument: decimals, {variable}");
+                    throw invalidValues();
             }
         }
-        throw new ReaderException("Valid values for Double argument: decimals, {variable}");
+        throw invalidValues();
     }
 }

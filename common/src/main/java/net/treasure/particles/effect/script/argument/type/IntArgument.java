@@ -8,10 +8,22 @@ import net.treasure.particles.effect.script.argument.ScriptArgument;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.variable.Variable;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class IntArgument implements ScriptArgument<Integer> {
 
     private Object value;
+
+    @Override
+    public String getName() {
+        return "Dynamic Integer";
+    }
+
+    @Override
+    public List<String> getExamples() {
+        return List.of("integers", variableExample());
+    }
 
     public static IntArgument read(ReaderContext<?> context) throws ReaderException {
         return read(context, Integer.MIN_VALUE, Integer.MAX_VALUE);
@@ -37,7 +49,7 @@ public class IntArgument implements ScriptArgument<Integer> {
     public Integer get(Script script, EffectData data) {
         if (value == null) return null;
         else if (value instanceof Integer i) return i;
-        else if (value instanceof String s) return data.getVariable(script.getEffect(), s).y().intValue();
+        else if (value instanceof String s) return (int) data.getVariable(script.getEffect(), s).getValue();
         else return null;
     }
 
@@ -52,7 +64,7 @@ public class IntArgument implements ScriptArgument<Integer> {
             if (context.effect().isValidVariable(arg))
                 return new IntArgument(arg);
             else
-                throw new ReaderException("Valid values for Integer argument: integers, {variable}");
+                throw invalidValues();
         }
     }
 }

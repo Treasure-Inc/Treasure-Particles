@@ -24,7 +24,7 @@ public class VariableReader extends ScriptReader<ReaderContext<Variable>, Variab
 
             var o = matcher.group(2);
             var operator = switch (o) {
-                case "" -> Variable.Operator.EQUAL;
+                case "" -> Variable.Operator.SET;
                 case "+" -> Variable.Operator.ADD;
                 case "-" -> Variable.Operator.SUBTRACT;
                 case "*" -> Variable.Operator.MULTIPLY;
