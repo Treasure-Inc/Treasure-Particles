@@ -14,15 +14,12 @@ import net.treasure.particles.effect.script.particle.ParticleContext;
 import net.treasure.particles.effect.script.particle.style.circle.CircleParticle;
 import net.treasure.particles.util.TimeKeeper;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 @Getter
 @Setter
 @Accessors(fluent = true)
 @NoArgsConstructor
 public class Parkour extends Script {
-
-    private static final Vector ZERO = new Vector(0, 0, 0);
 
     private IntArgument interval;
     private IntArgument duration;

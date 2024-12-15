@@ -18,9 +18,11 @@ public class ParkourReader extends ScriptReader<ParkourReader.Context, Parkour> 
         addValidArgument(c -> c.script().interval(IntArgument.read(c)), true, "interval");
         addValidArgument(c -> c.script().duration(IntArgument.read(c)), true, "duration");
         addValidArgument(c -> {
-            var presets = TreasureParticles.getEffectManager().getPresets();
-            var script = presets.read(c.effect(), c.value());
-            if (!(script instanceof CircleParticle circleParticle)) return;
+            var script = TreasureParticles.getEffectManager().getPresets().read(c.effect(), c.value());
+            if (!(script instanceof CircleParticle circleParticle)) {
+                error(c, "You can only use circle particles for parkour");
+                return;
+            }
             c.script().style(circleParticle);
         }, true, "style");
 
