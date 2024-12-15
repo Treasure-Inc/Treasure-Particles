@@ -30,7 +30,7 @@ public class DatabaseManager {
         var config = TreasureParticles.getConfig();
 
         if (!config.contains("database")) {
-            ComponentLogger.error("[config.yml]", "Couldn't find database section");
+            ComponentLogger.error("[config.yml/database]", "Couldn't find database section");
             return false;
         }
 
@@ -41,7 +41,7 @@ public class DatabaseManager {
         var applier = validDatabases.get(type);
 
         if (applier == null) {
-            ComponentLogger.error("[config.yml]", "Invalid database type: " + type);
+            ComponentLogger.error("[config.yml/database]", "Invalid database type: " + type);
             return false;
         }
 

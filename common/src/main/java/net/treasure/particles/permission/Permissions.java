@@ -71,7 +71,7 @@ public class Permissions implements DataHolder {
             var perm = matcher.group("perm");
             var replaced = TreasureParticles.getConfig().getString("permissions." + perm);
             if (replaced != null) return replaced;
-            ComponentLogger.error("[config.yml]", "'" + key + " is not specified in permissions section'");
+            ComponentLogger.error("[config.yml/permissions]", "'" + key + " is not specified in permissions section'");
             return key;
         }
         return key;
