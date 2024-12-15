@@ -22,6 +22,7 @@ import net.treasure.particles.effect.script.basic.ReturnScript;
 import net.treasure.particles.effect.script.basic.StopScript;
 import net.treasure.particles.effect.script.basic.reader.BasicScriptReader;
 import net.treasure.particles.effect.script.conditional.reader.ConditionalScriptReader;
+import net.treasure.particles.effect.script.delay.reader.DelayReader;
 import net.treasure.particles.effect.script.message.ActionBar;
 import net.treasure.particles.effect.script.message.ChatMessage;
 import net.treasure.particles.effect.script.message.reader.TitleReader;
@@ -136,6 +137,7 @@ public class EffectManager implements DataHolder {
         registerReader(new BasicScriptReader<>(s -> new BreakScript()), "break");
         registerReader(new BasicScriptReader<>(s -> new BreakHandlerScript()), "break-handler");
         registerReader(new BasicScriptReader<>(s -> new StopScript()), "stop");
+        registerReader(new DelayReader(), "delay");
     }
 
     @Override
