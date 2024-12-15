@@ -31,8 +31,8 @@ public class ColorGroup {
     @Accessors(fluent = true)
     @AllArgsConstructor
     public static class Option {
-        ColorScheme colorScheme;
-        String permission;
+        private ColorScheme colorScheme;
+        private String permission;
 
         public boolean canUse(Player player) {
             return permission == null || player.hasPermission(permission);
