@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.2.0"
+version: "1.4.0"
 # Commons
 elytra-boost-1s: "conditional ({CTM} - {LBM} > 1000) ? return : none"
 elytra-boost-3s: "conditional ({CTM} - {LBM} > 3000) ? return : none"
