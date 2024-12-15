@@ -1,4 +1,4 @@
-package net.treasure.particles.util;
+package net.treasure.particles.util.nms;
 
 import org.bukkit.Bukkit;
 
