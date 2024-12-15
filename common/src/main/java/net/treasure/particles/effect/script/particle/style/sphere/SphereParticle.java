@@ -12,7 +12,7 @@ import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.effect.script.particle.config.LocationOrigin;
-import net.treasure.particles.util.math.MathUtils;
+import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
@@ -75,7 +75,7 @@ public class SphereParticle extends ParticleSpawner {
     private Vector[] createSphere() {
         var vectors = new Vector[particles];
         for (int i = 0; i < particles; i++) {
-            var vector = MathUtils.getRandomVector();
+            var vector = Vectors.getRandomVector();
             if (!fullSphere) {
                 if (reverse) vector.setY(Math.abs(vector.getY()) * -1);
                 else vector.setY(Math.abs(vector.getY()));
