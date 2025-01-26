@@ -17,6 +17,7 @@ import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.effect.script.reader.ReaderContext;
 import net.treasure.particles.effect.script.reader.ScriptReader;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
+import net.treasure.particles.util.nms.particles.ParticleEffect.Property;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -93,7 +94,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
         addValidArgument(c -> {
             var particle = c.script().particle();
-            if (particle != null && !particle.hasProperty(ParticleEffect.Property.CAN_BE_COLORED)) {
+            if (particle != null && !particle.hasProperty(Property.CAN_BE_COLORED)) {
                 error(c, "You cannot use '" + c.key() + "' with this particle effect: minecraft:" + particle.getFieldName());
                 return;
             }
@@ -124,7 +125,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
         addValidArgument(c -> {
             var particle = c.script().particle();
-            if (particle != null && !particle.hasProperty(ParticleEffect.Property.REQUIRES_ITEM)) {
+            if (particle != null && !particle.hasProperty(Property.REQUIRES_ITEM)) {
                 error(c, "You cannot use '" + c.key() + "' with this particle effect: minecraft:" + particle.getFieldName());
                 return;
             }
@@ -135,7 +136,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
 
         addValidArgument(c -> {
             var particle = c.script().particle();
-            if (particle != null && !particle.hasProperty(ParticleEffect.Property.REQUIRES_BLOCK)) {
+            if (particle != null && !particle.hasProperty(Property.REQUIRES_BLOCK)) {
                 error(c, "You cannot use '" + c.key() + "' with this particle effect: minecraft:" + particle.getFieldName());
                 return;
             }
@@ -194,7 +195,7 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         }
 
         var colorData = script.colorData();
-        if (particle.hasProperty(ParticleEffect.Property.DUST) && colorData == null) {
+        if (particle.hasProperty(Property.REQUIRES_COLOR) && colorData == null) {
             error(context.effect(), context.type(), context.line(), "You must define a 'color' value");
             return false;
         }

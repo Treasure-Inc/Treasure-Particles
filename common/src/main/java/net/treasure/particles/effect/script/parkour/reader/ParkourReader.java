@@ -49,7 +49,7 @@ public class ParkourReader extends ScriptReader<ParkourReader.Context, Parkour> 
         if (!super.validate(c)) return false;
         var s = c.script();
 
-        if (s.style().particle().hasProperty(ParticleEffect.Property.DUST)) {
+        if (s.style().particle().hasProperty(ParticleEffect.Property.REQUIRES_COLOR)) {
             if (s.standby() == null)
                 error(c.effect(), c.type(), c.line(), "You must define a 'standby' color value");
             else if (s.success() == null)

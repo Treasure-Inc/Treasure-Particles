@@ -17,6 +17,7 @@ import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.DUST;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.OFFSET_COLOR;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_BLOCK;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_COLOR;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_ITEM;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_TARGET;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_WATER;
@@ -337,7 +338,7 @@ public enum ParticleEffect {
      *     <li>Extra: This particle supports custom size with 2 colors, it will display a fade animation between the two colors</li>
      * </ul>
      */
-    DUST_COLOR_TRANSITION(version -> version < 17 ? "NONE" : "dust_color_transition", CAN_BE_COLORED, DUST),
+    DUST_COLOR_TRANSITION(version -> version < 17 ? "NONE" : "dust_color_transition", CAN_BE_COLORED, DUST, REQUIRES_COLOR),
     /**
      * <p>Produced by mace smash attacks.</p>
      * <b>Information</b>
@@ -788,7 +789,7 @@ public enum ParticleEffect {
      *     <li>Extra: offsetX, offsetY and offsetZ represent the rgb values of the particle, the amount has to be 0 or the color won't work</li>
      * </ul>
      */
-    REDSTONE(version -> "dust", CAN_BE_COLORED, DUST),
+    REDSTONE(version -> "dust", CAN_BE_COLORED, DUST, REQUIRES_COLOR),
     /**
      * <p>Floats off the top of respawn anchors.</p>
      * <b>Information</b>
@@ -1110,7 +1111,7 @@ public enum ParticleEffect {
      *     <li>Extra: ???</li>
      * </ul>
      */
-    TRAIL(version -> version < 21.2 ? "NONE" : "trail", CAN_BE_COLORED, REQUIRES_TARGET),
+    TRAIL(version -> version < 21.2 ? "NONE" : "trail", CAN_BE_COLORED, REQUIRES_COLOR, REQUIRES_TARGET),
     /**
      * <p>Produced by players and mobs with the Trial Omen effect.</p>
      * <b>Information</b>
@@ -1319,8 +1320,8 @@ public enum ParticleEffect {
         DIRECTIONAL,
         DUST,
         OFFSET_COLOR,
-        PARAM_COLOR,
         REQUIRES_BLOCK,
+        REQUIRES_COLOR,
         REQUIRES_ITEM,
         REQUIRES_TARGET,
         REQUIRES_WATER,
