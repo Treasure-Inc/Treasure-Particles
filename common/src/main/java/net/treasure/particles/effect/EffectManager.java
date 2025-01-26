@@ -193,26 +193,6 @@ public class EffectManager implements DataHolder {
         return effects.stream().anyMatch(effect -> effect.getKey().equals(key));
     }
 
-    public void loadStatics() {
-        Bukkit.getScheduler().runTaskLater(TreasureParticles.getPlugin(), () -> {
-            var data = staticEffects.loadAll();
-            for (var entry : data.entrySet()) {
-                var effect = get(entry.getValue().getKey());
-                if (effect == null) {
-                    ComponentLogger.error(staticEffects.getGenerator(), "Unknown static(" + entry.getKey() + ") effect: " + entry.getValue().getKey());
-                    continue;
-                }
-                if (!effect.isStaticSupported()) {
-                    ComponentLogger.error(staticEffects.getGenerator(), "This effect does not support static(" + entry.getKey() + "): " + entry.getValue().getKey());
-                    continue;
-                }
-                var d = new LocationEffectData(entry.getKey(), entry.getValue().getValue());
-                d.setCurrentEffect(effect);
-                this.data.put(entry.getKey(), d);
-            }
-        }, 20);
-    }
-
     public void loadEffects() {
         var config = getConfiguration();
         presets.load();
@@ -340,7 +320,7 @@ public class EffectManager implements DataHolder {
             }
         }
 
-        loadStatics();
+        staticEffects.load(this);
     }
 
     public void registerReader(DefaultReader<?> reader, String... aliases) {
