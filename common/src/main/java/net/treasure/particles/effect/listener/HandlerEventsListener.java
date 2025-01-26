@@ -14,7 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -127,7 +132,8 @@ public class HandlerEventsListener implements Listener {
         if (!event.getEntity().hasMetadata(Keys.NAMESPACE)) return;
         try {
             var data = (EffectData) event.getEntity().getMetadata(Keys.NAMESPACE).get(0).value();
-            data.resetEvent();
+            if (data != null)
+                data.resetEvent();
         } catch (Exception ignored) {
         }
         event.getEntity().removeMetadata(Keys.NAMESPACE, TreasureParticles.getPlugin());
