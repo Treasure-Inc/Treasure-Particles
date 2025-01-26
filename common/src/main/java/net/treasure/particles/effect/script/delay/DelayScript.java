@@ -32,7 +32,7 @@ public class DelayScript extends Script {
             counter = 0;
             return TickResult.NORMAL;
         }
-        return TickResult.BREAK_HANDLER;
+        return action;
     }
 
     @Override
