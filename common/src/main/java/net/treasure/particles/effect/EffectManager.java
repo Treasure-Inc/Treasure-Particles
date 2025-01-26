@@ -36,6 +36,7 @@ import net.treasure.particles.effect.script.particle.reader.sphere.SphereParticl
 import net.treasure.particles.effect.script.particle.reader.spiral.FullSpiralParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.MultiSpiralParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.SpiralParticleReader;
+import net.treasure.particles.effect.script.particle.reader.text.AnimatedTextParticleReader;
 import net.treasure.particles.effect.script.particle.reader.text.TextParticleReader;
 import net.treasure.particles.effect.script.preset.reader.PresetReader;
 import net.treasure.particles.effect.script.reader.DefaultReader;
@@ -108,9 +109,11 @@ public class EffectManager implements DataHolder {
         //- Circles
         registerReader(new CircleParticleReader(), "circle");
         registerReader(new SpreadCircleParticleReader(), "spread");
+        //- Text
+        registerReader(new TextParticleReader(), "text");
+        registerReader(new AnimatedTextParticleReader(), "animated-text");
         //- Misc
         registerReader(new ParkourReader(), "parkour");
-        registerReader(new TextParticleReader(), "text");
         registerReader(new PolygonParticleReader(), "polygon");
         //- Spirals
         registerReader(new SpiralParticleReader(), "spiral");
