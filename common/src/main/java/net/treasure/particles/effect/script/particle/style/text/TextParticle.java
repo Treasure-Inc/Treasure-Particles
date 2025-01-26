@@ -17,6 +17,7 @@ import net.treasure.particles.util.math.Vectors;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
+import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 
 import java.awt.Color;
@@ -31,31 +32,30 @@ import java.util.List;
 @NoArgsConstructor
 public class TextParticle extends ParticleSpawner {
 
-    private static final int BLACK = Color.black.getRGB();
+    protected static final int BLACK = Color.black.getRGB();
 
-    private int stepX = 1;
-    private int stepY = 1;
-    private float scale = 0.2f;
-    private String fontName = "Tahoma";
-    private String text;
-    private boolean tickData;
-    private boolean vertical = true;
+    protected int stepX = 1;
+    protected int stepY = 1;
+    protected float scale = 0.2f;
+    protected String fontName = "Tahoma";
+    protected String text;
+    protected boolean tickData;
+    protected boolean vertical = true;
 
-    private Float rotateX;
-    private Float rotateY;
+    protected Float rotateX;
+    protected Float rotateY;
 
-    private int width, height;
-    private Vector[] cache;
+    protected Vector[] cache;
 
     public TextParticle(ParticleEffect particle, LocationOrigin origin,
                         int stepX, int stepY, float scale, boolean tickData, boolean vertical, Float rotateX, Float rotateY,
-                        int width, int height, Vector[] cache,
+                        Vector[] cache,
                         VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                         ColorData colorData, Object particleData,
                         IntArgument amount, RangeArgument speed, RangeArgument size,
                         boolean directionalX, boolean directionalY, boolean longDistance,
-                        boolean spawnEffectOnPlayer) {
-        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
+                        EntityType entityTypeFilter, boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, entityTypeFilter, spawnEffectOnPlayer);
         this.stepX = stepX;
         this.stepY = stepY;
         this.scale = scale;
@@ -64,8 +64,6 @@ public class TextParticle extends ParticleSpawner {
         this.rotateX = rotateX;
         this.rotateY = rotateY;
 
-        this.width = width;
-        this.height = height;
         this.cache = cache;
     }
 
@@ -113,8 +111,8 @@ public class TextParticle extends ParticleSpawner {
         var image = stringToBufferedImage();
         List<Vector> cache = new ArrayList<>();
 
-        width = image.getWidth();
-        height = image.getHeight();
+        var width = image.getWidth();
+        var height = image.getHeight();
 
         for (int y = height - 1; y >= 0; y -= stepY) {
             for (int x = width - 1; x >= 0; x -= stepX) {
@@ -143,8 +141,8 @@ public class TextParticle extends ParticleSpawner {
         var graphics = img.createGraphics();
         graphics.setFont(font);
 
-        var frc = graphics.getFontMetrics().getFontRenderContext();
-        var rect = font.getStringBounds(text, frc);
+        var fm = graphics.getFontMetrics();
+        var rect = font.getStringBounds(text, fm.getFontRenderContext());
         graphics.dispose();
 
         img = new BufferedImage((int) Math.ceil(rect.getWidth()), (int) Math.ceil(rect.getHeight()), BufferedImage.TYPE_4BYTE_ABGR);
@@ -152,11 +150,7 @@ public class TextParticle extends ParticleSpawner {
         graphics.setColor(Color.black);
         graphics.setFont(font);
 
-        var fm = graphics.getFontMetrics();
-        int x = 0;
-        int y = fm.getAscent();
-
-        graphics.drawString(text, x, y);
+        graphics.drawString(text, 0, fm.getAscent());
         graphics.dispose();
 
         return img;
@@ -167,12 +161,12 @@ public class TextParticle extends ParticleSpawner {
         return new TextParticle(
                 particle, origin,
                 stepX, stepY, scale, tickData, vertical, rotateX, rotateY,
-                width, height, cache,
+                cache,
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
                 directionalX, directionalY, longDistance,
-                spawnEffectOnPlayer
+                entityTypeFilter, spawnEffectOnPlayer
         );
     }
 }
