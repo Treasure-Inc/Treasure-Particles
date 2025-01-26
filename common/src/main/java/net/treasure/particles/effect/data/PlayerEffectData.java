@@ -83,7 +83,7 @@ public class PlayerEffectData extends EffectData {
     // Moving
     public void increaseMovingInterval() {
         this.notMovingInterval += 5;
-        if (this.notMovingInterval > 20)
+        if (this.notMovingInterval > 15)
             this.moving = false;
     }
 
