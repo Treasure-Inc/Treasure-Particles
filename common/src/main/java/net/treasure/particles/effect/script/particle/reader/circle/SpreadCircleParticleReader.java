@@ -10,7 +10,7 @@ public class SpreadCircleParticleReader extends ParticleReader<SpreadCircleParti
     public SpreadCircleParticleReader() {
         super();
 
-        addValidArgument(c -> c.script().spread(RangeArgument.read(c)), true, "spread");
+        addValidArgument(c -> c.script().spread(RangeArgument.read(c)), "spread");
         CircleParticleReader.addValidArguments(this);
     }
 
