@@ -48,7 +48,7 @@ public class TargetParticle extends ParticleSpawner {
         builder.data(Particles.NMS.getTargetData(
                 particle,
                 data,
-                colorData.next(data),
+                colorData == null ? null : colorData.next(data),
                 context.origin.clone().add(target),
                 duration.get(this, data)
         ));
