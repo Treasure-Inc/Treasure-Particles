@@ -88,6 +88,7 @@ public class AnimatedTextParticle extends TextParticle {
             if (tickData)
                 color = colorData != null ? colorData.next(data) : null;
         }
+
         Particles.send(builders);
         return TickResult.NORMAL;
     }

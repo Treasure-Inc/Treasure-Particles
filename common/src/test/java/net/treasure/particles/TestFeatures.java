@@ -7,8 +7,8 @@ import net.treasure.particles.effect.data.EmptyEffectData;
 import net.treasure.particles.effect.script.conditional.Condition;
 import net.treasure.particles.effect.script.conditional.ConditionGroup;
 import net.treasure.particles.effect.script.conditional.reader.ConditionReader;
+import net.treasure.particles.effect.script.variable.data.VariableData;
 import net.treasure.particles.util.math.MathUtils;
-import net.treasure.particles.util.tuples.Triplet;
 import org.junit.jupiter.api.Test;
 
 import java.text.DecimalFormat;
@@ -19,6 +19,21 @@ import java.util.List;
 import java.util.Locale;
 
 public class TestFeatures {
+
+    @Test
+    public void testSin() throws ParseException {
+        var DF = new DecimalFormat("#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        DF.setMaximumFractionDigits(8);
+
+        var expected = "1.9160110969096422E-4";
+        var found = String.valueOf(DF.parse(String.valueOf(MathUtils.sin(3.1415927410125732))));
+        System.out.println("Expected: " + expected);
+        System.out.println("Found: " + found);
+        System.out.println("Same? " + expected.equals(found));
+
+        var s = -437.19760373975373 + (1.9160110969096422E-4);
+        System.out.println(s);
+    }
 
     @Test
     public void testLoop() {
@@ -37,8 +52,8 @@ public class TestFeatures {
 
     @Test
     public void testReader() {
-        final List<Triplet<String, Double, String>> variables = new ArrayList<>();
-        variables.add(new Triplet<>("p", 150d, null));
+        final List<VariableData> variables = new ArrayList<>();
+        variables.add(new VariableData(null, "p", 150d));
 
         var reader = new ConditionReader();
 //        var parent = reader.read(null, "((((p==1 || p==0) && (q==0 || q==1)) && ((a>1 && a!=3) || (b==4 && b>=99))) && (c==5 || c!=5))");
@@ -102,8 +117,8 @@ public class TestFeatures {
 
     @Test
     public void testReplace() {
-        final List<Triplet<String, Double, String>> variables = new ArrayList<>();
-        variables.add(new Triplet<>("phase", 150.0547789798, null));
+        final List<VariableData> variables = new ArrayList<>();
+        variables.add(new VariableData(null, "phase", 150.0547789798));
         EffectData data = new EmptyEffectData(variables);
         System.out.println("Result: " + data.replaceVariables(null, "actionbar {#.##:phase}"));
     }

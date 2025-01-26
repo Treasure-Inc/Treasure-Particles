@@ -14,7 +14,6 @@ public class TargetParticleReader extends ParticleReader<TargetParticle> {
 
     public TargetParticleReader() {
         super();
-
         addValidArgument(c -> c.script().target(VectorArgument.read(c)), true, "target");
         addValidArgument(c -> c.script().duration(IntArgument.read(c, 1)), true, "duration");
     }

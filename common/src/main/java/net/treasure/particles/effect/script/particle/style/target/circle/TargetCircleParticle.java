@@ -1,4 +1,4 @@
-package net.treasure.particles.effect.script.particle.style.circle;
+package net.treasure.particles.effect.script.particle.style.target.circle;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,7 @@ import net.treasure.particles.effect.script.argument.type.IntArgument;
 import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.VectorArgument;
 import net.treasure.particles.effect.script.particle.config.LocationOrigin;
+import net.treasure.particles.effect.script.particle.style.circle.CircleParticle;
 import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
@@ -23,14 +24,16 @@ import java.util.List;
 
 @Getter
 @Setter
-@Accessors(fluent = true)
 @NoArgsConstructor
-public class SpreadCircleParticle extends CircleParticle {
+@Accessors(fluent = true)
+public class TargetCircleParticle extends CircleParticle {
 
-    protected RangeArgument spread = null;
+    private IntArgument spread;
+    private IntArgument duration;
+    private TargetPoint targetPoint;
 
-    public SpreadCircleParticle(ParticleEffect particle, LocationOrigin origin,
-                                RangeArgument spread,
+    public TargetCircleParticle(ParticleEffect particle, LocationOrigin origin,
+                                IntArgument spread, IntArgument duration, TargetPoint targetPoint,
                                 IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
                                 VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                                 ColorData colorData, Object particleData,
@@ -45,6 +48,8 @@ public class SpreadCircleParticle extends CircleParticle {
                 directionalX, directionalY, longDistance,
                 entityTypeFilter, spawnEffectOnPlayer);
         this.spread = spread;
+        this.duration = duration;
+        this.targetPoint = targetPoint;
     }
 
     @Override
@@ -58,35 +63,42 @@ public class SpreadCircleParticle extends CircleParticle {
         var particles = this.particles.get(this, data);
         var radius = this.radius.get(this, data);
 
-        updateParticleData(builder, data);
+        var color = colorData != null ? colorData.next(data) : null;
 
         // Spread
-        var offset = this.offset != null ? this.offset.get(this, data) : new Vector(0, 0, 0);
-        var spread = this.spread != null ? this.spread.get(this, data) : null;
+        var spread = this.spread.get(this, data);
+        var duration = this.duration.get(this, data);
 
         List<ParticleBuilder> builders = new ArrayList<>();
-        var constant = MathUtils.PI2 / particles;
+        var p = MathUtils.PI2 / particles;
         for (int i = 0; i < particles; i++) {
-            var r = constant * i;
+            var r = p * i;
             var x = MathUtils.cos(r) * radius;
             var y = MathUtils.sin(r) * radius;
 
             var location = location(context, vertical ? new Vector(x, y, 0) : new Vector(x, 0, y));
 
-            var copy = builder.copy().location(location);
-
             // Spread
-            var tempOffset = offset.clone();
-            if (spread != null) {
-                var angle = MathUtils.atan2(y, x);
-                tempOffset.add(vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.cos(angle) * spread, 0, MathUtils.sin(angle) * spread));
-            }
-            copy.offset(rotate(context, tempOffset));
-
-            builders.add(copy);
+            var target = switch (targetPoint) {
+                case VERTICAL -> location.clone().add(0, spread, 0);
+                case HORIZONTAL -> {
+                    var angle = MathUtils.atan2(y, x);
+                    yield location(context, vertical ? new Vector(MathUtils.cos(angle) * spread, MathUtils.sin(angle) * spread, 0) : new Vector(MathUtils.cos(angle) * spread, 0, MathUtils.sin(angle) * spread));
+                }
+            };
+            builders.add(builder.copy()
+                    .location(location)
+                    .data(Particles.NMS.getTargetData(
+                            particle,
+                            data,
+                            color,
+                            target,
+                            duration
+                    ))
+            );
 
             if (tickData)
-                updateParticleData(builder, data);
+                color = colorData != null ? colorData.next(data) : null;
         }
 
         Particles.send(builders);
@@ -94,10 +106,11 @@ public class SpreadCircleParticle extends CircleParticle {
     }
 
     @Override
-    public SpreadCircleParticle clone() {
-        return new SpreadCircleParticle(
+    public TargetCircleParticle clone() {
+        return new TargetCircleParticle(
                 particle, origin,
-                spread, particles, radius, tickData, vertical,
+                spread, duration, targetPoint,
+                particles, radius, tickData, vertical,
                 position, offset, multiplier,
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,

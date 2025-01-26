@@ -31,11 +31,12 @@ import net.treasure.particles.effect.script.particle.reader.circle.CircleParticl
 import net.treasure.particles.effect.script.particle.reader.circle.SpreadCircleParticleReader;
 import net.treasure.particles.effect.script.particle.reader.polygon.PolygonParticleReader;
 import net.treasure.particles.effect.script.particle.reader.single.SingleParticleReader;
-import net.treasure.particles.effect.script.particle.reader.target.TargetParticleReader;
 import net.treasure.particles.effect.script.particle.reader.sphere.SphereParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.FullSpiralParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.MultiSpiralParticleReader;
 import net.treasure.particles.effect.script.particle.reader.spiral.SpiralParticleReader;
+import net.treasure.particles.effect.script.particle.reader.target.TargetCircleParticleReader;
+import net.treasure.particles.effect.script.particle.reader.target.TargetParticleReader;
 import net.treasure.particles.effect.script.particle.reader.text.AnimatedTextParticleReader;
 import net.treasure.particles.effect.script.particle.reader.text.TextParticleReader;
 import net.treasure.particles.effect.script.preset.reader.PresetReader;
@@ -109,6 +110,7 @@ public class EffectManager implements DataHolder {
         //- Circles
         registerReader(new CircleParticleReader(), "circle");
         registerReader(new SpreadCircleParticleReader(), "spread");
+        registerReader(new TargetCircleParticleReader(), "target-circle");
         //- Text
         registerReader(new TextParticleReader(), "text");
         registerReader(new AnimatedTextParticleReader(), "animated-text");
