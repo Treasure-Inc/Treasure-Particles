@@ -19,21 +19,23 @@ public class TargetParticleReader extends ParticleReader<TargetParticle> {
         addValidArgument(c -> c.script().duration(IntArgument.read(c, 1)), true, "duration");
     }
 
-    @Override
-    public Context createParticleReaderContext(Effect effect, String type, String line) {
-        return new Context(effect, type, line);
+    public static boolean validateContext(ParticleReader<?> reader, ParticleReader.Context<?> c) throws ReaderException {
+        if (!c.script().particle().hasProperty(ParticleEffect.Property.REQUIRES_TARGET)) {
+            reader.error(c.effect(), c.type(), c.line(), "You can only use these particles for target script: " + ParticleEffect.byProperty(ParticleEffect.Property.REQUIRES_TARGET).stream().map(ParticleEffect::getFieldName).collect(Collectors.joining(", ")));
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean validate(ParticleReader.Context<TargetParticle> c) throws ReaderException {
         if (!super.validate(c)) return false;
+        return validateContext(this, c);
+    }
 
-        if (!c.script().particle().hasProperty(ParticleEffect.Property.REQUIRES_TARGET)) {
-            error(c.effect(), c.type(), c.line(), "You can only use these particles for target script: " + ParticleEffect.byProperty(ParticleEffect.Property.REQUIRES_TARGET).stream().map(ParticleEffect::getFieldName).collect(Collectors.joining(",")));
-            return false;
-        }
-
-        return true;
+    @Override
+    public Context createParticleReaderContext(Effect effect, String type, String line) {
+        return new Context(effect, type, line);
     }
 
     public static class Context extends ParticleReader.Context<TargetParticle> {
