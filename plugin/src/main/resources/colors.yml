@@ -27,7 +27,12 @@ schemes:
     name: "%gradient%<gray>: %dark-aqua-black%"
     values: [ "#3449eb", "#10174f", "#111530" ]
     size: 10
+  gradient-blue-purple:
+    name: "%gradient%<gray>: %blue-purple%"
+    values: [ "#3242a8", "#642e94" ]
+    size: 20
   gradient-white-gray:
+    name: "%gradient%<gray>: %white-gray%"
     values: [ "#FFFFFF", "#89918b" ]
     size: 20
   # Dark Colors
@@ -116,6 +121,8 @@ groups:
     gradient-aqua-blue: "none"
     gradient-aqua-brown: "none"
     gradient-dark-aqua-black: "none"
+    gradient-blue-purple: "none"
+    gradient-white-gray: "none"
     dark-1: "none"
     dark-2: "none"
     dark-3: "none"

@@ -607,6 +607,60 @@ effects:
         scripts:
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r1},origin=feet,color={name=triangles;speed=0.1;revert=true}]
           - polygon [effect=minecraft:dust,points=3,size=0.5,rotation={r2},origin=feet,color={name=triangles;speed=0.1;revert=true}]
+  aqua-man:
+    display-name: "%aqua-man%"
+    color-animation: "gradient-dark-aqua-black"
+    name-color-animation: true
+    permission: "%special%"
+    variables: [ "l=2" ]
+    icon:
+      material: POTION
+    interval: 1
+    on-tick:
+      standing:
+        event: STANDING
+        scripts:
+          - var-c [variable=l,min=2,max=10,step=0.25]
+          - target-circle [effect=minecraft:trail,directional=false,origin=feet,spread={l},target=vertical,vertical=false,duration=10,color={name=gradient-dark-aqua-black;speed=0.1;revert=true}]
+      moving:
+        event: MOVING
+        scripts:
+          - target-circle [effect=minecraft:trail,billboard=vertical,vertical=true,origin=feet*-2,pos={y=1.5},target=horizontal,radius=0.25,spread=-1.15,duration=20,color={name=gradient-dark-aqua-black;speed=0.1;revert=true}]
+      trident:
+        event: PROJECTILE
+        scripts:
+          - target-circle [effect=minecraft:trail,directional=true,vertical=true,origin=feet,target=horizontal,radius=0.5,spread=1.15,duration=5,color={name=gradient-dark-aqua-black;speed=0.1;revert=true},entity-type-filter=trident]
+      vehicle:
+        event: RIDE_VEHICLE
+        scripts:
+          - target-circle [effect=minecraft:trail,directional=true,vertical=true,pos={y=0.5},origin=head,target=horizontal,radius=0.5,spread=-2,duration=20,color={name=gradient-dark-aqua-black;speed=0.1;revert=true}]
+  subwoofer:
+    display-name: "%subwoofer%"
+    name-color-animation: true
+    color-animation: "gradient-blue-purple"
+    permission: "%special%"
+    variables: [ "y" ]
+    on-tick:
+      standing:
+        event: STANDING
+        scripts:
+          - var-c [variable=y,min=0,max=4,step=0.1]
+          - particle [effect=minecraft:shriek,origin=head,delay=1] ~4
+          - target-circle [effect=minecraft:trail,particles=32,origin=feet,color=#0000FF,vertical=false,target=horizontal,duration=14,spread=2,pos={y={y}}]
+          - target-circle [effect=minecraft:trail,particles=32,origin=head,color=#0000FF,vertical=false,target=vertical,duration=14,spread=2] ~3
+          - target-circle [effect=minecraft:trail,particles=32,origin=head,color=#0000FF,vertical=false,target=vertical,duration=14,spread=-2] ~3
+      moving:
+        event: MOVING
+        scripts:
+          - target-circle [effect=minecraft:trail,particles=32,origin=feet*-1.5,color=#0000FF,vertical=true,target=horizontal,billboard=vertical,duration=14,spread=1.25,radius=0.25,pos={y=1}]
+      elytra:
+        event: ELYTRA
+        scripts:
+          - target-circle [effect=minecraft:trail,particles=32,origin=feet*-1.5,color=#0000FF,vertical=true,target=horizontal,billboard=vertical,duration=14,spread=1.25,radius=0.25]
+      projectile:
+        event: PROJECTILE
+        scripts:
+          - target-circle [effect=minecraft:trail,particles=32,origin=feet*-1.5,color=#0000FF,vertical=true,target=horizontal,billboard=vertical,duration=14,spread=1.25,radius=0.25,long-distance=true]
   infested:
     display-name: "%infested%"
     name-color-animation: true
@@ -1131,10 +1185,22 @@ effects:
           - particle [effect=minecraft:heart,direction=true,origin=feet]
           - particle [effect=minecraft:heart,direction=true,origin=feet,pos={y=-2.25}]
           - var x=-2
+  hello:
+    display-name: "%hello%"
+    permission: "%text-effects%"
+    icon:
+      material: oak_hanging_sign
+    on-tick:
+      static:
+        event: STANDING
+        scripts:
+          - animated-text [font="Arial Black",scale=0.1,effect=minecraft:trail,animation-origin=bottom_to_top,duration=30,tick-data=true,origin=head,pos={y=1},text="HELLO!",vertical=true,color=#000000,billboard=vertical,rotate-y=180]
+          - stop
   love-you:
     display-name: "%love-you%"
-    color-animation: "heart"
     permission: "%text-effects%"
+    icon:
+      material: oak_hanging_sign
     interval: 40
     on-tick:
       elytra:

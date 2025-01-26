@@ -161,6 +161,8 @@ effects:
   spores: "<b>Sporlar"
   twinkle: "<b>Pırıltı"
   triangles: "<b>Üçgenler"
+  aqua-man: "<b>Aquaman"
+  subwoofer: "<b>Subwoofer"
   infested: "<b>İstila"
   shield: "<b>Kalkan"
   blue-shield: "<b>Mavi Kalkan"
@@ -170,6 +172,7 @@ effects:
   heart: "<#f54242>Kalp"
   # Yazı Efektleri
   love-you: "<#f54242>Seni Seviyorum"
+  hello: "<gray>Merhaba!"
   # Basit
   gust: "<gray>Gust"
   sonic: "<#65f5fc>Sonik"
@@ -214,6 +217,8 @@ colors:
   aqua-blue: "<gradient:#4CE0D2:#136F63>Turkuaz > Mavi"
   aqua-brown: "<gradient:#4254f5:#2e1c1a>Turkuaz > Kahverengi"
   dark-aqua-black: "<gradient:#3449eb:#10174f:#10174f>Koyu Turkuaz > Siyah"
+  blue-purple: "<gradient:#3242a8:#642e94>Mavi > Mor"
+  white-gray: "<gradient:white:gray>Beyaz > Gri"
   dark-colors: "<gradient:#CB997E:#B7B7A4>Koyu Renkler"
   christmas: "<gradient:#A7C957:#F2E8CF:#BC4749><b>Yılbaşı"
 # PlaceholderAPI Mesajları
