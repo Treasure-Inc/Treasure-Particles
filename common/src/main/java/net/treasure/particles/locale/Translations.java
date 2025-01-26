@@ -373,7 +373,7 @@ public class Translations implements DataHolder {
                         continue;
                     }
                     var result = sb.toString();
-                    output.append(config.getString(path + "." + result, result));
+                    output.append(load(path + "." + result, result));
                     startPos = -1;
                     sb = new StringBuilder();
                     continue;
