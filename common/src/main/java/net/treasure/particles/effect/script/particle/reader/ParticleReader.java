@@ -19,6 +19,7 @@ import net.treasure.particles.effect.script.reader.ScriptReader;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -112,6 +113,8 @@ public abstract class ParticleReader<T extends ParticleSpawner> extends ScriptRe
         addValidArgument(c -> c.script().longDistance(StaticArgument.asBoolean(c)), "long-distance", "long");
 
         addValidArgument(c -> c.script().spawnEffectOnPlayer(StaticArgument.asBoolean(c)), "spawn-effect-on-player", "on-player");
+
+        addValidArgument(c -> c.script().entityTypeFilter(StaticArgument.asEnum(c, EntityType.class)), "entity-type-filter");
 
         addValidArgument(c -> c.script().amount(IntArgument.read(c)), "amount");
 

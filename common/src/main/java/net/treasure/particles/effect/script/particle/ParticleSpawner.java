@@ -25,6 +25,7 @@ import net.treasure.particles.util.nms.particles.ParticleEffect.Property;
 import net.treasure.particles.util.nms.particles.Particles;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +52,7 @@ public class ParticleSpawner extends Script {
 
     protected boolean longDistance = false;
 
+    protected EntityType entityTypeFilter;
     protected boolean spawnEffectOnPlayer;
 
     @Nullable
@@ -65,8 +67,13 @@ public class ParticleSpawner extends Script {
                 yield null;
             }
             case ELYTRA, STANDING, MOVING, SNEAKING, TAKE_DAMAGE -> player;
-            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE, RIDE_VEHICLE ->
-                    data instanceof PlayerEffectData playerEffectData ? (spawnEffectOnPlayer ? player : playerEffectData.getTargetEntity()) : null;
+            case MOB_KILL, PLAYER_KILL, PROJECTILE, MOB_DAMAGE, PLAYER_DAMAGE, RIDE_VEHICLE -> {
+                if (!(data instanceof PlayerEffectData playerEffectData)) yield null;
+                if (spawnEffectOnPlayer) yield player;
+                if (entityTypeFilter != null && (playerEffectData.getTargetEntity() == null || entityTypeFilter != playerEffectData.getTargetEntity().getType()))
+                    yield null;
+                yield playerEffectData.getTargetEntity();
+            }
         };
         if (entity == null && origin == null) return null;
 

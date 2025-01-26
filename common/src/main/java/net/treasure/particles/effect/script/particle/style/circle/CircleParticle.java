@@ -17,6 +17,7 @@ import net.treasure.particles.util.math.MathUtils;
 import net.treasure.particles.util.nms.particles.ParticleBuilder;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,8 +42,8 @@ public class CircleParticle extends ParticleSpawner {
                           ColorData colorData, Object particleData,
                           IntArgument amount, RangeArgument speed, RangeArgument size,
                           boolean directionalX, boolean directionalY, boolean longDistance,
-                          boolean spawnEffectOnPlayer) {
-        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
+                          EntityType entityTypeFilter, boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, entityTypeFilter, spawnEffectOnPlayer);
         this.particles = particles;
         this.radius = radius;
         this.tickData = tickData;
@@ -97,7 +98,7 @@ public class CircleParticle extends ParticleSpawner {
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
                 directionalX, directionalY, longDistance,
-                spawnEffectOnPlayer
+                entityTypeFilter, spawnEffectOnPlayer
         );
     }
 }

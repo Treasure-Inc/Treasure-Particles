@@ -14,6 +14,7 @@ import net.treasure.particles.effect.script.particle.ParticleSpawner;
 import net.treasure.particles.effect.script.particle.config.LocationOrigin;
 import net.treasure.particles.util.nms.particles.ParticleEffect;
 import net.treasure.particles.util.nms.particles.Particles;
+import org.bukkit.entity.EntityType;
 
 @Getter
 @Setter
@@ -30,8 +31,8 @@ public class TargetParticle extends ParticleSpawner {
                           ColorData colorData, Object particleData,
                           IntArgument amount, RangeArgument speed, RangeArgument size,
                           boolean directionalX, boolean directionalY, boolean longDistance,
-                          boolean spawnEffectOnPlayer) {
-        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, spawnEffectOnPlayer);
+                          EntityType entityTypeFilter, boolean spawnEffectOnPlayer) {
+        super(particle, origin, position, offset, multiplier, colorData, particleData, amount, speed, size, directionalX, directionalY, longDistance, entityTypeFilter, spawnEffectOnPlayer);
         this.target = target;
         this.duration = duration;
     }
@@ -66,7 +67,7 @@ public class TargetParticle extends ParticleSpawner {
                 colorData == null ? null : colorData.clone(), particleData,
                 amount, speed, size,
                 directionalX, directionalY, longDistance,
-                spawnEffectOnPlayer
+                entityTypeFilter, spawnEffectOnPlayer
         );
     }
 }
