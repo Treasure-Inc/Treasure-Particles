@@ -1,7 +1,6 @@
 package net.treasure.particles.util.math;
 
 import lombok.SneakyThrows;
-import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -10,21 +9,19 @@ import java.util.Random;
 
 public class MathUtils {
 
-    private static final DecimalFormat DF;
+    public static final DecimalFormat DF;
 
-    static public final float PI = 3.1415927f;
+    static public final float PI = 3.1415927F;
     static public final double PI2 = PI * 2;
 
     private static final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
     private static final int SIN_MASK = ~(-1 << SIN_BITS);
     private static final int SIN_COUNT = SIN_MASK + 1;
 
-    private static final float radFull = PI * 2;
-    private static final float degFull = 360;
-    private static final float radToIndex = SIN_COUNT / radFull;
-    private static final float degToIndex = SIN_COUNT / degFull;
+    private static final float RAD_TO_INDEX = SIN_COUNT / (PI * 2);
+    private static final float DEG_TO_INDEX = SIN_COUNT / 360F;
 
-    public static final float degreesToRadians = 0.017453292519943295f;
+    public static final float DEGREES_TO_RADIANS = 0.017453292519943295F;
 
     static {
         DF = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
@@ -32,24 +29,24 @@ public class MathUtils {
     }
 
     private static class Sin {
-        static final float[] table = new float[SIN_COUNT];
+        static final float[] TABLE = new float[SIN_COUNT];
 
         static {
             for (int i = 0; i < SIN_COUNT; i++) {
-                table[i] = (float) Math.sin((i + 0.5f) / SIN_COUNT * radFull);
+                TABLE[i] = (float) Math.sin((i + 0.5f) / SIN_COUNT * PI2);
             }
             for (int i = 0; i < 360; i += 90) {
-                table[(int) (i * degToIndex) & SIN_MASK] = (float) Math.sin(i * degreesToRadians);
+                TABLE[(int) (i * DEG_TO_INDEX) & SIN_MASK] = (float) Math.sin(i * DEGREES_TO_RADIANS);
             }
         }
     }
 
     public static float sin(double radians) {
-        return Sin.table[(int) (radians * radToIndex) & SIN_MASK];
+        return Sin.TABLE[(int) (radians * RAD_TO_INDEX) & SIN_MASK];
     }
 
     public static float cos(double radians) {
-        return Sin.table[(int) ((radians + PI / 2) * radToIndex) & SIN_MASK];
+        return Sin.TABLE[(int) ((radians + PI / 2) * RAD_TO_INDEX) & SIN_MASK];
     }
 
     private static final int ATAN2_BITS = 7; // Adjust for accuracy.
@@ -61,14 +58,14 @@ public class MathUtils {
 
     private static class Atan2 {
 
-        static final float[] table = new float[ATAN2_COUNT];
+        static final float[] TABLE = new float[ATAN2_COUNT];
 
         static {
             for (int i = 0; i < ATAN2_DIM; i++) {
                 for (int j = 0; j < ATAN2_DIM; j++) {
                     float x0 = (float) i / ATAN2_DIM;
                     float y0 = (float) j / ATAN2_DIM;
-                    table[j * ATAN2_DIM + i] = (float) Math.atan2(y0, x0);
+                    TABLE[j * ATAN2_DIM + i] = (float) Math.atan2(y0, x0);
                 }
             }
         }
@@ -100,9 +97,16 @@ public class MathUtils {
 
         int xi = (int) (x * invDiv);
         int yi = (int) (y * invDiv);
-        return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
+        return (Atan2.TABLE[yi * ATAN2_DIM + xi] + add) * mul;
     }
 
+    /**
+     * An evaluation method for arithmetic expressions
+     * See <a href="https://stackoverflow.com/a/26227947">original</a> post for details
+     *
+     * @param str arithmetic expression
+     * @return value
+     */
     public static double eval(final String str) {
         return new Object() {
             int pos = -1, ch;
@@ -123,7 +127,7 @@ public class MathUtils {
 
             double parse() {
                 nextChar();
-                double x = parseExpression();
+                var x = parseExpression();
                 if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char) ch);
                 return x;
             }
@@ -133,7 +137,6 @@ public class MathUtils {
             // term = factor | term `*` factor | term `/` factor
             // factor = `+` factor | `-` factor | `(` expression `)`
             //        | number | functionName factor | factor `^` factor
-
             double parseExpression() {
                 double x = parseTerm();
                 for (; ; ) {
@@ -211,28 +214,5 @@ public class MathUtils {
 
     public static int generateRandomInteger(int minimum, int maximum) {
         return minimum + (int) (new Random().nextDouble() * ((maximum - minimum) + 1));
-    }
-
-    public static Vector getRandomVector() {
-        var random = new Random();
-
-        var u = random.nextDouble();
-        var v = random.nextDouble();
-
-        var theta = u * PI2;
-        var phi = Math.acos(2 * v - 1);
-
-        var sinTheta = sin(theta);
-        var cosTheta = cos(theta);
-        var sinPhi = sin(phi);
-        var cosPhi = cos(phi);
-
-        var x = sinPhi * cosTheta;
-        var y = sinPhi * sinTheta;
-        var z = cosPhi;
-
-        // Going to take it on faith from the math gods that
-        // this is always a normal vector
-        return new Vector(x, y, z);
     }
 }
