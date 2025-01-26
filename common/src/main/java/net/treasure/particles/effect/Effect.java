@@ -227,7 +227,7 @@ public class Effect {
     }
 
     public void doTick(EffectData data) {
-        if (interval > 1 && !TimeKeeper.isElapsed(interval)) return;
+        if (interval != 1 && !TimeKeeper.isElapsed(interval)) return;
         var event = data.getCurrentEvent();
         TickHandler last = null;
         try {
@@ -239,7 +239,7 @@ public class Effect {
             }
 
             for (var tickHandler : data.getTickHandlers()) {
-                if (tickHandler.interval > 1 && !TimeKeeper.isElapsed(tickHandler.interval)) continue;
+                if (tickHandler.interval != 1 && !TimeKeeper.isElapsed(tickHandler.interval)) continue;
                 last = tickHandler;
                 timesData.setValue(tickHandler.times);
 
@@ -275,10 +275,10 @@ public class Effect {
                 double value = Double.parseDouble(matcher.group("default"));
                 this.variables.add(new VariableData(effectKey, key, value));
             } catch (NumberFormatException e) {
-                this.getVariables().add(new VariableData(effectKey, key, 0d));
+                this.variables.add(new VariableData(effectKey, key, 0D));
             }
         } else
-            this.getVariables().add(new VariableData(effectKey, var, 0d));
+            this.variables.add(new VariableData(effectKey, var, 0D));
     }
 
     public boolean hasVariable(String variableName) {
