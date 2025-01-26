@@ -4,7 +4,7 @@ import com.jeff_media.armorequipevent.ArmorEquipEvent;
 import lombok.AllArgsConstructor;
 import net.treasure.particles.TreasureParticles;
 import net.treasure.particles.constants.Keys;
-import net.treasure.particles.effect.data.EffectData;
+import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.player.PlayerManager;
 import org.bukkit.Material;
@@ -131,8 +131,8 @@ public class HandlerEventsListener implements Listener {
     public void on(ProjectileHitEvent event) {
         if (!event.getEntity().hasMetadata(Keys.NAMESPACE)) return;
         try {
-            var data = (EffectData) event.getEntity().getMetadata(Keys.NAMESPACE).get(0).value();
-            if (data != null)
+            var data = (PlayerEffectData) event.getEntity().getMetadata(Keys.NAMESPACE).get(0).value();
+            if (data != null && event.getEntity().equals(data.getTargetEntity()))
                 data.resetEvent();
         } catch (Exception ignored) {
         }
