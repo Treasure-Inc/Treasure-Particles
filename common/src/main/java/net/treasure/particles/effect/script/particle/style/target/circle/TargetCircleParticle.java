@@ -28,12 +28,12 @@ import java.util.List;
 @Accessors(fluent = true)
 public class TargetCircleParticle extends CircleParticle {
 
-    private IntArgument spread;
+    private RangeArgument spread;
     private IntArgument duration;
     private TargetPoint targetPoint;
 
     public TargetCircleParticle(ParticleEffect particle, LocationOrigin origin,
-                                IntArgument spread, IntArgument duration, TargetPoint targetPoint,
+                                RangeArgument spread, IntArgument duration, TargetPoint targetPoint,
                                 IntArgument particles, RangeArgument radius, boolean tickData, boolean vertical,
                                 VectorArgument position, VectorArgument offset, VectorArgument multiplier,
                                 ColorData colorData, Object particleData,

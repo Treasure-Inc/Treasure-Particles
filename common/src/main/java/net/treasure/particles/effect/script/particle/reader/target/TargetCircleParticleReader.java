@@ -3,6 +3,7 @@ package net.treasure.particles.effect.script.particle.reader.target;
 import net.treasure.particles.effect.Effect;
 import net.treasure.particles.effect.exception.ReaderException;
 import net.treasure.particles.effect.script.argument.type.IntArgument;
+import net.treasure.particles.effect.script.argument.type.RangeArgument;
 import net.treasure.particles.effect.script.argument.type.StaticArgument;
 import net.treasure.particles.effect.script.particle.reader.ParticleReader;
 import net.treasure.particles.effect.script.particle.reader.circle.CircleParticleReader;
@@ -14,7 +15,7 @@ public class TargetCircleParticleReader extends ParticleReader<TargetCircleParti
     public TargetCircleParticleReader() {
         super();
         CircleParticleReader.addValidArguments(this);
-        addValidArgument(c -> c.script().spread(IntArgument.read(c)), true, "spread");
+        addValidArgument(c -> c.script().spread(RangeArgument.read(c)), true, "spread");
         addValidArgument(c -> c.script().duration(IntArgument.read(c, 1)), true, "duration");
         addValidArgument(c -> c.script().targetPoint(StaticArgument.asEnum(c, TargetPoint.class)), true, "target-point", "target");
     }
