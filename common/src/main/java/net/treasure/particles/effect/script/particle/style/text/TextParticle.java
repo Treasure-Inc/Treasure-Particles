@@ -69,7 +69,7 @@ public class TextParticle extends ParticleSpawner {
 
     @Override
     public TickResult tick(EffectData data, HandlerEvent event, int times) {
-        var context = tick(data, event, true, true);
+        var context = tick(data, event, true, false);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
@@ -78,6 +78,7 @@ public class TextParticle extends ParticleSpawner {
 
         List<ParticleBuilder> builders = new ArrayList<>();
         for (var v : cache) {
+            v = v.clone();
             if (directionalX)
                 Vectors.rotateAroundAxisX(v, context.cosP, context.sinP);
             if (directionalY)
