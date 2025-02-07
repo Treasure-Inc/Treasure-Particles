@@ -1206,11 +1206,11 @@ effects:
       elytra:
         event: ELYTRA
         scripts:
-          - text [effect=minecraft:heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=false]
+          - text [effect=minecraft:heart,origin=feet,pos={y=-1},text="ILY",vertical=false,billboard=vertical,font="Arial Black",scale=0.25]
       static:
         event: STATIC
         scripts:
-          - text [effect=minecraft:heart,tick-data=true,origin=feet,pos={y=-1},text="ILY",vertical=true]
+          - text [effect=minecraft:heart,origin=feet,pos={y=-1},text="ILY",vertical=true,billboard=vertical,font="Arial Black",scale=0.25]
   rocket:
     display-name: "%rocket%"
     color-animation: "rocket"
