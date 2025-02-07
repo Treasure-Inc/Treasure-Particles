@@ -58,7 +58,7 @@ public class AnimatedTextParticle extends TextParticle {
 
     @Override
     public TickResult tick(EffectData data, HandlerEvent event, int times) {
-        var context = tick(data, event, true, true);
+        var context = tick(data, event, true, false);
         if (context == null) return TickResult.NORMAL;
 
         var builder = context.builder;
