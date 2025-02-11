@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.4.0"
+version: "1.4.1"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -87,7 +87,7 @@ commands:
   mix-selected: "<prefix> <green>Mix selected:<reset> {0}"
   mix-selected-other: "<prefix> <green>Mix selected ({0}):<reset> {1}"
   unknown-color-scheme: "<prefix> <red>Unknown color scheme."
-  color-scheme-selected: "<prefix> <green>Selected color scheme {0}<green> for the {1}<green> effect."
+  color-scheme-selected: "<prefix> <green>Selected color scheme {0}<reset><green> for the {1}<reset><green> effect."
   effect-static-start: "<prefix> <green>Started static effect {0}:<reset> {1}"
   effect-static-not-supported: "<prefix> <red>This effect does not support static."
   effect-static-exists: "<prefix> <red>There is already a static effect with this id, please type a different id."

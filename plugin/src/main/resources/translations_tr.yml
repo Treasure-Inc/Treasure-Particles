@@ -1,5 +1,5 @@
 # Bu değeri değiştirmeyin!
-version: "1.4.0"
+version: "1.4.1"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
 notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
@@ -87,7 +87,7 @@ commands:
   mix-selected: "<prefix> <green>Mix seçildi:<reset> {0}"
   mix-selected-other: "<prefix> <green>Mix seçildi ({0}):<reset> {1}"
   unknown-color-scheme: "<prefix> <red>Bilinmeyen renk şeması."
-  color-scheme-selected: "<prefix> <green>{1}<green> efekti için {0}<green> renk şeması seçildi."
+  color-scheme-selected: "<prefix> <green>{1}<reset><green> efekti için {0}<reset><green> renk şeması seçildi."
   effect-static-start: "<prefix> <green>Statik efekt {0} başlatıldı:<reset> {1}"
   effect-static-not-supported: "<prefix> <red>Bu efekt statik desteklemiyor."
   effect-static-exists: "<prefix> <red>Bu id ile oluşturulmuş bir statik efekt bulunuyor, lütfen başka bir id gir."
