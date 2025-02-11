@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.4.0"
+version: "1.4.1"
 # GUI options
 animation: # GUI animations
   enabled: true
@@ -80,7 +80,7 @@ styles:
         - "BCCCCCCCB"
         - "BCCCCCCCB"
         - "BCCCCCCCB"
-        - "PBBBbBBBN"
+        - "PBBbBRBBN"
       elements:
         borders:
           key: 'B'
@@ -232,7 +232,7 @@ styles:
         - "BCCCCCCCB"
         - "BCCCCCCCB"
         - "BCCCCCCCB"
-        - "PBBBbBBBN"
+        - "PBBbBRBBN"
       elements:
         borders:
           key: 'B'
