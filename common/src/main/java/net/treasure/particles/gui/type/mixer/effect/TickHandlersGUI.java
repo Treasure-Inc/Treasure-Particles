@@ -22,14 +22,14 @@ import static net.treasure.particles.gui.type.GUIType.HANDLERS;
 
 public class TickHandlersGUI {
 
-    private static GUIManager manager;
-    private static Translations translations;
+    private static GUIManager MANAGER;
+    private static Translations TRANSLATIONS;
 
     public static EnumMap<HandlerEvent, ItemStack> ELEMENTS = new EnumMap<>(HandlerEvent.class);
 
     public static void configure(GUIManager manager) {
-        TickHandlersGUI.manager = manager;
-        translations = TreasureParticles.getTranslations();
+        TickHandlersGUI.MANAGER = manager;
+        TRANSLATIONS = TreasureParticles.getTranslations();
     }
 
     public static void setItems() {
@@ -49,13 +49,13 @@ public class TickHandlersGUI {
         holder.setInventory(inventory);
         holder.closeListener(p -> {
             if (!holder.lockCloseListener)
-                manager.mixerGUI().open(player, mixerHolder);
+                MANAGER.mixerGUI().open(player, mixerHolder);
         });
 
         for (int i = 0, handlersSize = handlers.size(); i < handlersSize; i++) {
             var handler = handlers.get(i);
             var selected = mixerHolder.isSelected(handler);
-            var eventTranslation = translations.get("events." + handler.event.translationKey());
+            var eventTranslation = TRANSLATIONS.get("events." + handler.event.translationKey());
             holder.setItem(i, new CustomItem(ELEMENTS.get(handler.event))
                     .setDisplayName(MessageUtils.gui(handler.displayName))
                     .addItemFlags(ItemFlag.HIDE_ATTRIBUTES)

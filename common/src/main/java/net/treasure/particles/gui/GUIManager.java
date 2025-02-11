@@ -100,14 +100,17 @@ public class GUIManager implements DataHolder {
     }
 
     public GUIStyle getCurrentStyle() {
-        var id = config.getString("current-style");
-        if (id == null) return null;
+        var styleId = config.getString("current-style");
+        if (styleId == null) return null;
         return new GUIStyle(
-                id,
+                styleId,
                 Stream.of(GUIType.values())
                         .collect(Collectors.toMap(
                                 gui -> gui,
-                                gui -> new GUILayout(config.getStringList("styles." + id + "." + gui.id() + ".layout").toArray(String[]::new))
+                                gui -> new GUILayout(
+                                        styleId + "/" + gui.id(),
+                                        config.getStringList("styles." + styleId + "." + gui.id() + ".layout").toArray(String[]::new)
+                                )
                         ))
         );
     }

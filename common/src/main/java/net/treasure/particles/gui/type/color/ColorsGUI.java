@@ -9,8 +9,8 @@ import net.treasure.particles.gui.config.GUIElements;
 import net.treasure.particles.gui.config.GUISounds;
 import net.treasure.particles.gui.task.GUITask;
 import net.treasure.particles.gui.type.GUI;
-import net.treasure.particles.locale.Translations;
 import net.treasure.particles.gui.type.GUIType;
+import net.treasure.particles.locale.Translations;
 import net.treasure.particles.player.PlayerManager;
 import net.treasure.particles.util.item.CustomItem;
 import net.treasure.particles.util.message.MessageUtils;
@@ -90,9 +90,8 @@ public class ColorsGUI extends GUI {
                         event -> {
                             var random = colors.get(new Random().nextInt(colors.size()));
                             data.setColorPreference(effect, random.colorScheme());
-                            if (event.isRightClick()) {
-                                MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, random.colorScheme().getDisplayName(), effect.getDisplayName());
-                            } else {
+                            MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, random.colorScheme().getDisplayName(), effect.getDisplayName());
+                            if (!event.isRightClick()) {
                                 data.setCurrentEffect(effect);
                                 MessageUtils.sendParsed(player, Translations.EFFECT_SELECTED, effect.getDisplayName());
                                 player.closeInventory();
@@ -123,11 +122,11 @@ public class ColorsGUI extends GUI {
                 }
                 Pair<String, float[]> sound;
 
+                MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, scheme.getDisplayName(), effect.getDisplayName());
                 if (event.isRightClick()) {
                     sound = GUISounds.SELECT_COLOR;
 
                     data.setColorPreference(effect, scheme);
-                    MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, scheme.getDisplayName(), effect.getDisplayName());
                     manager.effectsGUI().open(player);
                 } else {
                     sound = GUISounds.SELECT_EFFECT;
