@@ -65,6 +65,7 @@ public class GUISounds {
             ComponentLogger.error(manager.getGenerator(), "There is no sound for \"" + key + "\"");
             return defaultValue;
         }
+        if (raw.isEmpty()) return null;
         try {
             var args = Patterns.SPACE.split(raw);
             var sound = args[0];
