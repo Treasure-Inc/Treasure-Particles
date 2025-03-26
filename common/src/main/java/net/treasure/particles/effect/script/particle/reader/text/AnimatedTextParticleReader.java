@@ -13,8 +13,8 @@ public class AnimatedTextParticleReader extends ParticleReader<AnimatedTextParti
     public AnimatedTextParticleReader() {
         super();
         TextParticleReader.addValidArguments(this);
-        addValidArgument(c -> c.script().duration(StaticArgument.asInt(c, 1)), "duration");
-        addValidArgument(c -> c.script().animationOrigin(StaticArgument.asEnum(c, AnimationOrigin.class)), "animation-origin");
+        addValidArgument(c -> c.script().duration(StaticArgument.asInt(c, 1)), true, "duration");
+        addValidArgument(c -> c.script().animationOrigin(StaticArgument.asEnum(c, AnimationOrigin.class)), true, "animation-origin");
     }
 
     @Override
