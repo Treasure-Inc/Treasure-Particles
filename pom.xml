@@ -6,7 +6,7 @@
 
     <groupId>net.treasure.particles</groupId>
     <artifactId>TreasureParticles</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
     <packaging>pom</packaging>
     <modules>
         <module>common</module>
@@ -27,6 +27,7 @@
         <module>v1_21_R1</module>
         <module>v1_21_R2</module>
         <module>v1_21_R3</module>
+        <module>v1_21_R4</module>
     </modules>
 
     <properties>
