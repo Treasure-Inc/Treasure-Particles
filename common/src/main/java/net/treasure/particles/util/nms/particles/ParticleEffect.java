@@ -16,15 +16,35 @@ import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.DIRECTIONAL;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.DUST;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.OFFSET_COLOR;
+import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.PARAM_COLOR;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_BLOCK;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_COLOR;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_ITEM;
 import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_TARGET;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.REQUIRES_WATER;
-import static net.treasure.particles.util.nms.particles.ParticleEffect.Property.RESIZEABLE;
 
 @Getter
 public enum ParticleEffect {
+    /**
+     * <p>Falls off the bottom of pale oak leaves.</p>
+     * <b>Information</b>
+     * <ul>
+     *     <li>Appearance: Leaf texture</li>
+     *     <li>Speed Value: ???</li>
+     * </ul>
+     */
+    PALE_OAK_LEAVES(version -> version < 21.4 ? "NONE" : "pale_oak_leaves"),
+    /**
+     * <p>
+     * Falls off the bottom of any type leaves except pale oak leaves.
+     * Its color corresponds to the leaves block its falling off.
+     * </p>
+     * <b>Information</b>
+     * <ul>
+     *     <li>Appearance: Tinted leaf texture</li>
+     *     <li>Speed Value: ???</li>
+     * </ul>
+     */
+    TINTED_LEAVES(version -> version < 21.5 ? "NONE" : "tinted_leaves", CAN_BE_COLORED, PARAM_COLOR),
     /**
      * <p>
      * Floats throughout the atmosphere in the soul sand valley biome.
@@ -100,7 +120,7 @@ public enum ParticleEffect {
      *     <li>Speed Value: Doesn't influence the particle</li>
      * </ul>
      */
-    BUBBLE(version -> "bubble", DIRECTIONAL, REQUIRES_WATER),
+    BUBBLE(version -> "bubble", DIRECTIONAL),
     /**
      * <p>Represents upwards bubble columns.</p>
      * <b>Information</b>
@@ -345,7 +365,7 @@ public enum ParticleEffect {
      * <ul>
      *     <li>Appearance: Little piece of a texture</li>
      *     <li>Speed Value: ???</li>
-     *     <li>Extra: This particle needs a block texture in order to work</li>
+     *     <li>Extra: This particle needs a block texture to work</li>
      * </ul>
      */
     DUST_PILLAR(version -> version < 20.4 ? "NONE" : "dust_pillar", REQUIRES_BLOCK),
@@ -1071,7 +1091,7 @@ public enum ParticleEffect {
      *     <li>Speed Value: Doesn't influence the particle</li>
      * </ul>
      */
-    SUSPENDED(version -> "underwater", REQUIRES_WATER),
+    SUSPENDED(version -> "underwater"),
     /**
      * <p>Appears when a sweeping attack is performed.</p>
      * <b>Information</b>
@@ -1081,7 +1101,7 @@ public enum ParticleEffect {
      *     <li>Extra: The size of this particle can be set in the offsetX parameter, the amount has to be 0 and the speed has to be 1</li>
      * </ul>
      */
-    SWEEP_ATTACK(version -> "sweep_attack", RESIZEABLE),
+    SWEEP_ATTACK(version -> "sweep_attack"),
     /**
      * <p>Produced when a totem of undying is used.</p>
      * <b>Information</b>
@@ -1320,11 +1340,10 @@ public enum ParticleEffect {
         DIRECTIONAL,
         DUST,
         OFFSET_COLOR,
+        PARAM_COLOR,
         REQUIRES_BLOCK,
         REQUIRES_COLOR,
         REQUIRES_ITEM,
-        REQUIRES_TARGET,
-        REQUIRES_WATER,
-        RESIZEABLE
+        REQUIRES_TARGET
     }
 }
