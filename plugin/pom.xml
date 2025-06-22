@@ -107,6 +107,12 @@
 
         <dependency>
             <groupId>net.treasure.particles</groupId>
+            <artifactId>v1_21_R5</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.treasure.particles</groupId>
             <artifactId>v1_21_R4</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
