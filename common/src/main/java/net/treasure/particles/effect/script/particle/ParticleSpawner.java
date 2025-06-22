@@ -153,6 +153,8 @@ public class ParticleSpawner extends Script {
                 builder.noteColor(colorData instanceof RandomNoteColorData randomNoteColorData ? randomNoteColorData.random() : colorData.index());
             } else
                 builder.offsetColor(colorData.next(data));
+        } else if (particle.hasProperty(Property.PARAM_COLOR)) {
+            builder.data(Particles.NMS.getGenericData(particle, colorData.next(data)));
         }
     }
 
