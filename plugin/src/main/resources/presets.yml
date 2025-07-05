@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.4.0"
+version: "1.5.0"
 # Commons
 elytra-boost-1s: "conditional ({CTM} - {LBM} > 1000) ? return : none"
 elytra-boost-3s: "conditional ({CTM} - {LBM} > 3000) ? return : none"
@@ -38,7 +38,7 @@ parkour-fast-streak:
   - "actionbar <light_purple><b>STREAK: {#:streak}"
 parkour-fast-fail:
   - "play-sound [name=minecraft:entity.villager.no,client=true]"
-  - "conditional (streak>0) ? chat <prefix> Last streak: <light_purple>{#:streak} : none"
+  - "conditional (streak>0) ? chat <prefix><!b> Last streak: <light_purple>{#:streak} : none"
   - "var streak=0"
 # Mob Kill Randomizer
 obsidian-tear:
