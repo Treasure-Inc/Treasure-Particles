@@ -29,7 +29,7 @@
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.10.3-SNAPSHOT</version>
+            <version>1.10.6-SNAPSHOT</version>
         </dependency>
 
         <dependency>
