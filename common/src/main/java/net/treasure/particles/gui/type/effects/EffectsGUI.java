@@ -123,18 +123,20 @@ public class EffectsGUI extends GUI {
         //endregion
 
         //region Random effect button
-        if (!effects.isEmpty() && RANDOM_EFFECT.isEnabled())
+        if (!effects.isEmpty() && RANDOM_EFFECT.isEnabled()) {
+            var effect = effects.stream().filter(data::checkElytra).toList().get(new Random().nextInt(effects.size()));
             for (int slot : RANDOM_EFFECT.slots())
                 holder.setItem(slot,
-                        new CustomItem(RANDOM_EFFECT.item()).setDisplayName(MessageUtils.gui(Translations.EFFECTS_GUI_RANDOM)),
+                        new CustomItem(RANDOM_EFFECT.item())
+                                .setDisplayName(MessageUtils.gui(Translations.EFFECTS_GUI_RANDOM))
+                                .setLore(effect.getParsedDisplayName()),
                         event -> {
-                            var effect = effects.stream().filter(data::checkElytra).toList().get(new Random().nextInt(effects.size()));
                             data.setCurrentEffect(effect);
                             MessageUtils.sendParsed(player, Translations.EFFECT_SELECTED, effect.getDisplayName());
                             player.closeInventory();
                             GUISounds.play(player, GUISounds.RANDOM_EFFECT);
                         });
-        else if (RANDOM_EFFECT.isEnabled() && BORDERS.isEnabled())
+        } else if (RANDOM_EFFECT.isEnabled() && BORDERS.isEnabled())
             for (int slot : RANDOM_EFFECT.slots())
                 holder.setItem(slot, new CustomItem(BORDERS.item()).emptyName());
         //endregion

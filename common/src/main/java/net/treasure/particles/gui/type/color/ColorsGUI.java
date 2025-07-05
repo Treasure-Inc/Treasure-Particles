@@ -83,12 +83,14 @@ public class ColorsGUI extends GUI {
                     });
 
         // Random color button
-        if (RANDOM_COLOR.isEnabled())
+        if (RANDOM_COLOR.isEnabled()) {
+            var random = colors.get(new Random().nextInt(colors.size()));
             for (int slot : RANDOM_COLOR.slots())
                 holder.setItem(slot,
-                        new CustomItem(RANDOM_COLOR.item()).setDisplayName(MessageUtils.gui(Translations.COLORS_GUI_RANDOM_COLOR)),
+                        new CustomItem(RANDOM_COLOR.item())
+                                .setDisplayName(MessageUtils.gui(Translations.COLORS_GUI_RANDOM_COLOR))
+                                .setLore(MessageUtils.gui(random.colorScheme().getDisplayName())),
                         event -> {
-                            var random = colors.get(new Random().nextInt(colors.size()));
                             data.setColorPreference(effect, random.colorScheme());
                             MessageUtils.sendParsed(player, Translations.COLOR_SCHEME_SELECTED, random.colorScheme().getDisplayName(), effect.getDisplayName());
                             if (!event.isRightClick()) {
@@ -98,6 +100,7 @@ public class ColorsGUI extends GUI {
                             }
                             GUISounds.play(player, event.isRightClick() ? GUISounds.RANDOM_COLOR : GUISounds.RANDOM_EFFECT);
                         });
+        }
 
         int index = 0;
         for (int i = page * maxColors; i < (page + 1) * maxColors; i++) {
