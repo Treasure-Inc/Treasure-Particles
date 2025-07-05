@@ -594,23 +594,24 @@ effects:
     color-animation: "complementary1-1"
     name-color-animation: true
     permission: "%special%"
-    interval: 8
     icon:
       material: POTION
     on-tick:
       moving:
         event: MOVING
+        interval: 2
         scripts:
-          - circle [effect=minecraft:dust_color_transition,tick-data=true,vertical=false,directional=false,radius=0.5,particles=32,size=1.5,origin=head,pos={y=0.35},color={name=complementary1-1;duo=complementary1-2;speed=2}]
+          - circle [effect=minecraft:dust_color_transition,tick-data=true,vertical=false,directional=false,radius=0.5,particles=16,size=1.5,origin=head,pos={y=0.35},color={name=complementary1-1;duo=complementary1-2;speed=0.25}]
       standing:
         event: STANDING
-        interval: 24
+        interval: 4
         scripts:
-          - circle [effect=minecraft:dust_color_transition,tick-data=true,vertical=false,directional=false,radius=0.5,particles=16,size=1.5,origin=head,pos={y=0.35},color={name=complementary1-1;duo=complementary1-2;speed=2}]
+          - circle [effect=minecraft:dust_color_transition,tick-data=true,vertical=false,directional=false,radius=0.5,particles=16,size=1.5,origin=head,pos={y=0.35},color={name=complementary1-1;duo=complementary1-2;speed=0.1}]
       elytra:
         event: ELYTRA
+        interval: 8
         scripts:
-          - circle [effect=minecraft:dust_color_transition,tick-data=true,radius=1,particles=32,size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=2}]
+          - circle [effect=minecraft:dust_color_transition,tick-data=true,radius=1,particles=32,size=3,origin=head*1.25,color={name=complementary1-1;duo=complementary1-2;speed=0.5}]
   helix:
     display-name: "%helix%"
     color-animation: "gradient-white-gray"
