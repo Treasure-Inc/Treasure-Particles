@@ -31,7 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
-@CommandAlias("trp|trparticles|treasureparticles")
+@CommandAlias("%aliases")
 public class MainCommand extends BaseCommand {
 
     final TreasurePlugin plugin;

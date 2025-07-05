@@ -38,6 +38,8 @@ public class TreasurePlugin extends AbstractTreasurePlugin {
     private void initializeCommands() {
         // Main command with completions
         var commandManager = TreasureParticles.getCommandManager();
+        var aliases = getConfig().getString("command-aliases");
+        commandManager.getCommandReplacements().addReplacement("aliases", "trp|trparticles|treasureparticles" + (aliases == null ? "" : "|" + aliases));
         commandManager.registerCommand(new MainCommand(this));
         var completions = commandManager.getCommandCompletions();
         completions.registerAsyncCompletion("effects", context -> TreasureParticles.getEffectManager().getEffects().stream().map(Effect::getKey).toList());

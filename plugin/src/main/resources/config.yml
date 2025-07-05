@@ -1,8 +1,12 @@
 # Do not change!
-version: "1.4.0"
+version: "1.5.0"
 
 # Translations locale (default=EN)
 locale: EN
+
+# Command aliases (separate them with '|' char)
+# Example: particles|pr|p
+command-aliases: ""
 
 # Toggle notifications (default=false)
 # Players can disable notifications for themselves even if 'notifications' is enabled
@@ -13,7 +17,6 @@ notifications: false
 # Disable this setting if you don't want your configurations to update automatically
 # If you set 'auto-update-configurations' to true, outdated files will automatically back up and be replaced with newer versions of it
 auto-update-configurations: true
-
 # Interval of auto-saving players data (default=10)
 # Set this setting to 0 if you want to disable auto-saving players data
 auto-save-interval: 10 # Minutes
@@ -55,12 +58,12 @@ permissions:
 
   # Mixer Limits
   # ------------
-  # If this option is enabled, players can only create certain amount of effect mix
+  # If this option is enabled, players can only create a certain amount of effect mix
   # Permission: trparticles.mix_limit.<MAX_MIX>
   # Example: trparticles.mix_limit.9
   mix-limit-enabled: false
   # ------------
-  # If this option is enabled, players can only select certain amount of effect for effect mix
+  # If this option is enabled, players can only select a certain amount of effect for effect mix
   # Permission: trparticles.mix_limit.<MAX_EFFECTS>
   # Example: trparticles.mix_effect_limit.2
   mix-effect-limit-enabled: false
