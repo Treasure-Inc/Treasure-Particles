@@ -1,5 +1,5 @@
 # Do not change!
-version: "1.4.0"
+version: "1.5.0"
 rainbow-colors-size: 25
 schemes:
   # Gradient Color Schemes
@@ -76,11 +76,11 @@ schemes:
     values: [ "#3b2b34", "#665860", "#6b6769" ]
     size: 10
   complementary1-1:
-    values: [ "#8A1BE4", "#E01F5A","#DC8B23" ]
-    size: 50
+    values: [ "#8A1BE4", "#E01F5A", "#DC8B23", "#75E41B" ]
+    size: 24
   complementary1-2:
-    values: [ "#75E41B","#1FE0A5", "#2374DC" ]
-    size: 50
+    values: [ "#75E41B", "#1FE0A5", "#2374DC", "#8A1BE4" ]
+    size: 24
   galaxy:
     values: [ "#ffe2e0", "#e6821e", "#ffe2e0", "#388a62", "#ffe2e0", "#214c57" ]
     size: 25
