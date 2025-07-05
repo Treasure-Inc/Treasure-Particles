@@ -2,7 +2,7 @@
 version: "1.5.0"
 # Translations
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
-notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
+notification: "<prefix><!b> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
 enabled: "<green>Enabled"
 disabled: "<red>Disabled"
 # GUI
@@ -31,7 +31,7 @@ gui:
     open-player-mix-list: "<green>Click to open your effect mix list!"
     open-mixer: "<gray>[Right-Click] Open effect mixer GUI."
     remove-mix: "<red>[Middle-Click] Remove mix."
-    mix-removed: "<prefix> <green>Mix removed." # Chat message
+    mix-removed: "<prefix><!b> <green>Mix removed." # Chat message
   colors-gui:
     title: "Pick a color scheme"
     color-scheme-selected: "<green>Selected!"
@@ -42,11 +42,11 @@ gui:
     title: "Effect Mixer"
     all-selected: "<green>All handlers selected!"
     select-all: "<#87FF65>❤ Click to select this effect!"
-    selected-all: "<prefix> <green>Selected:<reset> {0}" # Chat message
-    selected-handler: "<prefix> <green>Selected Handler:<reset> {0} <reset>- {1}" # Chat message
+    selected-all: "<prefix><!b> <green>Selected:<reset> {0}" # Chat message
+    selected-handler: "<prefix><!b> <green>Selected Handler:<reset> {0} <reset>- {1}" # Chat message
     unselect-all: "<red>[Middle-Click] Unselect all handlers of this effect."
-    unselected-all: "<prefix> <yellow>Unselected:<reset> {0}" # Chat message
-    unselected-handler: "<prefix> <yellow>Unselected Handler:<reset> {0} <reset>- {1}" # Chat message
+    unselected-all: "<prefix><!b> <yellow>Unselected:<reset> {0}" # Chat message
+    unselected-handler: "<prefix><!b> <yellow>Unselected Handler:<reset> {0} <reset>- {1}" # Chat message
     select-handlers: "<gray>[Right-Click] You can select handlers individually."
     has-dynamic-color: "<gray>• This effect has dynamic colors."
     prefer-color-group: "<gray>  <yellow>Shift-right-click</yellow> to use this effect's color group."
@@ -56,9 +56,9 @@ gui:
     preferred-color-group-needed: "<red>You must select an effect's color group to create your mix."
     confirm: "<green>Confirm"
     enter-name: "Enter a name for mix"
-    name-already-used: "<prefix> <red>You already created an effect mix with this name, please try different name." # Chat message
-    created: "<prefix> <green>Mix created!"
-    failed: "<prefix> <red>Mix creation failed."
+    name-already-used: "<prefix><!b> <red>You already created an effect mix with this name, please try different name." # Chat message
+    created: "<prefix><!b> <green>Mix created!"
+    failed: "<prefix><!b> <red>Mix creation failed."
   handlers-gui:
     select: "<#87FF65>❤ Click to select this handler!"
     selected: "<green>Selected!"

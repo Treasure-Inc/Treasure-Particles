@@ -2,7 +2,7 @@
 version: "1.5.0"
 # Çeviriler
 prefix: "<b><gradient:#c26767:#c28b67:#d47d66>TrParticles</b> <dark_gray><b>|</b></dark_gray>"
-notification: "<prefix> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
+notification: "<prefix><!b> <aqua><b><discord>Discord</discord></b> <dark_gray>/</dark_gray> <b><download>BuiltByBit</download></b> <dark_gray>/</dark_gray> <b><wiki>Wiki</wiki>"
 enabled: "<green>Açık"
 disabled: "<red>Kapalı"
 # GUI Mesajları
@@ -31,7 +31,7 @@ gui:
     open-player-mix-list: "<green>Efekt mix listeni açmak için tıkla!"
     open-mixer: "<gray>[Sağ-Tıkla] Mix'leyiciyi aç."
     remove-mix: "<red>[Orta-Tıkla] Mix'i sil."
-    mix-removed: "<prefix> <green>Mix silindi." # Sohbet mesajı
+    mix-removed: "<prefix><!b> <green>Mix silindi." # Sohbet mesajı
   colors-gui:
     title: "Bir renk şeması seçiniz"
     color-scheme-selected: "<green>Seçildi!"
@@ -42,11 +42,11 @@ gui:
     title: "Efekt Mix'leyici"
     all-selected: "<green>Tüm işleyiciler seçili!"
     select-all: "<#87FF65>❤ Tıkla ve efekti seç!"
-    selected-all: "<prefix> <green>Efekt seçildi:<reset> {0}" # Sohbet mesajı
-    selected-handler: "<prefix> <green>İşleyicis seçildi:<reset> {0} <reset>- {1}" # Sohbet mesajı
+    selected-all: "<prefix><!b> <green>Efekt seçildi:<reset> {0}" # Sohbet mesajı
+    selected-handler: "<prefix><!b> <green>İşleyicis seçildi:<reset> {0} <reset>- {1}" # Sohbet mesajı
     unselect-all: "<red>[Orta-Tıkla] Bu efektin tüm işleyicilerinin seçimini kaldır."
-    unselected-all: "<prefix> <yellow>Seçim kaldırıldı:<reset> {0}" # Sohbet mesajı
-    unselected-handler: "<prefix> <yellow>Seçim kaldırıldı:<reset> {0} <reset>- {1}" # Sohbet mesajı
+    unselected-all: "<prefix><!b> <yellow>Seçim kaldırıldı:<reset> {0}" # Sohbet mesajı
+    unselected-handler: "<prefix><!b> <yellow>Seçim kaldırıldı:<reset> {0} <reset>- {1}" # Sohbet mesajı
     select-handlers: "<gray>[Sağ-Tıkla] İşleyicileri tek tek seçebilirsin."
     has-dynamic-color: "<gray>• Bu efekt dinamik renklere sahip."
     prefer-color-group: "<gray>  Bu efektin renk grubunu kullanmak için <yellow>shift-sağ-tıkla</yellow>."
@@ -56,9 +56,9 @@ gui:
     preferred-color-group-needed: "<red>Mix'i oluşturabilmek için bir efektin renk grubunu seç."
     confirm: "<green>Onayla"
     enter-name: "Mix'in için isim gir"
-    name-already-used: "<prefix> <red>Zaten bu isimle bir mix oluşturmuşsun, lütfen başka bir isim dene." # Sohbet mesajı
-    created: "<prefix> <green>Mix oluşturuldu!"
-    failed: "<prefix> <red>Mix oluşturulamadı."
+    name-already-used: "<prefix><!b> <red>Zaten bu isimle bir mix oluşturmuşsun, lütfen başka bir isim dene." # Sohbet mesajı
+    created: "<prefix><!b> <green>Mix oluşturuldu!"
+    failed: "<prefix><!b> <red>Mix oluşturulamadı."
   handlers-gui:
     select: "<#87FF65>❤ Tıkla ve işleyiciyi seç!"
     selected: "<green>Seçili!"
