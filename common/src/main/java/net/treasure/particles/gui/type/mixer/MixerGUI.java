@@ -78,7 +78,7 @@ public class MixerGUI extends GUI {
 
         var currentSelections = holder.getSelected()
                 .stream()
-                .map(pair -> MessageUtils.gui(pair.getKey().getDisplayName() + (pair.getValue().event != null ? "<gray>:<reset> " + translations.get("events." + pair.getValue().event.translationKey()) : "")))
+                .map(pair -> MessageUtils.gui(pair.getKey().getDisplayName() + (pair.getValue().event != null ? "<gray><!b>:<white><!b> " + translations.get("events." + pair.getValue().event.translationKey()) : "")))
                 .toList();
         var limit = data.getMixEffectLimit();
         var selectedEffectsSize = holder.selectedEffectsSize();
