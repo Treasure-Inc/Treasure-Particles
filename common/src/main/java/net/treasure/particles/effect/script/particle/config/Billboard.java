@@ -4,6 +4,7 @@ public enum Billboard {
     VERTICAL,
     HORIZONTAL,
     BOTH;
+
     public boolean x() {
         return this != VERTICAL;
     }
