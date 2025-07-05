@@ -55,11 +55,15 @@
                         </relocation>
                         <relocation>
                             <pattern>net.kyori.adventure</pattern>
-                            <shadedPattern>net.treasure.shaded.adventure</shadedPattern>
+                            <shadedPattern>net.treasure.shaded.kyori.adventure</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>net.kyori.examination</pattern>
-                            <shadedPattern>net.treasure.shaded.examination</shadedPattern>
+                            <shadedPattern>net.treasure.shaded.kyori.examination</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.kyori.option</pattern>
+                            <shadedPattern>net.treasure.shaded.kyori.option</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.bstats</pattern>
