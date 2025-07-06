@@ -12,6 +12,7 @@ import net.treasure.particles.effect.handler.TickHandler;
 import net.treasure.particles.effect.script.variable.Variable;
 import net.treasure.particles.effect.script.variable.data.VariableData;
 import net.treasure.particles.gui.type.effects.EffectsGUI;
+import net.treasure.particles.permission.Permissions;
 import net.treasure.particles.util.message.MessageUtils;
 import net.treasure.particles.util.tuples.Pair;
 import org.bukkit.ChatColor;
@@ -80,7 +81,15 @@ public class MixData {
                 effects.put(effect, tickHandler.event);
         }
 
-        var details = effects.asMap().entrySet().stream().map(entry -> MessageUtils.gui("<gray>•</gray> " + entry.getKey().getDisplayName() + "<!b><gray>: " + entry.getValue().stream().map(e -> translations.get("events." + e.translationKey())).collect(Collectors.joining(", ")))).toArray(String[]::new);
+        var details = effects.asMap().entrySet()
+                .stream()
+                .map(entry -> MessageUtils.gui(
+                        "<gray>•</gray> " +
+                        entry.getKey().getDisplayName() +
+                        "<!b><gray>: " +
+                        entry.getValue().stream().distinct().map(e -> translations.get("events." + e.translationKey())).collect(Collectors.joining(", ")))
+                )
+                .toArray(String[]::new);
         var hasDetails = details.length > 0;
 
         var description = new String[1 + (hasDetails ? 1 + details.length : 0)];
@@ -92,12 +101,13 @@ public class MixData {
         }
 
         return cache = new Effect(
-                player.getName() + "/" + name,
+                name,
+                getFinalName(player),
                 "<gold>" + name,
                 description,
                 EffectsGUI.DEFAULT_ICON.item(),
                 null,
-                null,
+                Permissions.MIXER,
                 false,
                 variables,
                 interval,
@@ -110,5 +120,9 @@ public class MixData {
 
     public void resetCache() {
         cache = null;
+    }
+
+    public String getFinalName(Player player) {
+        return player.getName() + "/" + name;
     }
 }

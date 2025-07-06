@@ -12,9 +12,13 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlayerData {
+
     public String effectName;
+    public String selectedMix;
+
     public Map<String, String> colorPreferences = new HashMap<>();
     public List<MixData> mixData = new ArrayList<>();
+
     public boolean effectsEnabled = true;
     public boolean notificationsEnabled = true;
 }

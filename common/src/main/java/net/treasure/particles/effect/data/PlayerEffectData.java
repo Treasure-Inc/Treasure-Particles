@@ -101,6 +101,10 @@ public class PlayerEffectData extends EffectData {
         return mixData.stream().anyMatch(data -> data.name().equals(name));
     }
 
+    public MixData getMixData(String name) {
+        return mixData.stream().filter(data -> data.name().equals(name)).findFirst().orElse(null);
+    }
+
     // Handler Event
     @Override
     public void setCurrentEvent(HandlerEvent currentEvent) {

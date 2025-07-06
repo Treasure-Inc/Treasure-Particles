@@ -57,7 +57,7 @@ public class PlayerManager {
             }, player.getUniqueId().toString());
 
             if (playerData == null) return;
-            var effect = effectManager.get(playerData.effectName);
+            var effect = playerData.selectedMix != null ? null : effectManager.get(playerData.effectName);
             if (effect != null && (!Permissions.ALWAYS_CHECK_PERMISSION || effect.canUse(player)) && data.checkElytra(effect))
                 data.setCurrentEffect(effect);
 
@@ -75,6 +75,16 @@ public class PlayerManager {
                 if (mixLimit != -1 && data.getMixData().size() > mixLimit) {
                     data.setMixData(data.getMixData().subList(0, mixLimit));
                     data.setCurrentEffect(null);
+                }
+            }
+
+            if (effect == null && playerData.selectedMix != null) {
+                var mixData = data.getMixData(playerData.selectedMix);
+                if (mixData != null) {
+                    effect = mixData.get(player);
+                    if (effect != null && (!Permissions.ALWAYS_CHECK_PERMISSION || effect.canUse(player)) && data.checkElytra(effect)) {
+                        data.setCurrentEffect(effect);
+                    }
                 }
             }
 
@@ -107,7 +117,14 @@ public class PlayerManager {
                         Map.Entry::getKey,
                         e -> e.getValue().getKey()
                 ));
-        var playerData = new PlayerData(data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null, colorPreferences, data.getMixData(), data.isEffectsEnabled(), data.isNotificationsEnabled());
+        var playerData = new PlayerData(
+                data.getCurrentEffect() != null ? data.getCurrentEffect().getKey() : null,
+                data.getCurrentEffect() != null && data.getCurrentEffect().getMixName() != null ? data.getCurrentEffect().getMixName() : null,
+                colorPreferences,
+                data.getMixData(),
+                data.isEffectsEnabled(),
+                data.isNotificationsEnabled()
+        );
         TreasureParticles.getDatabase().update("REPLACE INTO `" + DatabaseManager.TABLE + "` (`uuid`, `data`) VALUES (?, ?)", player.getUniqueId().toString(), gson.toJson(playerData));
     }
 

@@ -57,8 +57,10 @@ public class Effect {
 
     private final boolean onlyElytra;
 
+    private final String mixName;
+
     public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<String> variables, int interval, boolean cachingEnabled, LinkedHashMap<String, Pair<TickHandler, List<String>>> tickHandlers, ColorGroup colorGroup, boolean onlyElytra) {
-        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup, onlyElytra);
+        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup, onlyElytra, null);
 
         this.variables = new ArrayList<>();
         for (var variable : variables) {
@@ -89,8 +91,8 @@ public class Effect {
         }
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<VariableData> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup, boolean onlyElytra) {
-        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup, onlyElytra);
+    public Effect(String mixName, String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, List<VariableData> variables, int interval, boolean cachingEnabled, List<TickHandler> tickHandlers, ColorGroup colorGroup, boolean onlyElytra) {
+        this(key, displayName, description, icon, colorAnimation, permission, nameColorAnimationEnabled, interval, cachingEnabled, colorGroup, onlyElytra, mixName);
         this.variables = variables;
 
         this.tickHandlers = tickHandlers;
@@ -102,7 +104,7 @@ public class Effect {
         addVariable(Variable.TIMES, null);
     }
 
-    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, int interval, boolean cachingEnabled, ColorGroup colorGroup, boolean onlyElytra) {
+    public Effect(String key, String displayName, String[] description, ItemStack icon, String colorAnimation, String permission, boolean nameColorAnimationEnabled, int interval, boolean cachingEnabled, ColorGroup colorGroup, boolean onlyElytra, String mixName) {
         this.key = key;
         this.displayName = displayName;
         this.description = description;
@@ -114,6 +116,7 @@ public class Effect {
         this.cachingEnabled = cachingEnabled;
         this.colorGroup = colorGroup;
         this.onlyElytra = onlyElytra;
+        this.mixName = mixName;
 
         this.events = EnumSet.noneOf(HandlerEvent.class);
     }
