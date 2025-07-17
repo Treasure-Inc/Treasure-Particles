@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @Getter
 public class GUIManager implements DataHolder {
 
-    public static final String VERSION = "1.5.0";
+    public static final String VERSION = "1.5.1";
 
     private final ConfigurationGenerator generator;
     private YamlConfiguration config;
@@ -45,8 +45,10 @@ public class GUIManager implements DataHolder {
     @Accessors(fluent = true)
     private final AdminGUI adminGUI;
 
-    int taskId = -5, interval = 2;
-    float colorCycleSpeed = 0.85f;
+    private int taskId = -5, interval = 2;
+    private float colorCycleSpeed = 0.85f;
+    @Accessors(fluent = true)
+    private boolean showSupportedEvents = true;
 
     public GUIManager() {
         this.generator = new ConfigurationGenerator("gui.yml");
@@ -68,8 +70,10 @@ public class GUIManager implements DataHolder {
     public boolean initialize() {
         this.config = getConfiguration();
 
+        showSupportedEvents = config.getBoolean("show-supported-events", showSupportedEvents);
+
         interval = config.getInt("animation.interval", interval);
-        colorCycleSpeed = (float) config.getDouble("animation.color-cycle-speed", getColorCycleSpeed());
+        colorCycleSpeed = (float) config.getDouble("animation.color-cycle-speed", colorCycleSpeed);
         if (taskId != -5 && !config.getBoolean("animation.enabled", true)) {
             Bukkit.getScheduler().cancelTask(taskId);
             taskId = -5;

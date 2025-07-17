@@ -127,6 +127,8 @@ public class Effect {
             preTick();
         }
 
+        if (!TreasureParticles.getGUIManager().showSupportedEvents()) return;
+
         var old = this.description;
         this.description = new String[old == null ? 1 : old.length + 2];
         var translations = TreasureParticles.getTranslations();
