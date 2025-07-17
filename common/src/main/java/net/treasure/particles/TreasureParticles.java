@@ -77,7 +77,7 @@ public class TreasureParticles {
 
     private static void initialize() {
         if (!Particles.initialize()) {
-            plugin.disable();
+            plugin.disable("Couldn't initialize TreasureParticles");
             return;
         }
 
@@ -93,7 +93,7 @@ public class TreasureParticles {
         // Database
         databaseManager = new DatabaseManager();
         if (!databaseManager.initialize()) {
-            plugin.disable();
+            plugin.disable("Couldn't connect to database");
             return;
         }
 
@@ -108,7 +108,7 @@ public class TreasureParticles {
         // Colors
         colorManager = new ColorManager();
         if (!colorManager.initialize()) {
-            plugin.disable();
+            plugin.disable("Couldn't initialize TreasureParticles");
             return;
         }
         dataHolders.add(colorManager);
@@ -116,7 +116,7 @@ public class TreasureParticles {
         // Effects
         effectManager = new EffectManager();
         if (!effectManager.initialize()) {
-            plugin.disable();
+            plugin.disable("Couldn't initialize TreasureParticles");
             return;
         }
         dataHolders.add(effectManager);

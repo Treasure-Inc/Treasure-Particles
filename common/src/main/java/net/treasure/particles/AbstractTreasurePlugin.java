@@ -6,11 +6,12 @@ public abstract class AbstractTreasurePlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        TreasureParticles.getDatabaseManager().close();
+        if (TreasureParticles.getDatabaseManager() != null)
+            TreasureParticles.getDatabaseManager().close();
     }
 
-    public void disable() {
-        getLogger().warning("Couldn't initialize TreasureParticles");
+    public void disable(String message) {
+        getLogger().warning(message);
         getPluginLoader().disablePlugin(this);
     }
 }
