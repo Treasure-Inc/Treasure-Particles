@@ -7,10 +7,13 @@ import net.treasure.particles.constants.Keys;
 import net.treasure.particles.effect.data.PlayerEffectData;
 import net.treasure.particles.effect.handler.HandlerEvent;
 import net.treasure.particles.player.PlayerManager;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,6 +23,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -91,6 +95,18 @@ public class HandlerEventsListener implements Listener {
         data.setTargetEntity(event.getEntity());
     }
 
+    @EventHandler
+    public void on(PlayerPickupArrowEvent event) {
+        if (!(event.getArrow() instanceof Trident)) return;
+        var player = event.getPlayer();
+        if (!player.hasMetadata(Keys.NAMESPACE)) return;
+        player.removeMetadata(Keys.NAMESPACE, TreasureParticles.getPlugin());
+
+        var data = playerManager.getEffectData(player);
+        if (data != null)
+            data.resetEvent();
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on(EntityDeathEvent event) {
         var killer = event.getEntity().getKiller();
@@ -125,11 +141,19 @@ public class HandlerEventsListener implements Listener {
         data.setCurrentEvent(HandlerEvent.PROJECTILE);
         data.setTargetEntity(event.getEntity());
         event.getEntity().setMetadata(Keys.NAMESPACE, new FixedMetadataValue(TreasureParticles.getPlugin(), data));
+        if (player.getGameMode() != GameMode.CREATIVE && event.getEntity() instanceof Trident) {
+            var trident = player.getInventory().getItemInMainHand().getType() == Material.TRIDENT ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+            if (trident.getItemMeta() == null || !trident.getItemMeta().hasEnchant(Enchantment.LOYALTY)) return;
+            player.setMetadata(Keys.NAMESPACE, new FixedMetadataValue(TreasureParticles.getPlugin(), true));
+            event.getEntity().setMetadata(Keys.NAMESPACE, new FixedMetadataValue(TreasureParticles.getPlugin(), true));
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on(ProjectileHitEvent event) {
         if (!event.getEntity().hasMetadata(Keys.NAMESPACE)) return;
+        if (event.getEntity() instanceof Trident trident && trident.getMetadata(Keys.NAMESPACE).size() == 2)
+            return;
         try {
             var data = (PlayerEffectData) event.getEntity().getMetadata(Keys.NAMESPACE).get(0).value();
             if (data != null && event.getEntity().equals(data.getTargetEntity()))
