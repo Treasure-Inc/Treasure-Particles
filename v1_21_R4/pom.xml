@@ -6,7 +6,7 @@
     <parent>
         <groupId>net.treasure.particles</groupId>
         <artifactId>TreasureParticles</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1</version>
     </parent>
 
     <artifactId>v1_21_R4</artifactId>
